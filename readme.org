@@ -1,0 +1,15 @@
+* SARTA Code Readme
+
+This repo is a new start for sarta development.  The main goal for now
+is to keep things as simple as possible with a minimum of extra files,
+etc.  
+
+The initial commit was tested versus existing rtp files from all three
+instruments.  For now the make_sarta is set to use the airs include
+file template, but cris and iasi use a hard-coded include files.
+The m140 variant of airs was used.  These are all the standard
+versions of sarta we are presently using for production.
+
+
+
+
