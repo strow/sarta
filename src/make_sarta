@@ -1,49 +1,37 @@
 #
 # Makefile make_sarta for SARTA
 #
+#   Please use absolute paths for final entries
+#
 
-# ------------
+# ------------------------------------------------------------------------
 # Object files
-# ------------
+# ------------------------------------------------------------------------
 OBJS = rdcoef.o  rdprof.o  vaconv.o  calpar.o  qikexp.o  setems.o  getbot.o \
-        calt1.o   calt2.o   calt3.o   calt4.o   calt5.o   calt6.o   calt7.o \
-       faketz.o  sunpar.o  calrad.o   rdsun.o  saconv.o  calowp.o  calokw.o \
-         util.o  opnrtp.o   rdrtp.o  wrtrtp.o  mean_t.o  rdinfo.o  cbplev.o \
-       tunmlt.o  calnte.o   sarta.o
+       calt1.o   calt2.o   calt3.o   calt4.o   calt5.o   calt6.o   calt7.o \
+       faketz.o  sunpar.o  calrad.o  rdsun.o   saconv.o  calowp.o  calokw.o \
+       util.o    opnrtp.o  rdrtp.o   wrtrtp.o  mean_t.o  rdinfo.o  cbplev.o \
+       tunmlt.o  calnte.o  sarta.o
 
-# --------
-# HDF
-# --------
-# set HDFHOME to point to the local HDF installation, use absolute paths
+# ------------------------------------------------------------------------
+# HDF LIBS
+# ------------------------------------------------------------------------
+HDFLIB = -L/asl/code/external/hdf/hdf4/lib -ldf \
+	 -L/asl/code/external/jpeg -ljpeg       \
+	 -L/asl/code/external/zlib -lz         
 
-HDF_INSTALL1 = /asl/packages/hdf/hdf4
-HDFHOME1 = -L$(HDF_INSTALL1)/lib -ldf  -ljpeg -lz ## -lmfhdf
+# ------------------------------------------------------------------------
+# RTP LIB and INCLUDE
+# ------------------------------------------------------------------------
+RTPLIB = -L/asl/code/rtp/lib -lrtp
+RTPINC = -I/asl/code/rtp/include
 
-HDF_INSTALL2 = /asl/packages/jpeg
-HDFHOME2   = -L$(HDF_INSTALL2) -ljpeg
+# ------------------------------------------------------------------------
+# Compilers
+# ------------------------------------------------------------------------
 
-HDFLIB = $(HDFHOME1) $(HDFHOME2)
-
-# --------
-# RTP
-# --------
-# set RTPHOME to point to the local RTP installation
-
-RTPHOME = /asl/packages/rtp
-
-# RTP library
-RTPLIB = -L$(RTPHOME)/lib -lrtp
-
-# RTP include
-RTPINC = -I$(RTPHOME)/include
-
-# -------------
-# Compiler
-# -------------
-
-# INTEL
-# ifort F77
-# ------------
+# INTEL ifort F77
+# ------------------------------------------------------------------------
 # -u  : turn off implicit typing of variables
 # -g  : generate debugging information (turns off optimization)
 # -C  : do run time subscript range checking
@@ -51,38 +39,23 @@ RTPINC = -I$(RTPHOME)/include
 # -O3 : heavy optimization
 # -64 : 64-bit objects (libraries must match)
 # -us : puts trailing underscore
-#
 F77 = ifort
+FLIB = 
 OPT = -O -convert big_endian
-#OPT = -O -check bounds -heap-arrays -g -traceback -debug inline-debug-info -check all -fp-stack-check -convert big_endian
 
-# Linux absoft:
-#    -f    fold variables to lower case
-#    -C    array bounds checking
-#    -O    moderate optimization
-#    -s    static allocation
-#    -g    include symbol table info
-#    -N26  read big-endian binary files (needed for coefficient files)
-#    -N3   use embedded record lengths in binary files 
-#OPT = -s -O  -N26
-##OPT = -s -N3 -N26 -g -C
-## Absoft requires the U77 library
-#FLIB = -lU77
-#F77 = /asl/opt/absoft/absoft10.0/bin/af77
-
-#Linux with Portland Group F77:
+# Portland Group F77:
+# ------------------------------------------------------------------------
 #    -byteswapio  read big-endian binary files (needed for coefficient files)
 #    -C           array bounds checking
 #    -g           include symbol table info
 #    -O           moderate optimization
 #OPT = -O -byteswapio
-#FLIB =
 #F77 = pgf77
 
-# -----
+# ------------------------------------------------------------------------
 # Build
-# -----
-sarta: $(OBJS)
+# ------------------------------------------------------------------------
+sarta:	$(OBJS)
 	$(F77) $(OBJS) $(RTPLIB) $(HDFLIB) $(FLIB)
 
 # Compile source to object files
