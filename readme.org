@@ -1,8 +1,9 @@
 * SARTA Code Readme
 
-This repo is a new start for sarta development.  The main goal for now
-is to keep things as simple as possible with a minimum of extra files,
-etc.  
+This repo is a new start for sarta development and generation of
+production executables, which should be moved to =/asl/bin=.  The main
+goal for now is to keep things as simple as possible with a minimum of
+extra files, etc.
 
 The initial commit was tested versus existing rtp files from all three
 instruments.  For now the make_sarta is set to use the airs include
@@ -10,6 +11,33 @@ file template, but cris and iasi use a hard-coded include files.
 The m140 variant of airs was used.  These are all the standard
 versions of sarta we are presently using for production.
 
+At present we are not putting "_385" into sarta file names for the
+default CO2 value.  We do put in "_370" if true.   
 
+I *think* all the include files here refer to what we call "Post
+Nov03" SRFs, but need to check.
 
+After compilation executables are renamed and moved to /asl/code/sarta
 
+* Libraries
+
+I have put the HDF (and libraries needed by HDF) in
+=/asl/code/external=.  They have all been compiled with the Intel
+compilers.   
+
+* To Do
+ - Priority: CrIS high-resolution RTA
+ - Scripts for testing
+ - Convert to F90?
+
+* Git Flow
+
+Please work in branches, just use your name.  I have also put
+(versions) of your names in .gitignore.  Those stand for
+subdirectories where you can work on stuff you don't want to put in
+git.  
+
+However, I hope we will be updating the master branch quite often, and
+so you need to get used to merging into master.  Don't build a new
+system in your private subdirectory because it will defeat the use of
+git.
