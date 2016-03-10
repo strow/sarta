@@ -228,8 +228,8 @@ ccc
 C      -------------------------
 C      Quick checks of input RTP
 C      -------------------------
-       MEMIS=HEAD.memis
-       PTYPE=HEAD.ptype
+       MEMIS=HEAD%memis
+       PTYPE=HEAD%ptype
        IF (PTYPE .NE. LAYPRO .AND. PTYPE .NE. AIRSLAY) THEN
           WRITE(IOERR,1003)
  1003     FORMAT('Error! input RTP ptype must be LAYPRO or AIRSLAY')
@@ -243,13 +243,13 @@ C      -------------------------
 C      Note: if no RHO data will use (1-emis)/pi
 ccc
 c Removed 26 April 2001 by Scott Hannon since mlev may be less than MAXLAY+1
-c       IF (HEAD.mlevs .NE. MAXLAY+1) THEN
+c       IF (HEAD%mlevs .NE. MAXLAY+1) THEN
 c          WRITE(IOERR,1005) MAXLAY
 c 1005     FORMAT('Error! input RTP is not the ',I3,' AIRS layers')
 c          STOP
 c       ENDIF
 ccc
-       NCHAN=HEAD.nchan
+       NCHAN=HEAD%nchan
        IF (NCHAN .LT. 1) THEN
           WRITE(IOERR,1007)
  1007     FORMAT('Error! input RTP has no channel info')
@@ -258,11 +258,11 @@ ccc
 C
        IF (MEMIS .GT. MXEMIS) THEN
           WRITE(IOERR,1008) MEMIS, MXEMIS
- 1008     FORMAT('ERROR! input RTP HEAD.memis=',I4,
+ 1008     FORMAT('ERROR! input RTP HEAD%memis=',I4,
      $    ' exceeds MXEMIS=',I4)
        ENDIF
 C
-       NUMBER=HEAD.pfields
+       NUMBER=HEAD%pfields
        CALL N2BITS(NUMBER, LFLAGS)
        IF (.NOT. LFLAGS(1)) THEN  ! PROFBIT is bit1
           WRITE(IOERR,1010)
@@ -285,9 +285,9 @@ C      -----------
        IHNO3=-1
 C
 C      Loop over gases
-       NGASI=HEAD.ngas
+       NGASI=HEAD%ngas
        DO I=1,NGASI
-          GLISTI(I)=HEAD.glist(I)
+          GLISTI(I)=HEAD%glist(I)
           LNEED=.FALSE.
 C
 C         Determine indices of needed gases
@@ -331,14 +331,14 @@ C         Exception: CO2 will use CO2PPM
 C
 C         Check gas units
           IF (LNEED) THEN
-             IF (HEAD.gunit(I) .NE. GUCIN) THEN
-                IF (I .EQ. ICO2 .AND. HEAD.gunit(I) .EQ. 10) THEN
+             IF (HEAD%gunit(I) .NE. GUCIN) THEN
+                IF (I .EQ. ICO2 .AND. HEAD%gunit(I) .EQ. 10) THEN
                    LCO2PM=.TRUE.
       print *, 'CO2 profile in ppmv'
                 ELSE
-                   WRITE(IOERR,1020) GUCIN, I, HEAD.gunit(I)
+                   WRITE(IOERR,1020) GUCIN, I, HEAD%gunit(I)
  1020              FORMAT('ERROR! Wrong gas units code number. ',
-     $             'Need ',I3,' but HEAD.gunit(',I2,')=',I3)
+     $             'Need ',I3,' but HEAD%gunit(',I2,')=',I3)
                    STOP
                 ENDIF
              ENDIF
@@ -387,8 +387,8 @@ C      Initialize channel index list
        ENDDO
        K=0  ! initialize counter
        DO I=1,NCHAN
-          J=HEAD.ichan(I)  ! channel ID
-          FCHAN(I)=HEAD.vchan(I)  ! channel freq (or junk if unfilled)
+          J=HEAD%ichan(I)  ! channel ID
+          FCHAN(I)=HEAD%vchan(I)  ! channel freq (or junk if unfilled)
 C
           IF ((J .LT. 1) .OR. (J .GT. MXCHAN)) THEN
              WRITE(IOERR,1042) MXCHAN, J
@@ -416,7 +416,7 @@ C      Update pfields
 C      --------------
        LFLAGS(2)=.TRUE.  ! IRCALCBIT is bit2
        CALL BITS2N(NUMBER, LFLAGS)
-       HEAD.pfields=NUMBER
+       HEAD%pfields=NUMBER
 C
 
 C      -----------------------------------

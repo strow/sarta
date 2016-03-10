@@ -514,11 +514,11 @@ C      that FCHAN is "nodata", so we check the first element.
  1010           FORMAT('Warning! index=',I4,', chan ID=',I4,
      $          ', fastmodel freq=',F8.3,', RTP freq=',F8.3)
              ENDIF
-             HEAD.vchan(I)=FREQ(I)
+             HEAD%vchan(I)=FREQ(I)
           ENDDO
        ELSE
           DO I=1,NCHAN
-             HEAD.vchan(I)=FREQ(I)
+             HEAD%vchan(I)=FREQ(I)
           ENDDO
        ENDIF
 C
@@ -856,7 +856,7 @@ C         No sun; set the sun surface-to-space trans to zero
 C
 
 ccc This block of code added for "wf" variant
-       WRITE(10) (PROF.palts(L),L=1,MAXLAY+1)
+       WRITE(10) (PROF%palts(L),L=1,MAXLAY+1)
        DO I=1,NCHAN
           WRITE(10) (TAU(L,I),L=1,MAXLAY)
        ENDDO
