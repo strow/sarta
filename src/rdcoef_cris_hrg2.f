@@ -5,13 +5,13 @@ C    University of Maryland Baltimore Country (UMBC)
 C
 C    AIRS
 C
-C    RDCOEF version with trace gases CO2, SO2, & HNO3
+C    RDCOEF version for CrIS HR G2 with trace gases CO2.
 C
 !F77====================================================================
 
 
 !ROUTINE NAME:
-C    RDCOEF
+C    RDCOEF_CRIS_HRG2
 
 
 !ABSTRACT:
@@ -152,11 +152,13 @@ C    12 Feb 2001 Scott Hannon   hardcoded filenames instead of prompts
 C    18 May 2005 Scott Hannon   Add HNO3 based on SO2 code
 C    28 Jun 2005 Scott Hannon   "trace" version for CO2,SO2,HNO3,N2O
 C    13 Oct 2005 Scott Hannon   Add non-LTE variables
+C    17 Mar 2016 C Hepplewhite  sections ommitted due to absence of
+C    coefficients.
 
 !END====================================================================
 
 C      =================================================================
-       SUBROUTINE RDCOEF ( IOUN, NCHAN, INDCHN, SETCHN,
+       SUBROUTINE RDCOEF_CRIS_HRG2 ( IOUN, NCHAN, INDCHN, SETCHN,
      $     NCHN1,  NCHN2,  NCHN3,  NCHN4,  NCHN5,  NCHN6,  NCHN7,
      $    CLIST1, CLIST2, CLIST3, CLIST4, CLIST5, CLIST6, CLIST7,
      $     COEF1,  COEF2,  COEF3,  COEF4,  COEF5,  COEF6,  COEF7,
@@ -189,11 +191,11 @@ C      ARGUMENTS
 C-----------------------------------------------------------------------
 C      Input
        INTEGER   IOUN
-       INTEGER  NCHAN
-       INTEGER INDCHN(MXCHAN)
+       INTEGER   NCHAN
+       INTEGER   INDCHN(MXCHAN)
 C
 C      Output
-       INTEGER SETCHN(MXCHAN)
+       INTEGER  SETCHN(MXCHAN)
        INTEGER  NCHN1
        INTEGER  NCHN2
        INTEGER  NCHN3
@@ -201,13 +203,13 @@ C      Output
        INTEGER  NCHN5
        INTEGER  NCHN6
        INTEGER  NCHN7
-       INTEGER CLIST1(MXCHN1)
-       INTEGER CLIST2(MXCHN2)
-       INTEGER CLIST3(MXCHN3)
-       INTEGER CLIST4(MXCHN4)
-       INTEGER CLIST5(MXCHN5)
-       INTEGER CLIST6(MXCHN6)
-       INTEGER CLIST7(MXCHN7)
+       INTEGER  CLIST1(MXCHN1)
+       INTEGER  CLIST2(MXCHN2)
+       INTEGER  CLIST3(MXCHN3)
+       INTEGER  CLIST4(MXCHN4)
+       INTEGER  CLIST5(MXCHN5)
+       INTEGER  CLIST6(MXCHN6)
+       INTEGER  CLIST7(MXCHN7)
        REAL  COEF1(N1COEF,MAXLAY,MXCHN1)
        REAL  COEF2(N2COEF,MAXLAY,MXCHN2)
        REAL  COEF3(N3COEF,MAXLAY,MXCHN3)
@@ -515,84 +517,6 @@ C
        CLOSE(IOUN)
 C
 C
-C      ---------------------------
-C      Read SO2 perturbation coefs
-C      ---------------------------
-       OPEN(UNIT=IOUN,FILE=FNSO2,FORM='UNFORMATTED',STATUS='OLD',
-     $    IOSTAT=IERR)
-       IF (IERR .NE. 0) THEN
-          WRITE(6,1020) IERR, FNSO2
-          STOP
-       ENDIF
-C
-       J=1
-       DO I=1,MXCHNS
-C         Read data for this frequency/channel
-          READ(IOUN) ICHAN, FRQCHN, ((COFSO2(IC,IL,J),IC=1,NSO2),
-     $       IL=1,MAXLAY)
-C
-C         Keep the data if the current channel is on the list
-          IF (INDCHN(ICHAN) .NE. 0) THEN
-             INDSO2(ICHAN)=J
-             J=J + 1
-          ENDIF
-       ENDDO
-C
-       CLOSE(IOUN)
-C
-C
-C      ---------------------------
-C      Read HNO3 perturbation coefs
-C      ---------------------------
-       OPEN(UNIT=IOUN,FILE=FNHNO3,FORM='UNFORMATTED',STATUS='OLD',
-     $    IOSTAT=IERR)
-       IF (IERR .NE. 0) THEN
-          WRITE(6,1020) IERR, FNHNO3
-          STOP
-       ENDIF
-C
-       J=1
-       DO I=1,MXCHNH
-C         Read data for this frequency/channel
-          READ(IOUN) ICHAN, FRQCHN, ((COFHNO(IC,IL,J),IC=1,NHNO3),
-     $       IL=1,MAXLAY)
-C
-C         Keep the data if the current channel is on the list
-          IF (INDCHN(ICHAN) .NE. 0) THEN
-             INDHNO(ICHAN)=J
-             J=J + 1
-          ENDIF
-       ENDDO
-C
-       CLOSE(IOUN)
-C
-
-C      ---------------------------
-C      Read N2O perturbation coefs
-C      ---------------------------
-       OPEN(UNIT=IOUN,FILE=FNN2O,FORM='UNFORMATTED',STATUS='OLD',
-     $    IOSTAT=IERR)
-       IF (IERR .NE. 0) THEN
-          WRITE(6,1020) IERR, FNN2O
-          STOP
-       ENDIF
-C
-       J=1
-       DO I=1,MXCHNN
-C         Read data for this frequency/channel
-          READ(IOUN) ICHAN, FRQCHN, ((COFN2O(IC,IL,J),IC=1,NN2O),
-     $       IL=1,MAXLAY)
-C
-C         Keep the data if the current channel is on the list
-          IF (INDCHN(ICHAN) .NE. 0) THEN
-             INDN2O(ICHAN)=J
-             J=J + 1
-          ENDIF
-       ENDDO
-C
-       CLOSE(IOUN)
-C
-
 C      ---------------------
 C      Read OPTRAN H2O coefs
 C      ---------------------
@@ -685,31 +609,6 @@ C
      $    'Expected fx to have ',I4,' layers, but found ',I4)
        ENDIF
 C
-
-C      ------------
-C      Read non-LTE
-C      ------------
-       OPEN(UNIT=IOUN,FILE=FNCOFN,FORM='UNFORMATTED',STATUS='OLD',
-     $    IOSTAT=IERR)
-       IF (IERR .NE. 0) THEN
-          WRITE(6,1020) IERR, FNCOFN
-          STOP
-       ENDIF
-C
-       J=1
-       DO I=1,MXCNTE
-C         Read data for this frequency/channel
-          READ(IOUN) ICHAN, FRQCHN, (COEFN(IC,J),IC=1,NNCOEF)
-C
-C         Keep the data if the current channel is on the list
-          IF (INDCHN(ICHAN) .NE. 0) THEN
-             CLISTN(J)=ICHAN
-             J=J + 1
-          ENDIF
-       ENDDO
-       NCHNTE=J - 1
-C
-       CLOSE(IOUN)
 
 C      ---------------------------------------------
 C      Make sure all channels on the list were found
