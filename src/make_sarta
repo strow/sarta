@@ -41,7 +41,7 @@ RTPINC = -I/asl/code/rtp/include
 # -us : puts trailing underscore
 F77 = ifort
 FLIB = 
-OPT = -O -convert big_endian
+OPT = -O -convert big_endian 
 
 # Portland Group F77:
 # ------------------------------------------------------------------------
