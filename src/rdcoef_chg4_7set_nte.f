@@ -751,33 +751,33 @@ C
 C      ------------
 C      Read non-LTE
 C      ------------
-C       OPEN(UNIT=IOUN,FILE=FNCOFN,FORM='UNFORMATTED',STATUS='OLD',
-C     $    IOSTAT=IERR)
-C       IF (IERR .NE. 0) THEN
-C          WRITE(6,1020) IERR, FNCOFN
-C          STOP
-C       ENDIF
+       OPEN(UNIT=IOUN,FILE=FNCOFN,FORM='UNFORMATTED',STATUS='OLD',
+     $    IOSTAT=IERR)
+       IF (IERR .NE. 0) THEN
+          WRITE(6,1020) IERR, FNCOFN
+          STOP
+       ENDIF
 C
-C       J=1
-C       DO I=1,MXCNTE
+       J=1
+       DO I=1,MXCNTE
 C         Read data for this frequency/channel
-C          READ(IOUN) ICHAN, FRQCHN, (COEFN(IC,J),IC=1,NNCOEF)
+          READ(IOUN) ICHAN, FRQCHN, (COEFN(IC,J),IC=1,NNCOEF)
 C
 C         Keep the data if the current channel is on the list
-C          IF (INDCHN(ICHAN) .NE. 0) THEN
-C             CLISTN(J)=ICHAN
-C             J=J + 1
-C          ENDIF
-C       ENDDO
-C       NCHNTE=J - 1
-C
-C       CLOSE(IOUN)
-C placeholder set to zero
-       DO I=1,MXCNTE
-          DO IC=1,NNCOEF
-             COEFN(IC,I)=0.0
-          ENDDO
+          IF (INDCHN(ICHAN) .NE. 0) THEN
+             CLISTN(J)=ICHAN
+             J=J + 1
+          ENDIF
        ENDDO
+       NCHNTE=J - 1
+C
+       CLOSE(IOUN)
+C placeholder set to zero
+C       DO I=1,MXCNTE
+C          DO IC=1,NNCOEF
+C             COEFN(IC,I)=0.0
+C          ENDDO
+C       ENDDO
 C      ---------------------------------------------
 
 C      ---------------------------------------------

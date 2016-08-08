@@ -361,12 +361,12 @@ C      ----------------
 C      Used in part by modules: 12, 11, 10, 9, 7, 6, 5, 2b, 1b, 2a
        INTEGER MXCHNC ! max # of channels with CO2 pert coefs (868)
        INTEGER NCO2   ! number of CO2 pert predictors/coefs (4)
-       PARAMETER(MXCHNC = 2235)
+       PARAMETER(MXCHNC = 1)
 C       PARAMETER(MXCHNC = 891)
 c       PARAMETER(MXCHNC = 737)
 c       PARAMETER(MXCHNC = 1033)
 c       PARAMETER(MXCHNC = 1)
-       PARAMETER(  NCO2 = 5)       ! was 4-term. otherwise 5-term
+       PARAMETER(  NCO2 = 1)       ! was 4-term. otherwise 5-term
 C
 C
 C      ----------------------
@@ -400,8 +400,8 @@ C      ----------------------
        INTEGER NNCOEF ! # of coefs for non-LTE (placeholder 1)
        INTEGER NTEBOT ! bottom layer for CO2TOP calc
        REAL CO2NTE ! ref CO2 mixing ratio for non-LTE coefs (ppmv)
-       PARAMETER(MXCNTE = 1)
-       PARAMETER(NNCOEF = 1)
+       PARAMETER(MXCNTE = 264)
+       PARAMETER(NNCOEF = 6)
        PARAMETER(NTEBOT = 10)
        PARAMETER(CO2NTE = 370.0)
 
@@ -413,7 +413,7 @@ C      Used in part by modules:
        INTEGER MXOWLY ! number of OPTRAN water layers
        INTEGER NOWAVG ! # of OPTRAN water average profile values (4)
        INTEGER NH2O   ! number of OPTRAN H2O predictors/coefs (9)
-       PARAMETER(MXCHNW = 2235)
+       PARAMETER(MXCHNW = 873)
 c       PARAMETER(MXCHNW = 737)
 c       PARAMETER(MXCHNW = 865)
 c       PARAMETER(MXCHNW = 1602)
@@ -444,50 +444,50 @@ C      ---------
        CHARACTER*80 FNSUN  ! solar data
        CHARACTER*90 FNCOFN ! non-LTE
 C
-       PARAMETER(FNCOF1='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/set1g4.dat')
+       PARAMETER(FNCOF1='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/set1.dat')
 c       PARAMETER(FNCOF1='../Data/set1_uncut.dat')
 c       PARAMETER(FNCOF1='../Data/dummy_set1.dat')
 C
-       PARAMETER(FNCOF2='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/set2g4.dat')
+       PARAMETER(FNCOF2='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/set2.dat')
 c       PARAMETER(FNCOF2='../Data/set2_uncut.dat')
 c       PARAMETER(FNCOF2='../Data/dummy_set2.dat')
 C
-       PARAMETER(FNCOF3='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/set3g4.dat')
+       PARAMETER(FNCOF3='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/set3.dat')
 c       PARAMETER(FNCOF3='../Data/set3_uncut.dat')
 C
-       PARAMETER(FNCOF4='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/set4g4.dat')
+       PARAMETER(FNCOF4='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/set4.dat')
 c       PARAMETER(FNCOF4='../Data/set4_uncut.dat')
 c       PARAMETER(FNCOF4='../Data/dummy_set4.dat')
 C
-       PARAMETER(FNCOF5='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/set5g4.dat')
+       PARAMETER(FNCOF5='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/set5.dat')
 c       PARAMETER(FNCOF5='../Data/set5_uncut.dat')
 c       PARAMETER(FNCOF5='../Data/dummy_set5.dat')
 C
-       PARAMETER(FNCOF6='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/set6g4.dat')
+       PARAMETER(FNCOF6='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/set6.dat')
 c       PARAMETER(FNCOF6='../Data/set6_uncut.dat')
 c       PARAMETER(FNCOF6='../Data/dummy_set6.dat')
 C
-       PARAMETER(FNCOF7='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/set7g4.dat')
+       PARAMETER(FNCOF7='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/set7.dat')
 c       PARAMETER(FNCOF7='../Data/set7_uncut.dat')
 c       PARAMETER(FNCOF7='../Data/dummy_set7.dat')
 C
 C       PARAMETER(FNCO2='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/co2.dat')
 c       PARAMETER(FNCO2 ='../Data/rawcoef_co2_fowp.dat')
-        PARAMETER(FNCO2 ='/home/chepplew/gitLib/ftc_dev/run/400ppm/CrIS_h4_rawcoef_co2_5term_fowp_sun.dat')
+C       PARAMETER(FNCO2 ='/home/chepplew/gitLib/ftc_dev/run/400ppm/CrIS_h4_rawcoef_co2_5term_fowp_sun.dat')
 c       PARAMETER(FNCO2 ='../Data/dummy_co2.dat')
 C
-       PARAMETER(FNOPTR='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/optrang4.dat')
+       PARAMETER(FNOPTR='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/optran.dat')
 c       PARAMETER(FNOPTR='../Data/optran1_uncut.dat')
 c       PARAMETER(FNOPTR='../Data/optran2_uncut.dat')
 c       PARAMETER(FNOPTR='../Data/optran_uncut.dat')
 c       PARAMETER(FNOPTR='../Data/optran_uncut_new.dat')
 c       PARAMETER(FNOPTR='../Data/dummy_optran.dat')
 C
-       PARAMETER(FNN2O='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/n2og4.dat')
-       PARAMETER(FNCOFN='/asl/s1/chepplew/data/sarta_database/Data_CrIS_HR_400ppm/Coef/nte_7term.dat')
+       PARAMETER(FNN2O='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/n2o.dat')
+       PARAMETER(FNCOFN='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/nte_7term.dat')
 C
-       PARAMETER(FNSO2='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/so2g4.dat')
-       PARAMETER(FNHNO3='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/hno3g4.dat')
+       PARAMETER(FNSO2='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/so2.dat')
+       PARAMETER(FNHNO3='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/hno3.dat')
        PARAMETER(FNTHER='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/therm.dat')
 C
        PARAMETER(FNFX='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/fx.txt')

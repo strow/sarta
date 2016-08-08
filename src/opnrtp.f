@@ -251,6 +251,7 @@ c          STOP
 c       ENDIF
 ccc
        NCHAN=HEAD.nchan
+       WRITE(6,*) "opnrtp: NCHAN = ",NCHAN
        IF (NCHAN .LT. 1) THEN
           WRITE(IOERR,1007)
  1007     FORMAT('Error! input RTP has no channel info')
