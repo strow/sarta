@@ -610,6 +610,33 @@ C
        ENDIF
 C
 
+C      ------------
+C      Read non-LTE
+C      ------------
+       OPEN(UNIT=IOUN,FILE=FNCOFN,FORM='UNFORMATTED',STATUS='OLD',
+     $    IOSTAT=IERR)
+       IF (IERR .NE. 0) THEN
+          WRITE(6,1020) IERR, FNCOFN
+          STOP
+       ENDIF
+C
+       J=1
+       DO I=1,MXCNTE
+C         Read data for this frequency/channel
+          READ(IOUN) ICHAN, FRQCHN, (COEFN(IC,J),IC=1,NNCOEF)
+C
+C         Keep the data if the current channel is on the list
+          IF (INDCHN(ICHAN) .NE. 0) THEN
+             CLISTN(J)=ICHAN
+             J=J + 1
+          ENDIF
+       ENDDO
+       NCHNTE=J - 1
+C
+       CLOSE(IOUN)
+
+C      ---------------------------------------------
+
 C      ---------------------------------------------
 C      Make sure all channels on the list were found
 C      ---------------------------------------------

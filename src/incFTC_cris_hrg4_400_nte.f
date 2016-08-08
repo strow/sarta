@@ -400,8 +400,8 @@ C      ----------------------
        INTEGER NNCOEF ! # of coefs for non-LTE (placeholder 1)
        INTEGER NTEBOT ! bottom layer for CO2TOP calc
        REAL CO2NTE ! ref CO2 mixing ratio for non-LTE coefs (ppmv)
-       PARAMETER(MXCNTE = 1)
-       PARAMETER(NNCOEF = 1)
+       PARAMETER(MXCNTE = 641)
+       PARAMETER(NNCOEF = 6)
        PARAMETER(NTEBOT = 10)
        PARAMETER(CO2NTE = 370.0)
 
@@ -484,7 +484,7 @@ c       PARAMETER(FNOPTR='../Data/optran_uncut_new.dat')
 c       PARAMETER(FNOPTR='../Data/dummy_optran.dat')
 C
        PARAMETER(FNN2O='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/n2og4.dat')
-       PARAMETER(FNCOFN='/asl/s1/chepplew/data/sarta_database/Data_CrIS_HR_400ppm/Coef/nte_7term.dat')
+       PARAMETER(FNCOFN='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/nte_7term.dat')
 C
        PARAMETER(FNSO2='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/so2g4.dat')
        PARAMETER(FNHNO3='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/hno3g4.dat')
