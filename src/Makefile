@@ -35,7 +35,7 @@ cris_hrg4_400p_7s_so2_hno3_n2o:
 
 cris_hrg4_400p_7s_opt_nte_tra:
 	rm -f *.o incFTC.f
-	ln -s incFTC_kc_cris_hrg4_400p_7s_opt_nte_tra incFTC.f
+	ln -s incFTC_kc_cris_hrg4_400p_7s_opt_nte_tra.f incFTC.f
 	make -f make_sarta_hrg4_400p_7s_opt_nte_tra
 	mv a.out ../bin/sarta_kc_cris_hrg4_400p_7s_opt_nte_tra
 #----------------------------------------------------------------------
