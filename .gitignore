@@ -1,8 +1,37 @@
+#
+# sarta git ignore lists
+#
+
+# Directories (even if they don't currently exist)
+test/
+bin/
 strow/
 sergio/
 sbuc/
 chepplew/
 motteler/
 tangborn/
-a.out
+
+# Text figures and Docs
+*.doc
+*.pdf
+*.txt
+*.aux
+*.toc
+*.out
+*.pdf
+*.png
+*.tiff
+*.lis
+
+# Libs, objects
+*.a
 *.o
+*.so
+*.mexa64
+
+# Archives and packages
+*.tar
+*.tgz
+*.zip
+*.bz2
