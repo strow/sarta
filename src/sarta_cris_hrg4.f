@@ -811,6 +811,7 @@ C
      $       WPRED4, WPRED5, WPRED6, WPRED7,
      $       OPRED4, OPRED5, OPRED6, OPRED7,
      $       CPRED4, TRCPRD )
+      write(6,'(A)') 'sarta: completed SUNPAR'
 
 C         --------------------------------------------
 C         Calculate the layer transmittances *for sun*
@@ -869,6 +870,7 @@ C      ----------------------
      $    SUNCOS, RHOSUN, DISTES, HSUN, TAUZSN,
      $    SECANG(LBOT), RHOTHR, LABOVE, COEFF, TAUZ, RAD, BT)
 C
+      write(6,'(A)') 'sarta: completed CALRAD'
 C      -----------------
 C      Calculate non-LTE
 C      -----------------
@@ -877,6 +879,7 @@ C      -----------------
      $       NCHNTE, CLISTN, COEFN, CO2TOP, RAD )
        ENDIF
 C
+      write(6,'(A)') 'sarta: completed CALNTE'
 ccc
 c      do I=1,NCHAN
 c      print *, BT(I), RAD(I)

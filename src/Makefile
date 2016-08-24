@@ -23,9 +23,21 @@ crisg4_nov09_wcon_nte:
 
 cris_hrg4_400_7set_optr:
 	rm -f *.o incFTC.f
-	ln -s incFTC_kc_cris_hrg4_400_7set.f incFTC.f
+	ln -s incFTC_g4_cris_hrg4_400_7set.f incFTC.f
 	make -f make_sarta_hrg4_7set_optr
-	mv a.out ../bin/sarta_kc_cris_hrg4_400_7set
+	mv a.out ../bin/sarta_g4_cris_hrg4_400_7set
+
+cris_hrg4_400p_7s_so2_hno3_n2o:
+	rm -f *.o incFTC.f
+	ln -s incFTC_kc_cris_hrg4_400p_7s_so2_hno3_n2o.f incFTC.f
+	make -f make_sarta_hrg4_400p_7s_so2_hno3_n2o
+	mv a.out ../bin/sarta_kc_cris_hrg4_400p_7s_so2_hno3_n2o
+
+cris_hrg4_400p_7s_opt_nte_tra:
+	rm -f *.o incFTC.f
+	ln -s incFTC_kc_cris_hrg4_400p_7s_opt_nte_tra incFTC.f
+	make -f make_sarta_hrg4_400p_7s_opt_nte_tra
+	mv a.out ../bin/sarta_kc_cris_hrg4_400p_7s_opt_nte_tra
 #----------------------------------------------------------------------
 #IASI
 iasi_may09_wcon_nte:
