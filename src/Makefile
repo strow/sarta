@@ -13,6 +13,16 @@ apr08_m140_pge_v6_tunmlt:
 	sed 's/XCSNAMEX/m140/g' incFTC_airs_apr08_template_m130_m140_m150_pge_v6_tunmlt.f > incFTC.f
 	make -f make_sarta
 	mv a.out ../bin/sarta_apr08_m140_pge_v6_tunmlt
+airs_2378_400p_7set:
+	rm -f *.o incFTC.f
+	ln -s incFTC_airs_2378_400p_7set.f incFTC.f
+	make -f make_sarta_airs_2378_400p_7set
+	mv a.out ../bin/sarta_airs_2378_400p_7set
+airs_2378_400p_7s_optr:
+	rm -f *.o incFTC.f
+	ln -s incFTC_airs_2378_400p_7s_optr.f incFTC.f
+	make -f make_sarta_airs_2378_400p_7s_optr
+	mv a.out ../bin/sarta_airs_2378_400p_7s_optr
 #----------------------------------------------------------------------
 # CrIS
 crisg4_nov09_wcon_nte:
@@ -21,11 +31,11 @@ crisg4_nov09_wcon_nte:
 	make -f make_sarta
 	mv a.out ../bin/sarta_crisg4_nov09_wcon_nte
 
-cris_hrg4_400_7set_optr:
+cris_hrg4_400p_7s_opt:
 	rm -f *.o incFTC.f
-	ln -s incFTC_g4_cris_hrg4_400_7set.f incFTC.f
-	make -f make_sarta_hrg4_7set_optr
-	mv a.out ../bin/sarta_g4_cris_hrg4_400_7set
+	ln -s incFTC_kc_cris_hrg4_400_7set.f incFTC.f
+	make -f make_sarta_hrg4_7s_opt
+	mv a.out ../bin/sarta_kc_cris_hrg4_400_7set
 
 cris_hrg4_400p_7s_so2_hno3_n2o:
 	rm -f *.o incFTC.f
@@ -37,7 +47,7 @@ cris_hrg4_400p_7s_opt_nte_tra:
 	rm -f *.o incFTC.f
 	ln -s incFTC_kc_cris_hrg4_400p_7s_opt_nte_tra.f incFTC.f
 	make -f make_sarta_hrg4_400p_7s_opt_nte_tra
-	mv a.out ../bin/sarta_kc_cris_hrg4_400p_7s_opt_nte_tra
+	mv a.out ../bin/sarta_kc_cris_hrg4_400p_7s_co2_opt_nte_tra
 #----------------------------------------------------------------------
 #IASI
 iasi_may09_wcon_nte:
