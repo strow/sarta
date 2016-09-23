@@ -187,7 +187,7 @@ C      Current values (CODATA98 from NIST); agrees w/JPL Dec2000
        PARAMETER(  C2 = 1.4387752)
 C
        REAL CO2STD ! standard CO2 PPMV mixing ratio (385)
-       PARAMETER( CO2STD = 385.0 )
+       PARAMETER( CO2STD = 400.0 )
 C
 C
        REAL  XSALT ! expected nominal satellite altitude (km)
@@ -361,12 +361,11 @@ C      ----------------
 C      Used in part by modules: 12, 11, 10, 9, 7, 6, 5, 2b, 1b, 2a
        INTEGER MXCHNC ! max # of channels with CO2 pert coefs (868)
        INTEGER NCO2   ! number of CO2 pert predictors/coefs (4)
-       PARAMETER(MXCHNC = 1)
+C       PARAMETER(MXCHNC = 1)
+C       PARAMETER( NCO2 = 1)
 C       PARAMETER(MXCHNC = 891)
-c       PARAMETER(MXCHNC = 737)
-c       PARAMETER(MXCHNC = 1033)
-c       PARAMETER(MXCHNC = 1)
-       PARAMETER(  NCO2 = 1)       ! was 4-term. otherwise 5-term
+       PARAMETER(MXCHNC = 476)
+       PARAMETER(  NCO2 = 4)       ! was 4-term. otherwise 5-term
 C
 C
 C      ----------------------
@@ -471,7 +470,7 @@ C
 c       PARAMETER(FNCOF7='../Data/set7_uncut.dat')
 c       PARAMETER(FNCOF7='../Data/dummy_set7.dat')
 C
-C       PARAMETER(FNCO2='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/co2.dat')
+       PARAMETER(FNCO2='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/co2.dat')
 c       PARAMETER(FNCO2 ='../Data/rawcoef_co2_fowp.dat')
 C       PARAMETER(FNCO2 ='/home/chepplew/gitLib/ftc_dev/run/400ppm/CrIS_h4_rawcoef_co2_5term_fowp_sun.dat')
 c       PARAMETER(FNCO2 ='../Data/dummy_co2.dat')

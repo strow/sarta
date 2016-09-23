@@ -186,7 +186,7 @@ C      Current values (CODATA98 from NIST); agrees w/JPL Dec2000
        PARAMETER(  C1 = 1.191042722E-8)  ! JPL value is 1E+3 bigger
        PARAMETER(  C2 = 1.4387752)
 C
-       REAL CO2STD ! standard CO2 PPMV mixing ratio (385)
+       REAL CO2STD ! standard CO2 PPMV mixing ratio (400)
        PARAMETER( CO2STD = 400.0 )
 C
 C
@@ -197,7 +197,7 @@ C      Channels and layers other variables
 C      -----------------------------------
        INTEGER MAXLAY ! # of layers (100)
        INTEGER   NSET ! # of coefficient data sets (7)
-       INTEGER MXCHAN ! max total # of channels (2235)
+       INTEGER MXCHAN ! max total # of channels (2378) AIRS nominal
        INTEGER NFCOEF ! # of downwelling thermal "F" factor coefs 
        INTEGER MXEMIS ! max # of input emis/rho data points
        INTEGER MAXPRO ! max # of user specified profiles
@@ -205,7 +205,7 @@ C      -----------------------------------
        INTEGER MXMIEA ! max # of mie particle sizes
        PARAMETER(MAXLAY = 100)
        PARAMETER(  NSET = 7)
-       PARAMETER(MXCHAN = 2235)
+       PARAMETER(MXCHAN = 2378)
        PARAMETER(NFCOEF = 5)
        PARAMETER(MXEMIS = 100)
        PARAMETER(MAXPRO = 25)
@@ -226,7 +226,7 @@ C      Used in part by modules: 12, 11, 10, 9, 8, 7, 6, 5, 3, 4b, 4a
        INTEGER  N1H2O ! # of water predictors/coefs for set1 (11)
        INTEGER   N1O3 ! # of ozone predictors/coefs for set1 (5)
        INTEGER N1COEF ! total # of coefs for set1
-       PARAMETER(MXCHN1 = 493)
+       PARAMETER(MXCHN1 = 1229)
 c       PARAMETER(MXCHN1 = 1)
        PARAMETER( N1CON = 7)
        PARAMETER( N1FIX = 8)
@@ -245,7 +245,7 @@ C      Used in part by modules: 6, 5
        INTEGER   N2O3 ! # of ozone predictors/coefs for set2 (10)
        INTEGER  N2H2O ! # of water predictors/coefs for set2 (11)
        INTEGER N2COEF ! total # of coefs for set2
-       PARAMETER(MXCHN2 = 228)
+       PARAMETER(MXCHN2 = 303)
 c       PARAMETER(MXCHN2 = 1)
        PARAMETER( N2CON = 7)
        PARAMETER( N2FIX = 8)
@@ -264,7 +264,7 @@ C      Used in part by modules: 4d, 4c, 3
        INTEGER  N3CH4 ! # of methane predictors/coefs for set3 (9)
        INTEGER  N3H2O ! # of water predictors/coefs for set3 (13)
        INTEGER N3COEF ! total # of coefs for set3
-       PARAMETER(MXCHN3 = 873)
+       PARAMETER(MXCHN3 = 332)
        PARAMETER( N3CON = 7)
        PARAMETER( N3FIX = 8)
        PARAMETER( N3CH4 = 9)
@@ -283,7 +283,7 @@ C      Used in part by modules: 2b
        INTEGER   N4O3 ! # of ozone predictors/coefs for set4 (3)
        INTEGER  N4H2O ! # of water predictors/coefs for set4 (13)
        INTEGER N4COEF ! total # of coefs for set4
-       PARAMETER(MXCHN4 = 126)
+       PARAMETER(MXCHN4 = 67)
 c       PARAMETER(MXCHN4 = 1)
        PARAMETER( N4CON = 7)
        PARAMETER( N4FIX = 11)
@@ -303,7 +303,7 @@ C      Used in part by modules: 2b, 1b
        INTEGER  N5H2O ! # of water predictors/coefs for set5 (3)
        INTEGER   N5O3 ! # of ozone predictors/coefs for set5 (1)
        INTEGER N5COEF ! total # of coefs for set5
-       PARAMETER(MXCHN5 = 75)
+       PARAMETER(MXCHN5 = 208)
 c       PARAMETER(MXCHN5 = 1)
        PARAMETER( N5CON = 7)
        PARAMETER( N5FIX = 11)
@@ -322,7 +322,7 @@ C      Used in part by modules: 1b, 2a
        INTEGER  N6H2O ! # of water predictors/coefs for set6 (7)
        INTEGER   N6O3 ! # of ozone predictors/coefs for set6 (1)
        INTEGER N6COEF ! total # of coefs for set6
-       PARAMETER(MXCHN6 = 415)
+       PARAMETER(MXCHN6 = 158)
 c       PARAMETER(MXCHN6 = 1)
        PARAMETER( N6CON = 7 )
        PARAMETER( N6FIX = 8 )
@@ -341,7 +341,7 @@ C      Used in part by modules: 2a, 1a
        INTEGER  N7H2O ! # of water predictors/coefs for set7 (13)
        INTEGER   N7O3 ! # of ozone predictors/coefs for set7 (1)
        INTEGER N7COEF ! total # of coefs for set7
-       PARAMETER(MXCHN7 = 25)
+       PARAMETER(MXCHN7 = 81)
 c       PARAMETER(MXCHN7 = 1)
        PARAMETER( N7CON = 7)
        PARAMETER( N7FIX = 8)
@@ -365,7 +365,6 @@ C      Used in part by modules: 12, 11, 10, 9, 7, 6, 5, 2b, 1b, 2a
 C       PARAMETER(MXCHNC = 891)
 c       PARAMETER(MXCHNC = 737)
 c       PARAMETER(MXCHNC = 1033)
-c       PARAMETER(MXCHNC = 1)
        PARAMETER(  NCO2 = 1)       ! was 4-term. otherwise 5-term
 C
 C
@@ -413,8 +412,8 @@ C      Used in part by modules:
        INTEGER MXOWLY ! number of OPTRAN water layers
        INTEGER NOWAVG ! # of OPTRAN water average profile values (4)
        INTEGER NH2O   ! number of OPTRAN H2O predictors/coefs (9)
-       PARAMETER(MXCHNW = 873)
-c       PARAMETER(MXCHNW = 737)
+C       PARAMETER(MXCHNW = 1)
+       PARAMETER(MXCHNW = 646)
 c       PARAMETER(MXCHNW = 865)
 c       PARAMETER(MXCHNW = 1602)
 C       PARAMETER(MXCHNW = 12)
@@ -444,63 +443,62 @@ C      ---------
        CHARACTER*80 FNSUN  ! solar data
        CHARACTER*90 FNCOFN ! non-LTE
 C
-       PARAMETER(FNCOF1='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/set1.dat')
+       PARAMETER(FNCOF1='/asl/s1/chepplew/data/sarta_database/Data_AIRS_2378_400ppm/Coef/set1.dat')
 c       PARAMETER(FNCOF1='../Data/set1_uncut.dat')
 c       PARAMETER(FNCOF1='../Data/dummy_set1.dat')
 C
-       PARAMETER(FNCOF2='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/set2.dat')
+       PARAMETER(FNCOF2='/asl/s1/chepplew/data/sarta_database/Data_AIRS_2378_400ppm/Coef/set2.dat')
 c       PARAMETER(FNCOF2='../Data/set2_uncut.dat')
 c       PARAMETER(FNCOF2='../Data/dummy_set2.dat')
 C
-       PARAMETER(FNCOF3='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/set3.dat')
+       PARAMETER(FNCOF3='/asl/s1/chepplew/data/sarta_database/Data_AIRS_2378_400ppm/Coef/set3.dat')
 c       PARAMETER(FNCOF3='../Data/set3_uncut.dat')
 C
-       PARAMETER(FNCOF4='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/set4.dat')
+       PARAMETER(FNCOF4='/asl/s1/chepplew/data/sarta_database/Data_AIRS_2378_400ppm/Coef/set4.dat')
 c       PARAMETER(FNCOF4='../Data/set4_uncut.dat')
 c       PARAMETER(FNCOF4='../Data/dummy_set4.dat')
 C
-       PARAMETER(FNCOF5='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/set5.dat')
+       PARAMETER(FNCOF5='/asl/s1/chepplew/data/sarta_database/Data_AIRS_2378_400ppm/Coef/set5.dat')
 c       PARAMETER(FNCOF5='../Data/set5_uncut.dat')
 c       PARAMETER(FNCOF5='../Data/dummy_set5.dat')
 C
-       PARAMETER(FNCOF6='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/set6.dat')
+       PARAMETER(FNCOF6='/asl/s1/chepplew/data/sarta_database/Data_AIRS_2378_400ppm/Coef/set6.dat')
 c       PARAMETER(FNCOF6='../Data/set6_uncut.dat')
 c       PARAMETER(FNCOF6='../Data/dummy_set6.dat')
 C
-       PARAMETER(FNCOF7='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/set7.dat')
+       PARAMETER(FNCOF7='/asl/s1/chepplew/data/sarta_database/Data_AIRS_2378_400ppm/Coef/set7.dat')
 c       PARAMETER(FNCOF7='../Data/set7_uncut.dat')
 c       PARAMETER(FNCOF7='../Data/dummy_set7.dat')
 C
-C       PARAMETER(FNCO2='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/co2.dat')
+C       PARAMETER(FNCO2='/asl/s1/chepplew/data/sarta_database/Data_AIRS_2378_400ppm/Coef/co2.dat')
 c       PARAMETER(FNCO2 ='../Data/rawcoef_co2_fowp.dat')
-C       PARAMETER(FNCO2 ='/home/chepplew/gitLib/ftc_dev/run/400ppm/CrIS_h4_rawcoef_co2_5term_fowp_sun.dat')
 c       PARAMETER(FNCO2 ='../Data/dummy_co2.dat')
 C
-       PARAMETER(FNOPTR='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/optran.dat')
+       PARAMETER(FNOPTR='/asl/s1/chepplew/data/sarta_database/Data_AIRS_2378_400ppm/Coef/optran.dat')
 c       PARAMETER(FNOPTR='../Data/optran1_uncut.dat')
 c       PARAMETER(FNOPTR='../Data/optran2_uncut.dat')
 c       PARAMETER(FNOPTR='../Data/optran_uncut.dat')
 c       PARAMETER(FNOPTR='../Data/optran_uncut_new.dat')
 c       PARAMETER(FNOPTR='../Data/dummy_optran.dat')
 C
-       PARAMETER(FNN2O='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/n2o.dat')
-       PARAMETER(FNSO2='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/so2.dat')
-       PARAMETER(FNHNO3='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/hno3.dat')
-       PARAMETER(FNTHER='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/therm.dat')
-       PARAMETER(FNCOFN='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/nte_7term.dat')
+       PARAMETER(FNN2O='/asl/s1/chepplew/data/sarta_database/Data_AIRS_2378_400ppm/Coef/n2o.dat')
+       PARAMETER(FNSO2='/asl/s1/chepplew/data/sarta_database/Data_AIRS_2378_400ppm/Coef/so2.dat')
+       PARAMETER(FNHNO3='/asl/s1/chepplew/data/sarta_database/Data_AIRS_2378_400ppm/Coef/hno3.dat')
+       PARAMETER(FNTHER='/asl/s1/chepplew/data/sarta_database/Data_AIRS_2378_400ppm/Coef/therm.dat')
+       PARAMETER(FNCOFN='/asl/s1/chepplew/data/sarta_database/Data_AIRS_2378_400ppm/Coef/nte_7term.dat')
 C
-       PARAMETER(FNFX='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/fx.txt')
+       PARAMETER(FNFX='/asl/s1/chepplew/data/sarta_database/Data_AIRS_2378_400ppm/Coef/fx.txt')
 C       PARAMETER(FNPREF='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_may16/Coef/profref_truJul00')
 C       PARAMETER(FNPREF='/asl/data/sarta_database/Data_IASI_sep08/Coef/profref_trace385')
-       PARAMETER(FNPREF='/home/chepplew/projects/sarta/cris_hr/refprof_regr49_1100_400ppm_b')
-       PARAMETER(FNSUN='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Solar/sol.txt')
+       PARAMETER(FNPREF='/home/chepplew/projects/sarta/cris_hr/refprof_regr49_1100_400ppm')
+       PARAMETER(FNSUN='/asl/s1/chepplew/data/sarta_database/Data_AIRS_2378_400ppm/Solar/sol.txt')
 C
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C Tuning filename
-       CHARACTER*80 FNTMLT ! tuning multiplier filename
+       CHARACTER*90 FNTMLT ! tuning multiplier filename
 C
-       PARAMETER(FNTMLT='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_may16/Coef/tunmlt_hrg4.txt')
+       PARAMETER(FNTMLT='/asl/s1/chepplew/data/sarta_database/Data_AIRS_2378_400ppm/Coef/tunmlt_2378.txt')
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C
