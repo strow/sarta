@@ -492,7 +492,7 @@ C
        PARAMETER(FNFX='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/fx.txt')
 C       PARAMETER(FNPREF='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_may16/Coef/profref_truJul00')
 C       PARAMETER(FNPREF='/asl/data/sarta_database/Data_IASI_sep08/Coef/profref_trace385')
-       PARAMETER(FNPREF='/home/chepplew/projects/sarta/cris_hr/refprof_regr49_1100_400ppm_b')
+       PARAMETER(FNPREF='/asl/s1/chepplew/data/sarta_database/Data_CrIS_sep16/refprof_regr49_1100_400ppm_b')
        PARAMETER(FNSUN='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Solar/sol.txt')
 C
 C
@@ -500,7 +500,7 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C Tuning filename
        CHARACTER*80 FNTMLT ! tuning multiplier filename
 C
-       PARAMETER(FNTMLT='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_may16/Coef/tunmlt_hrg4.txt')
+       PARAMETER(FNTMLT='/asl/s1/chepplew/data/sarta_database/Data_CrIS_hrg4_400ppm/Coef/tunmlt_hrg4.txt')
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C
