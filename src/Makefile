@@ -43,11 +43,11 @@ cris_hrg4_400p_7s_so2_hno3_n2o:
 	make -f make_sarta_hrg4_400p_7s_so2_hno3_n2o
 	mv a.out ../bin/sarta_kc_cris_hrg4_400p_7s_so2_hno3_n2o
 
-cris_hrg4_400p_7s_opt_nte_tra:
+cris_hrg4_400p_full:
 	rm -f *.o incFTC.f
-	ln -s incFTC_kc_cris_hrg4_400p_7s_opt_nte_tra.f incFTC.f
-	make -f make_sarta_hrg4_400p_7s_opt_nte_tra
-	mv a.out ../bin/sarta_kc_cris_hrg4_400p_7s_co2_opt_nte_tra
+	ln -s incFTC_kc_cris_hrg4_400p_full.f incFTC.f
+	make -f make_sarta_hrg4_400p_full
+	mv a.out ../bin/sarta_kc_cris_hrg4_400p_full
 #----------------------------------------------------------------------
 #IASI
 iasi_may09_wcon_nte:
