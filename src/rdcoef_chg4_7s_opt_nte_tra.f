@@ -686,36 +686,36 @@ C
 C      -----------------------------------------------
 C      Read the downward thermal F factor coefficients
 C      -----------------------------------------------
-C       OPEN(UNIT=IOUN,FILE=FNTHER,FORM='UNFORMATTED',STATUS='OLD',
-C     $    IOSTAT=IERR)
-C       IF (IERR .NE. 0) THEN
-C          WRITE(6,1020) IERR, FNTHER
-C          STOP
-C       ENDIF
+       OPEN(UNIT=IOUN,FILE=FNTHER,FORM='UNFORMATTED',STATUS='OLD',
+     $    IOSTAT=IERR)
+       IF (IERR .NE. 0) THEN
+          WRITE(6,1020) IERR, FNTHER
+          STOP
+       ENDIF
 C
-C       DO I=1,MXCHAN
+       DO I=1,MXCHAN
 C         Read data for this frequency/channel
 ccc changed 18 May 2005
 ccc          READ(IOUN) ICHAN, FRQCHN, LACHAN, (FCHAN(IC),IC=1,NFCOEF)
-C          READ(IOUN) ICHAN, FRQCHN, (FCHAN(IC),IC=1,NFCOEF)
-C          LACHAN=-1   ! assign dummy value
+          READ(IOUN) ICHAN, FRQCHN, (FCHAN(IC),IC=1,NFCOEF)
+          LACHAN=-1   ! assign dummy value
 C         Keep the data if the current channel is on the list
-C          IF (INDCHN(ICHAN) .NE. 0) THEN
-C             LABOVE( INDCHN(ICHAN) )=LACHAN
-C             DO IC=1,NFCOEF
-C                COEFF(IC,INDCHN(ICHAN))=FCHAN(IC)
-C             ENDDO
-C          ENDIF
-C       ENDDO
+          IF (INDCHN(ICHAN) .NE. 0) THEN
+             LABOVE( INDCHN(ICHAN) )=LACHAN
+             DO IC=1,NFCOEF
+                COEFF(IC,INDCHN(ICHAN))=FCHAN(IC)
+             ENDDO
+          ENDIF
+       ENDDO
 C
-C       CLOSE(IOUN)
+       CLOSE(IOUN)
 C
 C set to zero - to be used when no coeff file available 
-       DO I=1,MXCHAN
-          DO IC=1,NFCOEF
-             COEFF(IC,I)=0.0
-          ENDDO
-       ENDDO
+C       DO I=1,MXCHAN
+C          DO IC=1,NFCOEF
+C             COEFF(IC,I)=0.0
+C          ENDDO
+C       ENDDO
 C
 C      -------
 C      Read FX
