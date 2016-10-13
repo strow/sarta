@@ -47,13 +47,13 @@ cris_g4_400p_full:
 	rm -f *.o incFTC.f
 	ln -s incFTC_g4_cris_hrg4_400p_full.f incFTC.f
 	make -f make_sarta_hrg4_400p_full
-	mv a.out ../bin/sarta_g4_cris_hrg4_400p_full
+	mv a.out ../bin/sarta_g4_cris_hrg4_400p_full_th2
 
 cris_kc_400p_full:
 	rm -f *.o incFTC.f
 	ln -s incFTC_kc_cris_hrg4_400p_full.f incFTC.f
 	make -f make_sarta_hrg4_400p_full
-	mv a.out ../bin/sarta_kc_cris_hrg4_400p_full
+	mv a.out ../bin/sarta_kc_cris_hrg4_400p_full_th2
 #----------------------------------------------------------------------
 #IASI
 iasi_may09_wcon_nte:
