@@ -149,8 +149,8 @@ C      Input:
 C      none
 C
 C      Output:
-       CHARACTER*80 FIN
-       CHARACTER*80 FOUT
+       CHARACTER*90 FIN
+       CHARACTER*90 FOUT
        LOGICAL  LRHOT
        INTEGER NWANTP
        INTEGER  LISTP(MAXPRO)
