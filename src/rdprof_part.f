@@ -98,9 +98,9 @@ C       "W"  is the water (H2O) amount
 C       "O"  is the ozone (O3) amount
 C       "C"  is the carbon monoxide (CO) amount
 C       "M"  is the methane (CH4) amount
-C       "S"  is the sulfur dioxide (SO2) amount
-C       "H"  is the nitric acid (HNO3) amount
-C       "N"  is the nitrous oxide (N2O) amount
+C       NOT USED "S"  is the sulfur dioxide (SO2) amount
+C       NOT USED "H"  is the nitric acid (HNO3) amount
+C       NOT USED "N"  is the nitrous oxide (N2O) amount
 C    ===================================================================
 
 
@@ -128,7 +128,7 @@ C    18 May 2005  Scott Hannon    Add HNO3 & N2O based on SO2 code
 
 C      =================================================================
        SUBROUTINE RDPROF (IOUN, PFILE, PNAM, ALT, DZ, PRES, TEMP,
-     $    FAMNT, WAMNT, OAMNT, CAMNT, MAMNT, SAMNT, HAMNT, NAMNT)
+     $    FAMNT, WAMNT, OAMNT, CAMNT, MAMNT)
 C      =================================================================
 C
 C-----------------------------------------------------------------------
@@ -154,7 +154,7 @@ C      ARGUMENTS
 C-----------------------------------------------------------------------
 C      Input
        INTEGER   IOUN
-       CHARACTER*90  PFILE
+       CHARACTER*80  PFILE
 C
 C      Output
        CHARACTER*40   PNAM
@@ -230,8 +230,7 @@ C      Note: read the layers in reverse order.
 C         Layer number, altitude, thickness, pressure, temperature,
 C         fixed, H2O, O3, CO, and CH4 amounts
           READ(IOUN,*) IJUNK, ALT(L), DZ(L), PRES(L), TEMP(L),
-     $       FAMNT(L), WAMNT(L), OAMNT(L), CAMNT(L), MAMNT(L),
-     $       SAMNT(L), HAMNT(L), NAMNT(L)
+     $       FAMNT(L), WAMNT(L), OAMNT(L), CAMNT(L), MAMNT(L)
        ENDDO
 C
 C      ----------------------

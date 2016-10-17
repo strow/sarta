@@ -465,7 +465,7 @@ C
 C      ------------------------
 C      Read the coef data files
 C      ------------------------
-       CALL RDCOEF( IOUN, NCHAN, INDCHN, SETCHN,
+       CALL RDCOEF_CRIS_HRG2( IOUN, NCHAN, INDCHN, SETCHN,
      $  NCHN1,  NCHN2,  NCHN3,  NCHN4,  NCHN5,  NCHN6,  NCHN7,
      $ CLIST1, CLIST2, CLIST3, CLIST4, CLIST5, CLIST6, CLIST7,
      $  COEF1,  COEF2,  COEF3,  COEF4,  COEF5,  COEF6,  COEF7,
@@ -514,11 +514,11 @@ C      that FCHAN is "nodata", so we check the first element.
  1010           FORMAT('Warning! index=',I4,', chan ID=',I4,
      $          ', fastmodel freq=',F8.3,', RTP freq=',F8.3)
              ENDIF
-             HEAD%vchan(I)=FREQ(I)
+             HEAD.vchan(I)=FREQ(I)
           ENDDO
        ELSE
           DO I=1,NCHAN
-             HEAD%vchan(I)=FREQ(I)
+             HEAD.vchan(I)=FREQ(I)
           ENDDO
        ENDIF
 C
