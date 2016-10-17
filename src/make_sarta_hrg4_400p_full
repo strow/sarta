@@ -7,9 +7,9 @@
 # ------------------------------------------------------------------------
 # Object files
 # ------------------------------------------------------------------------
-OBJS = rdcoef_chg4_full.o  rdprof_full.o  vaconv.o  calpar.o  qikexp.o  setems.o  getbot.o \
+OBJS = rdcoef.o  rdprof.o  vaconv.o  calpar.o  qikexp.o  setems.o  getbot.o \
        calt1.o   calt2.o   calt3.o   calt4.o   calt5.o   calt6.o   calt7.o \
-       faketz.o  sunpar.o  calrad_lls.o  rdsun.o   saconv.o  calowp.o  calokw.o \
+       faketz.o  sunpar.o  calrad.o  rdsun.o   saconv.o  calowp.o  calokw.o \
        util.o    opnrtp.o  rdrtp.o   wrtrtp.o  mean_t.o  rdinfo.o  cbplev.o \
        tunmlt.o  calnte.o  sarta_cris_hrg4.o
 

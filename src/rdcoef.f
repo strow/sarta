@@ -5,13 +5,13 @@ C    University of Maryland Baltimore Country (UMBC)
 C
 C    AIRS
 C
-C    RDCOEF version with trace gases CO2, SO2, & HNO3
+C    RDCOEF version for CrIS HR G2 with trace gases CO2.
 C
 !F77====================================================================
 
 
 !ROUTINE NAME:
-C    RDCOEF
+C    RDCOEF_CRIS_HRG4
 
 
 !ABSTRACT:
@@ -152,11 +152,13 @@ C    12 Feb 2001 Scott Hannon   hardcoded filenames instead of prompts
 C    18 May 2005 Scott Hannon   Add HNO3 based on SO2 code
 C    28 Jun 2005 Scott Hannon   "trace" version for CO2,SO2,HNO3,N2O
 C    13 Oct 2005 Scott Hannon   Add non-LTE variables
+C    17 Mar 2016 C Hepplewhite  sections ommitted due to absence of
+C    coefficients.
 
 !END====================================================================
 
 C      =================================================================
-       SUBROUTINE RDCOEF ( IOUN, NCHAN, INDCHN, SETCHN,
+       SUBROUTINE RDCOEF_CRIS_HRG4 ( IOUN, NCHAN, INDCHN, SETCHN,
      $     NCHN1,  NCHN2,  NCHN3,  NCHN4,  NCHN5,  NCHN6,  NCHN7,
      $    CLIST1, CLIST2, CLIST3, CLIST4, CLIST5, CLIST6, CLIST7,
      $     COEF1,  COEF2,  COEF3,  COEF4,  COEF5,  COEF6,  COEF7,
@@ -189,11 +191,11 @@ C      ARGUMENTS
 C-----------------------------------------------------------------------
 C      Input
        INTEGER   IOUN
-       INTEGER  NCHAN
-       INTEGER INDCHN(MXCHAN)
+       INTEGER   NCHAN
+       INTEGER   INDCHN(MXCHAN)
 C
 C      Output
-       INTEGER SETCHN(MXCHAN)
+       INTEGER  SETCHN(MXCHAN)
        INTEGER  NCHN1
        INTEGER  NCHN2
        INTEGER  NCHN3
@@ -201,13 +203,13 @@ C      Output
        INTEGER  NCHN5
        INTEGER  NCHN6
        INTEGER  NCHN7
-       INTEGER CLIST1(MXCHN1)
-       INTEGER CLIST2(MXCHN2)
-       INTEGER CLIST3(MXCHN3)
-       INTEGER CLIST4(MXCHN4)
-       INTEGER CLIST5(MXCHN5)
-       INTEGER CLIST6(MXCHN6)
-       INTEGER CLIST7(MXCHN7)
+       INTEGER  CLIST1(MXCHN1)
+       INTEGER  CLIST2(MXCHN2)
+       INTEGER  CLIST3(MXCHN3)
+       INTEGER  CLIST4(MXCHN4)
+       INTEGER  CLIST5(MXCHN5)
+       INTEGER  CLIST6(MXCHN6)
+       INTEGER  CLIST7(MXCHN7)
        REAL  COEF1(N1COEF,MAXLAY,MXCHN1)
        REAL  COEF2(N2COEF,MAXLAY,MXCHN2)
        REAL  COEF3(N3COEF,MAXLAY,MXCHN3)
@@ -269,8 +271,8 @@ C      Initialize "set"-independent index arrays
        DO I=1,MXCHAN
 C         Trace gases
           INDCO2(I)=0
-          INDSO2(I)=0
-          INDHNO(I)=0
+C          INDSO2(I)=0
+C          INDHNO(I)=0
           INDN2O(I)=0
 C         OPTRAN water
           INDH2O(I)=0
@@ -488,10 +490,23 @@ C
        CLOSE(IOUN)
 C
 C
-      WRITE(6,'(A)') 'Completed rdcoef to set 7'
+       WRITE(6,'(A)') 'Completed rdcoef to set 7'
 C      ---------------------------
-C      Read CO2 perturbation coefs
+C      Read CO2 perturbation coefs - placeholder set to zero
 C      ---------------------------
+C       J=1
+C       DO I=1,MXCHNC
+C          DO IC=1,NCO2
+C             DO IL=1,MAXLAY
+C                COFCO2(IC,IL,J) = 0.0
+C             ENDDO
+C          ENDDO
+C          IF (INDCHN(ICHAN) .NE. 0) THEN
+C             INDCO2(ICHAN)=J
+C             J=J + 1
+C          ENDIF
+C       ENDDO
+C  
        OPEN(UNIT=IOUN,FILE=FNCO2,FORM='UNFORMATTED',STATUS='OLD',
      $    IOSTAT=IERR)
        IF (IERR .NE. 0) THEN
@@ -514,10 +529,22 @@ C         Keep the data if the current channel is on the list
 C
        CLOSE(IOUN)
 C
+C      ---------------------
+C      Read SO2 pertub coefs - placeholder while no coef file
+C      ---------------------
+C       J=1
+C       DO I=1,MXCHNS
+C          DO IC=1,NSO2
+C             DO IL=1,MAXLAY
+C                COFSO2(IC,IL,J) = 0.0
+C             ENDDO
+C          ENDDO
+C          IF (INDCHN(ICHAN) .NE. 0) THEN
+C             INDSO2(ICHAN)=J
+C             J=J + 1
+C          ENDIF
+C       ENDDO
 C
-C      ---------------------------
-C      Read SO2 perturbation coefs
-C      ---------------------------
        OPEN(UNIT=IOUN,FILE=FNSO2,FORM='UNFORMATTED',STATUS='OLD',
      $    IOSTAT=IERR)
        IF (IERR .NE. 0) THEN
@@ -539,11 +566,23 @@ C         Keep the data if the current channel is on the list
        ENDDO
 C
        CLOSE(IOUN)
-C
-C
-C      ---------------------------
-C      Read HNO3 perturbation coefs
-C      ---------------------------
+C      ---------------------
+C      Read HNO3 perturb coefs - placeholder while no coef file
+C      ---------------------
+C       J=1
+C       DO I=1,MXCHNH
+C          DO IC=1,NHNO3
+C             DO IL=1,MAXLAY
+C                COFHNO(IC,IL,J) = 0.0
+C             ENDDO
+C          ENDDO
+C         Keep the data if the current channel is on the list
+C          IF (INDCHN(ICHAN) .NE. 0) THEN
+C             INDHNO(ICHAN)=J
+C             J=J + 1
+C          ENDIF
+C       ENDDO
+
        OPEN(UNIT=IOUN,FILE=FNHNO3,FORM='UNFORMATTED',STATUS='OLD',
      $    IOSTAT=IERR)
        IF (IERR .NE. 0) THEN
@@ -565,11 +604,9 @@ C         Keep the data if the current channel is on the list
        ENDDO
 C
        CLOSE(IOUN)
-C
-
-C      ---------------------------
-C      Read N2O perturbation coefs
-C      ---------------------------
+C      ---------------------
+C      Read N2O perturb coefs - placeholder while no coef file.
+C      ---------------------
        OPEN(UNIT=IOUN,FILE=FNN2O,FORM='UNFORMATTED',STATUS='OLD',
      $    IOSTAT=IERR)
        IF (IERR .NE. 0) THEN
@@ -582,19 +619,32 @@ C
 C         Read data for this frequency/channel
           READ(IOUN) ICHAN, FRQCHN, ((COFN2O(IC,IL,J),IC=1,NN2O),
      $       IL=1,MAXLAY)
-C
 C         Keep the data if the current channel is on the list
           IF (INDCHN(ICHAN) .NE. 0) THEN
              INDN2O(ICHAN)=J
              J=J + 1
           ENDIF
        ENDDO
-C
        CLOSE(IOUN)
-C
+       WRITE(6,'(A,1X,I4)') 'Completed rdcoef N2O. no chans: ',J
+
+C - these lines used as placeholder when no ceofficients are available.
+C       J=1
+C       DO I=1,MXCHNN
+C          DO IC=1,NN2O
+C             DO IL=1,MAXLAY
+C               COFN2O(IC,IL,J) = 0.0
+C             ENDDO
+C          ENDDO
+C         Keep the data if the current channel is on the list
+C          IF (INDCHN(ICHAN) .NE. 0) THEN
+C             INDN2O(ICHAN)=J
+C             J=J + 1
+C          ENDIF
+C       ENDDO
 
 C      ---------------------
-C      Read OPTRAN H2O coefs
+C      Read OPTRAN H2O coefs - placeholder to disable coefficients
 C      ---------------------
        OPEN(UNIT=IOUN,FILE=FNOPTR,FORM='UNFORMATTED',STATUS='OLD',
      $    IOSTAT=IERR)
@@ -623,7 +673,15 @@ C         Keep the data if the current channel is on the list
        ENDDO
 C
        CLOSE(IOUN)
-C
+C      these loops for zeroing out optran coefficients
+C       J=1
+C       DO I=1,MXCHNW
+C         DO IC=1,NH2O
+C           DO IL=1,MXOWLY
+C             COFH2O(IC,IL,J) = 0.0
+C           ENDDO
+C         ENDDO
+C       ENDDO
 C
 C      -----------------------------------------------
 C      Read the downward thermal F factor coefficients
@@ -635,14 +693,12 @@ C      -----------------------------------------------
           STOP
        ENDIF
 C
-       DO I=1,MXCHAN
+       DO I=1,MXCHAN     ! was 2219 for thermal_matched.dat
 C         Read data for this frequency/channel
 ccc changed 18 May 2005
-c          READ(IOUN) ICHAN, FRQCHN, LACHAN, (FCHAN(IC),IC=1,NFCOEF)
+ccc          READ(IOUN) ICHAN, FRQCHN, LACHAN, (FCHAN(IC),IC=1,NFCOEF)
           READ(IOUN) ICHAN, FRQCHN, (FCHAN(IC),IC=1,NFCOEF)
           LACHAN=-1   ! assign dummy value
-ccc
-C
 C         Keep the data if the current channel is on the list
           IF (INDCHN(ICHAN) .NE. 0) THEN
              LABOVE( INDCHN(ICHAN) )=LACHAN
@@ -654,6 +710,12 @@ C         Keep the data if the current channel is on the list
 C
        CLOSE(IOUN)
 C
+C set to zero - to be used when no coeff file available 
+C       DO I=1,MXCHAN
+C          DO IC=1,NFCOEF
+C             COEFF(IC,I)=0.0
+C          ENDDO
+C       ENDDO
 C
 C      -------
 C      Read FX
@@ -710,6 +772,13 @@ C         Keep the data if the current channel is on the list
        NCHNTE=J - 1
 C
        CLOSE(IOUN)
+C placeholder set to zero
+C       DO I=1,MXCNTE
+C          DO IC=1,NNCOEF
+C             COEFN(IC,I)=0.0
+C          ENDDO
+C       ENDDO
+C      ---------------------------------------------
 
 C      ---------------------------------------------
 C      Make sure all channels on the list were found
