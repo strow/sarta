@@ -137,7 +137,7 @@ C      -------------------------
 C      Loop over the channels
        DO I=1,NCHAN
 C         Convert from Watts/m^2/cm^-1 to milliWatts/m^2/cm^-1
-          PROF.rcalc(I)=RAD(I)*1000.0
+          PROF%rcalc(I)=RAD(I)*1000.0
        ENDDO
 C
 C      -------------------------

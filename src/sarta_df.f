@@ -65,7 +65,7 @@ C    CALNTE : calc radiance contribution for non-LTE
 !FILES ACCESSED:
 C    incFTC.f : include file of parameter statements accessed during
 C       compilation only.
-C    unit IOUN: used by routines RDCOEF and RDPROF.
+C    unit IOUN: used by routines RDCOEF and RDPROF%
 C    unit 6: USEFAST text messages to the screen
 C    unit 5: USEFAST user input instructions, etc
 C    unit 10: USEFAST output radiance, text file(s)
@@ -630,7 +630,7 @@ C            Check old channel freqs before updating
  1010           FORMAT('Warning! index=',I4,', chan ID=',I4,
      $          ', fastmodel default freq=',F8.3,', RTP freq=',F8.3)
              ENDIF
-             HEAD.vchan(I)=FRQDEF
+             HEAD%vchan(I)=FRQDEF
           ENDDO
        ELSE
 C         Assign freqs without checking old freqs
@@ -640,7 +640,7 @@ C            Calc summing weights for default freq
              WGTA=(YOFDEF + DFCAL(L) - YOFFB)/(YOFFA - YOFFB)
              WGTB=(YOFDEF + DFCAL(L) - YOFFA)/(YOFFB - YOFFA)
 C
-             HEAD.vchan(I)=FREQA(I)*WGTA + FREQB(I)*WGTB
+             HEAD%vchan(I)=FREQA(I)*WGTA + FREQB(I)*WGTB
           ENDDO
        ENDIF
 C
