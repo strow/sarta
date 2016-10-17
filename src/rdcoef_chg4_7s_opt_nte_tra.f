@@ -693,7 +693,7 @@ C      -----------------------------------------------
           STOP
        ENDIF
 C
-       DO I=1,MXCHAN     ! was 2219 for thermal_matched.dat
+       DO I=1,MXCHAN
 C         Read data for this frequency/channel
 ccc changed 18 May 2005
 ccc          READ(IOUN) ICHAN, FRQCHN, LACHAN, (FCHAN(IC),IC=1,NFCOEF)

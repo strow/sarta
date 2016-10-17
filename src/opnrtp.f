@@ -196,6 +196,7 @@ c       CHARACTER*14 CUNITS   ! string for gamnt units
        CHARACTER*40 CJUNK2   ! another junk/work string
        CHARACTER*40 CJUNK3   ! yet another junk/work string
        CHARACTER*256 COMMNT  ! comment string
+       CHARACTER*40 VTUNNG   ! optical depth tuning version
 C
 C      for N2BITS and BITS2N
        INTEGER*4 NUMBER
@@ -249,7 +250,8 @@ c 1005     FORMAT('Error! input RTP is not the ',I3,' AIRS layers')
 c          STOP
 c       ENDIF
 ccc
-       NCHAN=HEAD%nchan
+       NCHAN=HEAD.nchan
+       WRITE(6,*) "opnrtp: NCHAN = ",NCHAN
        IF (NCHAN .LT. 1) THEN
           WRITE(IOERR,1007)
  1007     FORMAT('Error! input RTP has no channel info')

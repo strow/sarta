@@ -1,0 +1,15 @@
+name: sarta_package_2.tar
+author: C Hepplewhite UMBC/JCET email: chepplew@umbc.edu
+purpose: Deliverable SARTA code for building executable.
+         Designed for CrIS high resolution (080808) with 4 guard channels
+         See README in the coefficient data file package. 
+Functionality: Includes fixed gases and variable H2O, CH4, O3, CO, SO2, N2O, HNO3, nonLTE.
+Excluded from this version: Reflected thermal, variable CO2, var NH3.
+Dependencies: HDF and RTP libraries
+Implementation specific: Compiler (preferred Intel);
+    paths to files given in incFTC*.f
+    paths to HDF and RTP libraries.
+    Build with command: $make cris_hrg4_400p_7s_opt_nte_tra
+Caveats: I pulled this package together by hand and have not done a stand-alone rebuild test - 
+   so it's possible I forgot something - let me know!
+   Extremely mininal functional and verification testing done.

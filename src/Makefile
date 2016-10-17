@@ -2,32 +2,26 @@
 
 #----------------------------------------------------------------------
 # AIRS
-apr08_m140_wcon_nte:
+airs_2378_400p_7s_optr:
 	rm -f *.o incFTC.f
-	sed 's/XCSNAMEX/m140/g' incFTC_airs_apr08_template_m130_m140_m150_wcon_nte.f > incFTC.f
-	make -f make_sarta
-	mv a.out ../sarta_apr08_m140_wcon_nte
-
-apr08_m140_pge_v6_tunmlt:
-	rm -f *.o incFTC.f
-	sed 's/XCSNAMEX/m140/g' incFTC_airs_apr08_template_m130_m140_m150_pge_v6_tunmlt.f > incFTC.f
-	make -f make_sarta
-	mv a.out ../sarta_apr08_m140_pge_v6_tunmlt
+	ln -s incFTC_airs_2378_400p_7s_optr.f incFTC.f
+	make -f make_sarta_airs_2378_400p_7s_optr
+	mv a.out ../bin/sarta_airs_2378_400p_7s_optr
 #----------------------------------------------------------------------
 # CrIS
-crisg4_nov09_wcon_nte:
+cris_g4_400p_full:
 	rm -f *.o incFTC.f
-	ln -s incFTC_crisg4_nov09_wcon_nte.f incFTC.f
-	make -f make_sarta
-	mv a.out ../sarta_crisg4_nov09_wcon_nte
+	ln -s incFTC_g4_cris_hrg4_400p_full.f incFTC.f
+	make -f make_sarta_hrg4_400p_full
+	mv a.out ../bin/sarta_g4_cris_hrg4_400p_full_th2
 #----------------------------------------------------------------------
 #IASI
 iasi_may09_wcon_nte:
 	rm -f *.o incFTC.f
 	ln -s incFTC_iasi_may09_wcon_nte.f incFTC.f
 	make -f make_sarta
-	mv a.out ../sarta_iasi_may09_wcon_nte
-#----------------------------------------------------------------------------------------
+	mv a.out ../bin/sarta_iasi_may09_wcon_nte
+#---------------------------------------------------------------------
 # File management
 #----------------------------------------------------------------------------------------
 clean:

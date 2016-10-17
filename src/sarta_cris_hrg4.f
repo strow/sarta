@@ -465,7 +465,7 @@ C
 C      ------------------------
 C      Read the coef data files
 C      ------------------------
-       CALL RDCOEF( IOUN, NCHAN, INDCHN, SETCHN,
+       CALL RDCOEF_CRIS_HRG4( IOUN, NCHAN, INDCHN, SETCHN,
      $  NCHN1,  NCHN2,  NCHN3,  NCHN4,  NCHN5,  NCHN6,  NCHN7,
      $ CLIST1, CLIST2, CLIST3, CLIST4, CLIST5, CLIST6, CLIST7,
      $  COEF1,  COEF2,  COEF3,  COEF4,  COEF5,  COEF6,  COEF7,
@@ -514,11 +514,11 @@ C      that FCHAN is "nodata", so we check the first element.
  1010           FORMAT('Warning! index=',I4,', chan ID=',I4,
      $          ', fastmodel freq=',F8.3,', RTP freq=',F8.3)
              ENDIF
-             HEAD%vchan(I)=FREQ(I)
+             HEAD.vchan(I)=FREQ(I)
           ENDDO
        ELSE
           DO I=1,NCHAN
-             HEAD%vchan(I)=FREQ(I)
+             HEAD.vchan(I)=FREQ(I)
           ENDDO
        ENDIF
 C
@@ -797,6 +797,7 @@ C
      $    TRCPRD, INDCO2, COFCO2, CO2MLT, INDN2O, COFN2O, N2OMLT,
      $        XZ,    TAU,   TAUZ )
 C
+      write(6,'(A)') 'sarta: completed CALT7'
        IF (DOSUN) THEN
 C         ---------------------------------------------
 C         Calculate the fast trans predictors *for sun*
@@ -810,6 +811,7 @@ C
      $       WPRED4, WPRED5, WPRED6, WPRED7,
      $       OPRED4, OPRED5, OPRED6, OPRED7,
      $       CPRED4, TRCPRD )
+      write(6,'(A)') 'sarta: completed SUNPAR'
 
 C         --------------------------------------------
 C         Calculate the layer transmittances *for sun*
@@ -868,6 +870,7 @@ C      ----------------------
      $    SUNCOS, RHOSUN, DISTES, HSUN, TAUZSN,
      $    SECANG(LBOT), RHOTHR, LABOVE, COEFF, TAUZ, RAD, BT)
 C
+      write(6,'(A)') 'sarta: completed CALRAD'
 C      -----------------
 C      Calculate non-LTE
 C      -----------------
@@ -876,6 +879,7 @@ C      -----------------
      $       NCHNTE, CLISTN, COEFN, CO2TOP, RAD )
        ENDIF
 C
+      write(6,'(A)') 'sarta: completed CALNTE'
 ccc
 c      do I=1,NCHAN
 c      print *, BT(I), RAD(I)
