@@ -220,7 +220,6 @@ C      Read the profile's name/comment
 C      -------------------------------
        READ(IOUN,9010) PNAM
  9010  FORMAT(A40)
-       WRITE(6,*) PNAM
 C
 C      --------------------------------------------------
 C      Read in the temperature and amounts for each layer

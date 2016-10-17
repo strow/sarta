@@ -284,8 +284,7 @@ C            Calc the upward radiance thru and from this layer
      $          ( RPLNCK(L)*(1.0E+0 - TAU(L,I)) )
 
 C            Calc the downward radiance from this layer
-C             TDOWNF=TDOWNN*TAU(L,I)
-             TDOWNF=TDOWNN*TAU(L,I)**(1.74*COS(ACOS(1/SEC)))
+             TDOWNF=TDOWNN*TAU(L,I)
              RDOWN = RDOWN + ( RPLNCK(L)*(TDOWNN - TDOWNF) )
              TDOWNN=TDOWNF
 
@@ -319,8 +318,7 @@ C         ----------------------------------
 C            Truncate F at limits as needed
              F = MAX( MIN(F,2.09), 0.696 )
           ENDIF
-C     RTHERM=RHOTHR(I)*PI*RDOWN*F*TAUZ(I)
-          RTHERM=RHOTHR(I)*PI*RDOWN*TAUZ(I)
+          RTHERM=RHOTHR(I)*PI*RDOWN*F*TAUZ(I)
 C
 C         --------------------------------------------------
 C         Add on the reflected solar and downwelling thermal
