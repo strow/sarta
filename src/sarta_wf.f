@@ -65,7 +65,7 @@ C    CALNTE : calc radiance contribution for non-LTE
 !FILES ACCESSED:
 C    incFTC.f : include file of parameter statements accessed during
 C       compilation only.
-C    unit IOUN: used by routines RDCOEF and RDPROF.
+C    unit IOUN: used by routines RDCOEF and RDPROF%
 C    unit 6: USEFAST text messages to the screen
 C    unit 5: USEFAST user input instructions, etc
 C    unit 10: USEFAST output radiance, text file(s)
