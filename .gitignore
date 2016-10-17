@@ -35,3 +35,7 @@ test/
 *.tgz
 *.zip
 *.bz2
+
+# Symbolic links
+src/incFTC.f
+
