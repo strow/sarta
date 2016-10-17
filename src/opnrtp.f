@@ -250,7 +250,7 @@ c 1005     FORMAT('Error! input RTP is not the ',I3,' AIRS layers')
 c          STOP
 c       ENDIF
 ccc
-       NCHAN=HEAD.nchan
+       NCHAN=HEAD%nchan
        WRITE(6,*) "opnrtp: NCHAN = ",NCHAN
        IF (NCHAN .LT. 1) THEN
           WRITE(IOERR,1007)
