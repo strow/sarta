@@ -465,6 +465,7 @@ C
 C      ------------------------
 C      Read the coef data files
 C      ------------------------
+C       CALL RDCOEF_CRIS_HRG4( IOUN, NCHAN, INDCHN, SETCHN,
        CALL RDCOEF( IOUN, NCHAN, INDCHN, SETCHN,
      $  NCHN1,  NCHN2,  NCHN3,  NCHN4,  NCHN5,  NCHN6,  NCHN7,
      $ CLIST1, CLIST2, CLIST3, CLIST4, CLIST5, CLIST6, CLIST7,
@@ -473,7 +474,7 @@ C      ------------------------
      $ INDHNO, COFHNO, INDN2O, COFN2O,
      $ INDH2O,  WAZOP, WAVGOP, COFH2O, FX, NCHNTE, CLISTN, COEFN )
 C
-      write(6,'(A)') 'sarta: completed RDCOEF'
+C      write(6,'(A)') 'sarta: completed RDCOEF'
 C      Get and apply multipler tuning to coefficients {note: ignores HNO3}
        CALL TUNMLT( IOUN, NCHAN, INDCHN, SETCHN,
      $  NCHN1,  NCHN2,  NCHN3,  NCHN4,  NCHN5,  NCHN6,  NCHN7,
@@ -483,7 +484,7 @@ C      Get and apply multipler tuning to coefficients {note: ignores HNO3}
      $ INDHNO, COFHNO, INDN2O, COFN2O,
      $ INDH2O,  WAZOP, WAVGOP, COFH2O, FX, NCHNTE, CLISTN, COEFN )
 C
-      write(6,'(A)') 'sarta: completed TUNMLT'
+C      write(6,'(A)') 'sarta: completed TUNMLT'
 C      Calc OPTRAN absorption coefficient scaling factor WAOP
        WAOP(1)=WAZOP(1)
        DO L=2,MXOWLY
@@ -498,7 +499,7 @@ C      --------------------------
 C
        DISTES=1.496E+11  ! distance Earth to Sun
 C
-      write(6,'(A)') 'sarta: completed RDSUN'
+C      write(6,'(A)') 'sarta: completed RDSUN'
 C      --------------------
 C      Check FREQ and FCHAN
 C      --------------------
@@ -529,7 +530,7 @@ C      ------------------------
        MODE='c'
        ISTAT=rtpopen(FOUT, MODE, HEAD, HATT, PATT, IOPCO)
 ccc
-       print *, 'sarta: rtpopen status = ', ISTAT
+C       print *, 'sarta: rtpopen status = ', ISTAT
 ccc
 C
 
@@ -594,7 +595,7 @@ C      -------------------------------------
 C      Determine bottom layer, CO2, & angles
 C      -------------------------------------
        CALL GETBOT(NLAY, PLEV, PSURF, LBOT, BLMULT)
-      write(6,'(A)') 'sarta: completed GETBOT'
+C      write(6,'(A)') 'sarta: completed GETBOT'
 C      Calc the fractional bottom layer air temperature
 ccc
 c       TEMP(LBOT)=TEMP(LBOT-1) + BLMULT*( TEMP(LBOT) - TEMP(LBOT-1) )
@@ -726,7 +727,7 @@ C
 
        ENDIF
 C
-      write(6,'(A)') 'sarta: completed satellite geometry'
+C      write(6,'(A)') 'sarta: completed satellite geometry'
 C      -----------------------------------
 C      Calculate the fast trans predictors
 C      -----------------------------------
@@ -741,14 +742,14 @@ C
      $   OPRED1,OPRED2,       OPRED4,OPRED5,OPRED6,OPRED7,
      $   MPRED3,CPRED4,TRCPRD,CO2MLT,SO2MLT,HNOMLT,N2OMLT )
 C
-      write(6,'(A)') 'sarta: completed CALPAR'
+C      write(6,'(A)') 'sarta: completed CALPAR'
 C      -----------------------------------
 C      Calculate the OPTRAN H2O predictors
 C      -----------------------------------
        CALL CALOWP ( LBOT, WAMNT, RPRES, TEMP, SECANG, WAZOP, WAVGOP,
      $    WAANG, LOPMIN, LOPMAX, LOPUSE, H2OPRD, LOPLOW, DAOP )
 C
-      write(6,'(A)') 'sarta: completed CALOWP'
+C      write(6,'(A)') 'sarta: completed CALOWP'
 C      ----------------------------------
 C      Calculate the layer transmittances
 C      ----------------------------------
@@ -761,7 +762,7 @@ C
      $     INDH2O, H2OPRD, COFH2O, LOPMIN, LOPMAX, LOPLOW,
      $     LOPUSE,   WAOP,   DAOP, WAANG,     TAU,   TAUZ)
 C
-      write(6,'(A)') 'sarta: completed CALT1'
+C      write(6,'(A)') 'sarta: completed CALT1'
        CALL CALT2( INDCHN, LBOT, BLMULT, NCHN2, CLIST2, COEF2,
      $    FIXMUL, CONPRD, FPRED2, OPRED2, WPRED2, TRCPRD,
      $    INDCO2, COFCO2, CO2MLT, INDSO2, COFSO2, SO2MLT,
@@ -891,8 +892,8 @@ C
 C      ----------------------
 C      End loop over profiles
 C      ----------------------
-       write(6,2020) IPROF
- 2020  FORMAT('sarta: end loop over profiles IPROF: ',I5)
+C       write(6,2020) IPROF
+C 2020  FORMAT('sarta: end loop over profiles IPROF: ',I5)
        IPROF=IPROF + 1  ! increment profile counter
        GOTO 10
 C
