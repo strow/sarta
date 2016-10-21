@@ -158,7 +158,7 @@ C    coefficients.
 !END====================================================================
 
 C      =================================================================
-       SUBROUTINE RDCOEF_CRIS_HRG4 ( IOUN, NCHAN, INDCHN, SETCHN,
+       SUBROUTINE RDCOEF ( IOUN, NCHAN, INDCHN, SETCHN,
      $     NCHN1,  NCHN2,  NCHN3,  NCHN4,  NCHN5,  NCHN6,  NCHN7,
      $    CLIST1, CLIST2, CLIST3, CLIST4, CLIST5, CLIST6, CLIST7,
      $     COEF1,  COEF2,  COEF3,  COEF4,  COEF5,  COEF6,  COEF7,
@@ -490,7 +490,7 @@ C
        CLOSE(IOUN)
 C
 C
-       WRITE(6,'(A)') 'Completed rdcoef to set 7'
+C       WRITE(6,'(A)') 'Completed rdcoef to set 7'
 C      ---------------------------
 C      Read CO2 perturbation coefs - placeholder set to zero
 C      ---------------------------
@@ -626,7 +626,7 @@ C         Keep the data if the current channel is on the list
           ENDIF
        ENDDO
        CLOSE(IOUN)
-       WRITE(6,'(A,1X,I4)') 'Completed rdcoef N2O. no chans: ',J
+C       WRITE(6,'(A,1X,I4)') 'Completed rdcoef N2O. no chans: ',J
 
 C - these lines used as placeholder when no ceofficients are available.
 C       J=1
@@ -794,14 +794,14 @@ C      ----------------------------
 C      Show summary of channel sets
 C      ----------------------------
 ccc
-       WRITE(6,1060) 1, NCHN1
- 1060  FORMAT('Number of channels for set',I1,' = ',I4)
-       WRITE(6,1060) 2, NCHN2
-       WRITE(6,1060) 3, NCHN3
-       WRITE(6,1060) 4, NCHN4
-       WRITE(6,1060) 5, NCHN5
-       WRITE(6,1060) 6, NCHN6
-       WRITE(6,1060) 7, NCHN7
+C       WRITE(6,1060) 1, NCHN1
+C 1060  FORMAT('Number of channels for set',I1,' = ',I4)
+C       WRITE(6,1060) 2, NCHN2
+C       WRITE(6,1060) 3, NCHN3
+C       WRITE(6,1060) 4, NCHN4
+C       WRITE(6,1060) 5, NCHN5
+C       WRITE(6,1060) 6, NCHN6
+C       WRITE(6,1060) 7, NCHN7
 ccc
 C
        RETURN

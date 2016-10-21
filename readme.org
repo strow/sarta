@@ -1,5 +1,14 @@
 * SARTA Code Readme
 
+SARTA is an infrared radiative transfer code that simulates radiances
+measured by the following operational infrared sounders:
+
+| Instrument | Platform       |
+| AIRS       | NASA EOS-AQUA  |
+| CrIS       | NASA/NOAA NPP  |
+| IASI       | EUMETSAT METOP |
+
+
 This repo is a new start for sarta development and generation of
 production executables, which should be moved to =/asl/bin=.  The main
 goal for now is to keep things as simple as possible with a minimum of

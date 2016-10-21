@@ -196,7 +196,7 @@ c       CHARACTER*14 CUNITS   ! string for gamnt units
        CHARACTER*40 CJUNK2   ! another junk/work string
        CHARACTER*40 CJUNK3   ! yet another junk/work string
        CHARACTER*256 COMMNT  ! comment string
-       CHARACTER*40 VTUNNG   ! optical depth tuning version
+C       CHARACTER*60 VTUNNG   ! optical depth tuning version
 C
 C      for N2BITS and BITS2N
        INTEGER*4 NUMBER
@@ -251,7 +251,7 @@ c          STOP
 c       ENDIF
 ccc
        NCHAN=HEAD%nchan
-       WRITE(6,*) "opnrtp: NCHAN = ",NCHAN
+C       WRITE(6,*) "opnrtp: NCHAN = ",NCHAN
        IF (NCHAN .LT. 1) THEN
           WRITE(IOERR,1007)
  1007     FORMAT('Error! input RTP has no channel info')
@@ -428,7 +428,7 @@ C      Add sarta comment to header attributes
 C      Count the number of header attributes
        I=1
        IC=-1
-       DO WHILE (ICHAR(HATT(I).fname) .NE. 0 .AND. I .LE. MAXNATTR)
+       DO WHILE (ICHAR(HATT(I)%fname) .NE. 0 .AND. I .LE. MAXNATTR)
 C         Look for a previous sarta comment
           IF (HATT(I).aname(1:5) .EQ. 'sarta') IC=I
           I=I + 1
