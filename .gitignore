@@ -13,9 +13,6 @@ tangborn/
 bin/
 
 # Text figures and Docs
-*.doc
-*.pdf
-*.txt
 *.aux
 *.toc
 *.out

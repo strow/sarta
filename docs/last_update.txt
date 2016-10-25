@@ -1,0 +1,702 @@
+-------------------------------------------------------------------------------
+Revision/update history for the SARTA package
+-------------------------------------------------------------------------------
+*******************************************************************************
+VERSION 1.00
+*******************************************************************************
+-------------------------------------------------------------------------------
+16 March 2001: v1.00 01-03-16
+
+Initial package created by Howard Motteler and Scott Hannon.
+Uses:
+    RTP version 0.96
+    KLAYERS version Feb 2001 (RTP version)
+    SARTA version Aug00 nom/p16/m16 (RTP version)
+
+This version was delivered to Luke Chen/JPL ~20 March 2001
+
+-------------------------------------------------------------------------------
+28 March 2001: v1.00 01-03-28
+
+Minor changes for RTP v0.97
+   a) HEAD.obflag replaced by HEAD.pfields
+   b) Added PROF.mwobs and PROF.mwcalc
+
+-------------------------------------------------------------------------------
+ 3 April 2001: v1.00 01-03-28
+
+Trivial change: correct CSARTA comment string in "Src_sarta/incFTC_m16.f"
+to indicate the appropriate version of SARTA (said "Aug00nom" instead
+of "Aug00m16").  Also a similar correction for the p16 version.
+Version is unchanged.
+
+-------------------------------------------------------------------------------
+16 July 2001: v1.00 01-07-16
+
+Minor update for RTP version 1.01.
+
+-------------------------------------------------------------------------------
+VERSION 1.01
+-------------------------------------------------------------------------------
+13 September 2001: v1.01 01-09-13
+
+Minor changes:
+   a) Change filenames in sarta include files from relative paths to
+      absolute paths.  Minor update to readme.txt file to mention
+      absolute pathnames need to be set by the user.
+   b) Check for surface temperature and pressure in input RTP file
+   c) HEAD.ptype can now be type AIRSLAY as well as LAYPRO
+   d) Set PROF.irinst to generic AIRS code number 800
+   e) Changes to check of input RTP channel freqs; now it first checks
+      that the first element is not "nodata".
+
+-------------------------------------------------------------------------------
+*******************************************************************************
+VERSION 1.02
+*******************************************************************************
+-------------------------------------------------------------------------------
+28 November 2001: v1.02 01-11-28
+
+Changes to the makefiles for the re-organization of the RTP, KLAYERS,
+and SARTA packages.   
+
+Add VSARTA, VSCOEF, and VCLOUD to include file to assist in tracking
+the versions of the src code, coefficient database, and clouds.  Also
+redo the block of code in opnrtp_sarta.f that assigns the SARTA comment
+string for the header of the output RTP file.
+
+Delete "nwantg" from command line arguments (in rdinfo_sarta.f).
+
+-------------------------------------------------------------------------------
+ 5 December 2001: v1.02 01-11-28
+
+Trivial change to rdinfo_sarta.f to removed unused variable LENNB.
+Version not changed.
+
+-------------------------------------------------------------------------------
+28 January 2002: v1.02 01-11-28
+
+Recompile using rtpV103 (trivial changes make_sarta, test_in.rtp, and
+comparison.rtp).  No changes to sarta code.
+
+-------------------------------------------------------------------------------
+ 8 February 2002: v1.02 01-11-28
+
+Update "readme.txt" to mention that references to the "Data_mie"
+database should be ignored (it is currently unsupported).
+No changes to sarta code.
+
+-------------------------------------------------------------------------------
+21 February 2002: v1.02 01-11-28
+
+Simplify "Makefile" and "make_sarta" so that all object files are
+deleted prior to compilation.  The dependency rules in the old
+makefiles were not quite right and did not always redo existing
+object files when necessary.
+
+-------------------------------------------------------------------------------
+18 March 2002: v1.02 01-11-28
+
+Trivial changes for rtpV105.  No changes to code.
+
+A new test file, test_obs_in.rtp, has been added to the Test dir
+for use in testing the (new for rtpV105) calflag field.
+
+-------------------------------------------------------------------------------
+*******************************************************************************
+VERSION 1.03
+*******************************************************************************
+-------------------------------------------------------------------------------
+12 September 2002: v1.03 02-09-12
+
+Water continuum changed from 5 to 7 predictors/coefficients.  This
+change was need to allow accurate modelling of Sergio Machado's
+revised water continuum in the 1300-1620 cm-1 region.  The
+affected routines are calpar.f and calt1.f thru calt7.f,
+plus of continuum array dimensions in the incFTC.f include file.
+
+A new fast model has been generated for T_grating=155.1325 K with
+y-offset -13.50 um and fringes with T_filter=156.157 K.  This
+has been named the "m135f" AIRS-RTA.
+
+-------------------------------------------------------------------------------
+20 September 2002: v1.03 02-09-20
+
+Modify "opnrtp_sarta.f" to check for a "sarta" header attribute field.
+If found, the old value is overwritten; if not found, the new field is
+added.  Prevoious to this change, the code always attempted to append
+the field.  This resulted in a warning message and no update if the
+field already existed.
+
+-------------------------------------------------------------------------------
+ 1 November 2002: v1.03 02-11-01
+
+Modify "rdrtp_sarta.f" to read in satellite zenith angle ("SATZEN") and
+satellite altitude ("ZSAT") from input RTP file.
+
+Modify main program ("sarta_rtp.f") for changes to "rdrtp_sarta.f" call.
+Main program now checks for a valid satellite altitude ("SALT") rather
+than always using the default value.  The main program now also checks
+for satellite zenith angle ("SATZEN") and if available uses that
+instead of the scan angle ("SATANG") to determine the view angle.
+
+-------------------------------------------------------------------------------
+ 19 December 2002: v1.03 02-11-01
+
+No changes to the source code apart from adding include file
+incFTC_m135f_dec02.f for the new December 2002 fast model
+coefficients.  The include for the September 2002 fast model has
+been renamed incFTC_m135f_sep02.f.
+
+-------------------------------------------------------------------------------
+*******************************************************************************
+VERSION 1.04
+*******************************************************************************
+-------------------------------------------------------------------------------
+ 3 January 2003: v1.04 03-01-03
+
+Added code to allow a fudged calculation of the solar contribution
+at large solar zenith angles.  Previously SARTA would treat
+sun angles > 80 as night time.  The model physics/equations used
+for the solar calculation breaks down at large angles, but this
+fudge allows the calculation to smoothly continue up to 89.9 degrees
+rather than stopping abruptly at 80 degrees as it had previously.
+BEWARE: I still expect the the solar calculation is POOR QUALITY
+for solar zenith angles larger than ~80 degrees.  To implement
+this change, a few lines of code and new variables had to be added
+to sarta_rtp.f and calt[4567].f.
+
+-------------------------------------------------------------------------------
+ 6 February 2003: v1.04 03-02-06
+
+Bug fix in routine calt6.f; ozone was using the wrong coef (21 instead
+of 23).  Max errors were ~0.01 K in the 2394-2544 cm-1 regions.
+
+-------------------------------------------------------------------------------
+30 May 2003: v1.04 03-02-06
+
+New coefficient database created using Clough et al's latest(?)
+continuum model, version 1 ("con1").  Database created 29 May 2003.
+
+-------------------------------------------------------------------------------
+26 June 2003: v1.04 03-02-06
+
+New include file for Jun03 CrIS 0.2/0.4/0.8 cm OPD fast model.
+
+-------------------------------------------------------------------------------
+02 July 2003: v1.04 03-02-06
+
+New include file for Jul03 version of AIRS fast model.  The Jul03
+fast model is the same as Dec02 except the set1, set2, optran, and
+co2 (but not solar or therm) database coefficients for modules 5 & 6
+have been redone for channels at -10.5 um instead of -13.5 um.
+
+-------------------------------------------------------------------------------
+24 July 2003: v1.04 03-07-24
+
+Correct error in "sarta_rtp.f" calculation of bottom fractional layer
+temperature.  The old code gave the correct bottom layer temperature
+only when the fraction was one; otherwise it was typically off by a
+few tenths of a degree.
+
+-------------------------------------------------------------------------------
+05 August 2003: v1.04 03-08-05
+
+Correct FIN & FOUT in "rdinfo_sarta_rtp.f" & FIN in "opnrtp_sarta.f"
+to CHAR*80 (not 70).
+
+-------------------------------------------------------------------------------
+25 September 2003: v1.04 03-08-05
+
+New include file "incFTC_iasi_sep03.f" for Sep03 IASI fast model.
+Also new "iasi_rms.txt" and "iasi_readme.txt" files for Doc dir.
+
+-------------------------------------------------------------------------------
+*******************************************************************************
+VERSION 1.05
+*******************************************************************************
+-------------------------------------------------------------------------------
+06 February 2004: v1.05 04-02-06
+
+Three new features have been added to SARTA:
+1) Optical depth tuning has been made "standard" to SARTA.  This
+   is accomplished by reading in a file of tuning multimpliers
+   and applying them to the RTA coefs.  New routine "TUNMLT.f"
+   and associated minor changes to "sarta_rtp.f" and "incFTC.f".
+2) A runtime command line switch has been added to allow user
+   control of the reflectivity (rho) in the downwelling thermal
+   radiance calculation.  The default (set in "rdinfo_sarta.f")
+   is to use the rho found in the input RTP file. The user may
+   force SARTA to use  rho=(1-emis)/pi  instead by command line
+   argument "lrhot=true".   A comment has been added to the
+   header attribute to specify the value of lrhot.  Minor changes
+   to "rdinfo_sarta.f", "opnrtp_sarta.f", "setems.f", and
+   "sarta_rtp.f".
+3) Code has been written (BUT SO FAR NOT TESTED!) to allow SARTA
+   to process AIRS PGE level2 support profiles (100 layer/psuedo
+   levels).  New routine "mean_t.f" and minor changes to
+   "opnrtp_sarta.f" and "sarta_rtp.f".
+
+-------------------------------------------------------------------------------
+06 October 2004: v1.05 04-10-06
+
+Add error trap for profile latitude to "rdrtp_sarta.f".
+
+-------------------------------------------------------------------------------
+17 December 2004: v1.05 04-12-17
+
+Bug fixes associated with processing RTP "head.ptype=2" profiles:
+   rdrtp_sarta.f: add PTYPE to call; add if/then/else for setting NLAY
+      based on PTYPE.
+   getbot.f: add NLAY to call; add error trap for LBOT>NLAY; add warning
+      for big BLMULT.
+   sarta_rtp.f: update calls to rdrtp and getbot (for new vars listed above).
+Without these fixes, the code generally returned incorrect radiances,
+errors typically at the 0.1 K level in window channels but occasionally
+much large (over 1 K).
+
+-------------------------------------------------------------------------------
+20 December 2004: v1.05 04-12-20
+
+Same updates as 04-12-17 above except for so2/co2/cc2 variant codes.
+
+
+-------------------------------------------------------------------------------
+15 March 2005: v1.05 05-03-15
+
+Experimental new and revised code to include the effects of non-Local
+Thermal Dynamic Equalibrium.  New routine "calnte.f" to calculate the
+non-LTE effect.  Revised "rcoef_nte.f" to read in the non-LTE
+coefficients. Revised "sarta_nte.f" for the new non-LTE variables
+passed back by rdcoef, and the new call to calnte.
+
+This non-LTE code is experimental and is not currently supported.
+
+
+-------------------------------------------------------------------------------
+*******************************************************************************
+VERSION 1.06
+*******************************************************************************
+-------------------------------------------------------------------------------
+05 April 2005: v1.06 05-04-05
+
+Substantially revised the algorithm/code used to calculate the reflected
+downwelling atmospheric thermal emission radiance contribution.
+
+rdcoef.f: Revise the block of code that reads in the reflected thermal
+   coefficients.  The "layer above" variable is now a dummy.
+calrad.f: Revise the block of code that calcualtes the reflected thermal
+   radiance contribution.  Add a new block of code to calc "RDOWN".
+
+
+-------------------------------------------------------------------------------
+07 April 2005: v1.06 05-04-05
+
+No code changes.
+
+Add new tuning multiplier file "tunmlt_apr05.txt".  This is similar to
+the tuning file "tunmlt_jan04deliv.txt" except it adds adjustments
+to ozone in the 10 um region to approximate the effects of changes
+in the ozone line parameters between HITRAN2000 and HITRAN2004.
+This tuning file is the new "standard" tuning file for sartaV106.
+
+-------------------------------------------------------------------------------
+09 May 2005: v1.06 05-05-09
+
+Minor changes to "calrad.f" so that RTHERM is always calculated.
+
+-------------------------------------------------------------------------------
+18 May 2005: v1.06 05-05-18
+
+Create "hno3" version with 100 layer variable HNO3, and update "so2"
+version up to bring it up to date for v1.06.
+
+-------------------------------------------------------------------------------
+24 June 2005: v1.06 05-06-24
+
+Modify "getbot.f" so the "10" loop starts on the "DELPX" line (ie so
+DELPX is recal'ed every layer).
+
+-------------------------------------------------------------------------------
+11 November 2005: v1.06 05-11-11
+
+Modify "tunmlt.f" (and "sarta_nte.f" call) for non-LTE tuning.  The
+non-LTE tuning replaces the CO2pert tuning previously allowed (but
+not actually used).
+
+-------------------------------------------------------------------------------
+13 December 2005: v1.06 05-12-13
+
+Add "F" limit check to "calrad.f".
+
+
+*******************************************************************************
+VERSION 1.07
+*******************************************************************************
+-------------------------------------------------------------------------------
+29 June 2005: v1.07 05-06-29
+
+Add 100 layer variable "trace" gases CO2, SO2, HNO3, and N2O.  Variable CO2
+had been included in the previous few versions of SARTA, but it has now
+been changed to a 100 layer variable instead of a total column variable.
+Variable SO2 and HNO3 had previously been available only in SARTA variants.
+The basic SARTA code is mostly unchanged from v1.06 apart from the obvious
+changes required for the new trace gases.
+
+-------------------------------------------------------------------------------
+13 October 2005: v1.07 05-10-13
+
+Bug fix: set TRCPRD 1-7 in sunpar.f (was only setting 1-4).  This lead
+to errors of (typically) less than 0.1K in the reflected solar in the
+N2O channels .
+
+Add non-LTE by making the following changes:
+   incFTC.f - new non-LTE variables
+   rdcoef.f - new variables/code to read in non-LTE coefficients
+   calnte.f - new routine
+    sarta.f - new non-LTE variables and call to "calnte".
+The non-LTE code had previously been implemented in a variant of SARTA
+v1.05, so it was a simple matter to add it to v1.07.
+
+-------------------------------------------------------------------------------
+08 December 2005: v1.07 05-12-08
+
+Modify "tunmlt.f" for non-LTE tuning, modify call argument list to
+match "rccoef.f" call, and update tunmlt call in "sarta.f".
+
+-------------------------------------------------------------------------------
+13 December 2005: v1.07 05-12-13
+
+Add "F" limit check to "calrad.f".
+Note: exact same change as made to v1.06
+
+-------------------------------------------------------------------------------
+08 January 2007: v1.07 07-01-08 PCLSAM
+
+Major revision of PCLSAM cloudy SARTA variant to allow a more flexible
+mix of transmissive cloud types, and the inclusion of black clouds.
+The calrad1 & calrad2 transmissive cloud routines are unchanged, but
+many other routines and the main sarta_pclsam program have many
+changes.  This is only "v1.07" in the sense the PCLSAM code is built
+upon that version of standard (non-cloudy) SARTA; the code changes
+are so extensive a new version number is warranted.
+
+-------------------------------------------------------------------------------
+22 January 2007: v1.07 07-01-22 PCLSAM
+
+Minor fix of cfrac checks (change "<" in cfrac12 < cfrac1 & 2 to "<=")
+
+-------------------------------------------------------------------------------
+23 February 2007: v1.07 07-02-23 PCLSAM_X
+
+Major re-write of PCLSAM "calrad1.f" and "calrad2.f" routines for 100
+layer cloud profiles.  Minor changes to "calrad0.f" and "getmie.f".
+Major changes to "ccprep.f" and new routine "bkprep.f".  Remove much
+of the cloud housekeeping from "sarta.f" to new routine "getcld.f".
+Remove RTP attribute adjustments from "opnrtp.f" to new routine
+"doattr.f".  Minor change to "rdcoef.f". The old cloud version info
+in "incFTC.f" was deleted and replaced by expanded info in "fnmie.f".
+
+-------------------------------------------------------------------------------
+02 March 2007: v1.07 07-03-02 PCLSAM_X
+
+Bug fix to prevent NaN radiances when two complex clouds have an empty
+gap somewhere between cloud top and bottom layers and sun term is on.
+Fixed by adding "LC1L", "LC2L", & "LC12L" to  "sarta_pclsam.f" to
+specify which layers require a complex cloud calcualtion, and pass
+to "calrad[12].f".  Add generic "LCL" input argument to "calrad1.f"
+and "calrad2.f", and revise "DO" loop to use it.
+
+-------------------------------------------------------------------------------
+
+02 May 2007: v1.07 07-05-02 all versions
+
+Replace hardcoded default satellite altitude in "sarta.rtp" with XSALT
+which is specified in the include file.
+
+-------------------------------------------------------------------------------
+
+03 July 2007: v1.07 07-05-02
+
+Created "calrad_pge.f" variant routine to better mimic PGE code. This
+PGE variant does not allow negative RSUN, and the limits on the F check
+are expanded to 0.4 to 2.5 (were 0.696 to 2.09).
+
+-------------------------------------------------------------------------------
+
+10 September 2007: v1.07 07-09-10
+
+Modify the 100 layer cloud variant of sarta_pclsam to allow cloud particle
+size profile.  Also apply a bug fix to the old version (ie with layer
+independent particle size) for cases where the input cloud amount profile
+was in reverse (bottom-up) order.
+
+-------------------------------------------------------------------------------
+
+15 November 2007: v1.07 07-11-15 PCLSAM slabcloud
+
+Modify main program "sarta_pclsam.f" to move much of the cloud housekeeping
+into routines "getcld" (different than 100layercloud code) and "bkprep"
+(same as 100layercloud code).  No new capabilities except for improved error
+traps and handling transmissive clouds above black clouds (the old code gave
+a segmentation fault).  A new ctype=2 was added to "bkprep" for emis=1 and
+rho=(1-cemis)/pi; this might be helpful for cases where the solar is the
+most important of the emis/rho parameters.
+
+-------------------------------------------------------------------------------
+
+23 January 2008: v1.07 08-01-23
+
+Modify main program "sarta.f" and routines "rdrtp.f" & "calpar.f" to
+correct a minor bug that affected the perturbation trace gases (CO2,
+N2O,SO2,HNO3) when no user profile info for these gases was provided.
+These same files plus opnrtp.f were also modified to allow use a CO2
+profile in units of ppmv dry air mixing ratio (ie HEAD.gunit=10).
+
+-------------------------------------------------------------------------------
+
+31 January 2008: v1.07 08-01-31
+
+Bug fix in "sarta.f": LCO2,LN2O,LSO2,LHNO3 changed to LOGICAL (were
+mistakenly REAL).
+
+Update PCLSAM_slabcloud and PCLSAM_100layercloud for perturbation gas
+bug fix and CO2 ppmv profile.
+
+-------------------------------------------------------------------------------
+
+30 April 2008: v1.07 08-04-30 co2_5term
+
+Create variant "co2_5term" with shortwave CO2 changed from 4 to 5
+predictors ("NCO2") in the include file "incFTC.f" and calt routines
+"calt4_co2_5term.f", "calt5_co2_5term.f", "calt6_co2_5term.f",
+& "calt7_co2_5term.f".
+
+
+-------------------------------------------------------------------------------
+
+05 May 2008: v1.07 08-05-05
+
+Add a line to "sarta.f" to set SUNCOS=0 when DOSUN=false; this
+has no effect except possibly if SUNCOS were NaN.
+
+*******************************************************************************
+VERSION 1.08
+*******************************************************************************
+-------------------------------------------------------------------------------
+
+14 May 2008: v1.08 08-05-14
+
+Implement an approximate adjustment to nonLTE for variable CO2.  This
+involved adding a 7th predictor to the nonLTE coefficients and a new
+include file variables "CO2NTE" and "NTEBOT".  Add new variable "CO2TOP"
+in sarta.f which is calculated in calpar.f and passed to calnte.f. Moved
+the last remaining "CO2MLT" adjustment from sarta to calpar.f and this
+required adding "CO2PPM" to the calpar call.
+
+Make 5 term CO2 the default (was a variant in v1.07).
+
+-------------------------------------------------------------------------------
+
+14 May 2008: v1.08 08-05-14 dual-frequency
+
+Implement a dual-frequency variant of sarta v1.08 that allows
+calculation of radiances for variable channel frequencies.  Uses
+routines "rdsun_df.f", "tunmlt_df.f", "rdcoef_df.f", "rdrtp_df.f",
+and "sarta_df.f" instead of the standard ones.  Reads in two sarta
+databases (A and B) and interpolates them with new routine
+"sumcof.f".  The freqs are specified with a grating model yoffset
+"YOFF" which is set in rdrtp_df.f with "prof.udef1".
+Added new include file variles "YOFFA" for database A, "YOFFB"
+for B, "YOFDEF" for the default yoffset, "YOFMIN" for minimum allowed
+yoffset, and "YOFMAX" for maximum.  Replace almost all database
+filename variables "FN*" to dual variables "FA*" and "FB*".
+
+-------------------------------------------------------------------------------
+
+16 May 2008: v1.08 08-05-16
+
+Bug fix for nonLTE: add "NJUNK" to "tunmlt.f" (and "tunmlt_df.f") to
+prevent adjustment of the 7th (ie CO2 adjustment) nonLTE coefficient.
+
+-------------------------------------------------------------------------------
+
+02 Sep 2008: v1.08 08-09-02 PCLSAM
+
+Bug fix to calt4/5/6/7 for 5 term CO2.
+
+-------------------------------------------------------------------------------
+
+24 Oct 2008: v1.08 rtpV201
+
+Modify SARTA for new rtpV201.  Src split into SrcV105 and SrcV201.
+The routines modified for SrcV201 are:
+   opnrtp.f, rdrtp.f, rdrtp_df.f, sarta.f. sarta_df.f, setems.f, wrtrtp.f
+Most of the changes are related to removing "NRHO" and "FRHO", as rtpV201
+uses a common NEMIS and FEMIS for all emissivity and reflectance data.
+
+Note: The new rtpV201 has been developed partly to address issues related
+to the upcoming AIRS version-6 Level-2 processing, as that will require
+spectral emis and rho data for (black) clouds which rtpV105 can not handle.
+Other changes for rtpV201 are intended to eliminate unwanted old variables
+and to add a few desired new ones.  Support for rtpV105 will likely be
+dropped when sartaV108 is publically released (estimated spring 2010).
+
+-------------------------------------------------------------------------------
+
+02 Nov 2008: v1.08 08-11-02 rtpV105 & rtpV201
+
+Bug fix to tunmlt.f & tunmlt_df.f related to nonLTE (the modification
+added 16 May 2008 for "NJUNK" was done wrong).
+
+-------------------------------------------------------------------------------
+
+25 Nov 2008: v1.08 08-11-25 PCLSAM
+
+Bug fix to sarta_pclsam.f for cloud1 reflectivity (was using crho2)
+
+-------------------------------------------------------------------------------
+
+26 Nov 2008: v1.08 08-11-26 PCLSAM rtpV201
+
+Update slab cloudy code for rtpV201: partial rewrite of getclg_slab.f,
+significant changes to setems.f and sarta_pclsam.f, and small changes
+to rdrtp.f and bkprep.m.  The new rtpV201 has dedicated fields for
+cloud2, and also spectral emis and rho for both clouds.  
+
+-------------------------------------------------------------------------------
+01 Dec 2008: v1.08 08-12-01 PCLSAM rtpV201
+
+Update/debug slab cloudy code for rtpV201: spectral cloud/surf
+emissivity & rho for black (non-transmissive) now implemented,
+along with optional "cstemp" (if cstemp <= 0 then uses T
+interpolated from ptemp at cprtop).
+
+-------------------------------------------------------------------------------
+29 Apr 2009: v1.08 09-04-29 PCLSAM rtpV105 & rtpV201
+
+Bug fix for "calrad2.f" to initialize RDOWN and TDOWNN; the bug
+occasionally caused NaN radiances.
+
+-------------------------------------------------------------------------------
+
+07 May 2009: v1.08 09-05-07 PCLSAM rtpV201
+
+Bug fix for "getcld_slab.f" to initialize CFRA1X & CFRAC2X; the bug
+caused bad "clear" radiances (sometime but not always NaN).
+
+-------------------------------------------------------------------------------
+
+12 May 2009: v1.08 09-05-12 rtpV201
+
+   ---non-cloudy ---
+Remove VCLOUD from "incFTC.f" and add new VTUNNG tuning version string.
+
+Remove VCLOUD from "sarta" HATT in "opnrtp.f" and replace with VTUNNG.
+
+   ---PCLSAM---
+Bug fix for Mie table reader : old code (in rdcoef_pclsam.f) screwed up
+if HEAD.ichan was not sorted in assending order.
+
+Delete routine "rdcoef_pclsam.f" and replace with non-cloudy "rdcoef.f".
+The Mie cloud tables reader (was in rdcoef_pclsam) has been moved to
+new routine "rdcldt.f" which is called by "sarta_pclsam.f".  Call to
+"fnmie.f" (was in rdcoef_pclsam) also moved to "sarta_pclsam.f".
+
+Remove VCLOUD from "incFTC.f" and move it to "fnmie.f" with all new
+VCLOUD related code. Add new VTUNNG tuning version string to "incFTC.f".
+
+Add new "clouds" HATT for VCLOUD in "opnrtp_pclsam.f". Also remove
+VCLOUD from "sarta" HATT and replace with VTUNNG.
+
+-------------------------------------------------------------------------------
+
+03 June 2009: v1.08 09-06-03 swch4 rtpV201
+
+Create shortwave CH4 variant "swch4".  This required changes to
+routines:
+   calt5_swch4.f, calt6_swch4.f, calt7_swch4.f, rdcoef_swch4.f,
+   calpar_swch4.f, sarta_swch4.f
+as well as the "incFTC*swch4.f" include file.  The changes are
+relatively simple in the sense they mostly repeat existing code
+for perturbation gases.
+
+-------------------------------------------------------------------------------
+
+06 August 2009: v1.08 09-08-06 "df" rtpV201
+
+Update dual frequency (df) SARTA variant to apply a channel dependent
+spectral calibration adjustment to the nominal yoffset.  This involved
+changes to the incFTC*f  include file and routines: rdcoef_df.f,
+tunmlt_df.f, sumcof_df.f, and sarta_df.f, and new routine speccal_df.f.
+A new "speccal" text file is read in at startup, and contains deltas
+to the nominal yoffset for each channel.
+
+-------------------------------------------------------------------------------
+
+13 April 2010: v1.08 10-04-13 PCLSAM swch4 rtpV201
+
+Create "swch4" variant of the PCLSAM code.  This required changes
+to routines:
+   calt5_od_swch4.f, calt6_od_swch4.f, calt7_od_swch4.f,
+   sarta_swch4_pclsam.f
+as well as the "incFTC*swch4.f" include file.
+
+-------------------------------------------------------------------------------
+
+14 September 2010: v1.08 10-09-14 all variants
+
+Bug fix:
+   Add 5th CO2 coef to calt1.f/calt1_od.f & calt2.f/calt2_od.f.  This
+   bug fix only affects IASI; no effect for AIRS April 2008 or CrIS
+   April 2009 RTAs.
+
+-------------------------------------------------------------------------------
+
+22 June 2011: v1.08 2011-06-22 "nh3" and "swch4_nh3" variants
+
+Create "nh3" variants of the standard and "swch4" SARTA codes
+for variable ammonia (NH3).  
+
+-------------------------------------------------------------------------------
+
+23 June 2011: v1.08 2011-06-23 "nh3_df" variant
+
+Create "nh3" variant of the "df" (dual-frequency) SARTA code for
+variable ammonia (NH3).  
+
+-------------------------------------------------------------------------------
+
+21 October 2011: v1.08 2011-10-21 "AIRS_PGEv6" variant
+
+AIRS PGEv6 (PGE v6 equivalent, more or less) version of SARTA.  This
+grew out of the old "df" variant code, and shares much in common
+with that code.
+
+The code uses the RTP "prof.pnote" field to ingest the Yoffset
+and Doppler shift data.  It uses the non-standard DEC extension
+"UNION/MAP" to convert the last 76 CHARACTERs of pnote into 19
+REAL values (the first 4 CHARACTERS of pnote must be "YOFF").
+There are 17(+1 unassigned) module Yoffset (um), 1 Doppler shift (ppm),
+and 11 orbit phase (degrees).  The "+1"=18th module is for the fake
+channels (so they can also be shifted if so desired); currently unassigned.
+
+-------------------------------------------------------------------------------
+21 October 2011: v1.08 2011-11-21 "AIRS_PGEv6" variant
+
+AIRS PGEv6 version of SARTA.  Add line to assign fake channels yoffset
+"YMODP1(18) = YOFDEF" to routine "rdrtp_df.f" (was zero).
+
+-------------------------------------------------------------------------------
+25 October 2016: v1.08 2016-10-25 CrIS High Resolution Version
+
+Create regression coefficients for the high spectral resolution
+version of SARTA.
+
+Modified reflected thermal: Now use tauz from observation angle
+converted directly to diffusivity angle tauz.  Previously converted
+tauz using F-coefficients from regression.  NOT tested on any
+instrument except CrIS high-resolution.
+
+See the github history for more details.  
+-------------------------------------------------------------------------------
