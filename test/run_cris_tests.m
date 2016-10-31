@@ -1,9 +1,7 @@
 rtp_input    = 'rtp_drivers/regr_rtp_6angs_49profs_1080mb_seaemis.rtp';
 kcarta_truth = 'kcarta_truth/kcarta_crisHI_1080mb_seaemiss.mat';
 fout = 'cris_test_output.rtp';
-tic
 fh = cris_hires_bias_test(rtp_input,kcarta_truth,fout);
-toc
 figure(fh)
 aslprint('regr_1080mb_seaemis');
 
