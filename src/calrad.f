@@ -43,6 +43,7 @@ C    REAL arr  TAUZ    layer-to-space trans        none
 C    REAL arr  TAUZSN  eff sun angle l-to-s trans  none
 C    REAL      TBOT    bottom surface temperature  Kelvin
 C    REAL arr  TP      temperature profile         Kelvin
+C    REAL      SECFAC  convert tau to diffu angle  none
 
 
 !OUTPUT PARAMETERS:
@@ -231,6 +232,7 @@ C      Downwelling atmospheric thermal emission terms
        REAL TDOWNN ! "near-side" layer-to-surface trans
        REAL TDOWNF ! "far-side" layer-to-surface trans
        REAL  RDOWN ! downward radiance
+       REAL  SECFAC ! Convert tau from obs angle to diffsivity angle 
 
 
 C-----------------------------------------------------------------------
@@ -256,6 +258,7 @@ C
 C      ---------------------------
 C      Loop on channel (frequency)
 C      ---------------------------
+       SECFAC = 1.66/SEC
        DO 210 I=1,NCHAN
 C
 C         Calc c1*v^3 and c2*v
@@ -284,8 +287,8 @@ C            Calc the upward radiance thru and from this layer
      $          ( RPLNCK(L)*(1.0E+0 - TAU(L,I)) )
 
 C            Calc the downward radiance from this layer
-C             TDOWNF=TDOWNN*TAU(L,I)
-             TDOWNF=TDOWNN*TAU(L,I)**(1.66*COS(ACOS(1/SEC)))
+C            TDOWNF=TDOWNN*TAU(L,I)
+             TDOWNF=TDOWNN*TAU(L,I)**SECFAC
              RDOWN = RDOWN + ( RPLNCK(L)*(TDOWNN - TDOWNF) )
              TDOWNN=TDOWNF
 

@@ -1,4 +1,7 @@
-% cris_hires_bias_test.m
+function [fh] = cris_hires_test(rtp_input,kcarta_truth,fout);
+
+% Below needed by atom.ios
+cd ~/Work/Rta/sarta/test
 
 % The matlib package is on github at:
 % https://github.com/strow/matlib
@@ -9,14 +12,14 @@ addpath /asl/matlib/aslutil
 sarta_exec = '../bin/crisg4_oct16';
 
 % Symbolic link input file to rtpin.rtp
-rtp_input = 'rtp_drivers/regr_rtp_6angs_49profs_1013mb_seaemis.rtp';
+% rtp_input = 'rtp_drivers/regr_rtp_6angs_49profs_1013mb_seaemis.rtp';
 unix(['rm rtpin.rtp']);
 unix(['ln -s '  rtp_input ' rtpin.rtp']);
 
 % kCARTA truth files
-kcarta_truth = 'kcarta_truth/convolved_kcarta_crisHI_1013mb_seaemiss.mat';
+% kcarta_truth = 'kcarta_truth/kcarta_crisHI_1013mb_seaemiss.mat';
 % SARTA output file
-fout = 'test_cris_hires.rtp';
+% fout = 'cris_test_output.rtp';
 
 % SARTA run script
 %sartarun = [sarta_exec ' fin=rtpin.rtp fout=' fout ' > /dev/null'];
@@ -48,7 +51,7 @@ bias = btk - btcal;
 % Sorted frequencies
 f = h.vchan(i);
 
-figure
+fh = figure;
 h1 = subplot(211);
 plot(f,nanmean(bias,2));hold on;grid;
 ylabel('Bias in K');
@@ -66,4 +69,4 @@ xlim([650 2552]);
 % k2 = find( p.satzen(ip) == s(2));
 % k3 = find( p.satzen(ip) == s(3));
 % k4 = find( p.satzen(ip) == s(4));
-% k5 = find( p.satzen(ip) == s(5));
+% k5 = find( p.satzen(ip) == s(5));<
