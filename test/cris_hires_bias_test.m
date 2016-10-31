@@ -1,4 +1,4 @@
-function [fh] = cris_hires_test(rtp_input,kcarta_truth,fout);
+function [fh] = cris_hires_bias_test(rtp_input,kcarta_truth,fout);
 
 % Below needed by atom.ios
 cd ~/Work/Rta/sarta/test
@@ -26,7 +26,9 @@ unix(['ln -s '  rtp_input ' rtpin.rtp']);
 sartarun = [sarta_exec ' fin=rtpin.rtp fout=' fout ];
 
 % Run SARTA
+tic
 unix(sartarun);
+toc
 
 % SARTA output
 [h,ha,p,pa] = rtpread(fout);
