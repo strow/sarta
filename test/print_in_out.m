@@ -14,9 +14,9 @@ fprintf(fid,'%s\n',' ');
 fprintf(fid,'CO2 ppm : %6.3f',p.co2ppm(6));
 fprintf(fid,'%s\n',' ');
 fprintf(fid,'%s\n',' ');
-fprintf(fid,'%s\n','Index  Water        Fixed    Temperature ');
+fprintf(fid,'%s\n','Index   Water        Fixed       Ozone    Temperature ');
 for i=1:100;
-   fprintf(fid,'%3d   %6.4e   %6.4e   %5.2f \n',i,p.gas_1(i,6),p.gas_2(i,6),p.ptemp(i,6));
+   fprintf(fid,'%3d   %6.4e   %6.4e   %6.4e   %5.2f \n',i,p.gas_1(i,6),p.gas_2(i,6),p.gas_3(i,6),p.ptemp(i,6));
 end
 fprintf(fid,'%s\n',' ');
 fprintf(fid,'%s\n','Index  Efreq        Emis ');
