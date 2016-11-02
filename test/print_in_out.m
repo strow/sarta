@@ -6,7 +6,7 @@ sarta_output = 'cris_test_output.rtp';
 
 bt = rad2bt(h2.vchan,p2.rcalc);
 
-fid = fopen('profile_6.txt','w');
+fid = fopen('cris_hires_profile_6.txt','w');
 fprintf(fid,'Surface Pressure: %6.3f',p.spres(6));
 fprintf(fid,'%s\n',' ');
 fprintf(fid,'Secant Angle : %6.3f',p.satzen(6));
