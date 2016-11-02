@@ -35,7 +35,7 @@ toc
 
 % Subsest profiles, don't use 6th secant angle, too high
 ip = 1:(5*49);
-ip = 1:length(p.rlat);
+%ip = 1:length(p.rlat);
 
 % Sort by wavenumber for comparison to kcarta output and delete last secant
 [b,i]=sort(h.vchan);
