@@ -441,7 +441,7 @@ C      ---------
        CHARACTER*80 FNHNO3 ! coef HNO3
        CHARACTER*80 FNTHER ! coef therm
        CHARACTER*80 FNFX   ! coef fx
-       CHARACTER*90 FNPREF ! ref prof
+       CHARACTER*80 FNPREF ! ref prof
        CHARACTER*80 FNSUN  ! solar data
        CHARACTER*90 FNCOFN ! non-LTE
 C
