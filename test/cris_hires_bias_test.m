@@ -12,7 +12,7 @@ addpath /asl/matlib/aslutil
 sarta_exec = '../bin/crisg4_oct16';
 
 % Symbolic link input file to rtpin.rtp
-% rtp_input = 'rtp_drivers/regr_rtp_6angs_49profs_1013mb_seaemis.rtp';
+%rtp_input = 'rtp_drivers/regr_rtp_6angs_49profs_1013mb_unitemis.rtp';
 unix(['rm rtpin.rtp']);
 unix(['ln -s '  rtp_input ' rtpin.rtp']);
 
@@ -34,18 +34,18 @@ toc
 [h,ha,p,pa] = rtpread(fout);
 
 % Subsest profiles, don't use 6th secant angle, too high
-ip = 1:(5*49);
+%ip = 1:(5*49);
 %ip = 1:length(p.rlat);
 
 % Sort by wavenumber for comparison to kcarta output and delete last secant
 [b,i]=sort(h.vchan);
-btcal = rad2bt(h.vchan(i),p.rcalc(i,ip));
+btcal = rad2bt(h.vchan(i),p.rcalc(i,:));
 
 % Sergio's kcarta output
 load(kcarta_truth);
 
 % Truth BT
-btk = rad2bt(fcris,rcris_all(:,ip));
+btk = rad2bt(fcris,rcris_all(:,:));
 
 % Bias (truth - regression)
 bias = btk - btcal;
@@ -64,6 +64,8 @@ xlabel('Wavenumber')
 adjust21(h1,h2,'even');
 linkaxes([h1 h2],'x');
 xlim([650 2552]);
+
+keyboard
 
 % % Use indices below for plotting individual secants
 % s = unique(p.satzen(ip));
