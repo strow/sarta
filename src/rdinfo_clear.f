@@ -71,7 +71,7 @@ C    Gets various info about sarta run.
 C
 C    Each command line argument is of the form <variable>=<value>
 C    Each <variable>=<value> string must be 80 char or less.  It is
-C    necessary to enclose values in quotes unless they contain
+C    not necessary to enclose values in quotes unless they contain
 C    blanks.  The recognized command-line variables are:
 C
 C    fin : name of input file
@@ -149,8 +149,8 @@ C      Input:
 C      none
 C
 C      Output:
-       CHARACTER*80 FIN
-       CHARACTER*80 FOUT
+       CHARACTER*90 FIN
+       CHARACTER*90 FOUT
        LOGICAL  LRHOT
        INTEGER NWANTP
        INTEGER  LISTP(MAXPRO)

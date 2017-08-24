@@ -19,7 +19,7 @@ C    Open and check input RTP file.
 
 
 !CALL PROTOCOL:
-C    OPNRTP(FIN, LRHOT, PTYPE, NCHAN, FCHAN, LSTCHN, INDCHN,
+C    OPNRTP_CLEAR(FIN, LRHOT, PTYPE, NCHAN, FCHAN, LSTCHN, INDCHN,
 C    IH2O, IO3, ICO, ICH4, ICO2, ISO2, IHNO3, IN2O,
 C    IOPCI, HEAD, HATT, PATT, LCO2PM)
 
@@ -117,7 +117,7 @@ C 12 May 2009 Scott Hannon      Change VCLOUD to VTUNNG in "sarta" HATT
 
 
 C      =================================================================
-       SUBROUTINE OPNRTP(FIN, LRHOT, PTYPE, NCHAN, FCHAN, LSTCHN,
+       SUBROUTINE OPNRTP_CLEAR(FIN, LRHOT, PTYPE, NCHAN, FCHAN, LSTCHN,
      $    INDCHN, IH2O, IO3, ICO, ICH4, ICO2, ISO2, IHNO3, IN2O,
      $    IOPCI, HEAD, HATT, PATT, LCO2PM)
 C      =================================================================

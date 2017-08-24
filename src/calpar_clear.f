@@ -504,7 +504,7 @@ C      variables with DATA assignments
        REAL STDTMP
        REAL KMOLE
 C      Data statments
-       DATA PMULT /0.58/          ! fudge factor * (0.622=M_H2O/M_AIR)
+       DATA PMULT /0.58/          ! was 0.58 fudge factor * (0.622=M_H2O/M_AIR)
        DATA STDDEN /2.6867E+19/   ! Loschmidt aka standard density
        DATA STDTMP /273.15/       ! Standard Temperature
        DATA KMOLE /6.022045E+26/  ! 1000 * Avagadro's Number

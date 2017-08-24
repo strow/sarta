@@ -191,7 +191,7 @@ C
        CHARACTER*40 VTUNNG  ! optical depth tuning version
 C      version template    '#.## YYYY-MM-DD <--------comment------->'
        PARAMETER( VSARTA = '1.08 2010-09-14 rtpV201 PCLSAM slab HG3')
-       PARAMETER( VSCOEF = 'AIRS 2008-04-30 m140 CO2=385' )
+       PARAMETER( VSCOEF = 'AIRS 2008-04-30 XCSNAMEX CO2=385' )
        PARAMETER( VTUNNG = 'v6 standard; refprof N2O x1/1.04')
 
 C      *********
@@ -472,46 +472,46 @@ C      ---------
 C
        PARAMETER(FNCOF1=
      $ '/asl/data/sarta_database/Data_AIRS_apr08/Coef/'
-     $ // 'set1_m140.dat')
+     $ // 'set1_XCSNAMEX.dat')
        PARAMETER(FNCOF2=
      $ '/asl/data/sarta_database/Data_AIRS_apr08/Coef/'
-     $ // 'set2_m140.dat')
+     $ // 'set2_XCSNAMEX.dat')
        PARAMETER(FNCOF3=
      $ '/asl/data/sarta_database/Data_AIRS_apr08/Coef/'
-     $ // 'set3_m140.dat')
+     $ // 'set3_XCSNAMEX.dat')
        PARAMETER(FNCOF4=
      $ '/asl/data/sarta_database/Data_AIRS_apr08/Coef/'
-     $ // 'set4_m140.dat')
+     $ // 'set4_XCSNAMEX.dat')
        PARAMETER(FNCOF5=
      $ '/asl/data/sarta_database/Data_AIRS_apr08/Coef/'
-     $ // 'set5_m140.dat')
+     $ // 'set5_XCSNAMEX.dat')
        PARAMETER(FNCOF6=
      $ '/asl/data/sarta_database/Data_AIRS_apr08/Coef/'
-     $ // 'set6_m140.dat')
+     $ // 'set6_XCSNAMEX.dat')
        PARAMETER(FNCOF7=
      $ '/asl/data/sarta_database/Data_AIRS_apr08/Coef/'
-     $ // 'set7_m140.dat')
+     $ // 'set7_XCSNAMEX.dat')
        PARAMETER(FNCO2 =
      $ '/asl/data/sarta_database/Data_AIRS_apr08/Coef/'
-     $ // 'CO2_5term_m140.dat')
+     $ // 'CO2_5term_XCSNAMEX.dat')
        PARAMETER(FNSO2 =
      $ '/asl/data/sarta_database/Data_AIRS_apr08/Coef/'
-     $ // 'SO2_m140.dat')
+     $ // 'SO2_XCSNAMEX.dat')
        PARAMETER(FNHNO3 =
      $ '/asl/data/sarta_database/Data_AIRS_apr08/Coef/'
-     $ // 'HNO3_m140.dat')
+     $ // 'HNO3_XCSNAMEX.dat')
        PARAMETER(FNN2O =
      $ '/asl/data/sarta_database/Data_AIRS_apr08/Coef/'
-     $ // 'N2O_m140.dat')
+     $ // 'N2O_XCSNAMEX.dat')
        PARAMETER(FNOPTR=
      $ '/asl/data/sarta_database/Data_AIRS_apr08/Coef/'
-     $ // 'optran_m140.dat')
+     $ // 'optran_XCSNAMEX.dat')
        PARAMETER(FNTHER=
      $ '/asl/data/sarta_database/Data_AIRS_apr08/Coef/'
-     $ // 'therm_m140.dat')
+     $ // 'therm_XCSNAMEX.dat')
        PARAMETER(FNCOFN=
      $ '/asl/data/sarta_database/Data_AIRS_apr08/Coef/'
-     $ // 'nonLTE7_m140.dat')
+     $ // 'nonLTE7_XCSNAMEX.dat')
        PARAMETER(FNFX  =
      $ '/asl/data/sarta_database/Data_AIRS_apr08/Coef/'
      $ // 'fx.txt')
@@ -522,7 +522,7 @@ C      refprof N2O scaled by 1/1.04 for tuning purposes
      $ // 'profref_trace385tuned')
        PARAMETER(FNSUN =
      $ '/asl/data/sarta_database/Data_AIRS_apr08/Solar/'
-     $ // 'solar_m140.txt')
+     $ // 'solar_XCSNAMEX.txt')
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C Mie lookup tables; also see "fnmie.f"
@@ -538,7 +538,7 @@ C Tuning filename
 C
        PARAMETER(FNTMLT=
      $ '/asl/data/sarta_database/Data_AIRS_apr08/Coef/'
-     $ // 'tunmlt_m140.txt')
+     $ // 'tunmlt_XCSNAMEX.txt')
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C

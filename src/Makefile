@@ -1,7 +1,39 @@
 # Makefile for SARTA.  Most of the work is done by make_sarta.
 
-#----------------------------------------------------------------------------------------
+#
+# Makefile for SARTA v1.08 PCLSAM using rtpV201.  Most of the work is
+# done by make_sarta_pclsam.
+#
+
+# ------
 # Builds
+# ------
+
+### tuning
+### incFTC_airs_apr08.f has FNTMLT = /asl/data/sarta_database/Data_AIRS_apr08/Coef/tunmlt_XCSNAMEX.txt
+### incFTC_airs_apr08.f has FNTMLT = /asl/data/sarta_database/Data_AIRS_apr08/Coef/tunmlt_XCSNAMEX.txt
+### incFTC_airs_apr08.f has FNTMLT = /asl/data/sarta_database/Data_AIRS_apr08/Coef/tunmlt_XCSNAMEX.txt eg
+### incFTC_airs_apr08.f has FNTMLT = /asl/data/sarta_database/Data_AIRS_apr08/Coef/tunmlt_m140.txt
+
+### basic
+### incFTC_airs_apr08_wcon_nte.f has FNTMLT = /asl/data/sarta_database/Data_AIRS_apr08/Coef/tunmlt_wcon_nte.txt
+### incFTC_airs_apr08_wcon_nte.f has FNTMLT = /asl/data/sarta_database/Data_AIRS_apr08/Coef/tunmlt_wcon_nte.txt
+### incFTC_airs_apr08_wcon_nte.f has FNTMLT = /asl/data/sarta_database/Data_AIRS_apr08/Coef/tunmlt_wcon_nte.txt
+
+
+#----------------------------------------------------------------------------------------
+# Builds cloudy
+#----------------------------------------------------------------------------------------
+
+m140_icebaumGHM_waterdrop_desertdust:
+	rm -f *.o incFTC.f fnmie.f
+	sed 's/XCSNAMEX/m140/' incFTC_airs_apr08.f > incFTC.f
+	ln -s fnmie_iceGHMbaum_waterdrop_desertdust.f fnmie.f
+	make -f make_sarta_pclsam
+	mv a.out ../bin/sarta_apr08_m140_iceGHMbaum_waterdrop_desertdust_slabcloud_hg3X
+		       
+#----------------------------------------------------------------------------------------
+# Builds clear
 #----------------------------------------------------------------------------------------
 
 # AIRS
