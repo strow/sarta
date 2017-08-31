@@ -630,11 +630,11 @@ C      that FCHAN is "nodata", so we check the first element.
  1010           FORMAT('Warning! index=',I4,', chan ID=',I4,
      $          ', fastmodel freq=',F8.3,', RTP freq=',F8.3)
              ENDIF
-             HEAD.vchan(I)=FREQ(I)
+             HEAD%vchan(I)=FREQ(I)
           ENDDO
        ELSE
           DO I=1,NCHAN
-             HEAD.vchan(I)=FREQ(I)
+             HEAD%vchan(I)=FREQ(I)
           ENDDO
        ENDIF
 
@@ -1026,8 +1026,8 @@ C         Safe default for non-existant cloud2
        ENDIF
 
 cccccccc this block for testing only
-c      PROF.udef(19)=TCTOP1
-c      PROF.udef(20)=TCTOP2
+c      PROF%udef(19)=TCTOP1
+c      PROF%udef(20)=TCTOP2
 cccccccccccccccccccccccccccccccccccc
 
        SUNFAC=SUNCOS*PI*(RADSUN/DISTES)**2

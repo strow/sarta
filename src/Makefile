@@ -31,23 +31,23 @@ m140_icebaumGHM_waterdrop_desertdust:
 	ln -s fnmie_iceGHMbaum_waterdrop_desertdust.f fnmie.f
 	make -f make_sarta_pclsam
 	mv a.out ../bin/sarta_apr08_m140_iceGHMbaum_waterdrop_desertdust_slabcloud_hg3X
-		       
+
 #----------------------------------------------------------------------------------------
 # Builds clear
 #----------------------------------------------------------------------------------------
 
 # AIRS
-apr08_m140_wcon_nte:
+apr08_m140_wcon_nte_2016tuning:
 	rm -f *.o incFTC.f
 	sed 's/XCSNAMEX/m140/g' incFTC_airs_apr08_template_m130_m140_m150_wcon_nte.f > incFTC.f
 	make -f make_sarta
-#	mv a.out ../bin/airs
+	mv a.out ../bin/apr08_m140_wcon_nte_2016tuning
 
 apr08_m140_pge_v6_tunmlt:
 	rm -f *.o incFTC.f
 	sed 's/XCSNAMEX/m140/g' incFTC_airs_apr08_template_m130_m140_m150_pge_v6_tunmlt.f > incFTC.f
 	make -f make_sarta
-#	mv a.out ../bin/airs_pge
+	mv a.out ../bin/apr08_m140_pge_v6_tunmlt
 
 # CrIS standard resolution
 crisg4_nov09_wcon_nte:

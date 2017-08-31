@@ -22,7 +22,8 @@ C    Read a profile from a previously openned RTP file
 C    RDRTP( LWANT, IPROF, IOPCI,
 C       IH2O, IO3, ICO, ICH4, ICO2, ISO2, IHNO3, IN2O,
 C       PTYPE, RALT,LCO2PM,NLAY, NEMIS, LAT, LON, SATANG, SATZEN,
-C       ZSAT, SUNANG, PSURF, TSURF, CO2PPM, FEMIS, EMIS, RHO,
+C       ZSAT, SUNANG, COSDAZ, PSURF, TSURF, CO2PPM,
+C       FEMIS, EMIS, RHO,
 C       TEMP, WAMNT, OAMNT, CAMNT, MAMNT, FAMNT, SAMNT, HAMNT, NAMNT,
 C       ALT, PROF, ISTAT )
 
@@ -57,6 +58,7 @@ C    REAL      SATANG  satellite scan angle        degrees
 C    REAL      SATZEN  satellite zenith angle      degrees
 C    REAL      ZSAT    satellite altitude          kilometer
 C    REAL      SUNANG  sun zenith angle            degrees
+C    REAL      COSDAZ  cosine of delta azimuth     none
 C    REAL      PSURF   surface pressure            millibars
 C    REAL      TSURF   surface skin temperature    Kelvin
 C    REAL      CO2PPM  mean trop-strat CO2 mix rat PPMV
@@ -125,18 +127,16 @@ C 18 May 2005 Scott Hannon      Add HNO3 based on SO2 code
 C 23 Jun 2005 Scott Hannon      "trace" version for CO2,SO2,HNO3,N2O
 C 23 Jan 2008 Scott Hannon      Add LCO2PM to allow CO2 profile in ppmv;
 C                                  fix bug in CO2PPM check
-C 24 Oct 2008 Scott Hannon      Update for RTP v2.01; emis & rho now
-C                                  use the same freq points; set RHO
-C                                  to (1-e)/pi if input < 0
-C
+C 24 Mar 2008 Scott Hannon      Add COSDAZ & related code
+C 24 Nov 2008 Scott Hannon      Update for rtpV201
 
 !END====================================================================
 
 C      =================================================================
        SUBROUTINE RDRTP(LWANT, IPROF, IOPCI,
      $    IH2O, IO3, ICO, ICH4, ICO2, ISO2, IHNO3, IN2O, PTYPE, RALT,
-     $    LCO2PM,
-     $    NLAY, NEMIS, LAT, LON, SATANG, SATZEN, ZSAT, SUNANG,
+     $    LCO2PM, NLAY, NEMIS, LAT, LON, SATANG, SATZEN, ZSAT,
+     $    SUNANG, COSDAZ,
      $    PSURF, TSURF, CO2PPM, FEMIS, EMIS, RHO,
      $    TEMP, WAMNT, OAMNT, CAMNT, MAMNT, FAMNT, SAMNT, HAMNT, NAMNT,
      $    ALT, PROF, ISTAT )
@@ -190,6 +190,7 @@ C      Output parameters:
        REAL SATZEN
        REAL   ZSAT
        REAL SUNANG
+       REAL COSDAZ
        REAL  PSURF
        REAL  TSURF
        REAL CO2PPM
@@ -228,6 +229,8 @@ C-----------------------------------------------------------------------
        REAL ZSURF       ! surface altitude (read but ignored for now)
        REAL RJUNK1      ! generic junk/work
        REAL RJUNK2      ! generic junk/work
+C
+       REAL CONV        ! degreees to radians conversion factor
 
 C-----------------------------------------------------------------------
 C      SAVE STATEMENTS
@@ -240,6 +243,9 @@ C***********************************************************************
 C      EXECUTABLE CODE begins below
 C***********************************************************************
 C***********************************************************************
+
+C      CONV = pi/180 = degrees to radians conversion factor
+       CONV=1.7453292E-02
 
 C      ------------------------
 C      Read the current profile
@@ -324,6 +330,13 @@ C      Angles
        SATANG=PROF%scanang
        SATZEN=PROF%satzen
 C
+C      Azimuth angles
+       RJUNK1=PROF%satazi
+       RJUNK2=PROF%solazi
+       IF (RJUNK1 .LT. -180.0) RJUNK1=-180.0
+       IF (RJUNK2 .LT. -180.0) RJUNK2=-180.0
+       COSDAZ=COS( (RJUNK1-RJUNK2)*CONV )
+C
 C      Satellite altitude above ellipsoid surface (convert m to km)
        ZSAT=PROF%zobs/1000
 C
@@ -342,7 +355,7 @@ C      Surface
           STOP
        ENDIF
 C
-C      Emissivity (range 0 to 1) and Reflectance (range 0 to 1/pi)
+C      Emissivity (range 0 to 1) and reflectance
        NEMIS=PROF%nemis
        IF (NEMIS .EQ. 0) THEN
           WRITE(IOERR,1020) IPROF
@@ -350,6 +363,7 @@ C      Emissivity (range 0 to 1) and Reflectance (range 0 to 1/pi)
           STOP
        ENDIF
        DO I=1,NEMIS
+C         WARNING! does not check if emis is ok
           FEMIS(I)=PROF%efreq(I)
           EMIS(I)=PROF%emis(I)
           IF (PROF%rho(I) .LT. 0.0) THEN

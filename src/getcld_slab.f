@@ -194,10 +194,10 @@ C         3: cfrac1=0 and cfrac2>0
 C         4: cfrac1>0 and cfrac2>0 and cprtop1 <= cprtop2
 C         5: cfrac1>0 and cfrac2>0 and cprtop1 > cprtop2
 C
-       CFRAC1=PROF.cfrac
-       CFRAC2=PROF.cfrac2
-       CPRTO1=PROF.cprtop
-       CPRTO2=PROF.cprtop2
+       CFRAC1=PROF%cfrac
+       CFRAC2=PROF%cfrac2
+       CPRTO1=PROF%cprtop
+       CPRTO2=PROF%cprtop2
 C
 C      Initialize with default values
        FCLEAR=1.0
@@ -226,7 +226,7 @@ C
              ELSE
                 ICASE=5
              ENDIF
-             IF (PROF.cfrac12 .GT. 0.0) CFRA12=PROF.cfrac12
+             IF (PROF%cfrac12 .GT. 0.0) CFRA12=PROF%cfrac12
           ENDIF
        ENDIF
 C
@@ -240,17 +240,17 @@ C      Assign remaining cloud variables if icase > 1
 C
           IF (ICASE .EQ. 2 .OR. ICASE .EQ. 4) THEN
 C            cloud1 RTP fields to cloud1 variables
-             CTYPE1=PROF.ctype
-             CPRTO1=PROF.cprtop
-             CPRBO1=PROF.cprbot
-             CNGWA1=PROF.cngwat
-             CPSIZ1=PROF.cpsize
+             CTYPE1=PROF%ctype
+             CPRTO1=PROF%cprtop
+             CPRBO1=PROF%cprbot
+             CNGWA1=PROF%cngwat
+             CPSIZ1=PROF%cpsize
              IF (CTYPE1 .LT. 100) THEN
 C               WARNING! does not check if cemis is ok
-                CSTMP1=PROF.cstemp
-                DO I=1,PROF.nemis
-                   XCEMI1(I)=PROF.cemis(I)
-                   XCRHO1(I)=PROF.crho(I)
+                CSTMP1=PROF%cstemp
+                DO I=1,PROF%nemis
+                   XCEMI1(I)=PROF%cemis(I)
+                   XCRHO1(I)=PROF%crho(I)
                    IF (XCRHO1(I) .LT. 0.0) THEN
                       XCRHO1(I)=(1 - XCEMI1(I))/PI
                    ENDIF
@@ -259,17 +259,17 @@ C               WARNING! does not check if cemis is ok
 C
              IF (ICASE .EQ. 4) THEN
 C               cloud2 RTP fields to cloud2 variables
-                CTYPE2=PROF.ctype2
-                CPRTO2=PROF.cprtop2
-                CPRBO2=PROF.cprbot2
-                CNGWA2=PROF.cngwat2
-                CPSIZ2=PROF.cpsize2
+                CTYPE2=PROF%ctype2
+                CPRTO2=PROF%cprtop2
+                CPRBO2=PROF%cprbot2
+                CNGWA2=PROF%cngwat2
+                CPSIZ2=PROF%cpsize2
                 IF (CTYPE2 .LT. 100) THEN
 C                  WARNING! does not check if cemis2 is ok
-                   CSTMP2=PROF.cstemp2
-                   DO I=1,PROF.nemis
-                      XCEMI2(I)=PROF.cemis2(I)
-                      XCRHO2(I)=PROF.crho2(I)
+                   CSTMP2=PROF%cstemp2
+                   DO I=1,PROF%nemis
+                      XCEMI2(I)=PROF%cemis2(I)
+                      XCRHO2(I)=PROF%crho2(I)
                       IF (XCRHO2(I) .LT. 0.0) THEN
                          XCRHO2(I)=(1 - XCEMI2(I))/PI
                       ENDIF
@@ -281,17 +281,17 @@ C
 C            cloud2 RTP fields into cloud1 variables
              CFRAC1=CFRAC2
              CFRAC2=0.0
-             CTYPE1=PROF.ctype2
-             CPRTO1=PROF.cprtop2
-             CPRBO1=PROF.cprbot2
-             CNGWA1=PROF.cngwat2
-             CPSIZ1=PROF.cpsize2
+             CTYPE1=PROF%ctype2
+             CPRTO1=PROF%cprtop2
+             CPRBO1=PROF%cprbot2
+             CNGWA1=PROF%cngwat2
+             CPSIZ1=PROF%cpsize2
              IF (CTYPE1 .LT. 100) THEN
 C               WARNING! does not check if cemis2 is ok
-                CSTMP1=PROF.cstemp2
-                DO I=1,PROF.nemis
-                   XCEMI1(I)=PROF.cemis2(I)
-                   XCRHO1(I)=PROF.crho2(I)
+                CSTMP1=PROF%cstemp2
+                DO I=1,PROF%nemis
+                   XCEMI1(I)=PROF%cemis2(I)
+                   XCRHO1(I)=PROF%crho2(I)
                    IF (XCRHO1(I) .LT. 0.0) THEN
                       XCRHO1(I)=(1 - XCEMI1(I))/PI
                    ENDIF
@@ -300,18 +300,18 @@ C               WARNING! does not check if cemis2 is ok
 C
              IF (ICASE .EQ. 5) THEN
 C               cloud1 RTP fields to cloud2 variables
-                CFRAC2=PROF.cfrac
-                CTYPE2=PROF.ctype
-                CPRTO2=PROF.cprtop
-                CPRBO2=PROF.cprbot
-                CNGWA2=PROF.cngwat
-                CPSIZ2=PROF.cpsize
+                CFRAC2=PROF%cfrac
+                CTYPE2=PROF%ctype
+                CPRTO2=PROF%cprtop
+                CPRBO2=PROF%cprbot
+                CNGWA2=PROF%cngwat
+                CPSIZ2=PROF%cpsize
                 IF (CTYPE2 .LT. 100) THEN
 C                  WARNING! does not check if cemis is ok
-                   CSTMP2=PROF.cstemp
-                   DO I=1,PROF.nemis
-                      XCEMI2(I)=PROF.cemis(I)
-                      XCRHO2(I)=PROF.crho(I)
+                   CSTMP2=PROF%cstemp
+                   DO I=1,PROF%nemis
+                      XCEMI2(I)=PROF%cemis(I)
+                      XCRHO2(I)=PROF%crho(I)
                       IF (XCRHO2(I) .LT. 0.0) THEN
                          XCRHO2(I)=(1 - XCEMI2(I))/PI
                       ENDIF
@@ -328,8 +328,8 @@ C         Check cloud1 varibles
      $       ' outside allowed ',A6,' to ',A6, ' range')
              STOP
           ENDIF
-          IF (CPRTO1 .LT. PROF.plevs(1) .OR.
-     $        CPRTO1 .GT. PROF.spres) THEN
+          IF (CPRTO1 .LT. PROF%plevs(1) .OR.
+     $        CPRTO1 .GT. PROF%spres) THEN
              WRITE(IOERR,1010) IPROF, 'CPRTO1', 'PLEVS1', 'SPRES'
              STOP
           ENDIF
@@ -341,8 +341,8 @@ C            Black cloud
 C            Slab cloud
              LBLAC1 = .FALSE.
 C            Check cprbot, cpsize, & cngwat
-             IF (CPRBO1 .LT. PROF.plevs(1) .OR.
-     $           CPRBO1 .GT. PROF.spres) THEN
+             IF (CPRBO1 .LT. PROF%plevs(1) .OR.
+     $           CPRBO1 .GT. PROF%spres) THEN
                 WRITE(IOERR,1010) IPROF, 'CPRBO1', 'PLEVS1', 'SPRES'
                 STOP
              ENDIF
@@ -368,8 +368,8 @@ C         Check cloud2 variables if needed
                 WRITE(IOERR,1010) IPROF, 'CFRAC2', '0.0', '1.0'
                 STOP
              ENDIF
-             IF (CPRTO1 .LT. PROF.plevs(1) .OR.
-     $          CPRTO1 .GT. PROF.spres) THEN
+             IF (CPRTO1 .LT. PROF%plevs(1) .OR.
+     $          CPRTO1 .GT. PROF%spres) THEN
                 WRITE(IOERR,1010) IPROF, 'CPRTO2', 'PLEVS1', 'SPRES'
                 STOP
              ENDIF
@@ -381,8 +381,8 @@ C               Black cloud
 C               Slab cloud
                 LBLAC2 = .FALSE.
 C               Check cprbot, cpsize, & cngwat
-                IF (CPRBO2 .LT. PROF.plevs(1) .OR.
-     $             CPRBO2 .GT. PROF.spres) THEN
+                IF (CPRBO2 .LT. PROF%plevs(1) .OR.
+     $             CPRBO2 .GT. PROF%spres) THEN
                    WRITE(IOERR,1010) IPROF, 'CPRBO2', 'PLEVS1', 'SPRES'
                    STOP
                 ENDIF
