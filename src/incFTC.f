@@ -518,8 +518,9 @@ C
        PARAMETER(FNPREF=
      $ '/asl/data/sarta_database/Data_AIRS_apr08/Coef/'
 c     $ // 'profref_trace385')
-C      refprof N2O scaled by 1/1.04 for tuning purposes
-     $ // 'profref_trace385tuned')
+C     CHANGE below to profref_trace385tuned for compatability with ASL sarta_cloudy
+C     refprof N2O scaled by 1/1.04 for tuning purposes
+     $ // 'profref_trace385')
        PARAMETER(FNSUN =
      $ '/asl/data/sarta_database/Data_AIRS_apr08/Solar/'
      $ // 'solar_m140.txt')

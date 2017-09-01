@@ -263,7 +263,7 @@ C         Assign the predictors
           H2OPRD(9,LOP)=TZOP
 C
 C         Update LOP and loop
-          IF (LAST .EQ. .TRUE.) THEN
+          IF (LAST .EQV. .TRUE.) THEN
              LOPMAX=LOP
 C            Set LOP > MXOWLY to exit loop over LOP
              LOP=MXOWLY + 1

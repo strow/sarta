@@ -38,9 +38,14 @@ RTPINC = -I/asl/code/rtp/include
 # -O3 : heavy optimization
 # -64 : 64-bit objects (libraries must match)
 # -us : puts trailing underscore
-F77 = ifort
-FLIB = 
-OPT = -O -convert big_endian -extend-source 132
+#F77 = ifort
+#FLIB = 
+#OPT = -O -convert big_endian -extend-source 132
+
+# gfortran
+# ------------------------------------------------------------------------
+F77 = gfortran
+OPT = -fdec-structure -fconvert=swap
 
 # Portland Group F77:
 # ------------------------------------------------------------------------

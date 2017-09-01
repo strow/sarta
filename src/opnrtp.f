@@ -428,7 +428,7 @@ C      Add sarta comment to header attributes
 C      Count the number of header attributes
        I=1
        IC=-1
-       DO WHILE (ICHAR(HATT(I)%fname) .NE. 0 .AND. I .LE. MAXNATTR)
+       DO WHILE (ICHAR(HATT(I)%fname(1:1)) .NE. 0 .AND. I .LE. MAXNATTR)
 C         Look for a previous sarta comment
           IF (HATT(I).aname(1:5) .EQ. 'sarta') IC=I
           I=I + 1
