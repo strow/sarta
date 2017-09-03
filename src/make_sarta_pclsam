@@ -13,11 +13,12 @@ OBJS = rdprof.o  vaconv.o  calpar.o  qikexp.o  hg3.o  setems_pclsam.o  getbot.o 
        getmie.o  fnmie.o  rdcoef.o  ccprep_slab.o  sarta_pclsam.o
 
 # ------------------------------------------------------------------------
-# HDF LIBS
+# UMBC HDF LIBS
 # ------------------------------------------------------------------------
 HDFLIB = -L/asl/code/external/hdf/hdf4/lib -ldf \
-	 -L/asl/code/external/jpeg -ljpeg       \
-	 -L/asl/code/external/zlib -lz         
+       -L/asl/code/external/jpeg -ljpeg       \
+       -L/asl/code/external/zlib -lz     \
+       -L/asl/code/external/szip/lib -lsz
 
 # ------------------------------------------------------------------------
 # RTP LIB and INCLUDE
@@ -44,8 +45,19 @@ RTPINC = -I/asl/code/rtp/include
 
 # gfortran
 # ------------------------------------------------------------------------
-F77 = gfortran
-OPT = -fdec-structure -fconvert=swap
+#F77 = gfortran
+#OPT = -fdec-structure -fconvert=swap
+#OPT = -fconvert=swap
+
+# ------------
+# JPL Linux absoft: 
+#    -s    static allocation
+#    -N26  read big-endian binary files (needed for coefficient files)
+OPT = -s -O1 -N26
+# Absoft requires the U77 library
+FLIB = -lU77
+F77 = /opt/absoft11.5/bin/f90
+
 
 # Portland Group F77:
 # ------------------------------------------------------------------------
