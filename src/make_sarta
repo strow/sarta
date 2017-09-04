@@ -32,15 +32,8 @@ RTPINC = -I/asl/code/rtp/include
 
 # INTEL ifort F77
 # ------------------------------------------------------------------------
-# -u  : turn off implicit typing of variables
-# -g  : generate debugging information (turns off optimization)
-# -C  : do run time subscript range checking
-# -w0 : inform about unused variables
-# -O3 : heavy optimization
-# -64 : 64-bit objects (libraries must match)
-# -us : puts trailing underscore
 F77 = ifort
-#FLIB = 
+FLIB = 
 OPT = -O -convert big_endian -extend-source 132
 
 # gfortran

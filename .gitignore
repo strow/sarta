@@ -34,6 +34,7 @@ a.out
 *.zip
 *.bz2
 
-# Symbolic links
-# src/incFTC.f
+# Symbolic links: should be recreated with each build
+src/incFTC.f
+incFTC.f
 

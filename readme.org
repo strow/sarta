@@ -46,5 +46,5 @@ the publically available HDF-4 libraries.
 * Documentation
 
 See the docs directory for details.  This documentation is quite old,
-although =last_update.txt= has an entry for this version.  
+although =Docs/last_update.txt= has an entry for this version.  
 
