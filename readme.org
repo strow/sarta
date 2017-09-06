@@ -75,7 +75,7 @@ Sarta is built in the src directory.  The makefiles are pretty generic.  src/Mak
 
 Create the executable and place it in the =bin= directory (optional). Execute sarta and input the file =test/Airs/sarta_in.rtp as shown below
 
-=../../bin/sarta_apr08_m140_wcon_nte_2016tuning fin= === =sarta_in.rtp fout= === =yourfileout.rtp=  (No spaces between fin, fout, and the filenames).
+=../../bin/sarta_apr08_m140_wcon_nte_2016tuning fin= = =sarta_in.rtp fout= = =yourfileout.rtp=  (No spaces between fin, fout, and the filenames).
 
 Compare this to =src/test/Airs/sarta_out_clear.rtp=.  Follow the same procedure for the scattering version of sarta, but compare to =test/Airs/sarta_out_cloudy.rtp=. 
 
