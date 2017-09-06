@@ -558,10 +558,10 @@ C      Get command-line info
 C      ---------------------
        CALL RDINFO(FIN, FOUT, LRHOT, NWANTP, LISTP)
 ccc
-      print *, 'sergio nwantp=', NWANTP
-      print *, 'sergio listp=', (LISTP(I),I=1,NWANTP)
-      print *, 'sergio FIN = ',FIN
-      print *, 'sergio FOUT = ',FOUT
+cc      print *, 'sergio nwantp=', NWANTP
+cc      print *, 'sergio listp=', (LISTP(I),I=1,NWANTP)
+cc      print *, 'sergio FIN = ',FIN
+cc      print *, 'sergio FOUT = ',FOUT
 ccc
 
 C      -------------------------
@@ -971,8 +971,8 @@ C      Get basic cloud parameters from input RTP
      $    XCEMI1, XCRHO1, CSTMP1,
      $    LBLAC2, CTYPE2, CFRAC2, CPSIZ2, CPRTO2, CPRBO2, CNGWA2,
      $    XCEMI2, XCRHO2, CSTMP2, CFRA12, FCLEAR, CFRA1X, CFRA2X )
-       print *,'sergio getcld ',IPROF,CTYPE1, CFRAC1, CPSIZ1, CPRTO1,
-     $                          CPRBO1, CNGWA1,CFRA1X     
+c       print *,'sergio getcld ',IPROF,CTYPE1, CFRAC1, CPSIZ1, CPRTO1,
+c     $                          CPRBO1, CNGWA1,CFRA1X     
 
 C      ---------------------------------------------------
 C      Set the emissivity & reflectivity for every channel
@@ -1168,14 +1168,14 @@ C         Total the clear & various cloudy radiances
      $       RADC12*CFRA12
 
 ccc this block for testing
-       IF (I .EQ. 1291) THEN
+c       IF (I .EQ. 1291) THEN
 c         print *,'chan1291 : iPROF,rad0,radc1,radc2,radc12,FINAL=',
 c     $      IPROF,RAD0,RADC1,RADC2,RADC12,RAD(I)
-         print *,'chan1291 : IPROF,rad0,FCLEAR,CFRA1X,CFRA2X,CFRA12=',
-     $      IPROF,RAD0,FCLEAR,CFRA1X,CFRA2X,CFRA12
+c         print *,'chan1291 : IPROF,rad0,FCLEAR,CFRA1X,CFRA2X,CFRA12=',
+c     $      IPROF,RAD0,FCLEAR,CFRA1X,CFRA2X,CFRA12
 c         PRINT *,'CLOUD1 emis,temp = ',CEMIS1(I),TCTOP1
 c         PRINT *,'CLOUD2 emis,temp = ',CEMIS2(I),TCTOP2
-       endif
+c       endif
 ccc
 
        ENDDO ! channels
@@ -1204,7 +1204,7 @@ C      ----------------------
 C      End loop over profiles
 C      ----------------------
        IPROF=IPROF + 1  ! increment profile counter
-       print *, 'sergio iprof=', IPROF
+c       print *, 'sergio iprof=', IPROF
        GOTO 10
 C
 

@@ -153,7 +153,7 @@ C      ----------------------------
      $    IOSTAT=IERR)
        IF (IERR .NE. 0) THEN
           WRITE(6,1020) IERR, FNSUN
- 1020     FORMAT('Error ',I5,' openning file:',/,A90)
+ 1020     FORMAT('Error ',I5,' opening file:',/,A90)
           STOP
        ENDIF
 C

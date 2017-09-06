@@ -200,7 +200,7 @@ C      ---------------------
      $    IOSTAT=IERR)
        IF (IERR .NE. 0) THEN
           WRITE(6,1010) IERR, PFILE
- 1010     FORMAT('Error ',I5,' openning profile file:',/,A80)
+ 1010     FORMAT('Error ',I5,' opening profile file:',/,A80)
           STOP
        ENDIF
 C
