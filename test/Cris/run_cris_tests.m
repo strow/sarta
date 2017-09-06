@@ -26,8 +26,8 @@
 % figure(fh)
 % aslprint('SAF_1013mb_seaemis');
 % 
-rtp_input    = 'rtp_drivers/SAF_6angs_704profs_1013mb_unitemis.rtp';
-kcarta_truth = 'kcarta_truth/kcarta_crisHI_SAF_6angs_704profs_1013mb_unitemis.mat';
+rtp_input    = '../rtp_drivers/SAF_6angs_704profs_1013mb_unitemis.rtp';
+kcarta_truth = '../kcarta_truth/kcarta_crisHI_SAF_6angs_704profs_1013mb_unitemis.mat';
 fout = 'cris_test_output.rtp';
 fh = cris_hires_bias_test(rtp_input,kcarta_truth,fout);
 figure(fh)
