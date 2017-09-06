@@ -48,3 +48,36 @@ the publically available HDF-4 libraries.
 See the docs directory for details.  This documentation is quite old,
 although =Docs/last_update.txt= has an entry for this version.  
 
+* Getting Started
+
+These are fairly generic instructions, but tailored to a specific branch (jpl) which has a tailored Makefile.  Sarta will not run without the fast transmittance coefficient files.  Contact L. Strow (strow@umbc.edu) for access to these files.
+
+Sarta is built in the src directory.  The makefiles are pretty generic.  src/Makefile drives the build, which in turn calls =make_sarta= to build the clear sky version of sarta or =make_sarta_pclsam= to make the cloudy scattering version of sarta.  These two makefiles contain choices of compilers, etc. and rename the output files if you desire.
+
+** Versions Available
+
+- m140_icebaumGHM_waterdrop_desertdust :: The scattering version of sarta for AIRS using coefficients from 2008.
+
+- apr08_m140_wcon_nte_2016tuning :: The clear version of sarta for AIRS using a recently derived tuning table and coefficients from 2008.
+
+- apr08_m140_pge_v6_tunmlt :: The opertional version of the AIRS RTA but only for a focal plane offset of -14 microns.  Other focal plane offsets can be selected by changing the incFTC* files.
+
+- crisg4_nov09_wcon_nte :: A CrIS version of sarta for clear scenes using the CrIS nominal spectral resolution.  The coefficients are circa 2008, same as AIRS above.
+
+- crisg4_oct16 :: A new version of SARTA for CrIS in extended resolution mode, using new spectroscopy (circa 2016).  This version is used in the NOAA NUCAPS operational retrieval system.
+
+- iasi_may09_wcon_nte :: Version of SARTA clear scene for IASI, using 2008 spectroscopy (same as AIRS and CrIS nominal spectral resolution modes).  
+
+
+** Testing
+
+=sarta/test= has various files for testing.  These will be further documented and developed in the future.  To test the AIRS version of sarta:
+
+Create the executable and place it in the =bin= directory (optional). Execute sarta and input the file =test/Airs/sarta_in.rtp as shown below
+
+=../../bin/sarta_apr08_m140_wcon_nte_2016tuning fin= = =sarta_in.rtp fout= = =yourfileout.rtp=  (No spaces between fin, fout, and the filenames).
+
+Compare this to =src/test/Airs/sarta_out_clear.rtp=.  Follow the same procedure for the scattering version of sarta, but compare to =test/Airs/sarta_out_cloudy.rtp=. 
+
+A number of test files for CrIS are in =test/Cris=.
+

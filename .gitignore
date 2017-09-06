@@ -3,7 +3,7 @@
 #
 
 # Directories (even if they don't currently exist)
-test/
+lls_test/
 strow/
 sergio/
 sbuc/

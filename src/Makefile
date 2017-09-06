@@ -26,7 +26,7 @@ apr08_m140_wcon_nte_2016tuning:
 	rm -f *.o incFTC.f
 	sed 's/XCSNAMEX/m140/g' incFTC_airs_apr08_template_m130_m140_m150_wcon_nte.f > incFTC.f
 	make -f make_sarta
-	mv a.out ../bin/apr08_m140_wcon_nte_2016tuning
+	mv a.out ../bin/sarta_apr08_m140_wcon_nte_2016tuning
 
 apr08_m140_pge_v6_tunmlt:
 	rm -f *.o incFTC.f
