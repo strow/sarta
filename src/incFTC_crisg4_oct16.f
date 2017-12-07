@@ -445,29 +445,37 @@ C      ---------
        CHARACTER*80 FNSUN  ! solar data
        CHARACTER*90 FNCOFN ! non-LTE
 C
-       PARAMETER(FNCOF1='/asl/data/sarta_database/Data_CrIS_oct16/Coef/set1.dat')
-       PARAMETER(FNCOF2='/asl/data/sarta_database/Data_CrIS_oct16/Coef/set2.dat')
-       PARAMETER(FNCOF3='/asl/data/sarta_database/Data_CrIS_oct16/Coef/set3.dat')
-       PARAMETER(FNCOF4='/asl/data/sarta_database/Data_CrIS_oct16/Coef/set4.dat')
-       PARAMETER(FNCOF5='/asl/data/sarta_database/Data_CrIS_oct16/Coef/set5.dat')
-       PARAMETER(FNCOF6='/asl/data/sarta_database/Data_CrIS_oct16/Coef/set6.dat')
-       PARAMETER(FNCOF7='/asl/data/sarta_database/Data_CrIS_oct16/Coef/set7.dat')
-       PARAMETER(FNCO2='/asl/data/sarta_database/Data_CrIS_oct16/Coef/co2.dat')
-       PARAMETER(FNOPTR='/asl/data/sarta_database/Data_CrIS_oct16/Coef/optran.dat')
-       PARAMETER(FNN2O='/asl/data/sarta_database/Data_CrIS_oct16/Coef/n2o.dat')
-       PARAMETER(FNSO2='/asl/data/sarta_database/Data_CrIS_oct16/Coef/so2.dat')
-       PARAMETER(FNHNO3='/asl/data/sarta_database/Data_CrIS_oct16/Coef/hno3.dat')
-       PARAMETER(FNTHER='/asl/data/sarta_database/Data_CrIS_oct16/Coef/therm.dat')
-       PARAMETER(FNCOFN='/asl/data/sarta_database/Data_CrIS_oct16/Coef/nte_7term.dat')
-       PARAMETER(FNFX='/asl/data/sarta_database/Data_CrIS_oct16/Coef/fx.txt')
-       PARAMETER(FNPREF='/asl/data/sarta_database/Data_CrIS_oct16/Coef/profref_trace400')
-       PARAMETER(FNSUN='/asl/data/sarta_database/Data_CrIS_oct16/Solar/sol.txt')
+       PARAMETER(FNCOF1='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/set1.dat')
+       PARAMETER(FNCOF2='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/set2.dat')
+       PARAMETER(FNCOF3='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/set3.dat')
+       PARAMETER(FNCOF4='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/set4.dat')
+       PARAMETER(FNCOF5='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/set5.dat')
+       PARAMETER(FNCOF6='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/set6.dat')
+       PARAMETER(FNCOF7='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/set7.dat')
+       PARAMETER(FNCO2='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/co2.dat')
+       PARAMETER(FNOPTR='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/optran.dat')
+       PARAMETER(FNN2O='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/n2o.dat')
+       PARAMETER(FNSO2='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/so2.dat')
+       PARAMETER(FNHNO3='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/hno3.dat')
+       PARAMETER(FNTHER='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/therm.dat')
+       PARAMETER(FNCOFN='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/nte_7term.dat')
+       PARAMETER(FNFX='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/fx.txt')
+       PARAMETER(FNPREF='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/profref_trace400')
+       PARAMETER(FNSUN='/asl/data/sarta_coef/Data_CrIS_oct16/Solar/sol.txt')
+
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C Mie lookup tables; also see "fnmie.f"
+C
+c       INTEGER MXMIEA  ! max # of mie particle sizes
+c       PARAMETER(MXMIEA = 10) ! ice aggregates=8, all others 10
+       INTEGER NMIETY  ! number of mie particle types
+       PARAMETER(NMIETY = 3)
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C Tuning filename
        CHARACTER*80 FNTMLT ! tuning multiplier filename
 C
-       PARAMETER(FNTMLT='/asl/data/sarta_database/Data_CrIS_oct16/Coef/tunmlt.txt')
+       PARAMETER(FNTMLT='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/tunmlt.txt')
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C

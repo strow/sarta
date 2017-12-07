@@ -198,11 +198,11 @@ C                 <------------cloud string------------->
        CLDSTR(3)='301=volz 20??-06-13'
        MIETYP(3)=301
        FNMIEA(3)=
-     $ '/asl/data/sarta_coef/Data_CrIS_oct16/Mie/volz_1_0507_abs_cris_hires_g4.dat'
+     $ '/asl/data/sarta_coef/Data_CrIS_oct16/Mie/volz_1_0507_log2_abs_cris_hires_g4.dat'
        FNMIEE(3)=
-     $ '/asl/data/sarta_coef/Data_CrIS_oct16/Mie/volz_1_0507_ext_cris_hires_g4.dat'
+     $ '/asl/data/sarta_coef/Data_CrIS_oct16/Mie/volz_1_0507_log2_ext_cris_hires_g4.dat'
        FNMIEG(3)=
-     $ '/asl/data/sarta_coef/Data_CrIS_oct16/Mie/volz_1_0507_asy_cris_hires_g4.dat'
+     $ '/asl/data/sarta_coef/Data_CrIS_oct16/Mie/volz_1_0507_log2_asy_cris_hires_g4.dat'
 C
 
 C      Assign VCLOUD string
