@@ -25,6 +25,15 @@
 # Builds cloudy
 #----------------------------------------------------------------------------------------
 
+# CrisHiRes
+crisg4_hires_dec17_icebaumGHM_waterdrop_desertdust:
+	rm -f *.o incFTC.f fnmie.f
+	ln -s incFTC_crishires_dec17.f incFTC.f
+	ln -s fnmie_iceGHMbaum_waterdrop_desertdust_cris_hires.f fnmie.f	
+	make -f make_sarta_pclsam
+	mv a.out ../bin/crisg4_hires_dec17_iceGHMbaum_waterdrop_desertdust_slabcloud_hg3
+
+# AIRS
 m140_icebaumGHM_waterdrop_desertdust:
 	rm -f *.o incFTC.f fnmie.f
 	sed 's/XCSNAMEX/m140/' incFTC_airs_apr08.f > incFTC.f
@@ -54,7 +63,7 @@ crisg4_nov09_wcon_nte:
 	rm -f *.o incFTC.f
 	ln -s incFTC_crisg4_nov09_wcon_nte.f incFTC.f
 	make -f make_sarta
-#	mv a.out ../bin/cris
+#	mv a.out ../bin/crisg4_nov09
 
 # CrIS extended resolution (high res)
 crisg4_oct16:
