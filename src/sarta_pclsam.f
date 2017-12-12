@@ -977,29 +977,27 @@ C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C      Calculate cloudy radiance
 
-       CALL GetCldEms(
-     $        IPROF, HEAD, PROF,
+       CALL SetCldDoRT(
+     $        RAD, IPROF, HEAD, PROF, INDCHN, NCHAN, FREQ, 
+     $    MIETYP, MIENPS, DISTES, SUNCOS, SCOS1,
      $    LBLAC1, CTYPE1, CFRAC1, CPSIZ1, CPRTO1, CPRBO1, CNGWA1,
-     $    XCEMI1, XCRHO1, CSTMP1,
+     $    XCEMI1, XCRHO1, CSTMP1, CFRA1X, 
      $    LBLAC2, CTYPE2, CFRAC2, CPSIZ2, CPRTO2, CPRBO2, CNGWA2,
-     $    XCEMI2, XCRHO2, CSTMP2, CFRA12, FCLEAR, CFRA1X, CFRA2X,
-     $        NCHAN, NEMIS, FREQ, FEMIS, XEMIS, XRHO,
-     $    LRHOT,
-     $    EMIS, RHOSUN, RHOTHR, CEMIS1, CRHOS1, CRHOT1,
-     $    CEMIS2, CRHOS2, CRHOT2)
-
-       CALL DoTOARad(IPROF, INDCHN, NCHAN, RAD, PROF, SUNCOS, SCOS1,
+     $    XCEMI2, XCRHO2, CSTMP2, CFRA2X, CFRA12, 
+     $        NEMIS, FEMIS, XEMIS, XRHO,
+     $    LRHOT, LBOT, INDMI1,INDMI2,
+     $    EMIS, RHOSUN, RHOTHR, 
      $                NCHNTE, CLISTN, COEFN, CO2TOP, 
-     $                FREQ,TEMP,TAU,TAUZ,TAUZSN,
-     $                EMIS,TSURF,DOSUN, LBOT, BLMULT, SECANG,COSDAZ,
-     $                SUNFAC,HSUN,RHOSUN,RHOTHR,LABOVE,COEFF,
-     $                FCLEAR, TEMPC1, TEMPC2, CFRAC1, CFRAC2, CFRA12, CFRA1X, CFRA2X,
-     $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, LBLAC1, LBLAC2, 
+     $                TEMP,TAU,TAUZ,TAUZSN,
+     $                TSURF,DOSUN, BLMULT, SECANG,COSDAZ,
+     $                SUNFAC,HSUN, LABOVE, COEFF,
+     $                FCLEAR, TEMPC1, TEMPC2, 
+     $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, 
      $                LCBOT1, LCTOP1, CLRB1,CLRT1, TCBOT1, TCTOP1, MASEC1, CFRCL1, 
      $                NEXTO1, NSCAO1, G_ASY1, 
      $                LCBOT2, LCTOP2, CLRB2,CLRT2, TCBOT2, TCTOP2, MASEC2, CFRCL2, 
      $                NEXTO2, NSCAO2, G_ASY2 
-     $ )
+     $  )
        
 
 C      -------------------

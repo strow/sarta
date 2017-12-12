@@ -4,7 +4,7 @@
 # ------------
 # Object files
 # ------------
-OBJS = doTOArad.o getcldemis.o rdprof.o  vaconv.o  calpar.o  qikexp.o  hg3.o  setems_pclsam.o  getbot.o \
+OBJS = setclddort.o rdprof.o  vaconv.o  calpar.o  qikexp.o  hg3.o  setems_pclsam.o  getbot.o \
        calt1_od.o  calt2_od.o  calt3_od.o  calt4_od.o  calt5_od.o \
        calt6_od.o  calt7_od.o  bkprep.o  getcld_slab.o \
        faketz_pclsam.o  sunpar.o   rdsun.o  saconv.o  calowp.o  calokw.o  tunmlt.o \
@@ -40,7 +40,8 @@ RTPINC = -I/asl/code/rtp/include
 # -us : puts trailing underscore
 F77 = ifort
 FLIB = 
-OPT = -O -convert big_endian -extend-source 132
+OPT = -O -C -g -traceback -convert big_endian -extend-source 132
+#OPT = -O -convert big_endian -extend-source 132
 
 # Portland Group F77:
 # ------------------------------------------------------------------------
