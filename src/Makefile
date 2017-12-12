@@ -25,14 +25,6 @@
 # Builds cloudy
 #----------------------------------------------------------------------------------------
 
-# CrisHiRes
-crisg4_hires_dec17_icebaumGHM_waterdrop_desertdust:
-	rm -f *.o incFTC.f fnmie.f
-	ln -s incFTC_crisg4_oct16.f incFTC.f
-	ln -s fnmie_iceGHMbaum_waterdrop_desertdust_cris_hires.f fnmie.f	
-	make -f make_sarta_pclsam
-	mv a.out ../bin/crisg4_hires_dec17_iceGHMbaum_waterdrop_desertdust_slabcloud_hg3
-
 # AIRS
 m140_icebaumGHM_waterdrop_desertdust:
 	rm -f *.o incFTC.f fnmie.f
@@ -40,6 +32,14 @@ m140_icebaumGHM_waterdrop_desertdust:
 	ln -s fnmie_iceGHMbaum_waterdrop_desertdust.f fnmie.f
 	make -f make_sarta_pclsam
 	mv a.out ../bin/sarta_apr08_m140_iceGHMbaum_waterdrop_desertdust_slabcloud_hg3X
+
+# CrisHiRes
+crisg4_hires_dec17_icebaumGHM_waterdrop_desertdust:
+	rm -f *.o incFTC.f fnmie.f
+	ln -s incFTC_crisg4_oct16.f incFTC.f
+	ln -s fnmie_iceGHMbaum_waterdrop_desertdust_cris_hires.f fnmie.f	
+	make -f make_sarta_pclsam
+	mv a.out ../bin/crisg4_hires_dec17_iceGHMbaum_waterdrop_desertdust_slabcloud_hg3
 
 #----------------------------------------------------------------------------------------
 # Builds clear

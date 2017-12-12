@@ -539,7 +539,8 @@ C Tuning filename
 C
        PARAMETER(FNTMLT=
      $ '/asl/data/sarta_database/Data_AIRS_apr08/Coef/'
-     $ // 'apr2016_tunmlt_wcon_nte.txt')
+     $ // 'tunmlt_wcon_nte.txt')
+C     $ // 'apr2016_tunmlt_wcon_nte.txt')     
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C
