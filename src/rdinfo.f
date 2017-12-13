@@ -1,6 +1,6 @@
 c rdinfo processes command line arguments
 c
-c       sarta  fin=input.rtp  fout=output.rtp  listp=1,2,3
+c       sarta  fin=input.rtp  fout=output.rtp  [listp=1,2,3] [fjacob]
 c
 c
 c to compile
@@ -24,10 +24,10 @@ C
 !ABSTRACT:
 C    Get info about the sarta run: the names of input & output
 C    files, the channel list, and list of profile numbers.
-
+C    and jacob filename (if any)
 
 !CALL PROTOCOL:
-C    RDINFO(FIN, FOUT, LRHOT, NWANTP, LISTP)
+C    RDINFO(FIN, FOUT, LRHOT, NWANTP, LISTP, FJACOB)
 
 
 !INPUT PARAMETERS:
@@ -39,6 +39,7 @@ C    type      name    purpose                     units
 C    --------  ------  --------------------------  ---------------------
 C    CHAR*80   FIN     input filename              none
 C    CHAR*80   FOUT    output filename             none
+C    CHAR*80   FJACOB  output filename             none
 C    LOGICAL   LRHOT   force RHO for refl thermal? none
 C    INTEGER   NWANTP  Number of desired profiles  none
 C    INT arr   LISTP   List of desired prof nums   none
@@ -96,6 +97,8 @@ C       Due to the 80 char limit, the maximum number of entries
 C       in listp is limited.  (Eg 15 four digit numbers, or
 C       25 two digit numbers.  MAXPRO is the hardcoded limit.)
 C
+C   fjacob : if this name exists, then jacobian calcs will be dumped
+C            to this binary file
 
 !ALGORITHM REFERENCES: see DESCRIPTION
 
@@ -112,13 +115,13 @@ C 28 Nov 2001 Scott Hannon      Remove command-line argument "nwantp"
 C  5 Dec 2001 Scott Hannon      Remove unused local var LENNB
 C 05 Aug 2003 Scott Hannon      Correct FIN & FOUT to CHAR*80 (not 70)
 C 06 Feb 2004 Scott Hannon      Add LRHOT argument and associated code
-
+C 12 Dec 2017 Sergio Machado    Add FJACOB argument and associated code
 
 !END====================================================================
 
 
 C      =================================================================
-       SUBROUTINE RDINFO(FIN, FOUT, LRHOT, NWANTP, LISTP)
+       SUBROUTINE RDINFO(FIN, FOUT, LRHOT, NWANTP, LISTP, FJACOB)
 C      =================================================================
 
 
@@ -151,6 +154,7 @@ C
 C      Output:
        CHARACTER*80 FIN
        CHARACTER*80 FOUT
+       CHARACTER*80 FJACOB       
        LOGICAL  LRHOT
        INTEGER NWANTP
        INTEGER  LISTP(MAXPRO)
@@ -194,6 +198,7 @@ C      ------------
        FOUT='sarta_out.rtp'               ! output filename
        NWANTP=-1   ! do sarta for all profiles found in input file
        LRHOT=.FALSE. ! use input rho for reflected thermal
+       FJACOB='DNE'                       ! output jacob name              
 C
 C      -----------------------------------------------------------------
 C      Loop on program parameters
@@ -227,6 +232,9 @@ C            ----------------------------
 
              ELSEIF (VAR(1:4) .EQ. 'FOUT') THEN
                 FOUT=VAL
+
+             ELSEIF (VAR(1:6) .EQ. 'FJACOB') THEN
+                FJACOB=VAL
 
              ELSEIF (VAR(1:5) .EQ. 'LRHOT') THEN
                 LRHOT=STR2BO(VAL)

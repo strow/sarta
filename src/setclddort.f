@@ -1,6 +1,6 @@
 
        SUBROUTINE SetCldDoRT(
-     $        RAD, IPROF, HEAD, PROF, INDCHN, NCHAN, FREQ, 
+     $        RAD, IPROF, HEAD, PROF, INDCHN, NCHAN, FREQ, IJACCLD, DQ,
      $    MIETYP, MIENPS, MIEPS, MIEABS, MIEEXT, MIEASY,
      $    DISTES, SUNCOS, SCOS1,
      $    LBLAC1, CTYPE1, CFRAC1, CPSIZ1, CPRTO1, CPRBO1, CNGWA1,
@@ -38,6 +38,10 @@ C      Boundary pressure levels
        REAL   TAUZ(MAXLAY,MXCHAN) ! chan surface-to-space trans
        REAL TAUZSN(MAXLAY,MXCHAN) ! sun space-to-surface-to-space OD       
        REAL PLAY(MAXLAY)   ! layer mean pressure
+
+       INTEGER IJACCLD     !cloud perturb = 0 for none,
+                           !11,12 for cngwat1,2  21,22 for cpsize1,2
+       REAL     DQ         ! amount of cloud perturb
        
        INTEGER  IPROF      ! profile loop counter
        INTEGER  NCHAN         ! # of selected channels
@@ -194,6 +198,17 @@ C      Get basic cloud parameters from input RTP
      $    XCEMI1, XCRHO1, CSTMP1,
      $    LBLAC2, CTYPE2, CFRAC2, CPSIZ2, CPRTO2, CPRBO2, CNGWA2,
      $    XCEMI2, XCRHO2, CSTMP2, CFRA12, FCLEAR, CFRA1X, CFRA2X )
+
+       IF (IJACCLD .EQ. 11) THEN
+         CNGWA1 = CNGWA1*(1.0+DQ)
+       ELSEIF (IJACCLD .EQ. 12) THEN
+         CNGWA2 = CNGWA2*(1.0+DQ)
+       ELSEIF (IJACCLD .EQ. 21) THEN
+         CPSIZ1 = CPSIZ1*(1.0+DQ)
+       ELSEIF (IJACCLD .EQ. 22) THEN
+         CPSIZ2 = CPSIZ2*(1.0+DQ)
+       END IF
+       
 c       print *,'sergio getcld ',IPROF,CTYPE1, CFRAC1, CPSIZ1, CPRTO1,
 c     $                          CPRBO1, CNGWA1,CFRA1X     
 

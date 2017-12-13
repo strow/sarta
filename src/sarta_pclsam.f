@@ -198,6 +198,7 @@ C
 C      for RDINFO
        CHARACTER*80 FIN       ! input RTP filename
        CHARACTER*80 FOUT      ! output RTP filename
+       CHARACTER*80 FJACOB    ! output binary JACOB filename
        LOGICAL  LRHOT         ! force refl therm rho=(1-emis)/pi?
        INTEGER NWANTP         ! number of wanted profiles (-1=all)
        INTEGER  LISTP(MAXPRO) ! list of wanted profiles
@@ -496,7 +497,7 @@ C      for CCPREP cloud2
 C
 C      used locally only
        INTEGER      I      ! loop counter
-       INTEGER      L      ! loop counter
+       INTEGER      L      ! loop counter       
        INTEGER rtpclose    ! for call to RTP close interface routine
        REAL    EVA         ! (Earth) local viewing angle
        REAL   CONV         ! degrees to radians conversion factor
@@ -516,6 +517,13 @@ C      Profile data structure
        RECORD /RTPATTR/ HATT(MAXNATTR)  ! header attributes
        RECORD /RTPATTR/ PATT(MAXNATTR)  ! profile attributes
 C
+
+       INTEGER      J,K       ! jacobian loop counters
+       INTEGER iDOJACOB       ! should we do jacobians
+       INTEGER IOUNJ          ! jacobian output filenumber
+       INTEGER INUMPROF       ! we need to know how many jacobians will be done
+       REAL DST,DQ            ! jacobian perturbations
+       
 C      Boundary pressure levels
        COMMON /COMLEV/ PLEV
        REAL PLEV(MAXLAY+1)
@@ -552,19 +560,55 @@ C      Mean layer pressure (KLAYERS definition)
 
 C      -----------------------------
 C      Read in the reference profile
-C      -----------------------------
+C      -----------------------------       
        CALL RDPROF(IOUN, FNPREF, RPNAM, RALT, RDZ, RPRES, RTEMP,
      $    RFAMNT, RWAMNT, ROAMNT, RCAMNT, RMAMNT, RSAMNT,RHAMNT,RNAMNT)
 
 C      ---------------------
 C      Get command-line info
 C      ---------------------
-       CALL RDINFO(FIN, FOUT, LRHOT, NWANTP, LISTP)
+       INUMPROF = -1
+       CALL RDINFO(FIN, FOUT, LRHOT, NWANTP, LISTP, FJACOB)
+       IDOJACOB = -1
+       IF (FJACOB(1:3) .NE. 'DNE') THEN
+
+         IDOJACOB = +1
+         DST = 1.0;
+	 DQ =  0.1
+	 
+	 IF  (NWANTP .GT. 1) THEN
+	   INUMPROF = NWANTP
+         ELSE	         
+           INUMPROF = 0
+
+C          ---------------------------
+C          Open & check input RTP file
+C          ---------------------------
+           CALL OPNRTP(FIN, VCLOUD, LRHOT, PTYPE, NCHAN, FCHAN, LSTCHN,
+     $       INDCHN, IH2O, IO3, ICO, ICH4, ICO2, ISO2, IHNO3, IN2O,
+     $       IOPCI, HEAD, HATT, PATT, LCO2PM)
+
+ 8888      CONTINUE
+           INUMPROF = INUMPROF + 1
+	   
+           CALL RDRTP( LWANT, INUMPROF, IOPCI,
+     $       IH2O, IO3, ICO, ICH4, ICO2, ISO2, IHNO3, IN2O, PTYPE,
+     $       RALT, LCO2PM, NLAY, NEMIS, LAT, LON, SATANG, SATZEN,
+     $       SALT, SUNANG, COSDAZ, PSURF, TSURF, CO2PPM,
+     $       FEMIS, XEMIS, XRHO,
+     $       TEMP, WAMNT, OAMNT, CAMNT, MAMNT, FAMNT, SAMNT, HAMNT, NAMNT,
+     $       ALT, PROF, ISTAT )
+           IF (ISTAT .EQ. +1) GOTO 8888  ! not yet reached End Of File
+	   INUMPROF = INUMPROF - 1
+	   ISTAT=rtpclose(IOPCI)
+	 END IF
+       END IF
 ccc
-      print *, 'sergio nwantp=', NWANTP
-      print *, 'sergio listp=', (LISTP(I),I=1,NWANTP)
-      print *, 'sergio FIN = ',FIN
-      print *, 'sergio FOUT = ',FOUT
+      print *, 'sergio nwantp =', NWANTP
+      print *, 'sergio listp  =', (LISTP(I),I=1,NWANTP)
+      print *, 'sergio FIN    = ',FIN
+      print *, 'sergio FOUT   = ',FOUT
+      print *, 'sergio FJACOB = ',FJACOB,IDOJACOB,INUMPROF
 ccc
 
 C      -------------------------
@@ -646,10 +690,17 @@ C      Open the output RTP file
 C      ------------------------
        MODE='c'
        ISTAT=rtpopen(FOUT, MODE, HEAD, HATT, PATT, IOPCO)
-
 ccc
 c       print *, 'read open status = ', ISTAT
 ccc
+       IF (IDOJACOB .GT. 0) THEN
+	 IOUNJ = 20
+	 OPEN(unit=IOUNJ,FILE=FJACOB,STATUS='UNKNOWN',FORM='UNFORMATTED')
+	 WRITE (IOUNJ) INUMPROF,NCHAN
+	 WRITE (IOUNJ) DST,DQ	 
+	 WRITE (IOUNJ) (LSTCHN(I),I=1,NCHAN)	
+	 WRITE (IOUNJ) (FREQ(I),I=1,NCHAN)
+       END IF
 
 C      -----------------------------------------------
 C      All channels from sets 1, 2, and 3 are to use a
@@ -679,6 +730,7 @@ C      ---------------------------
        IPROF=1  ! initialize profile counter
 C      Do you want this profile?
  10    LWANT=.TRUE.
+       print *,'IPROF=',IPROF
        IF (NWANTP .GT. 1) THEN
 C         Look for current profile on list of wanted profiles
           LWANT=.FALSE.
@@ -697,7 +749,7 @@ C      --------------
      $    FEMIS, XEMIS, XRHO,
      $    TEMP, WAMNT, OAMNT, CAMNT, MAMNT, FAMNT, SAMNT, HAMNT, NAMNT,
      $     ALT, PROF, ISTAT )
-C
+       PRINT *,'ISTAT=',ISTAT
        IF (ISTAT .EQ. -1) GOTO 9999  ! reached End Of File
 C
        IF (.NOT. LWANT) THEN
@@ -976,9 +1028,10 @@ C
 
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C      Calculate cloudy radiance
-
+ 88    CONTINUE
+ 
        CALL SetCldDoRT(
-     $        RAD, IPROF, HEAD, PROF, INDCHN, NCHAN, FREQ, 
+     $        RAD, IPROF, HEAD, PROF, INDCHN, NCHAN, FREQ, 0, DQ,
      $    MIETYP, MIENPS, MIEPS, MIEABS, MIEEXT, MIEASY,
      $    DISTES, SUNCOS, SCOS1,
      $    LBLAC1, CTYPE1, CFRAC1, CPSIZ1, CPRTO1, CPRBO1, CNGWA1,
@@ -1006,7 +1059,139 @@ C      Output the radiance
 C      -------------------
        CALL WRTRTP(IPROF, IOPCO, NCHAN, RAD, PROF)
 C
+       IF (IDOJACOB .GT. 0) THEN
+         !!! this is SurfTempJacobian
+         CALL SetCldDoRT(
+     $        RAD, IPROF, HEAD, PROF, INDCHN, NCHAN, FREQ, 0, DQ,
+     $    MIETYP, MIENPS, MIEPS, MIEABS, MIEEXT, MIEASY,
+     $    DISTES, SUNCOS, SCOS1,
+     $    LBLAC1, CTYPE1, CFRAC1, CPSIZ1, CPRTO1, CPRBO1, CNGWA1,
+     $    XCEMI1, XCRHO1, CSTMP1, CFRA1X, 
+     $    LBLAC2, CTYPE2, CFRAC2, CPSIZ2, CPRTO2, CPRBO2, CNGWA2,
+     $    XCEMI2, XCRHO2, CSTMP2, CFRA2X, CFRA12, 
+     $        NEMIS, FEMIS, XEMIS, XRHO,
+     $    LRHOT, LBOT, INDMI1,INDMI2,
+     $    EMIS, RHOSUN, RHOTHR, 
+     $                NCHNTE, CLISTN, COEFN, CO2TOP, 
+     $                TEMP,TAU,TAUZ,TAUZSN,
+     $                TSURF+0.1,DOSUN, BLMULT, SECSUN, SECANG, COSDAZ,
+     $                SUNFAC,HSUN, LABOVE, COEFF,
+     $                FCLEAR, TEMPC1, TEMPC2, 
+     $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, 
+     $                LCBOT1, LCTOP1, CLRB1,CLRT1, TCBOT1, TCTOP1, MASEC1, CFRCL1, 
+     $                NEXTO1, NSCAO1, G_ASY1, 
+     $                LCBOT2, LCTOP2, CLRB2,CLRT2, TCBOT2, TCTOP2, MASEC2, CFRCL2, 
+     $                NEXTO2, NSCAO2, G_ASY2 
+     $  )
+        write(IOUNJ) IPROF,+1
+        write(IOUNJ) (1000.0*RAD(J),J=1,NCHAN)
 
+         !!! this is cloud1 amt jac
+         CALL SetCldDoRT(
+     $        RAD, IPROF, HEAD, PROF, INDCHN, NCHAN, FREQ, 11, DQ,
+     $    MIETYP, MIENPS, MIEPS, MIEABS, MIEEXT, MIEASY,
+     $    DISTES, SUNCOS, SCOS1,
+     $    LBLAC1, CTYPE1, CFRAC1, CPSIZ1, CPRTO1, CPRBO1, CNGWA1,
+     $    XCEMI1, XCRHO1, CSTMP1, CFRA1X, 
+     $    LBLAC2, CTYPE2, CFRAC2, CPSIZ2, CPRTO2, CPRBO2, CNGWA2,
+     $    XCEMI2, XCRHO2, CSTMP2, CFRA2X, CFRA12, 
+     $        NEMIS, FEMIS, XEMIS, XRHO,
+     $    LRHOT, LBOT, INDMI1,INDMI2,
+     $    EMIS, RHOSUN, RHOTHR, 
+     $                NCHNTE, CLISTN, COEFN, CO2TOP, 
+     $                TEMP,TAU,TAUZ,TAUZSN,
+     $                TSURF+0.1,DOSUN, BLMULT, SECSUN, SECANG, COSDAZ,
+     $                SUNFAC,HSUN, LABOVE, COEFF,
+     $                FCLEAR, TEMPC1, TEMPC2, 
+     $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, 
+     $                LCBOT1, LCTOP1, CLRB1,CLRT1, TCBOT1, TCTOP1, MASEC1, CFRCL1, 
+     $                NEXTO1, NSCAO1, G_ASY1, 
+     $                LCBOT2, LCTOP2, CLRB2,CLRT2, TCBOT2, TCTOP2, MASEC2, CFRCL2, 
+     $                NEXTO2, NSCAO2, G_ASY2 
+     $  )
+        write(IOUNJ) IPROF,+11
+        write(IOUNJ) (1000.0*RAD(J),J=1,NCHAN)
+
+         !!! this is cloud2 amt jac
+         CALL SetCldDoRT(
+     $        RAD, IPROF, HEAD, PROF, INDCHN, NCHAN, FREQ, 12, DQ,
+     $    MIETYP, MIENPS, MIEPS, MIEABS, MIEEXT, MIEASY,
+     $    DISTES, SUNCOS, SCOS1,
+     $    LBLAC1, CTYPE1, CFRAC1, CPSIZ1, CPRTO1, CPRBO1, CNGWA1,
+     $    XCEMI1, XCRHO1, CSTMP1, CFRA1X, 
+     $    LBLAC2, CTYPE2, CFRAC2, CPSIZ2, CPRTO2, CPRBO2, CNGWA2, 
+     $    XCEMI2, XCRHO2, CSTMP2, CFRA2X, CFRA12, 
+     $        NEMIS, FEMIS, XEMIS, XRHO,
+     $    LRHOT, LBOT, INDMI1,INDMI2,
+     $    EMIS, RHOSUN, RHOTHR, 
+     $                NCHNTE, CLISTN, COEFN, CO2TOP, 
+     $                TEMP,TAU,TAUZ,TAUZSN,
+     $                TSURF+0.1,DOSUN, BLMULT, SECSUN, SECANG, COSDAZ,
+     $                SUNFAC,HSUN, LABOVE, COEFF,
+     $                FCLEAR, TEMPC1, TEMPC2, 
+     $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, 
+     $                LCBOT1, LCTOP1, CLRB1,CLRT1, TCBOT1, TCTOP1, MASEC1, CFRCL1, 
+     $                NEXTO1, NSCAO1, G_ASY1, 
+     $                LCBOT2, LCTOP2, CLRB2,CLRT2, TCBOT2, TCTOP2, MASEC2, CFRCL2, 
+     $                NEXTO2, NSCAO2, G_ASY2 
+     $  )
+        write(IOUNJ) IPROF,+12
+        write(IOUNJ) (1000.0*RAD(J),J=1,NCHAN)
+
+         !!! this is cloud1 sze jac
+         CALL SetCldDoRT(
+     $        RAD, IPROF, HEAD, PROF, INDCHN, NCHAN, FREQ, 21, DQ,
+     $    MIETYP, MIENPS, MIEPS, MIEABS, MIEEXT, MIEASY,
+     $    DISTES, SUNCOS, SCOS1,
+     $    LBLAC1, CTYPE1, CFRAC1, CPSIZ1, CPRTO1, CPRBO1, CNGWA1,
+     $    XCEMI1, XCRHO1, CSTMP1, CFRA1X, 
+     $    LBLAC2, CTYPE2, CFRAC2, CPSIZ2, CPRTO2, CPRBO2, CNGWA2,
+     $    XCEMI2, XCRHO2, CSTMP2, CFRA2X, CFRA12, 
+     $        NEMIS, FEMIS, XEMIS, XRHO,
+     $    LRHOT, LBOT, INDMI1,INDMI2,
+     $    EMIS, RHOSUN, RHOTHR, 
+     $                NCHNTE, CLISTN, COEFN, CO2TOP, 
+     $                TEMP,TAU,TAUZ,TAUZSN,
+     $                TSURF+0.1,DOSUN, BLMULT, SECSUN, SECANG, COSDAZ,
+     $                SUNFAC,HSUN, LABOVE, COEFF,
+     $                FCLEAR, TEMPC1, TEMPC2, 
+     $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, 
+     $                LCBOT1, LCTOP1, CLRB1,CLRT1, TCBOT1, TCTOP1, MASEC1, CFRCL1, 
+     $                NEXTO1, NSCAO1, G_ASY1, 
+     $                LCBOT2, LCTOP2, CLRB2,CLRT2, TCBOT2, TCTOP2, MASEC2, CFRCL2, 
+     $                NEXTO2, NSCAO2, G_ASY2 
+     $  )
+        write(IOUNJ) IPROF,+21
+        write(IOUNJ) (1000.0*RAD(J),J=1,NCHAN)
+
+         !!! this is cloud2 amt jac
+         CALL SetCldDoRT(
+     $        RAD, IPROF, HEAD, PROF, INDCHN, NCHAN, FREQ, 22, DQ,
+     $    MIETYP, MIENPS, MIEPS, MIEABS, MIEEXT, MIEASY,
+     $    DISTES, SUNCOS, SCOS1,
+     $    LBLAC1, CTYPE1, CFRAC1, CPSIZ1, CPRTO1, CPRBO1, CNGWA1,
+     $    XCEMI1, XCRHO1, CSTMP1, CFRA1X, 
+     $    LBLAC2, CTYPE2, CFRAC2, CPSIZ2, CPRTO2, CPRBO2, CNGWA2,
+     $    XCEMI2, XCRHO2, CSTMP2, CFRA2X, CFRA12, 
+     $        NEMIS, FEMIS, XEMIS, XRHO,
+     $    LRHOT, LBOT, INDMI1,INDMI2,
+     $    EMIS, RHOSUN, RHOTHR, 
+     $                NCHNTE, CLISTN, COEFN, CO2TOP, 
+     $                TEMP,TAU,TAUZ,TAUZSN,
+     $                TSURF+0.1,DOSUN, BLMULT, SECSUN, SECANG, COSDAZ,
+     $                SUNFAC,HSUN, LABOVE, COEFF,
+     $                FCLEAR, TEMPC1, TEMPC2, 
+     $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, 
+     $                LCBOT1, LCTOP1, CLRB1,CLRT1, TCBOT1, TCTOP1, MASEC1, CFRCL1, 
+     $                NEXTO1, NSCAO1, G_ASY1, 
+     $                LCBOT2, LCTOP2, CLRB2,CLRT2, TCBOT2, TCTOP2, MASEC2, CFRCL2, 
+     $                NEXTO2, NSCAO2, G_ASY2 
+     $  )
+        write(IOUNJ) IPROF,+22
+        write(IOUNJ) (1000.0*RAD(J),J=1,NCHAN)
+
+      END IF
+     
 C      ----------------------
 C      End loop over profiles
 C      ----------------------
@@ -1021,6 +1206,10 @@ C      Close the RTP files
 C      -------------------
  9999  ISTAT=rtpclose(IOPCI)
        ISTAT=rtpclose(IOPCO)
+
+       IF (IDOJACOB .GT. 0) THEN
+         CLOSE(IOUNJ)
+       END IF
 C
        STOP
        END
