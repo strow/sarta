@@ -979,7 +979,8 @@ C      Calculate cloudy radiance
 
        CALL SetCldDoRT(
      $        RAD, IPROF, HEAD, PROF, INDCHN, NCHAN, FREQ, 
-     $    MIETYP, MIENPS, DISTES, SUNCOS, SCOS1,
+     $    MIETYP, MIENPS, MIEPS, MIEABS, MIEEXT, MIEASY,
+     $    DISTES, SUNCOS, SCOS1,
      $    LBLAC1, CTYPE1, CFRAC1, CPSIZ1, CPRTO1, CPRBO1, CNGWA1,
      $    XCEMI1, XCRHO1, CSTMP1, CFRA1X, 
      $    LBLAC2, CTYPE2, CFRAC2, CPSIZ2, CPRTO2, CPRBO2, CNGWA2,
@@ -989,7 +990,7 @@ C      Calculate cloudy radiance
      $    EMIS, RHOSUN, RHOTHR, 
      $                NCHNTE, CLISTN, COEFN, CO2TOP, 
      $                TEMP,TAU,TAUZ,TAUZSN,
-     $                TSURF,DOSUN, BLMULT, SECANG,COSDAZ,
+     $                TSURF,DOSUN, BLMULT, SECSUN, SECANG, COSDAZ,
      $                SUNFAC,HSUN, LABOVE, COEFF,
      $                FCLEAR, TEMPC1, TEMPC2, 
      $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, 
@@ -1010,7 +1011,7 @@ C      ----------------------
 C      End loop over profiles
 C      ----------------------
        IPROF=IPROF + 1  ! increment profile counter
-       print *, 'sergio iprof=', IPROF
+c       print *, 'sergio iprof=', IPROF
        GOTO 10
 C>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>       
 C

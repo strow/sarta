@@ -1,7 +1,8 @@
 
        SUBROUTINE SetCldDoRT(
      $        RAD, IPROF, HEAD, PROF, INDCHN, NCHAN, FREQ, 
-     $    MIETYP, MIENPS, DISTES, SUNCOS, SCOS1,
+     $    MIETYP, MIENPS, MIEPS, MIEABS, MIEEXT, MIEASY,
+     $    DISTES, SUNCOS, SCOS1,
      $    LBLAC1, CTYPE1, CFRAC1, CPSIZ1, CPRTO1, CPRBO1, CNGWA1,
      $    XCEMI1, XCRHO1, CSTMP1, CFRA1X, 
      $    LBLAC2, CTYPE2, CFRAC2, CPSIZ2, CPRTO2, CPRBO2, CNGWA2,
@@ -11,7 +12,7 @@
      $    EMIS, RHOSUN, RHOTHR, 
      $                NCHNTE, CLISTN, COEFN, CO2TOP, 
      $                TEMP,TAU,TAUZ,TAUZSN,
-     $                TSURF,DOSUN, BLMULT, SECANG,COSDAZ,
+     $                TSURF,DOSUN, BLMULT, SECSUN, SECANG, COSDAZ,
      $                SUNFAC,HSUN, LABOVE, COEFF,
      $                FCLEAR, TEMPC1, TEMPC2, 
      $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, 
@@ -179,7 +180,7 @@ C      For clear/cloudy radiances
        REAL C1V3           ! rad constant c1 times freq^3
        REAL C2V            ! rad constant c2 times freq
 
-       INTEGER I,L
+       INTEGER I,L,J
        
 C      for function QIKEXP
        REAL QIKEXP
@@ -193,8 +194,8 @@ C      Get basic cloud parameters from input RTP
      $    XCEMI1, XCRHO1, CSTMP1,
      $    LBLAC2, CTYPE2, CFRAC2, CPSIZ2, CPRTO2, CPRBO2, CNGWA2,
      $    XCEMI2, XCRHO2, CSTMP2, CFRA12, FCLEAR, CFRA1X, CFRA2X )
-       print *,'sergio getcld ',IPROF,CTYPE1, CFRAC1, CPSIZ1, CPRTO1,
-     $                          CPRBO1, CNGWA1,CFRA1X     
+c       print *,'sergio getcld ',IPROF,CTYPE1, CFRAC1, CPSIZ1, CPRTO1,
+c     $                          CPRBO1, CNGWA1,CFRA1X     
 
 C      ---------------------------------------------------
 C      Set the emissivity & reflectivity for every channel
@@ -239,6 +240,13 @@ C            Prepare lookup data for cloud2
      $          SECSUN, MIEPS, MIEABS, MIEEXT, MIEASY, LCBOT2, LCTOP2,
      $          CLRB2, CLRT2, TCBOT2, TCTOP2, MASEC2, MASUN2,
      $          CFRCL2, G_ASY2, NEXTO2, NSCAO2 )
+c             print *,NCHAN,LBOT,INDMI2,MIENPS,CNGWA2, CPSIZ2, CPRTO2, CPRBO2,
+c     $               G_ASY2(1291),NEXTO2(1291),NSCAO2(1291)
+c            print *,'ABC=',LCBOT2, LCTOP2,CLRB2, CLRT2, TCBOT2, TCTOP2, MASEC2, MASUN2
+c            print *,MIEPS(1,1),MIEPS(1,2),MIEPS(1,3)
+c            print *,MIEABS(1,1,1),MIEABS(1,1,2),MIEABS(1,1,3)
+c            print *,MIEEXT(1,1,1),MIEEXT(1,1,2),MIEEXT(1,1,3)
+c            print *,MIEASY(1,1,1),MIEASY(1,1,2),MIEASY(1,1,3)
           ENDIF
        ELSE
 C         Safe default for non-existant cloud2
@@ -303,6 +311,8 @@ C         Store original values
           VSTORE(4)=RHOTHR(I)
           VSTORE(5)=RHOSUN(I)
           VSTORE(6)=RPLNCK(LCTOP2)
+c	  IF (I .EQ. 1291) print *,(VSTORE(J),J=1,6)
+	  
 C         Updates for new surface if bottom cloud2 is black
           IF (CFRAC2 .GT. 0.0 .AND. LBLAC2) THEN
              RJUNK1=-TAU(LCTOP2,I)*CLRT2
@@ -324,10 +334,20 @@ C         Calculate bottom cloud2 radiance
      $          TRANL, TRANZ, SUNFAC, HSUN, TRANS, RHOSUN,
      $          RHOTHR, LABOVE, COEFF, RADC2 )
              ELSE
-                CALL CALRAD1( DOSUN, I, LBOT, RPLNCK, RSURFE, SECANG,
+c	        IF (I .EQ. 1291) THEN		
+c  	          print *,DOSUN,I,LBOT
+c		  print *,TAU(50,I),TRANL(LCTOP2),TRANZ(I)
+c		  print *,RPLNCK(50),RSURFE,SECANG(50)
+c		  print *,SUNFAC,HSUN(I),TRANS(I),RHOSUN(I),RHOTHR(I)
+c		  print *,LABOVE(I),CFRCL2(50),COEFF(1,1)
+c		  print *,'XYZ=',MASEC2,MASUN2,COSDAZ
+c		  print *,NEXTO2(I),NSCAO2(I),G_ASY2(I),LCTOP2,LCBOT2
+c		END IF
+               CALL CALRAD1( DOSUN, I, LBOT, RPLNCK, RSURFE, SECANG,
      $          TAU, TRANL, TRANZ, SUNFAC, HSUN, TRANS, RHOSUN,
      $          RHOTHR, LABOVE, COEFF, CFRCL2, MASEC2, MASUN2, COSDAZ,
      $          NEXTO2, NSCAO2, G_ASY2, LCTOP2, LCBOT2, RADC2 )
+                
              ENDIF
           ELSE
              RADC2=0.0
@@ -396,8 +416,9 @@ ccc this block for testing
        IF (I .EQ. 1291) THEN
 c         print *,'chan1291 : iPROF,rad0,radc1,radc2,radc12,FINAL=',
 c     $      IPROF,RAD0,RADC1,RADC2,RADC12,RAD(I)
-         print *,'chan1291 : IPROF,rad0,FCLEAR,CFRA1X,CFRA2X,CFRA12=',
-     $      IPROF,RAD0,FCLEAR,CFRA1X,CFRA2X,CFRA12
+         print *,'1291:I,CLR,C1,C2,C12,TS,rad0,radC1,radC2,radC12,rF=',
+     $      IPROF,FCLEAR,CFRA1X,CFRA2X,CFRA12,
+     $      TSURF,rad0,radC1,radC2,radC12,RAD(I)
 c         PRINT *,'CLOUD1 emis,temp = ',CEMIS1(I),TCTOP1
 c         PRINT *,'CLOUD2 emis,temp = ',CEMIS2(I),TCTOP2
        endif
