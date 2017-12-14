@@ -31,7 +31,7 @@ crisg4_hires_dec17_icebaumGHM_waterdrop_desertdust:
 	ln -s incFTC_crisg4_oct16.f incFTC.f
 	ln -s fnmie_iceGHMbaum_waterdrop_desertdust_cris_hires.f fnmie.f	
 	make -f make_sarta_pclsam
-	mv a.out ../bin/crisg4_hires_dec17_iceGHMbaum_waterdrop_desertdust_slabcloud_hg3
+	mv a.out /home/sergio/MATLABCODE/CRIS_HiRes/BinV201/crisg4_hires_dec17_iceGHMbaum_waterdrop_desertdust_slabcloud_hg3
 
 # AIRS
 m140_icebaumGHM_waterdrop_desertdust:
