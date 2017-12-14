@@ -320,6 +320,7 @@ C      for RDRTP; profile to calculate
        REAL  WAMNTJAC(MAXLAY) ! prof layer water (H2O) amount
        REAL  OAMNTJAC(MAXLAY) ! prof layer ozone (O3) amount
        INTEGER IJAC           ! loop index for jac
+       INTEGER ISELECTLAY     ! do we do all layers???
        INTEGER IXJAC          
        
 C
@@ -519,10 +520,17 @@ C      Profile data structure
 C
 
        INTEGER      J,K       ! jacobian loop counters
-       INTEGER iDOJACOB       ! should we do jacobians
+       INTEGER IDOJACOB       ! should we do jacobians
        INTEGER IOUNJ          ! jacobian output filenumber
        INTEGER INUMPROF       ! we need to know how many jacobians will be done
        REAL DST,DQ            ! jacobian perturbations
+       INTEGER IDOCOLJAC      ! have we done col jacs
+       INTEGER IDOTZJAC       ! have we done T(z) jacs
+       INTEGER IDOWVZJAC      ! have we done WV(z) jacs
+       INTEGER IDOO3ZJAC      ! have we done O3(z) jacs                     
+       INTEGER ITZLAYJAC      ! counter for T(z),WV(z),O3(z)
+       INTEGER IWVZLAYJAC     ! counter for T(z),WV(z),O3(z)
+       INTEGER IO3ZLAYJAC     ! counter for T(z),WV(z),O3(z)       
        
 C      Boundary pressure levels
        COMMON /COMLEV/ PLEV
@@ -730,6 +738,7 @@ C      ---------------------------
        IPROF=1  ! initialize profile counter
 C      Do you want this profile?
  10    LWANT=.TRUE.
+       
        print *,'IPROF=',IPROF
        IF (NWANTP .GT. 1) THEN
 C         Look for current profile on list of wanted profiles
@@ -903,10 +912,19 @@ C
          WAMNTJAC(IJAC) = WAMNT(IJAC)
          OAMNTJAC(IJAC) = OAMNT(IJAC)	 
        END DO
+
+       ISELECTLAY = -1   !! do all layers
+       IDOCOLJAC = -1    !! not yet done col jacs
+       IDOTZJAC = -1     !! not yet done T(z) jacs
+       IDOWVZJAC = -1    !! not yet done WV(z) jacs
+       IDOO3ZJAC = -1    !! not yet done O3(z) jacs              
+       ITZLAYJAC   = -1  !! not yet done
+       IWVZLAYJAC  = -1  !! not yet done
+       IO3ZLAYJAC  = -1  !! not yet done       
        
  77    CONTINUE   !!! come back here if JACOBIANS needed
-
-       CALL CALPAR (LBOT,
+ 
+       CALL CALPAR (ISELECTLAY, LBOT, 
      $    RTEMP,RFAMNT,RWAMNT,ROAMNT,RCAMNT,RMAMNT,RSAMNT,RHAMNT,RNAMNT,
      $     TEMPJAC, FAMNT, WAMNTJAC, OAMNTJAC, CAMNT, MAMNT, SAMNT, HAMNT, NAMNT,
      $    RPRES, SECANG,   LAT,    FX,   RDZ,
@@ -919,7 +937,7 @@ C
 C      -----------------------------------
 C      Calculate the OPTRAN H2O predictors
 C      -----------------------------------
-       CALL CALOWP ( LBOT, WAMNT, RPRES, TEMP, SECANG, WAZOP, WAVGOP,
+       CALL CALOWP ( ISELECTLAY, LBOT, WAMNTJAC, RPRES, TEMPJAC, SECANG, WAZOP, WAVGOP,
      $    WAANG, LOPMIN, LOPMAX, LOPUSE, H2OPRD, LOPLOW, DAOP )
 
 C      ----------------------------------
@@ -927,41 +945,41 @@ C      Calculate the layer transmittances
 C      ----------------------------------
 C      Calculate TAU for set 1 thru 7
 C
-       CALL XCALT1( INDCHN,  LBOT,   NCHN1, CLIST1,  COEF1,
+       CALL XCALT1(ISELECTLAY, INDCHN,  LBOT,   NCHN1, CLIST1,  COEF1,
      $     FIXMUL, CONPRD, FPRED1, WPRED1, OPRED1, TRCPRD,
      $     INDCO2, COFCO2, CO2MLT, INDSO2, COFSO2, SO2MLT,
      $     INDHNO, COFHNO, HNOMLT, INDN2O, COFN2O, N2OMLT,
      $     INDH2O, H2OPRD, COFH2O, LOPMIN, LOPMAX, LOPLOW,
      $     LOPUSE,   WAOP,   DAOP, WAANG,     TAU,   TAUZ)
 C
-       CALL XCALT2( INDCHN, LBOT,   NCHN2, CLIST2,  COEF2,
+       CALL XCALT2(ISELECTLAY, INDCHN, LBOT,   NCHN2, CLIST2,  COEF2,
      $    FIXMUL, CONPRD, FPRED2, OPRED2, WPRED2, TRCPRD,
      $    INDCO2, COFCO2, CO2MLT, INDSO2, COFSO2, SO2MLT,
      $    INDHNO, COFHNO, HNOMLT, INDN2O, COFN2O, N2OMLT, TAU, TAUZ)
 C
-       CALL XCALT3( INDCHN,   LBOT,  NCHN3, CLIST3,  COEF3,
+       CALL XCALT3(ISELECTLAY, INDCHN,  LBOT,  NCHN3, CLIST3,  COEF3,
      $     FIXMUL, CONPRD, FPRED3, MPRED3, WPRED3, TRCPRD,
      $     INDSO2, COFSO2, SO2MLT, INDHNO, COFHNO, HNOMLT,
      $     INDN2O, COFN2O, N2OMLT,
      $     INDH2O, H2OPRD, COFH2O, LOPMIN, LOPMAX, LOPLOW, LOPUSE,
      $       WAOP,   DAOP,  WAANG,    TAU,   TAUZ)
 C
-       CALL XCALT4(INDCHN,   LBOT,  NCHN4, CLIST4,
+       CALL XCALT4(ISELECTLAY, INDCHN,   LBOT,  NCHN4, CLIST4,
      $     COEF4, FIXMUL, CONPRD, FPRED4, CPRED4, OPRED4, WPRED4,
      $    TRCPRD, INDCO2, COFCO2, CO2MLT, INDN2O, COFN2O, N2OMLT,
      $       TAU,   TAUZ )
 C
-       CALL XCALT5(INDCHN,   LBOT,  NCHN5, CLIST5,
+       CALL XCALT5(ISELECTLAY, INDCHN,   LBOT,  NCHN5, CLIST5,
      $     COEF5, FIXMUL, CONPRD, FPRED5, WPRED5, OPRED5, 
      $    TRCPRD, INDCO2, COFCO2, CO2MLT, INDN2O, COFN2O, N2OMLT,
      $       TAU,   TAUZ )
 C
-       CALL XCALT6(INDCHN,   LBOT,  NCHN6, CLIST6,
+       CALL XCALT6(ISELECTLAY, INDCHN,   LBOT,  NCHN6, CLIST6,
      $     COEF6, FIXMUL, CONPRD, FPRED6, WPRED6, OPRED6, TRCPRD,
      $    INDCO2, COFCO2, CO2MLT, INDSO2, COFSO2, SO2MLT,
      $    INDN2O, COFN2O, N2OMLT,    TAU,   TAUZ )
 C
-       CALL XCALT7(INDCHN,   LBOT,  NCHN7, CLIST7,
+       CALL XCALT7(ISELECTLAY, INDCHN,   LBOT,  NCHN7, CLIST7,
      $     COEF7, FIXMUL, CONPRD, FPRED7, WPRED7, OPRED7,
      $    TRCPRD, INDCO2, COFCO2, CO2MLT, INDN2O, COFN2O, N2OMLT,
      $       TAU,   TAUZ )
@@ -974,7 +992,7 @@ C         ---------------------------------------------
 C
           CALL SUNPAR ( LBOT,
      $       RTEMP, RWAMNT, ROAMNT, RCAMNT,
-     $        TEMP,  WAMNT,  OAMNT,  CAMNT,
+     $        TEMPJAC,  WAMNTJAC,  OAMNTJAC,  CAMNT,
      $       RPRES,  SECSUN, CONPRD,
      $       FPRED4, FPRED5, FPRED6, FPRED7,
      $       WPRED4, WPRED5, WPRED6, WPRED7,
@@ -992,24 +1010,24 @@ C         Calc fake TAUZSN for sets 1, 2, and 3
 C
 C         Calculate TAUZSN for sets 4 thru 7
 C
-          CALL XCALT4(INDCHN,   LBOT,  NCHN4, CLIST4,
+          CALL XCALT4(ISELECTLAY, INDCHN,   LBOT,  NCHN4, CLIST4,
      $        COEF4, FIXMUL, CONPRD, FPRED4, CPRED4, OPRED4, WPRED4,
      $       TRCPRD, INDCO2, COFCO2, CO2MLT, INDN2O, COFN2O, N2OMLT,
      $       TAUZSN, TAUZSN )
 C            ^^^^^^  ^^^^^^
 C            dummy   actual
 C
-          CALL XCALT5(INDCHN,   LBOT,  NCHN5, CLIST5,
+          CALL XCALT5(ISELECTLAY, INDCHN,   LBOT,  NCHN5, CLIST5,
      $        COEF5, FIXMUL, CONPRD, FPRED5, WPRED5, OPRED5,
      $       TRCPRD, INDCO2, COFCO2, CO2MLT, INDN2O, COFN2O, N2OMLT,
      $       TAUZSN, TAUZSN )
 C
-          CALL XCALT6(INDCHN,   LBOT,  NCHN6, CLIST6,
+          CALL XCALT6(ISELECTLAY, INDCHN,   LBOT,  NCHN6, CLIST6,
      $        COEF6, FIXMUL, CONPRD, FPRED6, WPRED6, OPRED6,
      $       TRCPRD, INDCO2, COFCO2, CO2MLT, INDSO2, COFSO2, SO2MLT,
      $       INDN2O, COFN2O, N2OMLT, TAUZSN, TAUZSN )
 C
-          CALL XCALT7(INDCHN,   LBOT,  NCHN7, CLIST7,
+          CALL XCALT7(ISELECTLAY, INDCHN,   LBOT,  NCHN7, CLIST7,
      $        COEF7, FIXMUL, CONPRD, FPRED7, WPRED7, OPRED7,
      $       TRCPRD, INDCO2, COFCO2, CO2MLT, INDN2O, COFN2O, N2OMLT,
      $       TAUZSN, TAUZSN )
@@ -1042,7 +1060,7 @@ C      Calculate cloudy radiance
      $    LRHOT, LBOT, INDMI1,INDMI2,
      $    EMIS, RHOSUN, RHOTHR, 
      $                NCHNTE, CLISTN, COEFN, CO2TOP, 
-     $                TEMP,TAU,TAUZ,TAUZSN,
+     $                TEMPJAC,TAU,TAUZ,TAUZSN,
      $                TSURF,DOSUN, BLMULT, SECSUN, SECANG, COSDAZ,
      $                SUNFAC,HSUN, LABOVE, COEFF,
      $                FCLEAR, TEMPC1, TEMPC2, 
@@ -1057,140 +1075,88 @@ C      Calculate cloudy radiance
 C      -------------------
 C      Output the radiance
 C      -------------------
-       CALL WRTRTP(IPROF, IOPCO, NCHAN, RAD, PROF)
+       IF (IDOCOLJAC .EQ. -1) THEN
+         !! unperturbed radiance
+         CALL WRTRTP(IPROF, IOPCO, NCHAN, RAD, PROF)
+       END IF
 C
+       IF ((IDOJACOB .GT. 0) .AND. (IDOCOLJAC .LT. 0)) THEN
+         IDOCOLJAC = +1  !! doing coljacs       
+         CALL ColJac(
+     $        RAD, IPROF, HEAD, PROF, INDCHN, NCHAN, FREQ, DST, DQ, IOUNJ, 
+     $    MIETYP, MIENPS, MIEPS, MIEABS, MIEEXT, MIEASY,
+     $    DISTES, SUNCOS, SCOS1,
+     $    LBLAC1, CTYPE1, CFRAC1, CPSIZ1, CPRTO1, CPRBO1, CNGWA1,
+     $    XCEMI1, XCRHO1, CSTMP1, CFRA1X, 
+     $    LBLAC2, CTYPE2, CFRAC2, CPSIZ2, CPRTO2, CPRBO2, CNGWA2,
+     $    XCEMI2, XCRHO2, CSTMP2, CFRA2X, CFRA12, 
+     $        NEMIS, FEMIS, XEMIS, XRHO,
+     $    LRHOT, LBOT, INDMI1,INDMI2,
+     $    EMIS, RHOSUN, RHOTHR, 
+     $                NCHNTE, CLISTN, COEFN, CO2TOP, 
+     $                TEMPJAC,TAU,TAUZ,TAUZSN,
+     $                TSURF,DOSUN, BLMULT, SECSUN, SECANG, COSDAZ,
+     $                SUNFAC,HSUN, LABOVE, COEFF,
+     $                FCLEAR, TEMPC1, TEMPC2, 
+     $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, 
+     $                LCBOT1, LCTOP1, CLRB1,CLRT1, TCBOT1, TCTOP1, MASEC1, CFRCL1, 
+     $                NEXTO1, NSCAO1, G_ASY1, 
+     $                LCBOT2, LCTOP2, CLRB2,CLRT2, TCBOT2, TCTOP2, MASEC2, CFRCL2, 
+     $                NEXTO2, NSCAO2, G_ASY2
+     $   )      
+      END IF
+       
+       IF ((IDOJACOB .GT. 0) .AND. (ITZLAYJAC .LE. LBOT)) THEN
+         !! TEMP JAC
+	 IF (ITZLAYJAC .EQ. -1) THEN
+           write(IOUNJ) IPROF,-100
+	   ITZLAYJAC = 0
+	 END IF
+	 
+ 771     CONTINUE
+         IDOTZJAC = IDOTZJAC * -1
+	 IF ((IDOTZJAC .GT. 0) .AND. (ITZLAYJAC .LT. LBOT)) THEN
+ 	   ITZLAYJAC = ITZLAYJAC + 1
+	   print *,'IPROF,Tlayjac,LBOT = ',IPROF,ITZLAYJAC,LBOT
+           DO IJAC = 1,MAXLAY
+             TEMPJAC(IJAC)  = TEMP(IJAC)
+             WAMNTJAC(IJAC) = WAMNT(IJAC)
+             OAMNTJAC(IJAC) = OAMNT(IJAC)	 
+           END DO
+  	   TEMPJAC(ITZLAYJAC) = TEMPJAC(ITZLAYJAC) + DST
+	   ISELECTLAY = ITZLAYJAC	 
+  	   GOTO 77
+	 ELSE
+           write(IOUNJ) (1000.0*RAD(J),J=1,NCHAN)
+	   IF (ITZLAYJAC .LT. LBOT) THEN
+  	     GOTO 771
+	   ELSE
+	     print *,'done with Tz IPROF,Tlayjac,LBOT = ',IPROF,ITZLAYJAC,LBOT
+	     IF (LBOT+1 .LE. 100) THEN
+  	       DO K = LBOT+1,100
+  	         print *,'last few IPROF,Tlayjac,LBOT = ',K,ITZLAYJAC,LBOT
+                 write(IOUNJ) (000.0*RAD(J),J=1,NCHAN)
+	       END DO
+             END IF	     
+	   END IF
+	 END IF
+       END IF
+              
        IF (IDOJACOB .GT. 0) THEN
-         !!! this is SurfTempJacobian
-         CALL SetCldDoRT(
-     $        RAD, IPROF, HEAD, PROF, INDCHN, NCHAN, FREQ, 0, DQ,
-     $    MIETYP, MIENPS, MIEPS, MIEABS, MIEEXT, MIEASY,
-     $    DISTES, SUNCOS, SCOS1,
-     $    LBLAC1, CTYPE1, CFRAC1, CPSIZ1, CPRTO1, CPRBO1, CNGWA1,
-     $    XCEMI1, XCRHO1, CSTMP1, CFRA1X, 
-     $    LBLAC2, CTYPE2, CFRAC2, CPSIZ2, CPRTO2, CPRBO2, CNGWA2,
-     $    XCEMI2, XCRHO2, CSTMP2, CFRA2X, CFRA12, 
-     $        NEMIS, FEMIS, XEMIS, XRHO,
-     $    LRHOT, LBOT, INDMI1,INDMI2,
-     $    EMIS, RHOSUN, RHOTHR, 
-     $                NCHNTE, CLISTN, COEFN, CO2TOP, 
-     $                TEMP,TAU,TAUZ,TAUZSN,
-     $                TSURF+0.1,DOSUN, BLMULT, SECSUN, SECANG, COSDAZ,
-     $                SUNFAC,HSUN, LABOVE, COEFF,
-     $                FCLEAR, TEMPC1, TEMPC2, 
-     $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, 
-     $                LCBOT1, LCTOP1, CLRB1,CLRT1, TCBOT1, TCTOP1, MASEC1, CFRCL1, 
-     $                NEXTO1, NSCAO1, G_ASY1, 
-     $                LCBOT2, LCTOP2, CLRB2,CLRT2, TCBOT2, TCTOP2, MASEC2, CFRCL2, 
-     $                NEXTO2, NSCAO2, G_ASY2 
-     $  )
-        write(IOUNJ) IPROF,+1
-        write(IOUNJ) (1000.0*RAD(J),J=1,NCHAN)
+         !! WV JAC
+         write(IOUNJ) IPROF,+100
+	 DO K = 1,100
+           write(IOUNJ) (1000.0*RAD(J),J=1,NCHAN)
+	 END DO
 
-         !!! this is cloud1 amt jac
-         CALL SetCldDoRT(
-     $        RAD, IPROF, HEAD, PROF, INDCHN, NCHAN, FREQ, 11, DQ,
-     $    MIETYP, MIENPS, MIEPS, MIEABS, MIEEXT, MIEASY,
-     $    DISTES, SUNCOS, SCOS1,
-     $    LBLAC1, CTYPE1, CFRAC1, CPSIZ1, CPRTO1, CPRBO1, CNGWA1,
-     $    XCEMI1, XCRHO1, CSTMP1, CFRA1X, 
-     $    LBLAC2, CTYPE2, CFRAC2, CPSIZ2, CPRTO2, CPRBO2, CNGWA2,
-     $    XCEMI2, XCRHO2, CSTMP2, CFRA2X, CFRA12, 
-     $        NEMIS, FEMIS, XEMIS, XRHO,
-     $    LRHOT, LBOT, INDMI1,INDMI2,
-     $    EMIS, RHOSUN, RHOTHR, 
-     $                NCHNTE, CLISTN, COEFN, CO2TOP, 
-     $                TEMP,TAU,TAUZ,TAUZSN,
-     $                TSURF+0.1,DOSUN, BLMULT, SECSUN, SECANG, COSDAZ,
-     $                SUNFAC,HSUN, LABOVE, COEFF,
-     $                FCLEAR, TEMPC1, TEMPC2, 
-     $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, 
-     $                LCBOT1, LCTOP1, CLRB1,CLRT1, TCBOT1, TCTOP1, MASEC1, CFRCL1, 
-     $                NEXTO1, NSCAO1, G_ASY1, 
-     $                LCBOT2, LCTOP2, CLRB2,CLRT2, TCBOT2, TCTOP2, MASEC2, CFRCL2, 
-     $                NEXTO2, NSCAO2, G_ASY2 
-     $  )
-        write(IOUNJ) IPROF,+11
-        write(IOUNJ) (1000.0*RAD(J),J=1,NCHAN)
-
-         !!! this is cloud2 amt jac
-         CALL SetCldDoRT(
-     $        RAD, IPROF, HEAD, PROF, INDCHN, NCHAN, FREQ, 12, DQ,
-     $    MIETYP, MIENPS, MIEPS, MIEABS, MIEEXT, MIEASY,
-     $    DISTES, SUNCOS, SCOS1,
-     $    LBLAC1, CTYPE1, CFRAC1, CPSIZ1, CPRTO1, CPRBO1, CNGWA1,
-     $    XCEMI1, XCRHO1, CSTMP1, CFRA1X, 
-     $    LBLAC2, CTYPE2, CFRAC2, CPSIZ2, CPRTO2, CPRBO2, CNGWA2, 
-     $    XCEMI2, XCRHO2, CSTMP2, CFRA2X, CFRA12, 
-     $        NEMIS, FEMIS, XEMIS, XRHO,
-     $    LRHOT, LBOT, INDMI1,INDMI2,
-     $    EMIS, RHOSUN, RHOTHR, 
-     $                NCHNTE, CLISTN, COEFN, CO2TOP, 
-     $                TEMP,TAU,TAUZ,TAUZSN,
-     $                TSURF+0.1,DOSUN, BLMULT, SECSUN, SECANG, COSDAZ,
-     $                SUNFAC,HSUN, LABOVE, COEFF,
-     $                FCLEAR, TEMPC1, TEMPC2, 
-     $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, 
-     $                LCBOT1, LCTOP1, CLRB1,CLRT1, TCBOT1, TCTOP1, MASEC1, CFRCL1, 
-     $                NEXTO1, NSCAO1, G_ASY1, 
-     $                LCBOT2, LCTOP2, CLRB2,CLRT2, TCBOT2, TCTOP2, MASEC2, CFRCL2, 
-     $                NEXTO2, NSCAO2, G_ASY2 
-     $  )
-        write(IOUNJ) IPROF,+12
-        write(IOUNJ) (1000.0*RAD(J),J=1,NCHAN)
-
-         !!! this is cloud1 sze jac
-         CALL SetCldDoRT(
-     $        RAD, IPROF, HEAD, PROF, INDCHN, NCHAN, FREQ, 21, DQ,
-     $    MIETYP, MIENPS, MIEPS, MIEABS, MIEEXT, MIEASY,
-     $    DISTES, SUNCOS, SCOS1,
-     $    LBLAC1, CTYPE1, CFRAC1, CPSIZ1, CPRTO1, CPRBO1, CNGWA1,
-     $    XCEMI1, XCRHO1, CSTMP1, CFRA1X, 
-     $    LBLAC2, CTYPE2, CFRAC2, CPSIZ2, CPRTO2, CPRBO2, CNGWA2,
-     $    XCEMI2, XCRHO2, CSTMP2, CFRA2X, CFRA12, 
-     $        NEMIS, FEMIS, XEMIS, XRHO,
-     $    LRHOT, LBOT, INDMI1,INDMI2,
-     $    EMIS, RHOSUN, RHOTHR, 
-     $                NCHNTE, CLISTN, COEFN, CO2TOP, 
-     $                TEMP,TAU,TAUZ,TAUZSN,
-     $                TSURF+0.1,DOSUN, BLMULT, SECSUN, SECANG, COSDAZ,
-     $                SUNFAC,HSUN, LABOVE, COEFF,
-     $                FCLEAR, TEMPC1, TEMPC2, 
-     $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, 
-     $                LCBOT1, LCTOP1, CLRB1,CLRT1, TCBOT1, TCTOP1, MASEC1, CFRCL1, 
-     $                NEXTO1, NSCAO1, G_ASY1, 
-     $                LCBOT2, LCTOP2, CLRB2,CLRT2, TCBOT2, TCTOP2, MASEC2, CFRCL2, 
-     $                NEXTO2, NSCAO2, G_ASY2 
-     $  )
-        write(IOUNJ) IPROF,+21
-        write(IOUNJ) (1000.0*RAD(J),J=1,NCHAN)
-
-         !!! this is cloud2 amt jac
-         CALL SetCldDoRT(
-     $        RAD, IPROF, HEAD, PROF, INDCHN, NCHAN, FREQ, 22, DQ,
-     $    MIETYP, MIENPS, MIEPS, MIEABS, MIEEXT, MIEASY,
-     $    DISTES, SUNCOS, SCOS1,
-     $    LBLAC1, CTYPE1, CFRAC1, CPSIZ1, CPRTO1, CPRBO1, CNGWA1,
-     $    XCEMI1, XCRHO1, CSTMP1, CFRA1X, 
-     $    LBLAC2, CTYPE2, CFRAC2, CPSIZ2, CPRTO2, CPRBO2, CNGWA2,
-     $    XCEMI2, XCRHO2, CSTMP2, CFRA2X, CFRA12, 
-     $        NEMIS, FEMIS, XEMIS, XRHO,
-     $    LRHOT, LBOT, INDMI1,INDMI2,
-     $    EMIS, RHOSUN, RHOTHR, 
-     $                NCHNTE, CLISTN, COEFN, CO2TOP, 
-     $                TEMP,TAU,TAUZ,TAUZSN,
-     $                TSURF+0.1,DOSUN, BLMULT, SECSUN, SECANG, COSDAZ,
-     $                SUNFAC,HSUN, LABOVE, COEFF,
-     $                FCLEAR, TEMPC1, TEMPC2, 
-     $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, 
-     $                LCBOT1, LCTOP1, CLRB1,CLRT1, TCBOT1, TCTOP1, MASEC1, CFRCL1, 
-     $                NEXTO1, NSCAO1, G_ASY1, 
-     $                LCBOT2, LCTOP2, CLRB2,CLRT2, TCBOT2, TCTOP2, MASEC2, CFRCL2, 
-     $                NEXTO2, NSCAO2, G_ASY2 
-     $  )
-        write(IOUNJ) IPROF,+22
-        write(IOUNJ) (1000.0*RAD(J),J=1,NCHAN)
+         !! O3 JAC
+         write(IOUNJ) IPROF,+300
+	 DO K = 1,100
+           write(IOUNJ) (1000.0*RAD(J),J=1,NCHAN)
+	 END DO
 
       END IF
+
      
 C      ----------------------
 C      End loop over profiles

@@ -20,7 +20,7 @@ C    fast transmittance coefficients.
 
 
 !CALL PROTOCOL:
-C    CALT3 ( INDCHN, NLAY, NCHN3, CLIST3, COEF3,
+C    CALT3 (ISELECTLAY, INDCHN, NLAY, NCHN3, CLIST3, COEF3,
 C       FIXMUL, CONPD3, FPRED3, MPRED3, WPRED3, TRCPRD,
 C       INDSO2, COFSO2, SO2MLT, INDHNO, COFHNO, HNOMLT,
 C       INDN2O, COFN2O, N2OMLT, INDH2O, H2OPRD, COFH2O, LOPMIN, LOPMAX,
@@ -30,6 +30,7 @@ C       LOPLOW, LOPUSE, WAOP, DAOP, WAANG, TAU, TAUZ)
 !INPUT PARAMETERS:
 C    type      name    purpose                     units
 C    --------  ------  --------------------------  ---------------------
+C    INT       ISELECTLAY do all or only one layer none
 C    INT arr   INDCHN  channel indices             none
 C    INTEGER   NLAY    number of layers to bottom  none
 C    INTEGER   NCHN3   set3 number of channels     none
@@ -163,7 +164,7 @@ C                               delete func QIKEXP & argument BLMULT.
 !END====================================================================
 
 C      =================================================================
-       SUBROUTINE XCALT3 ( INDCHN, NLAY, NCHN3, CLIST3, COEF3,
+       SUBROUTINE XCALT3 (ISELECTLAY, INDCHN, NLAY, NCHN3, CLIST3, COEF3,
      $    FIXMUL, CONPD3, FPRED3, MPRED3, WPRED3, TRCPRD,
      $    INDSO2, COFSO2, SO2MLT, INDHNO, COFHNO, HNOMLT,
      $    INDN2O, COFN2O, N2OMLT, INDH2O, H2OPRD, COFH2O,
@@ -192,6 +193,7 @@ C-----------------------------------------------------------------------
 C      ARGUMENTS
 C-----------------------------------------------------------------------
 C      Input
+       INTEGER ISELECTLAY
        INTEGER INDCHN(MXCHAN)
        INTEGER   NLAY
        INTEGER  NCHN3
@@ -231,6 +233,7 @@ C      Output
 C-----------------------------------------------------------------------
 C      LOCAL VARIABLES
 C-----------------------------------------------------------------------
+       INTEGER LMIN,LMAX
        INTEGER      I
        INTEGER  IHNO3
        INTEGER   IN2O
@@ -268,6 +271,13 @@ C***********************************************************************
 C                    EXECUTABLE CODE
 C***********************************************************************
 C***********************************************************************
+       IF (ISELECTLAY .LT. 0) THEN
+         LMIN = 1
+	 LMAX = NLAY
+       ELSE
+         LMIN = ISELECTLAY
+	 LMAX = ISELECTLAY
+       END IF
 C
 C      ---------------------------
 C      Loop on channel (frequency)
@@ -324,7 +334,7 @@ C
 C         ------------------------------
 C         Loop on layers (top to ground)
 C         ------------------------------
-          DO ILAY=1,NLAY
+          DO ILAY=LMIN,LMAX
 C
 C            ---------------------------
 C            Compute the water continuum

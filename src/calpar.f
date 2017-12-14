@@ -20,7 +20,7 @@ C    dependent variables for a profile.
 
 
 !CALL PROTOCOL:
-C    CALPAR (LBOT, RTEMP,RFAMNT,RWAMNT,ROAMNT,RCAMNT,RMAMNT,RNAMNT,
+C    CALPAR (ISELECTLAY, LBOT, RTEMP,RFAMNT,RWAMNT,ROAMNT,RCAMNT,RMAMNT,RNAMNT,
 C  $               PTEMP,PFAMNT,PWAMNT,POAMNT,PCAMNT,PMAMNT,PNAMNT,
 C  $          RES,SECANG,  ALAT,    FX, DZREF,
 C  $         LCO2,  LN2O,  LSO2, LHNO3,LCO2PM,FIXMUL,CONPRD,
@@ -33,6 +33,7 @@ C  $       MPRED3,CPRED4,TRCPRD,CO2MLT,SO2MLT,HNOMLT,N2OMLT )
 !INPUT PARAMETERS:
 C    type      name    purpose                     units
 C    --------  ------  --------------------------  ---------------------
+C    INTEGER   ISELECTLAY do all (-1) or one
 C    INTEGER   LBOT    bottom layer number         none
 C    LOGICAL   LCO2    CO2 profile switch          none
 C    LOGICAL   LN2O    N2O profile switch          none
@@ -344,7 +345,7 @@ C                               CO2PPM to call; add CO2TOP calc
 !END====================================================================
 
 C      =================================================================
-       SUBROUTINE CALPAR ( LBOT,
+       SUBROUTINE CALPAR ( ISELECTLAY, LBOT,
      $    RTEMP,RFAMNT,RWAMNT,ROAMNT,RCAMNT,RMAMNT,RSAMNT,RHAMNT,RNAMNT,
      $    PTEMP,PFAMNT,PWAMNT,POAMNT,PCAMNT,PMAMNT,PSAMNT,PHAMNT,PNAMNT,
      $     PRES,SECANG,  ALAT,    FX, DZREF,
@@ -379,6 +380,7 @@ C-----------------------------------------------------------------------
 C      ARGUMENTS
 C-----------------------------------------------------------------------
 C      Input
+       INTEGER   ISELECTLAY
        INTEGER   LBOT
        REAL  RTEMP(MAXLAY)
        REAL RFAMNT(MAXLAY)
@@ -509,7 +511,8 @@ C      Data statments
        DATA STDTMP /273.15/       ! Standard Temperature
        DATA KMOLE /6.022045E+26/  ! 1000 * Avagadro's Number
 
-
+       INTEGER LMIN,LMAX
+       
 C-----------------------------------------------------------------------
 C      SAVE STATEMENTS
 C-----------------------------------------------------------------------
@@ -546,7 +549,14 @@ C
 C      --------------------
 C      Loop over the layers
 C      --------------------
-       DO L=1,LBOT
+       IF (ISELECTLAY .LT. 0) THEN
+         LMIN = 1
+	 LMAX = LBOT
+       ELSE
+         LMIN = ISELECTLAY
+	 LMAX = ISELECTLAY
+       END IF
+       DO L=LMIN,LMAX
 C
 C         ---------------------------
 C         Calculate the basic profile
@@ -559,6 +569,13 @@ C
              TAZ_O=0.0E+0
              TAZ_M=0.0E+0
           ELSE
+            IF (LMIN .EQ. LMAX) THEN
+	       !!!! sergio did this
+               DT=PTEMP(L-1) - RTEMP(L-1)	  
+               TR=PTEMP(L-1)/RTEMP(L-1)
+               A_O=POAMNT(L-1)/ROAMNT(L-1)
+               A_M=PMAMNT(L-1)/RMAMNT(L-1)	       
+	     END IF
              PDP=PRES(L)*( PRES(L) - PRES(L-1) )
              PNORM=PNORM + PDP
 C

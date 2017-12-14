@@ -20,13 +20,14 @@ C    Calculate the OPTRAN water (H2O) predictors for a profile.
 
 
 !CALL PROTOCOL:
-C    CALOWP ( LBOT, WAMNT, P, T, SECANG, WAZOP, WAVGOP,
+C    CALOWP ( ISELECTLAY, LBOT, WAMNT, P, T, SECANG, WAZOP, WAVGOP,
 C       WAANG, LOPMIN, LOPMAX, LOPUSE, H2OPRD, LOPLOW, DAOP )
 
 
 !INPUT PARAMETERS:
 C    type      name    purpose                     units
 C    --------  ------  --------------------------  ---------------------
+C    INTEGER   ISELECTLAY do all (-1) or one
 C    INTEGER   LBOT    bottom layer number         none
 C    REAL arr  WAMNT   profile layer water         kiloMoles/cm^2
 C    REAL arr  P       layer pressures             atmospheres
@@ -98,7 +99,7 @@ C                                 of MAXLAY
 !END====================================================================
 
 C      =================================================================
-       SUBROUTINE CALOWP ( LBOT, WAMNT, P, T, SECANG, WAZOP, WAVGOP,
+       SUBROUTINE CALOWP (ISELECTLAY, LBOT, WAMNT, P, T, SECANG, WAZOP, WAVGOP,
      $    WAANG, LOPMIN, LOPMAX, LOPUSE, H2OPRD, LOPLOW, DAOP )
 C      =================================================================
 
@@ -124,6 +125,7 @@ C-----------------------------------------------------------------------
 C      ARGUMENTS
 C-----------------------------------------------------------------------
 C      Input
+       INTEGER   ISELECTLAY
        INTEGER   LBOT
        REAL  WAMNT(MAXLAY)
        REAL      P(MAXLAY)
@@ -165,7 +167,8 @@ C-----------------------------------------------------------------------
        REAL  ANGOP
        LOGICAL   LAST
 
-
+       INTEGER LMIN,LMAX
+       
 C-----------------------------------------------------------------------
 C      SAVE STATEMENTS
 C-----------------------------------------------------------------------
@@ -186,7 +189,14 @@ C
 C      ---------------------------------------
 C      Calculate raw predictors for all layers
 C      ---------------------------------------
-       DO L=1,LBOT
+       IF (ISELECTLAY .LT. 0) THEN
+         LMIN = 1
+	 LMAX = LBOT
+       ELSE
+         LMIN = ISELECTLAY
+	 LMAX = ISELECTLAY
+       END IF
+       DO L=LMIN,LMAX
 C
 C         Layer amount*angle
           WAANG(L)=WAMNT(L)*SECANG(L)

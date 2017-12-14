@@ -140,8 +140,71 @@ for ii = 1 : numprof
   flen = fread(fid, 1, 'integer*4');
   xjac = fread(fid, nchan, 'real*4');
   flen = fread(fid, 1, 'integer*4');
-  
+
   cldjac(4,:,ii) = xjac';  
+
+  %%%%%%%%%%%%
+  %% T jac
+  flen = fread(fid, 1, 'integer*4');
+  ixprof = fread(fid, 1, 'integer*4');
+  itype   = fread(fid, 1, 'integer*4');
+  flen = fread(fid, 1, 'integer*4');
+  if ixprof ~= ii
+    [ixprof ii]
+    error('reading T(z) jac ixprof ~= ii')
+  end
+  if itype ~= -100
+    [itype]
+    error('reading T(z) jac itype ~= -100')
+  end
+  for jj = 1 : 100
+    flen = fread(fid, 1, 'integer*4');
+    xjac = fread(fid, nchan, 'real*4');
+    flen = fread(fid, 1, 'integer*4');
+    Tjac(jj,:,ii) = xjac';  
+  end
+
+  %%%%%%%%%%%%
+  %% WV jac
+  flen = fread(fid, 1, 'integer*4');
+  ixprof = fread(fid, 1, 'integer*4');
+  itype   = fread(fid, 1, 'integer*4');
+  flen = fread(fid, 1, 'integer*4');
+  if ixprof ~= ii
+    [ixprof ii]
+    error('reading WV(z) jac ixprof ~= ii')
+  end
+  if itype ~= +100
+    [itype]
+    error('reading WV(z) jac itype ~= +100')
+  end
+  for jj = 1 : 100
+    flen = fread(fid, 1, 'integer*4');
+    xjac = fread(fid, nchan, 'real*4');
+    flen = fread(fid, 1, 'integer*4');
+    WVjac(jj,:,ii) = xjac';  
+  end
+
+  %%%%%%%%%%%%
+  %% O3 jac
+  flen = fread(fid, 1, 'integer*4');
+  ixprof = fread(fid, 1, 'integer*4');
+  itype   = fread(fid, 1, 'integer*4');
+  flen = fread(fid, 1, 'integer*4');
+  if ixprof ~= ii
+    [ixprof ii]
+    error('reading O3(z) jac ixprof ~= ii')
+  end
+  if itype ~= +300
+    [itype]
+    error('reading O3(z) jac itype ~= +300')
+  end
+  for jj = 1 : 100
+    flen = fread(fid, 1, 'integer*4');
+    xjac = fread(fid, nchan, 'real*4');
+    flen = fread(fid, 1, 'integer*4');
+    O3jac(jj,:,ii) = xjac';  
+  end
 
 end
 
