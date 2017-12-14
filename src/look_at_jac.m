@@ -98,9 +98,17 @@ cldjacNew = rad2bt(vchan,squeeze(cldjac(4,:,:)))-rad2bt(vchan,r0);
 figure(1); plot(vchan,cldjacOld); figure(2); plot(vchan,cldjacNew); figure(3); plot(vchan,cldjacOld-cldjacNew);
 
 %% compare T jacs for profile 1
-TjacNew = squeeze(Tjac(:,:,1)); TjacNew = TjacNew'; TjacNew = rad2bt(vchan,TjacNew)-rad2bt(vchan,r0(:,1))*ones(1,100);
+iProf = 1;
+TjacNew = squeeze(Tjac(:,:,iProf)); TjacNew = TjacNew'; TjacNew = rad2bt(vchan,TjacNew)-rad2bt(vchan,r0(:,iProf))*ones(1,100);
+nlays = p0.nlevs(iProf)-1;
 for ii = 1 : 100
-  TjacOld(:,ii) = rad2bt(vchan,squeeze(raaT(ii,:,1))')-rad2bt(vchan,r0(:,1));
+  TjacOld(:,ii) = rad2bt(vchan,squeeze(raaT(ii,:,iProf))')-rad2bt(vchan,r0(:,iProf));
 end
-figure(1); pcolor(vchan,1:97,TjacOld(:,1:97)'); shading flat; colormap jet; colorbar; set(gca,'ydir','reverse')
-figure(2); pcolor(vchan,1:97,TjacNew(:,1:97)'); shading flat; colormap jet; colorbar; set(gca,'ydir','reverse')
+figure(1); pcolor(vchan,1:nlays,TjacOld(:,1:nlays)'); shading flat; colormap jet; colorbar; set(gca,'ydir','reverse'); cx = caxis;
+figure(2); pcolor(vchan,1:nlays,TjacNew(:,1:nlays)'); shading flat; colormap jet; colorbar; set(gca,'ydir','reverse'); caxis(cx);
+figure(3); plot(h.vchan,TjacOld(:,81),'.-',h.vchan,TjacNew(:,81)); title('lay 81')
+figure(4); plot(h.vchan,TjacOld(:,nlays-2),'.-',h.vchan,TjacNew(:,nlays-2)); title(['lay ' num2str(nlays-2)])
+figure(5); plot(h.vchan,TjacOld(:,nlays-1),'.-',h.vchan,TjacNew(:,nlays-1)); title(['lay ' num2str(nlays-1)])
+figure(6); plot(h.vchan,TjacOld(:,nlays-0),'.-',h.vchan,TjacNew(:,nlays-0)); title(['lay ' num2str(nlays-0)])
+xyz = squeeze(Tjac(:,:,iProf)); xyz = xyz'; xyz = rad2bt(vchan,xyz(:,nlays));
+figure(7); plot(h.vchan,rad2bt(h.vchan,r0(:,iProf)),'.-',h.vchan,xyz); title(['calculated rads0 and at lay ' num2str(nlays-0)])

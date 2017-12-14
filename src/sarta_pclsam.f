@@ -321,9 +321,7 @@ C      for RDRTP; profile to calculate
        REAL  OAMNTJAC(MAXLAY) ! prof layer ozone (O3) amount
        INTEGER IJAC           ! loop index for jac
        INTEGER ISELECTLAY     ! do we do all layers???
-       INTEGER IXJAC          
        
-C
 C      for surface
        INTEGER   LBOT             ! bottom layer index number
        INTEGER  NEMIS             ! # of emis pts
@@ -372,6 +370,39 @@ C      for CALPAR
        REAL HNOMLT(MAXLAY)        ! HNO3 perturbation multiplier
        REAL N2OMLT(MAXLAY)        ! N2O perturbation multiplier
        REAL CO2TOP                ! top layers CO2 mixing ratio
+c
+c original values
+       REAL FIXMUL0(MAXLAY)        ! "fixed" amount multiplier (~1)
+       REAL CONPRD0( N1CON,MAXLAY) ! water continuum predictors
+       REAL FPRED10( N1FIX,MAXLAY) ! set1 "fixed" predictors
+       REAL FPRED20( N2FIX,MAXLAY) ! set2 "fixed" predictors
+       REAL FPRED30( N3FIX,MAXLAY) ! set3 "fixed" predictors
+       REAL FPRED40( N4FIX,MAXLAY) ! set4 "fixed" predictors
+       REAL FPRED50( N5FIX,MAXLAY) ! set5 "fixed" predictors
+       REAL FPRED60( N6FIX,MAXLAY) ! set6 "fixed" predictors
+       REAL FPRED70( N7FIX,MAXLAY) ! set7 "fixed" predictors
+       REAL WPRED10( N1H2O,MAXLAY) ! set1 water predictors
+       REAL WPRED20( N2H2O,MAXLAY) ! set2 water predictors
+       REAL WPRED30( N3H2O,MAXLAY) ! set3 water predictors
+       REAL WPRED40( N4H2O,MAXLAY) ! set4 water predictors
+       REAL WPRED50( N5H2O,MAXLAY) ! set5 water predictors
+       REAL WPRED60( N6H2O,MAXLAY) ! set6 water predictors
+       REAL WPRED70( N7H2O,MAXLAY) ! set7 water predictors
+       REAL OPRED10(  N1O3,MAXLAY) ! set1 ozone predictors
+       REAL OPRED20(  N2O3,MAXLAY) ! set2 ozone predictors
+       REAL OPRED40(  N4O3,MAXLAY) ! set4 ozone predictors
+       REAL OPRED50(  N5O3,MAXLAY) ! set5 ozone predictors
+       REAL OPRED60(  N6O3,MAXLAY) ! set6 ozone predictors
+       REAL OPRED70(  N7O3,MAXLAY) ! set7 ozone predictors
+       REAL MPRED30( N3CH4,MAXLAY) ! set3 methane predictors
+       REAL CPRED40(  N4CO,MAXLAY) ! set4 carbon monoxide predictors
+       REAL TRCPRD0(NTRACE,MAXLAY) ! trace gas pert perdictors
+       REAL CO2MLT0(MAXLAY)        ! CO2 perturbation multiplier
+       REAL SO2MLT0(MAXLAY)        ! SO2 perturbation multiplier
+       REAL HNOMLT0(MAXLAY)        ! HNO3 perturbation multiplier
+       REAL N2OMLT0(MAXLAY)        ! N2O perturbation multiplier
+       REAL CO2TOP0                ! top layers CO2 mixing ratio
+       
 C
 C      for CALOWP
        REAL  WAANG(MAXLAY)
@@ -385,6 +416,8 @@ C
 C      for CALT
        REAL    TAU(MAXLAY,MXCHAN) ! chan layer effective optical depth
        REAL   TAUZ(MAXLAY,MXCHAN) ! chan surface-to-space trans
+       REAL   TAU0(MAXLAY,MXCHAN) ! chan layer effective optical depth, copy
+       REAL  TAUZ0(MAXLAY,MXCHAN) ! chan surface-to-space trans, copy
        REAL   WAOP(MXOWLY)        ! OPTRAN abs coef scaling factor
 C
 C      for SETEMS
@@ -400,12 +433,12 @@ C      for SETEMS
 C
 C      for CALRAD
        REAL SUNFAC         ! sun solid angles times cosine at surface
-       REAL RPLNCK(MAXLAY) ! layer Planck
-       REAL RSURFE         ! surface emission
-       REAL RSURFC         ! black cloud surface emission
-       REAL  TRANL(MAXLAY) ! clear air layer transmittance
-       REAL  TRANZ(MXCHAN) ! clear air layer-to-space transmittance
-       REAL  TRANS(MXCHAN) ! clear air total reflected solar trans
+c       REAL RPLNCK(MAXLAY) ! layer Planck
+c       REAL RSURFE         ! surface emission
+c       REAL RSURFC         ! black cloud surface emission
+c       REAL  TRANL(MAXLAY) ! clear air layer transmittance
+c       REAL  TRANZ(MXCHAN) ! clear air layer-to-space transmittance
+c       REAL  TRANS(MXCHAN) ! clear air total reflected solar trans
        REAL  TSURF         ! surface temperature
        REAL    RAD(MXCHAN) ! chan radiance
 C
@@ -422,6 +455,7 @@ C      Other variables for the sun
        REAL SECSUN(MAXLAY) ! secant of effective sun local path angle
        REAL DISTES         ! distance of Earth from the sun
        REAL TAUZSN(MAXLAY,MXCHAN) ! sun space-to-surface-to-space OD
+       REAL TAUZSN0(MAXLAY,MXCHAN) ! sun space-to-surface-to-space OD       
        LOGICAL DOSUN       ! do sun calc?
 C
 C      for satellite viewing angle
@@ -465,9 +499,9 @@ C      for GETMIE
        LOGICAL LBLAC2  ! black cloud2? {Mie cloud if false}
        INTEGER INDMI1  ! index in MIETYP for CTYPE1
        INTEGER INDMI2  ! index in MIETYP for CTYPE2
-       INTEGER  IERR1  ! error level of CTYPE1/MIETYP match
-       INTEGER  IERR2  ! error level of CTYPE2/MIETYP match
-C
+c       INTEGER  IERR1  ! error level of CTYPE1/MIETYP match
+c       INTEGER  IERR2  ! error level of CTYPE2/MIETYP match
+
 C      for CCPREP cloud1
        INTEGER LCBOT1         ! layer containing cloud bottom
        INTEGER LCTOP1         ! layer containing cloud top
@@ -476,7 +510,7 @@ C      for CCPREP cloud1
        REAL TCBOT1            ! temperature at cloud bottom
        REAL TCTOP1            ! temperature at cloud top
        REAL MASEC1            ! mean cloud view angle secant
-       REAL MASUN1            ! mean cloud sun-only angle secant
+c       REAL MASUN1            ! mean cloud sun-only angle secant
        REAL CFRCL1(MAXLAY)    ! fraction of cloud in layer
        REAL G_ASY1(MXCHAN)    ! "g" asymmetry
        REAL NEXTO1(MXCHAN)    ! nadir extinction optical depth
@@ -490,7 +524,7 @@ C      for CCPREP cloud2
        REAL TCBOT2            ! temperature at cloud bottom
        REAL TCTOP2            ! temperature at cloud top
        REAL MASEC2            ! mean cloud view angle secant
-       REAL MASUN2            ! mean cloud sun-only angle secant
+c       REAL MASUN2            ! mean cloud sun-only angle secant
        REAL CFRCL2(MAXLAY)    ! fraction of cloud in layer
        REAL G_ASY2(MXCHAN)    ! "g" asymmetry
        REAL NEXTO2(MXCHAN)    ! nadir extinction optical depth
@@ -507,9 +541,9 @@ C      used locally only
        REAL RJUNK2         ! another junk/work
        REAL CO2PPM         ! Profile mean dry air CO2 mixing ratio
        REAL PLAY(MAXLAY)   ! layer mean pressure
-       REAL C1V3           ! rad constant c1 times freq^3
-       REAL C2V            ! rad constant c2 times freq
-       REAL VSTORE(6)      ! temporary storage for various variables
+c       REAL C1V3           ! rad constant c1 times freq^3
+c       REAL C2V            ! rad constant c2 times freq
+c       REAL VSTORE(6)      ! temporary storage for various variables
 C
 C      Profile data structure
        INTEGER  ISTAT
@@ -518,7 +552,6 @@ C      Profile data structure
        RECORD /RTPATTR/ HATT(MAXNATTR)  ! header attributes
        RECORD /RTPATTR/ PATT(MAXNATTR)  ! profile attributes
 C
-
        INTEGER      J,K       ! jacobian loop counters
        INTEGER IDOJACOB       ! should we do jacobians
        INTEGER IOUNJ          ! jacobian output filenumber
@@ -537,7 +570,7 @@ C      Boundary pressure levels
        REAL PLEV(MAXLAY+1)
 C
 C      for function QIKEXP
-       REAL QIKEXP
+c       REAL QIKEXP
 
 C-----------------------------------------------------------------------
 C      SAVE STATEMENTS
@@ -921,6 +954,7 @@ C
        ITZLAYJAC   = -1  !! not yet done
        IWVZLAYJAC  = -1  !! not yet done
        IO3ZLAYJAC  = -1  !! not yet done       
+       CO2TOP0     = 0.0 !! not yet done
        
  77    CONTINUE   !!! come back here if JACOBIANS needed
  
@@ -990,7 +1024,7 @@ C         ---------------------------------------------
 C         Calculate the fast trans predictors *for sun*
 C         ---------------------------------------------
 C
-          CALL SUNPAR ( LBOT,
+          CALL SUNPAR ( ISELECTLAY, LBOT,
      $       RTEMP, RWAMNT, ROAMNT, RCAMNT,
      $        TEMPJAC,  WAMNTJAC,  OAMNTJAC,  CAMNT,
      $       RPRES,  SECSUN, CONPRD,
@@ -1059,7 +1093,7 @@ C      Calculate cloudy radiance
      $        NEMIS, FEMIS, XEMIS, XRHO,
      $    LRHOT, LBOT, INDMI1,INDMI2,
      $    EMIS, RHOSUN, RHOTHR, 
-     $                NCHNTE, CLISTN, COEFN, CO2TOP, 
+     $                NCHNTE, CLISTN, COEFN, max(CO2TOP,CO2TOP0), 
      $                TEMPJAC,TAU,TAUZ,TAUZSN,
      $                TSURF,DOSUN, BLMULT, SECSUN, SECANG, COSDAZ,
      $                SUNFAC,HSUN, LABOVE, COEFF,
@@ -1081,6 +1115,18 @@ C      -------------------
        END IF
 C
        IF ((IDOJACOB .GT. 0) .AND. (IDOCOLJAC .LT. 0)) THEN
+	 CALL copypredictors(+1,NCHAN,
+     $     TAU,TAUZ,TAUZSN,CO2TOP,
+     $	   FIXMUL,CONPRD,FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
+     $     WPRED1,WPRED2,WPRED3,WPRED4,WPRED5,WPRED6,WPRED7,
+     $     OPRED1,OPRED2,OPRED4,OPRED5,OPRED6,OPRED7,
+     $     MPRED3,CPRED4,TRCPRD,CO2MLT,SO2MLT,HNOMLT,N2OMLT,
+     $     TAU0,TAUZ0,TAUZSN0,CO2TOP0,
+     $	   FIXMUL0,CONPRD0,FPRED10,FPRED20,FPRED30,FPRED40,FPRED50,FPRED60,FPRED70,
+     $     WPRED10,WPRED20,WPRED30,WPRED40,WPRED50,WPRED60,WPRED70,
+     $     OPRED10,OPRED20,OPRED40,OPRED50,OPRED60,OPRED70,
+     $     MPRED30,CPRED40,TRCPRD0,CO2MLT0,SO2MLT0,HNOMLT0,N2OMLT0)
+	 
          IDOCOLJAC = +1  !! doing coljacs       
          CALL ColJac(
      $        RAD, IPROF, HEAD, PROF, INDCHN, NCHAN, FREQ, DST, DQ, IOUNJ, 
@@ -1093,7 +1139,7 @@ C
      $        NEMIS, FEMIS, XEMIS, XRHO,
      $    LRHOT, LBOT, INDMI1,INDMI2,
      $    EMIS, RHOSUN, RHOTHR, 
-     $                NCHNTE, CLISTN, COEFN, CO2TOP, 
+     $                NCHNTE, CLISTN, COEFN, max(CO2TOP,CO2TOP0), 
      $                TEMPJAC,TAU,TAUZ,TAUZSN,
      $                TSURF,DOSUN, BLMULT, SECSUN, SECANG, COSDAZ,
      $                SUNFAC,HSUN, LABOVE, COEFF,
@@ -1116,15 +1162,30 @@ C
  771     CONTINUE
          IDOTZJAC = IDOTZJAC * -1
 	 IF ((IDOTZJAC .GT. 0) .AND. (ITZLAYJAC .LT. LBOT)) THEN
- 	   ITZLAYJAC = ITZLAYJAC + 1
-	   print *,'IPROF,Tlayjac,LBOT = ',IPROF,ITZLAYJAC,LBOT
+
+	   CALL copypredictors(-1,NCHAN,
+     $       TAU,TAUZ,TAUZSN,CO2TOP,
+     $	     FIXMUL,CONPRD,FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
+     $       WPRED1,WPRED2,WPRED3,WPRED4,WPRED5,WPRED6,WPRED7,
+     $       OPRED1,OPRED2,OPRED4,OPRED5,OPRED6,OPRED7,
+     $       MPRED3,CPRED4,TRCPRD,CO2MLT,SO2MLT,HNOMLT,N2OMLT,
+     $       TAU0,TAUZ0,TAUZSN0,CO2TOP0,
+     $	     FIXMUL0,CONPRD0,FPRED10,FPRED20,FPRED30,FPRED40,FPRED50,FPRED60,FPRED70,
+     $       WPRED10,WPRED20,WPRED30,WPRED40,WPRED50,WPRED60,WPRED70,
+     $       OPRED10,OPRED20,OPRED40,OPRED50,OPRED60,OPRED70,
+     $       MPRED30,CPRED40,TRCPRD0,CO2MLT0,SO2MLT0,HNOMLT0,N2OMLT0)
+
            DO IJAC = 1,MAXLAY
              TEMPJAC(IJAC)  = TEMP(IJAC)
              WAMNTJAC(IJAC) = WAMNT(IJAC)
              OAMNTJAC(IJAC) = OAMNT(IJAC)	 
            END DO
+
+ 	   ITZLAYJAC = ITZLAYJAC + 1
+	   print *,'IPROF,Tlayjac,LBOT = ',IPROF,ITZLAYJAC,LBOT
   	   TEMPJAC(ITZLAYJAC) = TEMPJAC(ITZLAYJAC) + DST
-	   ISELECTLAY = ITZLAYJAC	 
+	   ISELECTLAY = ITZLAYJAC
+	   ISELECTLAY = -1	   
   	   GOTO 77
 	 ELSE
            write(IOUNJ) (1000.0*RAD(J),J=1,NCHAN)
@@ -1133,8 +1194,8 @@ C
 	   ELSE
 	     print *,'done with Tz IPROF,Tlayjac,LBOT = ',IPROF,ITZLAYJAC,LBOT
 	     IF (LBOT+1 .LE. 100) THEN
-  	       DO K = LBOT+1,100
-  	         print *,'last few IPROF,Tlayjac,LBOT = ',K,ITZLAYJAC,LBOT
+  	       DO IJAC = LBOT+1,100
+  	         print *,'last few IPROF,Tlayjac,LBOT = ',IJAC,ITZLAYJAC,LBOT
                  write(IOUNJ) (000.0*RAD(J),J=1,NCHAN)
 	       END DO
              END IF	     
@@ -1145,13 +1206,13 @@ C
        IF (IDOJACOB .GT. 0) THEN
          !! WV JAC
          write(IOUNJ) IPROF,+100
-	 DO K = 1,100
+	 DO IJAC = 1,100
            write(IOUNJ) (1000.0*RAD(J),J=1,NCHAN)
 	 END DO
 
          !! O3 JAC
          write(IOUNJ) IPROF,+300
-	 DO K = 1,100
+	 DO IJAC = 1,100
            write(IOUNJ) (1000.0*RAD(J),J=1,NCHAN)
 	 END DO
 

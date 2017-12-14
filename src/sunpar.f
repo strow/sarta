@@ -20,7 +20,7 @@ C    dependent predictors for a profile at the effective sun angle.
 
 
 !CALL PROTOCOL:
-C    SUNPAR ( LBOT, RTEMP, RWAMNT, ROAMNT, RCAMNT,
+C    SUNPAR ( ISELECTLAY, LBOT, RTEMP, RWAMNT, ROAMNT, RCAMNT,
 C  $                PTEMP, PWAMNT, POAMNT, PCAMNT,
 C  $          PRES,   SECANG, CONPRD,
 C  $          FPRED4, FPRED5, FPRED6, FPRED7,
@@ -32,6 +32,7 @@ C  $          CPRED4, TRCPRD )
 !INPUT PARAMETERS:
 C    type      name    purpose                     units
 C    --------  ------  --------------------------  ---------------------
+C    INT       ISELECTLAY do all or only one layer none
 C    INTEGER   LBOT    bottom layer number         none
 C    REAL arr  PTEMP   profile temperature         Kelvin
 C    REAL arr  PCAMNT  prof carbon monoxide amnt   kiloMoles/cm^2
@@ -227,7 +228,7 @@ C    13 Oct 2005 S.Hannon/C.Barnet bug fix: assign TRCPRD 1-7 (was 1-4)
 !END====================================================================
 
 C      =================================================================
-       SUBROUTINE SUNPAR ( LBOT,
+       SUBROUTINE SUNPAR ( ISELECTLAY, LBOT,
      $    RTEMP,  RWAMNT, ROAMNT, RCAMNT,
      $    PTEMP,  PWAMNT, POAMNT, PCAMNT,
      $    PRES,   SECANG, CONPRD,
@@ -260,6 +261,7 @@ C-----------------------------------------------------------------------
 C      ARGUMENTS
 C-----------------------------------------------------------------------
 C      Input
+       INTEGER ISELECTLAY
        INTEGER   LBOT
        REAL  RTEMP(MAXLAY)
        REAL RWAMNT(MAXLAY)
@@ -322,7 +324,8 @@ c       REAL    A_F ! unused so removed 14 Feb 2001
        REAL CJUNKS
        REAL CJUNKZ
 
-
+       INTEGER LMIN,LMAX
+       
 C-----------------------------------------------------------------------
 C      SAVE STATEMENTS
 C-----------------------------------------------------------------------
@@ -334,6 +337,13 @@ C***********************************************************************
 C                    EXECUTABLE CODE
 C***********************************************************************
 C***********************************************************************
+       IF (ISELECTLAY .LT. 0) THEN
+         LMIN = 1
+	 LMAX = LBOT
+       ELSE
+         LMIN = ISELECTLAY
+	 LMAX = ISELECTLAY
+       END IF
 C
 C
 C      Initialize the sum terms to zero
@@ -347,7 +357,7 @@ C
 C      --------------------
 C      Loop over the layers
 C      --------------------
-       DO L=1,LBOT
+       DO L=LMIN,LMAX
 C
 C         ---------------------------
 C         Calculate the basic profile
@@ -358,6 +368,12 @@ C
              PDP=PRES(1)*( PRES(2) - PRES(1))
              TRZ=0.0E+0
           ELSE
+            IF (LMIN .EQ. LMAX) THEN
+	       !!!! sergio did this
+               DT=PTEMP(L-1) - RTEMP(L-1)	  
+               TR=PTEMP(L-1)/RTEMP(L-1)
+	     END IF
+	  
              PDP=PRES(L)*( PRES(L) - PRES(L-1) )
              PNORM=PNORM + PDP
 C

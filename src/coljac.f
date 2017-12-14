@@ -36,7 +36,6 @@ C      Boundary pressure levels
        REAL    TAU(MAXLAY,MXCHAN) ! chan layer effective optical depth
        REAL   TAUZ(MAXLAY,MXCHAN) ! chan surface-to-space trans
        REAL TAUZSN(MAXLAY,MXCHAN) ! sun space-to-surface-to-space OD       
-       REAL PLAY(MAXLAY)   ! layer mean pressure
 
        REAL     DQ         ! amount of cloud perturb
        REAL     DST        ! amount of stemp perturb       
@@ -74,7 +73,7 @@ C      for CCPREP cloud1
        REAL TCBOT1            ! temperature at cloud bottom
        REAL TCTOP1            ! temperature at cloud top
        REAL MASEC1            ! mean cloud view angle secant
-       REAL MASUN1            ! mean cloud sun-only angle secant
+c       REAL MASUN1            ! mean cloud sun-only angle secant
        REAL CFRCL1(MAXLAY)    ! fraction of cloud in layer
        REAL G_ASY1(MXCHAN)    ! "g" asymmetry
        REAL NEXTO1(MXCHAN)    ! nadir extinction optical depth
@@ -88,7 +87,7 @@ C      for CCPREP cloud2
        REAL TCBOT2            ! temperature at cloud bottom
        REAL TCTOP2            ! temperature at cloud top
        REAL MASEC2            ! mean cloud view angle secant
-       REAL MASUN2            ! mean cloud sun-only angle secant
+c       REAL MASUN2            ! mean cloud sun-only angle secant
        REAL CFRCL2(MAXLAY)    ! fraction of cloud in layer
        REAL G_ASY2(MXCHAN)    ! "g" asymmetry
        REAL NEXTO2(MXCHAN)    ! nadir extinction optical depth
@@ -103,7 +102,7 @@ C      for RDCLDT
        
 C      for surface
        INTEGER  NEMIS             ! # of emis pts
-       REAL  PSURF                ! surface pressure
+c       REAL  PSURF                ! surface pressure
        REAL  FEMIS(MXEMIS)        ! emis freq pts
        REAL  XEMIS(MXEMIS)        ! emis pts
        REAL   XRHO(MXEMIS)        ! reflec pts
@@ -144,8 +143,8 @@ C      for GETMIE
        LOGICAL LBLAC2  ! black cloud2? {Mie cloud if false}
        INTEGER INDMI1  ! index in MIETYP for CTYPE1
        INTEGER INDMI2  ! index in MIETYP for CTYPE2
-       INTEGER  IERR1  ! error level of CTYPE1/MIETYP match
-       INTEGER  IERR2  ! error level of CTYPE2/MIETYP match
+c       INTEGER  IERR1  ! error level of CTYPE1/MIETYP match
+c       INTEGER  IERR2  ! error level of CTYPE2/MIETYP match
 
        REAL SECANG(MAXLAY)        ! local path angle secant
        REAL SECSUN(MAXLAY) ! secant of effective sun local path angle
@@ -163,24 +162,19 @@ C      for GETMIE
        
 c local
 C      For clear/cloudy radiances
-       REAL   RAD0         ! radiance no clouds
-       REAL  RADC1         ! radiance cloud1
-       REAL  RADC2         ! radiance cloud2
-       REAL RADC12         ! radiance cloud1+cloud2
-
-       REAL RJUNK1         ! junk/work
-       REAL RJUNK2         ! another junk/work
-
-       REAL RPLNCK(MAXLAY) ! layer Planck
-       REAL  TRANL(MAXLAY) ! clear air layer transmittance
-       REAL  TRANZ(MXCHAN) ! clear air layer-to-space transmittance
-       REAL  TRANS(MXCHAN) ! clear air total reflected solar trans
-       REAL RSURFE         ! surface emission
-       REAL RSURFC         ! black cloud surface emission
-       
-       REAL VSTORE(6)      ! temporary storage for various variables
-       REAL C1V3           ! rad constant c1 times freq^3
-       REAL C2V            ! rad constant c2 times freq
+c       REAL   RAD0         ! radiance no clouds
+c       REAL  RADC1         ! radiance cloud1
+c       REAL  RADC2         ! radiance cloud2
+c       REAL RADC12         ! radiance cloud1+cloud2
+c       REAL RPLNCK(MAXLAY) ! layer Planck
+c       REAL  TRANL(MAXLAY) ! clear air layer transmittance
+c       REAL  TRANZ(MXCHAN) ! clear air layer-to-space transmittance
+c       REAL  TRANS(MXCHAN) ! clear air total reflected solar trans
+c       REAL RSURFE         ! surface emission
+c       REAL RSURFC         ! black cloud surface emission
+c       REAL VSTORE(6)      ! temporary storage for various variables
+c       REAL C1V3           ! rad constant c1 times freq^3
+c       REAL C2V            ! rad constant c2 times freq
 
        INTEGER IOUNJ       !outpout unit for jacs
        INTEGER J

@@ -11,7 +11,7 @@
      $    LRHOT, LBOT, INDMI1,INDMI2,
      $    EMIS, RHOSUN, RHOTHR, 
      $                NCHNTE, CLISTN, COEFN, CO2TOP, 
-     $                TEMP,TAU,TAUZ,TAUZSN,
+     $                TEMP, TAU, TAUZ, TAUZSN,
      $                TSURF,DOSUN, BLMULT, SECSUN, SECANG, COSDAZ,
      $                SUNFAC,HSUN, LABOVE, COEFF,
      $                FCLEAR, TEMPC1, TEMPC2, 
@@ -184,7 +184,8 @@ C      For clear/cloudy radiances
        REAL C1V3           ! rad constant c1 times freq^3
        REAL C2V            ! rad constant c2 times freq
 
-       INTEGER I,L,J
+c       INTEGER I,L,J
+       INTEGER I,L
        
 C      for function QIKEXP
        REAL QIKEXP

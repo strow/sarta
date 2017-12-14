@@ -196,6 +196,10 @@ C      ---------------------------------------
          LMIN = ISELECTLAY
 	 LMAX = ISELECTLAY
        END IF
+
+         LMIN = 1
+	 LMAX = LBOT
+
        DO L=LMIN,LMAX
 C
 C         Layer amount*angle
