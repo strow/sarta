@@ -1080,7 +1080,6 @@ C
 
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C      Calculate cloudy radiance
- 88    CONTINUE
  
        CALL SetCldDoRT(
      $        RAD, IPROF, HEAD, PROF, INDCHN, NCHAN, FREQ, 0, DQ,
@@ -1184,8 +1183,8 @@ C
  	   ITZLAYJAC = ITZLAYJAC + 1
 	   print *,'IPROF,Tlayjac,LBOT = ',IPROF,ITZLAYJAC,LBOT
   	   TEMPJAC(ITZLAYJAC) = TEMPJAC(ITZLAYJAC) + DST
-	   ISELECTLAY = ITZLAYJAC
-	   ISELECTLAY = -1	   
+	   !ISELECTLAY = -1	   !!! testing, but slow since it makes sarta re-run and re-run
+	   ISELECTLAY = ITZLAYJAC	   
   	   GOTO 77
 	 ELSE
            write(IOUNJ) (1000.0*RAD(J),J=1,NCHAN)

@@ -197,8 +197,8 @@ C      ---------------------------------------
 	 LMAX = ISELECTLAY
        END IF
 
-         LMIN = 1
-	 LMAX = LBOT
+       LMIN = 1
+       LMAX = LBOT
 
        DO L=LMIN,LMAX
 C

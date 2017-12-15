@@ -556,13 +556,72 @@ C      --------------------
          LMIN = ISELECTLAY
 	 LMAX = ISELECTLAY
        END IF
-       DO L=LMIN,LMAX
+
+       IF (LMIN .EQ. LMAX) THEN
+         DO L = 1,LMIN
+           IF (L .EQ. 1) THEN
+             PDP=PRES(1)*( PRES(2) - PRES(1))
+             TRZ=0.0E+0
+             TAZ_O=0.0E+0
+             TAZ_M=0.0E+0
+           ELSE
+             PDP=PRES(L)*( PRES(L) - PRES(L-1) )	   
+  	     PNORM = PNORM + PDP
+	     !Note: TRZ, TOZ, and TMZ use layer-above terms
+	     TZ = TZ + PDP*TR
+	     TRZ = TZ/PNORM
+	     TOZ=TOZ + PDP*DT*A_O
+	     TAZ_O=TOZ/PNORM
+	     TMZ=TMZ + PDP*TR*A_M
+	     TAZ_M=TMZ/PNORM
+	   END IF
+
+           DT=PTEMP(L) - RTEMP(L)
+	   TR=PTEMP(L)/RTEMP(L)
+
+           A_W=PWAMNT(L)/RWAMNT(L)
+	   WZREF = WZREF + PDP*RWAMNT(L)
+	   WZ = WZ + PDP*PWAMNT(L)
+	   AZ_W=WZ/WZREF
+
+C         Ozone terms
+          A_O=POAMNT(L)/ROAMNT(L)
+          XZREF=XZREF + ROAMNT(L)
+          XZ=XZ + POAMNT(L)
+          XZ_O=XZ/XZREF
+          OZREF=OZREF + PDP*ROAMNT(L)
+          OZ=OZ + PDP*POAMNT(L)
+          AZ_O=OZ/OZREF
+C
+C         Carbon monoxide terms
+          A_C=PCAMNT(L)/RCAMNT(L)
+          CZREF=CZREF + PDP*RCAMNT(L)
+          CZ=CZ + PDP*PCAMNT(L)
+          AZ_C=CZ/CZREF
+C
+C         Methane terms
+          A_M=PMAMNT(L)/RMAMNT(L)
+          MZREF=MZREF + PDP*RMAMNT(L)
+          MZ=MZ + PDP*PMAMNT(L)
+          AZ_M=MZ/MZREF
+
+          PWATER=KMOLE*PWAMNT(L)*PTEMP(L)/(STDDEN*STDTMP*100*DZREF(L))
+          A_F=( 1 - PMULT*PWATER/PRES(L) )/( FX(L)*GSCAL )
+
+c          print *,'quick',L,A_W,AZ_W,A_O,AZ_O,TZ,TRZ,TMZ,PNORM
+	 END DO
+c	 IF (LMIN .EQ. LBOT) stop
+       END IF
+       
+      DO L=LMIN,LMAX
 C
 C         ---------------------------
 C         Calculate the basic profile
 C         dependent predictors.
 C         ---------------------------
 C
+        IF (LMIN .NE. LMAX) THEN
+	  !! go ahead and compute things, else use the ones computed above
           IF (L .EQ. 1) THEN
              PDP=PRES(1)*( PRES(2) - PRES(1))
              TRZ=0.0E+0
@@ -628,6 +687,9 @@ C         Methane terms
           MZREF=MZREF + PDP*RMAMNT(L)
           MZ=MZ + PDP*PMAMNT(L)
           AZ_M=MZ/MZREF
+
+c          print *,'default',L,A_W,AZ_W,A_O,AZ_O,TZ,TRZ,TMZ,PNORM
+	END IF
 C
 C         ----------------------
 C         Load up the predictors
