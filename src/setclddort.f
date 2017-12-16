@@ -11,8 +11,8 @@
      $    LRHOT, LBOT, INDMI1,INDMI2,
      $    EMIS, RHOSUN, RHOTHR, 
      $                NCHNTE, CLISTN, COEFN, CO2TOP, 
-     $                TEMP, TAU, TAUZ, TAUZSN,
-     $                TSURF,DOSUN, BLMULT, SECSUN, SECANG, COSDAZ,
+     $                TEMP, TAU, TAUZ, TAUSN, TAUZSN,
+     $                TSURF,DOSUN, SUNFDG, BLMULT, SECSUN, SECANG, COSDAZ,
      $                SUNFAC,HSUN, LABOVE, COEFF,
      $                FCLEAR, TEMPC1, TEMPC2, 
      $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, 
@@ -36,6 +36,7 @@ C      Boundary pressure levels
        REAL   TEMP(MAXLAY) ! prof layer average temperature
        REAL    TAU(MAXLAY,MXCHAN) ! chan layer effective optical depth
        REAL   TAUZ(MAXLAY,MXCHAN) ! chan surface-to-space trans
+       REAL TAUSN(MAXLAY,MXCHAN) ! sun OD       
        REAL TAUZSN(MAXLAY,MXCHAN) ! sun space-to-surface-to-space OD       
        REAL PLAY(MAXLAY)   ! layer mean pressure
 
@@ -64,6 +65,7 @@ C      for SETEMS
        REAL CRHOT2(MXCHAN) ! chan thermal reflectivity cloud2
        
        REAL  TSURF         ! surface temperature
+       REAL  SUNFDG        ! sun fudge for large sun angles
        LOGICAL DOSUN       ! do sun calc?
        INTEGER   LBOT             ! bottom layer index number
        REAL BLMULT                ! bottom layer fractional multiplier
@@ -194,17 +196,36 @@ c>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 C
 c       REAL   TAUZ(MAXLAY,MXCHAN) ! chan surface-to-space trans
        L = 1
-       print *,'wahhh',L,TAUZ(L,1),TAU(L,1)       
        DO I = 1,NCHAN
          TAUZ(1,I)   = TAU(1,I)
        END DO
        DO L = 2,MAXLAY
-         print *,'wahhh',L,TAUZ(L,1),TAUZ(L-1,1) + TAU(L,1)
          DO I = 1,NCHAN
 	   TAUZ(L,I) = TAUZ(L-1,I) + TAU(L,I)
 	 END DO
        END DO
-c       stop
+
+       IF ((DOSUN .EQ. .TRUE.) .AND. (SUNFDG .GT. 1.0001)) THEN
+         L = 1
+         DO I = 1,NCHAN
+           TAUZSN(1,I)   = TAUSN(1,I)*SUNFDG
+         END DO
+         DO L = 2,MAXLAY
+           DO I = 1,NCHAN
+  	     TAUZSN(L,I) = TAUZSN(L-1,I) + TAUSN(L,I)*SUNFDG
+ 	   END DO
+         END DO
+       ELSE
+         L = 1
+         DO I = 1,NCHAN
+           TAUZSN(1,I)   = TAUSN(1,I)
+         END DO
+         DO L = 2,MAXLAY
+           DO I = 1,NCHAN
+  	     TAUZSN(L,I) = TAUZSN(L-1,I) + TAUSN(L,I)
+ 	   END DO
+         END DO       
+       END IF
        
 C      Get basic cloud parameters from input RTP
        CALL GETCLD( IPROF, HEAD, PROF,

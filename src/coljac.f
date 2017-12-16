@@ -10,8 +10,8 @@
      $    LRHOT, LBOT, INDMI1,INDMI2,
      $    EMIS, RHOSUN, RHOTHR, 
      $                NCHNTE, CLISTN, COEFN, CO2TOP, 
-     $                TEMP,TAU,TAUZ,TAUZSN,
-     $                TSURF,DOSUN, BLMULT, SECSUN, SECANG, COSDAZ,
+     $                TEMP,TAU,TAUZ,TAUSN,TAUZSN,
+     $                TSURF,DOSUN, SUNFDG, BLMULT, SECSUN, SECANG, COSDAZ,
      $                SUNFAC,HSUN, LABOVE, COEFF,
      $                FCLEAR, TEMPC1, TEMPC2, 
      $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, 
@@ -35,6 +35,7 @@ C      Boundary pressure levels
        REAL   TEMP(MAXLAY) ! prof layer average temperature
        REAL    TAU(MAXLAY,MXCHAN) ! chan layer effective optical depth
        REAL   TAUZ(MAXLAY,MXCHAN) ! chan surface-to-space trans
+       REAL TAUSN(MAXLAY,MXCHAN)  ! sun lay OD
        REAL TAUZSN(MAXLAY,MXCHAN) ! sun space-to-surface-to-space OD       
 
        REAL     DQ         ! amount of cloud perturb
@@ -62,6 +63,7 @@ C      for SETEMS
        
        REAL  TSURF         ! surface temperature
        LOGICAL DOSUN       ! do sun calc?
+       REAL    SUNFDG      ! fudge for large sun angles
        INTEGER   LBOT             ! bottom layer index number
        REAL BLMULT                ! bottom layer fractional multiplier
        
@@ -194,8 +196,8 @@ c************************************************************************
      $    LRHOT, LBOT, INDMI1,INDMI2,
      $    EMIS, RHOSUN, RHOTHR, 
      $                NCHNTE, CLISTN, COEFN, CO2TOP, 
-     $                TEMP,TAU,TAUZ,TAUZSN,
-     $                TSURF+DST,DOSUN, BLMULT, SECSUN, SECANG, COSDAZ,
+     $                TEMP,TAU,TAUZ,TAUSN,TAUZSN,
+     $                TSURF+DST,DOSUN, SUNFDG, BLMULT, SECSUN, SECANG, COSDAZ,
      $                SUNFAC,HSUN, LABOVE, COEFF,
      $                FCLEAR, TEMPC1, TEMPC2, 
      $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, 
@@ -220,8 +222,8 @@ c************************************************************************
      $    LRHOT, LBOT, INDMI1,INDMI2,
      $    EMIS, RHOSUN, RHOTHR, 
      $                NCHNTE, CLISTN, COEFN, CO2TOP, 
-     $                TEMP,TAU,TAUZ,TAUZSN,
-     $                TSURF,DOSUN, BLMULT, SECSUN, SECANG, COSDAZ,
+     $                TEMP,TAU,TAUZ,TAUSN,TAUZSN,
+     $                TSURF,DOSUN, SUNFDG, BLMULT, SECSUN, SECANG, COSDAZ,
      $                SUNFAC,HSUN, LABOVE, COEFF,
      $                FCLEAR, TEMPC1, TEMPC2, 
      $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, 
@@ -246,8 +248,8 @@ c************************************************************************
      $    LRHOT, LBOT, INDMI1,INDMI2,
      $    EMIS, RHOSUN, RHOTHR, 
      $                NCHNTE, CLISTN, COEFN, CO2TOP, 
-     $                TEMP,TAU,TAUZ,TAUZSN,
-     $                TSURF,DOSUN, BLMULT, SECSUN, SECANG, COSDAZ,
+     $                TEMP,TAU,TAUZ,TAUSN,TAUZSN,
+     $                TSURF,DOSUN, SUNFDG, BLMULT, SECSUN, SECANG, COSDAZ,
      $                SUNFAC,HSUN, LABOVE, COEFF,
      $                FCLEAR, TEMPC1, TEMPC2, 
      $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, 
@@ -272,8 +274,8 @@ c************************************************************************
      $    LRHOT, LBOT, INDMI1,INDMI2,
      $    EMIS, RHOSUN, RHOTHR, 
      $                NCHNTE, CLISTN, COEFN, CO2TOP, 
-     $                TEMP,TAU,TAUZ,TAUZSN,
-     $                TSURF,DOSUN, BLMULT, SECSUN, SECANG, COSDAZ,
+     $                TEMP,TAU,TAUZ,TAUSN,TAUZSN,
+     $                TSURF,DOSUN, SUNFDG, BLMULT, SECSUN, SECANG, COSDAZ,
      $                SUNFAC,HSUN, LABOVE, COEFF,
      $                FCLEAR, TEMPC1, TEMPC2, 
      $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, 
@@ -298,8 +300,8 @@ c************************************************************************
      $    LRHOT, LBOT, INDMI1,INDMI2,
      $    EMIS, RHOSUN, RHOTHR, 
      $                NCHNTE, CLISTN, COEFN, CO2TOP, 
-     $                TEMP,TAU,TAUZ,TAUZSN,
-     $                TSURF,DOSUN, BLMULT, SECSUN, SECANG, COSDAZ,
+     $                TEMP,TAU,TAUZ,TAUSN,TAUZSN,
+     $                TSURF,DOSUN, SUNFDG, BLMULT, SECSUN, SECANG, COSDAZ,
      $                SUNFAC,HSUN, LABOVE, COEFF,
      $                FCLEAR, TEMPC1, TEMPC2, 
      $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, 

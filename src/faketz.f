@@ -29,7 +29,7 @@ C    INTEGER   INDFAK  array indices for fake      none
 C    INTEGER   NFAKE   number of fake points       none
 C    REAL      SEC     angle secant for TAUZ       none
 C    REAL      SECFAK  angle secant for TAUZFK     none
-C    REAL arr  TAUZ    layer-to-space trans        none
+C    REAL arr  TAUZ    fake layer-to-space trans   none
 
 
 !OUTPUT PARAMETERS:

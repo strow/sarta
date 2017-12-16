@@ -452,10 +452,13 @@ C      Other variables for the sun
        REAL SUNCOS         ! cosine of sun zenith angle
        REAL SCOS1          ! cosine of sun zenith angle at layer1
        REAL SUNFDG         ! fudge factor for large solar angles
-       REAL SECSUN(MAXLAY) ! secant of effective sun local path angle
-       REAL DISTES         ! distance of Earth from the sun
+       REAL TAUSN(MAXLAY,MXCHAN) ! sun OD
+       REAL TAUSN0(MAXLAY,MXCHAN) ! sun OD
        REAL TAUZSN(MAXLAY,MXCHAN) ! sun space-to-surface-to-space OD
        REAL TAUZSN0(MAXLAY,MXCHAN) ! sun space-to-surface-to-space OD       
+       
+       REAL SECSUN(MAXLAY) ! secant of effective sun local path angle
+       REAL DISTES         ! distance of Earth from the sun
        LOGICAL DOSUN       ! do sun calc?
 C
 C      for satellite viewing angle
@@ -1038,8 +1041,8 @@ C         Calculate the layer transmittances *for sun*
 C         --------------------------------------------
 C
 C         Calc fake TAUZSN for sets 1, 2, and 3
-          CALL FAKETZ( NFAKE, INDFAK, LBOT, TAUZ, SECANG,
-     $       SECSUN, TAUZSN)
+          CALL FAKETZ( NFAKE, INDFAK, LBOT, TAU, TAUZ, SECANG,
+     $       SECSUN, TAUSN, TAUZSN)
 
 C
 C         Calculate TAUZSN for sets 4 thru 7
@@ -1047,33 +1050,34 @@ C
           CALL XCALT4(ISELECTLAY, INDCHN,   LBOT,  NCHN4, CLIST4,
      $        COEF4, FIXMUL, CONPRD, FPRED4, CPRED4, OPRED4, WPRED4,
      $       TRCPRD, INDCO2, COFCO2, CO2MLT, INDN2O, COFN2O, N2OMLT,
-     $       TAUZSN, TAUZSN )
+     $       TAUSN, TAUZSN )
 C            ^^^^^^  ^^^^^^
 C            dummy   actual
 C
           CALL XCALT5(ISELECTLAY, INDCHN,   LBOT,  NCHN5, CLIST5,
      $        COEF5, FIXMUL, CONPRD, FPRED5, WPRED5, OPRED5,
      $       TRCPRD, INDCO2, COFCO2, CO2MLT, INDN2O, COFN2O, N2OMLT,
-     $       TAUZSN, TAUZSN )
+     $       TAUSN, TAUZSN )
 C
           CALL XCALT6(ISELECTLAY, INDCHN,   LBOT,  NCHN6, CLIST6,
      $        COEF6, FIXMUL, CONPRD, FPRED6, WPRED6, OPRED6,
      $       TRCPRD, INDCO2, COFCO2, CO2MLT, INDSO2, COFSO2, SO2MLT,
-     $       INDN2O, COFN2O, N2OMLT, TAUZSN, TAUZSN )
+     $       INDN2O, COFN2O, N2OMLT,
+     $       TAUSN, TAUZSN )
 C
           CALL XCALT7(ISELECTLAY, INDCHN,   LBOT,  NCHN7, CLIST7,
      $        COEF7, FIXMUL, CONPRD, FPRED7, WPRED7, OPRED7,
      $       TRCPRD, INDCO2, COFCO2, CO2MLT, INDN2O, COFN2O, N2OMLT,
-     $       TAUZSN, TAUZSN )
+     $       TAUSN, TAUZSN )
 
 C
-          IF (SUNFDG .GT. 1.0001) THEN
-             DO I=1,NCHAN
-                DO L=1,LBOT
-                   TAUZSN(L,I)=TAUZSN(L,I)*SUNFDG
-                ENDDO
-             ENDDO
-          ENDIF
+c          IF (SUNFDG .GT. 1.0001) THEN
+c             DO I=1,NCHAN
+c                DO L=1,LBOT
+c                   TAUZSN(L,I)=TAUZSN(L,I)*SUNFDG
+c                ENDDO
+c             ENDDO
+c          ENDIF
 C
        ENDIF
 C
@@ -1093,8 +1097,8 @@ C      Calculate cloudy radiance
      $    LRHOT, LBOT, INDMI1,INDMI2,
      $    EMIS, RHOSUN, RHOTHR, 
      $                NCHNTE, CLISTN, COEFN, max(CO2TOP,CO2TOP0), 
-     $                TEMPJAC,TAU,TAUZ,TAUZSN,
-     $                TSURF,DOSUN, BLMULT, SECSUN, SECANG, COSDAZ,
+     $                TEMPJAC,TAU, TAUZ, TAUSN, TAUZSN,
+     $                TSURF,DOSUN, SUNFDG, BLMULT, SECSUN, SECANG, COSDAZ,
      $                SUNFAC,HSUN, LABOVE, COEFF,
      $                FCLEAR, TEMPC1, TEMPC2, 
      $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, 
@@ -1115,12 +1119,12 @@ C      -------------------
 C
        IF ((IDOJACOB .GT. 0) .AND. (IDOCOLJAC .LT. 0)) THEN
 	 CALL copypredictors(+1,NCHAN,
-     $     TAU,TAUZ,TAUZSN,CO2TOP,
+     $     TAU,TAUZ,TAUSN,TAUZSN,CO2TOP,
      $	   FIXMUL,CONPRD,FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
      $     WPRED1,WPRED2,WPRED3,WPRED4,WPRED5,WPRED6,WPRED7,
      $     OPRED1,OPRED2,OPRED4,OPRED5,OPRED6,OPRED7,
      $     MPRED3,CPRED4,TRCPRD,CO2MLT,SO2MLT,HNOMLT,N2OMLT,
-     $     TAU0,TAUZ0,TAUZSN0,CO2TOP0,
+     $     TAU0,TAUZ0,TAUSN0,TAUZSN0,CO2TOP0,
      $	   FIXMUL0,CONPRD0,FPRED10,FPRED20,FPRED30,FPRED40,FPRED50,FPRED60,FPRED70,
      $     WPRED10,WPRED20,WPRED30,WPRED40,WPRED50,WPRED60,WPRED70,
      $     OPRED10,OPRED20,OPRED40,OPRED50,OPRED60,OPRED70,
@@ -1139,8 +1143,8 @@ C
      $    LRHOT, LBOT, INDMI1,INDMI2,
      $    EMIS, RHOSUN, RHOTHR, 
      $                NCHNTE, CLISTN, COEFN, max(CO2TOP,CO2TOP0), 
-     $                TEMPJAC,TAU,TAUZ,TAUZSN,
-     $                TSURF,DOSUN, BLMULT, SECSUN, SECANG, COSDAZ,
+     $                TEMPJAC,TAU,TAUZ,TAUSN,TAUZSN,
+     $                TSURF,DOSUN, SUNFDG, BLMULT, SECSUN, SECANG, COSDAZ,
      $                SUNFAC,HSUN, LABOVE, COEFF,
      $                FCLEAR, TEMPC1, TEMPC2, 
      $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, 
@@ -1163,12 +1167,12 @@ C
 	 IF ((IDOTZJAC .GT. 0) .AND. (ITZLAYJAC .LT. LBOT)) THEN
 
 	   CALL copypredictors(-1,NCHAN,
-     $       TAU,TAUZ,TAUZSN,CO2TOP,
+     $       TAU,TAUZ,TAUSN,TAUZSN,CO2TOP,
      $	     FIXMUL,CONPRD,FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
      $       WPRED1,WPRED2,WPRED3,WPRED4,WPRED5,WPRED6,WPRED7,
      $       OPRED1,OPRED2,OPRED4,OPRED5,OPRED6,OPRED7,
      $       MPRED3,CPRED4,TRCPRD,CO2MLT,SO2MLT,HNOMLT,N2OMLT,
-     $       TAU0,TAUZ0,TAUZSN0,CO2TOP0,
+     $       TAU0,TAUZ0,TAUSN0,TAUZSN0,CO2TOP0,
      $	     FIXMUL0,CONPRD0,FPRED10,FPRED20,FPRED30,FPRED40,FPRED50,FPRED60,FPRED70,
      $       WPRED10,WPRED20,WPRED30,WPRED40,WPRED50,WPRED60,WPRED70,
      $       OPRED10,OPRED20,OPRED40,OPRED50,OPRED60,OPRED70,

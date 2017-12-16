@@ -19,7 +19,7 @@ C    Calculate a "fake" layer-to-space optical depth.
     
 
 !CALL PROTOCOL:
-C    FAKETZ ( NFAKE, INDFAK, LBOT, TAUZ, SEC, SECFAK, TAUZFK )
+C    FAKETZ ( NFAKE, INDFAK, LBOT, TAU, TAUZ, SEC, SECFAK, TAUFK, TAUZFK )
 
 
 !INPUT PARAMETERS:
@@ -30,12 +30,14 @@ C    INTEGER   NFAKE   number of fake points       none
 C    INTEGER   LBOT    layer index for fake OD     none
 C    REAL arr  SEC     angle secant for TAUZ       none
 C    REAL arr  SECFAK  angle secant for TAUZFK     none
+C    REAL arr  TAU     layer op depth              none
 C    REAL arr  TAUZ    layer-to-space op depth     none
 
 
 !OUTPUT PARAMETERS:
 C    type      name    purpose                     units
 C    --------  ------  --------------------------  ---------------------
+C    REAL arr  TAUFK   fake OD                     none
 C    REAL arr  TAUZFK  fake layer-to-space OD      none
 
 
@@ -96,8 +98,8 @@ C                               to LBOT; make SECANG & SECSUN arrays
 !END====================================================================
 
 C      =================================================================
-       SUBROUTINE FAKETZ ( NFAKE, INDFAK, LBOT, TAUZ, SEC, SECFAK,
-     $    TAUZFK )
+       SUBROUTINE FAKETZ ( NFAKE, INDFAK, LBOT, TAU, TAUZ, SEC, SECFAK,
+     $    TAUFK, TAUZFK )
 C      =================================================================
 
 C-----------------------------------------------------------------------
@@ -124,9 +126,11 @@ C-----------------------------------------------------------------------
        INTEGER  NFAKE
        INTEGER INDFAK(MXCHAN)
        INTEGER  LBOT
+       REAL   TAU(MAXLAY,MXCHAN)       
        REAL   TAUZ(MAXLAY,MXCHAN)
        REAL    SEC(MAXLAY)
        REAL SECFAK(MAXLAY)
+       REAL TAUFK(MAXLAY,MXCHAN)       
        REAL TAUZFK(MAXLAY,MXCHAN)
 
 
@@ -137,7 +141,7 @@ C-----------------------------------------------------------------------
        INTEGER  ICHAN
        INTEGER      L
        REAL RATSEC(MAXLAY)
-
+       REAL RJUNK
 
 C-----------------------------------------------------------------------
 C      SAVE STATEMENTS
@@ -161,9 +165,12 @@ C      Loop on channel (frequency)
 C      ---------------------------
        DO I=1,NFAKE
 C
+          RJUNK=0.0
           ICHAN=INDFAK(I)
           DO L=1,LBOT
 C            Be careful to avoid log(0) ln(1E-8)=-18.4
+             RJUNK = RJUNK + TAU(L,ICHAN)
+	     TAUFK(L,ICHAN) = RATSEC(L)*RJUNK
              IF (TAUZ(L,ICHAN) .LT. 18.4) THEN
                 TAUZFK(L,ICHAN)=RATSEC(L)*TAUZ(L,ICHAN)
              ELSE

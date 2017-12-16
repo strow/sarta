@@ -1,12 +1,12 @@
 c this subroutine makes copies of the predictors
 
       SUBROUTINE copypredictors(IDIR,NCHAN,
-     $     TAU,TAUZ,TAUZSN,CO2TOP,
+     $     TAU,TAUZ,TAUSN,TAUZSN,CO2TOP,
      $	   FIXMUL,CONPRD,FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
      $     WPRED1,WPRED2,WPRED3,WPRED4,WPRED5,WPRED6,WPRED7,
      $     OPRED1,OPRED2,OPRED4,OPRED5,OPRED6,OPRED7,
      $     MPRED3,CPRED4,TRCPRD,CO2MLT,SO2MLT,HNOMLT,N2OMLT,
-     $     TAU0,TAUZ0,TAUZSN0,CO2TOP0,
+     $     TAU0,TAUZ0,TAUSN0,TAUZSN0,CO2TOP0,
      $	   FIXMUL0,CONPRD0,FPRED10,FPRED20,FPRED30,FPRED40,FPRED50,FPRED60,FPRED70,
      $     WPRED10,WPRED20,WPRED30,WPRED40,WPRED50,WPRED60,WPRED70,
      $     OPRED10,OPRED20,OPRED40,OPRED50,OPRED60,OPRED70,
@@ -106,11 +106,13 @@ C
 C      for CALT
        REAL    TAU(MAXLAY,MXCHAN) ! chan layer effective optical depth
        REAL   TAUZ(MAXLAY,MXCHAN) ! chan surface-to-space trans
+       REAL TAUSN(MAXLAY,MXCHAN)  ! sun OD       
        REAL TAUZSN(MAXLAY,MXCHAN) ! sun space-to-surface-to-space OD
        REAL   WAOP(MXOWLY)        ! OPTRAN abs coef scaling factor
        
        REAL   TAU0(MAXLAY,MXCHAN) ! chan layer effective optical depth, copy
        REAL  TAUZ0(MAXLAY,MXCHAN) ! chan surface-to-space trans, copy
+       REAL TAUSN0(MAXLAY,MXCHAN)  ! sun OD              
        REAL TAUZSN0(MAXLAY,MXCHAN) ! sun space-to-surface-to-space OD       
        REAL   WAOP0(MXOWLY)       ! OPTRAN abs coef scaling factor       
 
@@ -135,6 +137,7 @@ c local
            DO K = 1,MAXLAY       
   	     TAU0(K,J)    = TAU(K,J)
  	     TAUZ0(K,J)   = TAUZ(K,J)
+ 	     TAUSN0(K,J)  = TAUSN(K,J)	     	     
  	     TAUZSN0(K,J) = TAUZSN(K,J)	     
 	   END DO
 	 END DO
@@ -246,6 +249,7 @@ c	   END DO
            DO K = 1,MAXLAY       
   	     TAU(K,J)    = TAU0(K,J)
  	     TAUZ(K,J)   = TAUZ0(K,J)
+ 	     TAUSN(K,J)  = TAUSN0(K,J)	     	     	     
  	     TAUZSN(K,J) = TAUZSN0(K,J)	     	     
 	   END DO
 	 END DO
