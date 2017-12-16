@@ -58,6 +58,17 @@ for ii = 1 : 100
   [hjunk,hajunk,pjunk,pajunk] = rtpread('new.rp.rtp');
   raaT(ii,:,:) = pjunk.rcalc;
 end
+
+for ii = 1 : 100
+  fprintf(1,'%2i \n',ii)
+  p = p0;
+  p.gas_1(ii,:) =  p.gas_1(ii,:)*1.1;
+  rtpwrite('junkjunk.rp.rtp',h,ha,p,pa);
+  dojac = ['!time a.out fin=junkjunk.rp.rtp fout=new.rp.rtp >& newugh'];
+  eval(dojac)
+  [hjunk,hajunk,pjunk,pajunk] = rtpread('new.rp.rtp');
+  raaWV(ii,:,:) = pjunk.rcalc;
+end
 toc
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

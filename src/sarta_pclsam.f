@@ -316,9 +316,9 @@ C      for RDRTP; profile to calculate
        REAL  HAMNT(MAXLAY) ! prof layer HNO3 amount
        REAL  NAMNT(MAXLAY) ! prof layer N2O amount
 
-       REAL   TEMPJAC(MAXLAY) ! prof layer average temperature
-       REAL  WAMNTJAC(MAXLAY) ! prof layer water (H2O) amount
-       REAL  OAMNTJAC(MAXLAY) ! prof layer ozone (O3) amount
+       REAL   TEMPX(MAXLAY) ! prof layer average temperature
+       REAL  WAMNTX(MAXLAY) ! prof layer water (H2O) amount
+       REAL  OAMNTX(MAXLAY) ! prof layer ozone (O3) amount
        INTEGER IJAC           ! loop index for jac
        INTEGER ISELECTLAY     ! do we do all layers???
        
@@ -944,9 +944,9 @@ C      Calculate the fast trans predictors
 C      -----------------------------------
 C
        DO IJAC = 1,MAXLAY
-         TEMPJAC(IJAC)  = TEMP(IJAC)
-         WAMNTJAC(IJAC) = WAMNT(IJAC)
-         OAMNTJAC(IJAC) = OAMNT(IJAC)	 
+         TEMPX(IJAC)  = TEMP(IJAC)
+         WAMNTX(IJAC) = WAMNT(IJAC)
+         OAMNTX(IJAC) = OAMNT(IJAC)	 
        END DO
 
        ISELECTLAY = -1   !! do all layers
@@ -963,7 +963,7 @@ C
  
        CALL CALPAR (ISELECTLAY, LBOT, 
      $    RTEMP,RFAMNT,RWAMNT,ROAMNT,RCAMNT,RMAMNT,RSAMNT,RHAMNT,RNAMNT,
-     $     TEMPJAC, FAMNT, WAMNTJAC, OAMNTJAC, CAMNT, MAMNT, SAMNT, HAMNT, NAMNT,
+     $     TEMPX, FAMNT, WAMNTX, OAMNTX, CAMNT, MAMNT, SAMNT, HAMNT, NAMNT,
      $    RPRES, SECANG,   LAT,    FX,   RDZ,
      $     LCO2,  LN2O,  LSO2, LHNO3,LCO2PM,CO2PPM,CO2TOP,FIXMUL,CONPRD,
      $   FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
@@ -974,7 +974,7 @@ C
 C      -----------------------------------
 C      Calculate the OPTRAN H2O predictors
 C      -----------------------------------
-       CALL CALOWP ( ISELECTLAY, LBOT, WAMNTJAC, RPRES, TEMPJAC, SECANG, WAZOP, WAVGOP,
+       CALL CALOWP ( ISELECTLAY, LBOT, WAMNTX, RPRES, TEMPX, SECANG, WAZOP, WAVGOP,
      $    WAANG, LOPMIN, LOPMAX, LOPUSE, H2OPRD, LOPLOW, DAOP )
 
 C      ----------------------------------
@@ -1029,7 +1029,7 @@ C         ---------------------------------------------
 C
           CALL SUNPAR ( ISELECTLAY, LBOT,
      $       RTEMP, RWAMNT, ROAMNT, RCAMNT,
-     $        TEMPJAC,  WAMNTJAC,  OAMNTJAC,  CAMNT,
+     $        TEMPX,  WAMNTX,  OAMNTX,  CAMNT,
      $       RPRES,  SECSUN, CONPRD,
      $       FPRED4, FPRED5, FPRED6, FPRED7,
      $       WPRED4, WPRED5, WPRED6, WPRED7,
@@ -1097,7 +1097,7 @@ C      Calculate cloudy radiance
      $    LRHOT, LBOT, INDMI1,INDMI2,
      $    EMIS, RHOSUN, RHOTHR, 
      $                NCHNTE, CLISTN, COEFN, max(CO2TOP,CO2TOP0), 
-     $                TEMPJAC,TAU, TAUZ, TAUSN, TAUZSN,
+     $                TEMPX,TAU, TAUZ, TAUSN, TAUZSN,
      $                TSURF,DOSUN, SUNFDG, BLMULT, SECSUN, SECANG, COSDAZ,
      $                SUNFAC,HSUN, LABOVE, COEFF,
      $                FCLEAR, TEMPC1, TEMPC2, 
@@ -1143,7 +1143,7 @@ C
      $    LRHOT, LBOT, INDMI1,INDMI2,
      $    EMIS, RHOSUN, RHOTHR, 
      $                NCHNTE, CLISTN, COEFN, max(CO2TOP,CO2TOP0), 
-     $                TEMPJAC,TAU,TAUZ,TAUSN,TAUZSN,
+     $                TEMPX,TAU,TAUZ,TAUSN,TAUZSN,
      $                TSURF,DOSUN, SUNFDG, BLMULT, SECSUN, SECANG, COSDAZ,
      $                SUNFAC,HSUN, LABOVE, COEFF,
      $                FCLEAR, TEMPC1, TEMPC2, 
@@ -1155,6 +1155,24 @@ C
      $   )      
       END IF
        
+c       IF ((IDOJACOB .GT. 0) .AND. (ITZLAYJAC .LE. LBOT)) THEN
+ccc      note the alternative return to statement 77
+ccc      https://docs.oracle.com/cd/E19957-01/805-4939/6j4m0vnb3/index.html
+c         CALL TempJac(*77,ITZLAYJAC,IOUNJ,IPROF,LBOT,NCHAN,
+c     $       TAU,TAUZ,TAUSN,TAUZSN,CO2TOP,
+c     $	     FIXMUL,CONPRD,FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
+c     $       WPRED1,WPRED2,WPRED3,WPRED4,WPRED5,WPRED6,WPRED7,
+c     $       OPRED1,OPRED2,OPRED4,OPRED5,OPRED6,OPRED7,
+c     $       MPRED3,CPRED4,TRCPRD,CO2MLT,SO2MLT,HNOMLT,N2OMLT,
+c     $       TAU0,TAUZ0,TAUSN0,TAUZSN0,CO2TOP0,
+c     $	     FIXMUL0,CONPRD0,FPRED10,FPRED20,FPRED30,FPRED40,FPRED50,FPRED60,FPRED70,
+c     $       WPRED10,WPRED20,WPRED30,WPRED40,WPRED50,WPRED60,WPRED70,
+c     $       OPRED10,OPRED20,OPRED40,OPRED50,OPRED60,OPRED70,
+c     $       MPRED30,CPRED40,TRCPRD0,CO2MLT0,SO2MLT0,HNOMLT0,N2OMLT0)	 
+c     $       TEMPX,WAMNTX,OAMNTX,TEMP,WAMNT,OAMNT)     
+c       END IF
+
+ccccc
        IF ((IDOJACOB .GT. 0) .AND. (ITZLAYJAC .LE. LBOT)) THEN
          !! TEMP JAC
 	 IF (ITZLAYJAC .EQ. -1) THEN
@@ -1179,14 +1197,14 @@ C
      $       MPRED30,CPRED40,TRCPRD0,CO2MLT0,SO2MLT0,HNOMLT0,N2OMLT0)
 
            DO IJAC = 1,MAXLAY
-             TEMPJAC(IJAC)  = TEMP(IJAC)
-             WAMNTJAC(IJAC) = WAMNT(IJAC)
-             OAMNTJAC(IJAC) = OAMNT(IJAC)	 
+             TEMPX(IJAC)  = TEMP(IJAC)
+             WAMNTX(IJAC) = WAMNT(IJAC)
+             OAMNTX(IJAC) = OAMNT(IJAC)	 
            END DO
 
  	   ITZLAYJAC = ITZLAYJAC + 1
 	   print *,'IPROF,Tlayjac,LBOT = ',IPROF,ITZLAYJAC,LBOT
-  	   TEMPJAC(ITZLAYJAC) = TEMPJAC(ITZLAYJAC) + DST
+  	   TEMPX(ITZLAYJAC) = TEMPX(ITZLAYJAC) + DST
 	   !ISELECTLAY = -1	   !!! testing, but slow since it makes sarta re-run and re-run
 	   ISELECTLAY = ITZLAYJAC	   
   	   GOTO 77
@@ -1203,7 +1221,8 @@ C
 	   END IF
 	 END IF
        END IF
-              
+
+ccccc
        IF (IDOJACOB .GT. 0) THEN
          !! WV JAC
          write(IOUNJ) IPROF,+100
