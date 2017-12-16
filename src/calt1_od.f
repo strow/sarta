@@ -546,7 +546,7 @@ C            Calc layer-to-space optical depth
              KZ=KZ + KLAYER
              TAUZ(ILAY,J)=KZ
 C
-            IF ((J .EQ. 1) .AND. (ILAY .GT. 1)) print *,ILAY,J,TAU(ILAY,J),TAUZ(ILAY-1,J)+KLAYER,TAUZ(ILAY,J)
+c            IF ((J .EQ. 1) .AND. (ILAY .GT. 1)) print *,ILAY,J,TAU(ILAY,J),TAUZ(ILAY-1,J)+KLAYER,TAUZ(ILAY,J)
 	    
 c            IF ((I .EQ. 29) .AND. (ILAY .GE. 1)) THEN
 c	      IF (LMIN .EQ. 1) THEN

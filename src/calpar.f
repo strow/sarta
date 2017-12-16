@@ -607,9 +607,9 @@ C         Methane terms
           PWATER=KMOLE*PWAMNT(L)*PTEMP(L)/(STDDEN*STDTMP*100*DZREF(L))
           A_F=( 1 - PMULT*PWATER/PRES(L) )/( FX(L)*GSCAL )
 
-          print *,'quick',L,A_W,AZ_W,A_O,AZ_O,TZ,TR,TRZ,TMZ,PNORM
+c          print *,'quick',L,A_W,AZ_W,A_O,AZ_O,TZ,TR,TRZ,TMZ,PNORM
 	 END DO
-c	 IF (LMIN .EQ. LBOT) stop
+ccc	 IF (LMIN .EQ. LBOT) stop     !! this is for debugging
        END IF
        
       DO L=LMIN,LMAX
@@ -687,7 +687,7 @@ C         Methane terms
           MZ=MZ + PDP*PMAMNT(L)
           AZ_M=MZ/MZREF
 
-          print *,'default',L,A_W,AZ_W,A_O,AZ_O,TZ,TR,TRZ,TMZ,PNORM
+c          print *,'default',L,A_W,AZ_W,A_O,AZ_O,TZ,TR,TRZ,TMZ,PNORM
 	END IF
 C
 C         ----------------------

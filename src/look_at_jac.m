@@ -49,7 +49,7 @@ eval(dojac)
 rcpsize2 = pjunk.rcalc;
 
 for ii = 1 : 100
-  fprintf(1,'%2i \n',ii)
+  fprintf(1,'TEMP  %2i \n',ii)
   p = p0;
   p.ptemp(ii,:) =  p.ptemp(ii,:) + 1;
   rtpwrite('junkjunk.rp.rtp',h,ha,p,pa);
@@ -60,7 +60,7 @@ for ii = 1 : 100
 end
 
 for ii = 1 : 100
-  fprintf(1,'%2i \n',ii)
+  fprintf(1,'WATER %2i \n',ii)
   p = p0;
   p.gas_1(ii,:) =  p.gas_1(ii,:)*1.1;
   rtpwrite('junkjunk.rp.rtp',h,ha,p,pa);
@@ -68,6 +68,17 @@ for ii = 1 : 100
   eval(dojac)
   [hjunk,hajunk,pjunk,pajunk] = rtpread('new.rp.rtp');
   raaWV(ii,:,:) = pjunk.rcalc;
+end
+
+for ii = 1 : 100
+  fprintf(1,'OZONE %2i \n',ii)
+  p = p0;
+  p.gas_3(ii,:) =  p.gas_3(ii,:)*1.1;
+  rtpwrite('junkjunk.rp.rtp',h,ha,p,pa);
+  dojac = ['!time a.out fin=junkjunk.rp.rtp fout=new.rp.rtp >& newugh'];
+  eval(dojac)
+  [hjunk,hajunk,pjunk,pajunk] = rtpread('new.rp.rtp');
+  raaO3(ii,:,:) = pjunk.rcalc;
 end
 toc
 
@@ -122,4 +133,32 @@ figure(4); plot(h.vchan,TjacOld(:,nlays-2),'.-',h.vchan,TjacNew(:,nlays-2)); tit
 figure(5); plot(h.vchan,TjacOld(:,nlays-1),'.-',h.vchan,TjacNew(:,nlays-1)); title(['lay ' num2str(nlays-1)])
 figure(6); plot(h.vchan,TjacOld(:,nlays-0),'.-',h.vchan,TjacNew(:,nlays-0)); title(['lay ' num2str(nlays-0)])
 xyz = squeeze(Tjac(:,:,iProf)); xyz = xyz'; xyz = rad2bt(vchan,xyz(:,nlays));
+figure(7); plot(h.vchan,rad2bt(h.vchan,r0(:,iProf)),'.-',h.vchan,xyz); title(['calculated rads0 and at lay ' num2str(nlays-0)])
+
+WVjacNew = squeeze(WVjac(:,:,iProf)); WVjacNew = WVjacNew'; WVjacNew = rad2bt(vchan,WVjacNew)-rad2bt(vchan,r0(:,iProf))*ones(1,100);
+nlays = p0.nlevs(iProf)-1;
+for ii = 1 : 100
+  WVjacOld(:,ii) = rad2bt(vchan,squeeze(raaWV(ii,:,iProf))')-rad2bt(vchan,r0(:,iProf));
+end
+figure(1); pcolor(vchan,1:nlays,WVjacOld(:,1:nlays)'); shading flat; colormap jet; colorbar; set(gca,'ydir','reverse'); cx = caxis;
+figure(2); pcolor(vchan,1:nlays,WVjacNew(:,1:nlays)'); shading flat; colormap jet; colorbar; set(gca,'ydir','reverse'); caxis(cx);
+figure(3); plot(h.vchan,WVjacOld(:,81),'.-',h.vchan,WVjacNew(:,81)); title('lay 81')
+figure(4); plot(h.vchan,WVjacOld(:,nlays-2),'.-',h.vchan,WVjacNew(:,nlays-2)); title(['lay ' num2str(nlays-2)])
+figure(5); plot(h.vchan,WVjacOld(:,nlays-1),'.-',h.vchan,WVjacNew(:,nlays-1)); title(['lay ' num2str(nlays-1)])
+figure(6); plot(h.vchan,WVjacOld(:,nlays-0),'.-',h.vchan,WVjacNew(:,nlays-0)); title(['lay ' num2str(nlays-0)])
+xyz = squeeze(WVjac(:,:,iProf)); xyz = xyz'; xyz = rad2bt(vchan,xyz(:,nlays));
+figure(7); plot(h.vchan,rad2bt(h.vchan,r0(:,iProf)),'.-',h.vchan,xyz); title(['calculated rads0 and at lay ' num2str(nlays-0)])
+
+O3jacNew = squeeze(O3jac(:,:,iProf)); O3jacNew = O3jacNew'; O3jacNew = rad2bt(vchan,O3jacNew)-rad2bt(vchan,r0(:,iProf))*ones(1,100);
+nlays = p0.nlevs(iProf)-1;
+for ii = 1 : 100
+  O3jacOld(:,ii) = rad2bt(vchan,squeeze(raaO3(ii,:,iProf))')-rad2bt(vchan,r0(:,iProf));
+end
+figure(1); pcolor(vchan,1:nlays,O3jacOld(:,1:nlays)'); shading flat; colormap jet; colorbar; set(gca,'ydir','reverse'); cx = caxis;
+figure(2); pcolor(vchan,1:nlays,O3jacNew(:,1:nlays)'); shading flat; colormap jet; colorbar; set(gca,'ydir','reverse'); caxis(cx);
+figure(3); plot(h.vchan,O3jacOld(:,30),'.-',h.vchan,O3jacNew(:,30)); title('lay 30')
+figure(4); plot(h.vchan,O3jacOld(:,nlays-2),'.-',h.vchan,O3jacNew(:,nlays-2)); title(['lay ' num2str(nlays-2)])
+figure(5); plot(h.vchan,O3jacOld(:,nlays-1),'.-',h.vchan,O3jacNew(:,nlays-1)); title(['lay ' num2str(nlays-1)])
+figure(6); plot(h.vchan,O3jacOld(:,nlays-0),'.-',h.vchan,O3jacNew(:,nlays-0)); title(['lay ' num2str(nlays-0)])
+xyz = squeeze(O3jac(:,:,iProf)); xyz = xyz'; xyz = rad2bt(vchan,xyz(:,nlays));
 figure(7); plot(h.vchan,rad2bt(h.vchan,r0(:,iProf)),'.-',h.vchan,xyz); title(['calculated rads0 and at lay ' num2str(nlays-0)])
