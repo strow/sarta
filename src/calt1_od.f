@@ -274,7 +274,7 @@ C      for CALOKW
        INTEGER   IH2O
        REAL     KW(MAXLAY)
 
-       INTEGER LMIN,LMAX
+       INTEGER LMIN,LMAX,IJ
 
 C-----------------------------------------------------------------------
 C      SAVE STATEMENTS
@@ -294,6 +294,10 @@ C***********************************************************************
          LMIN = ISELECTLAY
 	 LMAX = ISELECTLAY
        END IF
+
+c         LMIN = 1
+c	 LMAX = NLAY
+
 C
 C      ---------------------------
 C      Loop on channel (frequency)
@@ -542,6 +546,20 @@ C            Calc layer-to-space optical depth
              KZ=KZ + KLAYER
              TAUZ(ILAY,J)=KZ
 C
+            IF ((J .EQ. 1) .AND. (ILAY .GT. 1)) print *,ILAY,J,TAU(ILAY,J),TAUZ(ILAY-1,J)+KLAYER,TAUZ(ILAY,J)
+	    
+c            IF ((I .EQ. 29) .AND. (ILAY .GE. 1)) THEN
+c	      IF (LMIN .EQ. 1) THEN
+c	        print *,'calt1_od default',I,ILAY,KCON,KFIX,KW(ILAY),KOZO,DK,KLAYER,KZ
+c	        print *,'coef1  default',(COEF1(IJ,ILAY,I),IJ=1,7)
+c	        print *,'conpd1 default',(CONPD1(IJ,ILAY),IJ=1,7)		
+c  	      ELSEIF ((LMIN .EQ. LMAX) .AND. (LMIN .GE. 90)) THEN
+c	        print *,'calt1_od LMIN',I,ILAY,KLAYER,KZ
+c	        print *,'coef1  LMIN',(COEF1(IJ,ILAY,I),IJ=1,7)
+c	        print *,'conpd1 LMIN',(CONPD1(IJ,ILAY),IJ=1,7)		
+c	      END IF
+c	    END IF
+	  
           ENDDO
 C         End loop on levels
 C

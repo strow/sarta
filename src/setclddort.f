@@ -192,7 +192,20 @@ C      for function QIKEXP
 
 c>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>       
 C
-
+c       REAL   TAUZ(MAXLAY,MXCHAN) ! chan surface-to-space trans
+       L = 1
+       print *,'wahhh',L,TAUZ(L,1),TAU(L,1)       
+       DO I = 1,NCHAN
+         TAUZ(1,I)   = TAU(1,I)
+       END DO
+       DO L = 2,MAXLAY
+         print *,'wahhh',L,TAUZ(L,1),TAUZ(L-1,1) + TAU(L,1)
+         DO I = 1,NCHAN
+	   TAUZ(L,I) = TAUZ(L-1,I) + TAU(L,I)
+	 END DO
+       END DO
+c       stop
+       
 C      Get basic cloud parameters from input RTP
        CALL GETCLD( IPROF, HEAD, PROF,
      $    LBLAC1, CTYPE1, CFRAC1, CPSIZ1, CPRTO1, CPRBO1, CNGWA1,
@@ -430,13 +443,14 @@ C         Total the clear & various cloudy radiances
 
 ccc this block for testing
        IF (I .EQ. 1291) THEN
-c         print *,'chan1291 : iPROF,rad0,radc1,radc2,radc12,FINAL=',
-c     $      IPROF,RAD0,RADC1,RADC2,RADC12,RAD(I)
-         print *,'1291:I,CLR,C1,C2,C12,TS,rad0,radC1,radC2,radC12,rF=',
-     $      IPROF,FCLEAR,CFRA1X,CFRA2X,CFRA12,
-     $      TSURF,rad0,radC1,radC2,radC12,RAD(I)
-c         PRINT *,'CLOUD1 emis,temp = ',CEMIS1(I),TCTOP1
-c         PRINT *,'CLOUD2 emis,temp = ',CEMIS2(I),TCTOP2
+cc         print *,'chan1291 : iPROF,rad0,radc1,radc2,radc12,FINAL=',
+cc     $      IPROF,RAD0,RADC1,RADC2,RADC12,RAD(I)
+         print *,'1291:I,TS,rF=',IPROF,TSURF,RAD(I)
+c         print *,'1291:I,CLR,C1,C2,C12,TS,rad0,radC1,radC2,radC12,rF=',
+c     $      IPROF,FCLEAR,CFRA1X,CFRA2X,CFRA12,
+c     $      TSURF,rad0,radC1,radC2,radC12,RAD(I)
+cc         PRINT *,'CLOUD1 emis,temp = ',CEMIS1(I),TCTOP1
+cc         PRINT *,'CLOUD2 emis,temp = ',CEMIS2(I),TCTOP2
        endif
 ccc
 

@@ -1191,10 +1191,8 @@ C
 	   IF (ITZLAYJAC .LT. LBOT) THEN
   	     GOTO 771
 	   ELSE
-	     print *,'done with Tz IPROF,Tlayjac,LBOT = ',IPROF,ITZLAYJAC,LBOT
 	     IF (LBOT+1 .LE. 100) THEN
   	       DO IJAC = LBOT+1,100
-  	         print *,'last few IPROF,Tlayjac,LBOT = ',IJAC,ITZLAYJAC,LBOT
                  write(IOUNJ) (000.0*RAD(J),J=1,NCHAN)
 	       END DO
              END IF	     

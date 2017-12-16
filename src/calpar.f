@@ -349,8 +349,7 @@ C      =================================================================
      $    RTEMP,RFAMNT,RWAMNT,ROAMNT,RCAMNT,RMAMNT,RSAMNT,RHAMNT,RNAMNT,
      $    PTEMP,PFAMNT,PWAMNT,POAMNT,PCAMNT,PMAMNT,PSAMNT,PHAMNT,PNAMNT,
      $     PRES,SECANG,  ALAT,    FX, DZREF,
-     $     LCO2,  LN2O,  LSO2, LHNO3,LCO2PM,CO2PPM,CO2TOP,
-     $   FIXMUL,CONPRD,
+     $     LCO2,  LN2O,  LSO2, LHNO3,LCO2PM,CO2PPM,CO2TOP,FIXMUL,CONPRD,
      $   FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
      $   WPRED1,WPRED2,WPRED3,WPRED4,WPRED5,WPRED6,WPRED7,
      $   OPRED1,OPRED2,       OPRED4,OPRED5,OPRED6,OPRED7,
@@ -608,7 +607,7 @@ C         Methane terms
           PWATER=KMOLE*PWAMNT(L)*PTEMP(L)/(STDDEN*STDTMP*100*DZREF(L))
           A_F=( 1 - PMULT*PWATER/PRES(L) )/( FX(L)*GSCAL )
 
-c          print *,'quick',L,A_W,AZ_W,A_O,AZ_O,TZ,TRZ,TMZ,PNORM
+          print *,'quick',L,A_W,AZ_W,A_O,AZ_O,TZ,TR,TRZ,TMZ,PNORM
 	 END DO
 c	 IF (LMIN .EQ. LBOT) stop
        END IF
@@ -688,7 +687,7 @@ C         Methane terms
           MZ=MZ + PDP*PMAMNT(L)
           AZ_M=MZ/MZREF
 
-c          print *,'default',L,A_W,AZ_W,A_O,AZ_O,TZ,TRZ,TMZ,PNORM
+          print *,'default',L,A_W,AZ_W,A_O,AZ_O,TZ,TR,TRZ,TMZ,PNORM
 	END IF
 C
 C         ----------------------
@@ -938,6 +937,8 @@ C         ---------------
           CONPRD(5,L)=CONPRD(1,L)*A_W
           CONPRD(6,L)=CONPRD(1,L)/TJUNKS
           CONPRD(7,L)=WJUNKA
+
+c          print *,'CONPRD calpar',LMIN,LMAX,L,A_W,SECANG(L),TJUNKS,CONPRD(1,L)
 C
 C
 C         ---------------
