@@ -26,7 +26,7 @@ C       NCHNTE, CLISTN, COEFN, CO2TOP, RAD)
 !INPUT PARAMETERS:
 C    type      name    purpose                     units
 C    --------  ------  --------------------------  ---------------------
-C    INT arr   INDCHN  channel indices             none
+C    INT arr   INDCHN  user channel indices        none
 C    REAL arr  TEMP    temperature profile         Kelvin
 C    REAL      SUNCOS  solzen cosine at surface    none
 C    REAL      SCOS1   solzen cosine at layer1     none

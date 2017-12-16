@@ -46,7 +46,7 @@ C      Boundary pressure levels
        
        INTEGER  IPROF      ! profile loop counter
        INTEGER  NCHAN         ! # of selected channels
-       INTEGER INDCHN(MXCHAN) ! array indices for all channels       
+       INTEGER INDCHN(MXCHAN) ! array indices for all channels selected by user      
        REAL   FREQ(MXCHAN)    ! chan center frequency
 
        INTEGER NCHNTE                    ! number of non-LTE channels

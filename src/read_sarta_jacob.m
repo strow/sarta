@@ -49,10 +49,10 @@ for ii = 1 : numprof
   ixprof = fread(fid, 1, 'integer*4');
   itype   = fread(fid, 1, 'integer*4');
   flen = fread(fid, 1, 'integer*4');
-  if ixprof ~= ii
-    [ixprof ii]
-    error('reading stemp jac ixprof ~= ii')
-  end
+%  if ixprof ~= ii
+%    [ixprof ii]
+%    error('reading stemp jac ixprof ~= ii')
+%  end
   if itype ~= 1
     [itype]
     error('reading stemp jac itype ~= 1')
@@ -69,10 +69,10 @@ for ii = 1 : numprof
   ixprof = fread(fid, 1, 'integer*4');
   itype   = fread(fid, 1, 'integer*4');
   flen = fread(fid, 1, 'integer*4');
-  if ixprof ~= ii
-    [ixprof ii]
-    error('reading stemp jac ixprof ~= ii')
-  end
+%  if ixprof ~= ii
+%    [ixprof ii]
+%    error('reading stemp jac ixprof ~= ii')
+%  end
   if itype ~= 11
     [itype]
     error('reading stemp jac itype ~= 11')
@@ -89,10 +89,10 @@ for ii = 1 : numprof
   ixprof = fread(fid, 1, 'integer*4');
   itype   = fread(fid, 1, 'integer*4');
   flen = fread(fid, 1, 'integer*4');
-  if ixprof ~= ii
-    [ixprof ii]
-    error('reading stemp jac ixprof ~= ii')
-  end
+%  if ixprof ~= ii
+%    [ixprof ii]
+%    error('reading stemp jac ixprof ~= ii')
+%  end
   if itype ~= 12
     [itype]
     error('reading stemp jac itype ~= 12')
@@ -109,10 +109,10 @@ for ii = 1 : numprof
   ixprof = fread(fid, 1, 'integer*4');
   itype   = fread(fid, 1, 'integer*4');
   flen = fread(fid, 1, 'integer*4');
-  if ixprof ~= ii
-    [ixprof ii]
-    error('reading stemp jac ixprof ~= ii')
-  end
+%  if ixprof ~= ii
+%    [ixprof ii]
+%    error('reading stemp jac ixprof ~= ii')
+%  end
   if itype ~= 21
     [itype]
     error('reading stemp jac itype ~= 21')
@@ -129,10 +129,10 @@ for ii = 1 : numprof
   ixprof = fread(fid, 1, 'integer*4');
   itype   = fread(fid, 1, 'integer*4');
   flen = fread(fid, 1, 'integer*4');
-  if ixprof ~= ii
-    [ixprof ii]
-    error('reading stemp jac ixprof ~= ii')
-  end
+%  if ixprof ~= ii
+%    [ixprof ii]
+%    error('reading stemp jac ixprof ~= ii')
+%  end
   if itype ~= 22
     [itype]
     error('reading stemp jac itype ~= 22')
@@ -149,10 +149,10 @@ for ii = 1 : numprof
   ixprof = fread(fid, 1, 'integer*4');
   itype   = fread(fid, 1, 'integer*4');
   flen = fread(fid, 1, 'integer*4');
-  if ixprof ~= ii
-    [ixprof ii]
-    error('reading T(z) jac ixprof ~= ii')
-  end
+%  if ixprof ~= ii
+%    [ixprof ii]
+%    error('reading T(z) jac ixprof ~= ii')
+%  end
   if itype ~= -100
     [itype]
     error('reading T(z) jac itype ~= -100')
@@ -170,10 +170,10 @@ for ii = 1 : numprof
   ixprof = fread(fid, 1, 'integer*4');
   itype   = fread(fid, 1, 'integer*4');
   flen = fread(fid, 1, 'integer*4');
-  if ixprof ~= ii
-    [ixprof ii]
-    error('reading WV(z) jac ixprof ~= ii')
-  end
+%  if ixprof ~= ii
+%    [ixprof ii]
+%    error('reading WV(z) jac ixprof ~= ii')
+%  end
   if itype ~= +100
     [itype]
     error('reading WV(z) jac itype ~= +100')
@@ -191,10 +191,10 @@ for ii = 1 : numprof
   ixprof = fread(fid, 1, 'integer*4');
   itype   = fread(fid, 1, 'integer*4');
   flen = fread(fid, 1, 'integer*4');
-  if ixprof ~= ii
-    [ixprof ii]
-    error('reading O3(z) jac ixprof ~= ii')
-  end
+%  if ixprof ~= ii
+%    [ixprof ii]
+%    error('reading O3(z) jac ixprof ~= ii')
+%  end
   if itype ~= +300
     [itype]
     error('reading O3(z) jac itype ~= +300')

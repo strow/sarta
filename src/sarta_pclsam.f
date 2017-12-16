@@ -198,7 +198,8 @@ C
 C      for RDINFO
        CHARACTER*80 FIN       ! input RTP filename
        CHARACTER*80 FOUT      ! output RTP filename
-       CHARACTER*80 FJACOB    ! output binary JACOB filename
+       CHARACTER*80 FJACOB0   ! root output binary JACOB filename
+       CHARACTER*92 FJACOBN   ! current output binary JACOB filename       
        LOGICAL  LRHOT         ! force refl therm rho=(1-emis)/pi?
        INTEGER NWANTP         ! number of wanted profiles (-1=all)
        INTEGER  LISTP(MAXPRO) ! list of wanted profiles
@@ -215,7 +216,7 @@ C      for OPNRTP
        INTEGER  NCHAN         ! # of selected channels
        REAL     FCHAN(MXCHAN) ! chan center frequency
        INTEGER LSTCHN(MXCHAN) ! list of selected channels
-       INTEGER INDCHN(MXCHAN) ! array indices for all channels
+       INTEGER INDCHN(MXCHAN) ! array indices for user selected channels
        INTEGER IH2O           ! index of H2O in gamnt
        INTEGER IO3            ! index of O3 in gamnt
        INTEGER ICO            ! index of CO in gamnt
@@ -559,6 +560,10 @@ C
        INTEGER IDOJACOB       ! should we do jacobians
        INTEGER IOUNJ          ! jacobian output filenumber
        INTEGER INUMPROF       ! we need to know how many jacobians will be done
+       INTEGER IPRINTJAC      ! how many jacobian profiles to output before
+                              ! for help opening new file
+       INTEGER IJUNKNUM       ! for help opening new file			      
+       CHARACTER*5 STR5A,STR5B! for help opening new file			      
        REAL DST,DQ            ! jacobian perturbations
        INTEGER IDOCOLJAC      ! have we done col jacs
        INTEGER IDOTZJAC       ! have we done T(z) jacs
@@ -612,9 +617,9 @@ C      ---------------------
 C      Get command-line info
 C      ---------------------
        INUMPROF = -1
-       CALL RDINFO(FIN, FOUT, LRHOT, NWANTP, LISTP, FJACOB)
+       CALL RDINFO(FIN, FOUT, LRHOT, NWANTP, LISTP, FJACOB0)
        IDOJACOB = -1
-       IF (FJACOB(1:3) .NE. 'DNE') THEN
+       IF (FJACOB0(1:3) .NE. 'DNE') THEN
 
          IDOJACOB = +1
          DST = 1.0;
@@ -652,7 +657,7 @@ c      print *, 'sergio nwantp =', NWANTP
 c      print *, 'sergio listp  =', (LISTP(I),I=1,NWANTP)
 c      print *, 'sergio FIN    = ',FIN
 c      print *, 'sergio FOUT   = ',FOUT
-c      print *, 'sergio FJACOB = ',FJACOB,IDOJACOB,INUMPROF
+c      print *, 'sergio FJACOB = ',FJACOB0,IDOJACOB,INUMPROF
 ccc
 
 C      -------------------------
@@ -738,9 +743,21 @@ ccc
 c       print *, 'read open status = ', ISTAT
 ccc
        IF (IDOJACOB .GT. 0) THEN
+         IPRINTJAC = 150
+         IF (INUMPROF .LE. IPRINTJAC) THEN
+	   FJACOBN = FJACOB0
+	 ELSE
+	   WRITE(STR5A, '(I5)') 1
+	   WRITE(STR5B, '(I5)') IPRINTJAC
+	   FJACOBN = TRIM(FJACOB0) // '_' // TRIM(ADJUSTL(STR5A)) // '_' // TRIM(ADJUSTL(STR5B))
+	 END IF
 	 IOUNJ = 20
-	 OPEN(unit=IOUNJ,FILE=FJACOB,STATUS='UNKNOWN',FORM='UNFORMATTED')
-	 WRITE (IOUNJ) INUMPROF,NCHAN
+	 OPEN(unit=IOUNJ,FILE=FJACOBN,STATUS='UNKNOWN',FORM='UNFORMATTED')
+	 IF (INUMPROF .LE. IPRINTJAC) THEN
+  	   WRITE (IOUNJ) INUMPROF,NCHAN
+	 ELSE
+  	   WRITE (IOUNJ) IPRINTJAC,NCHAN
+	 END IF
 	 WRITE (IOUNJ) DST,DQ	 
 	 WRITE (IOUNJ) (LSTCHN(I),I=1,NCHAN)	
 	 WRITE (IOUNJ) (FREQ(I),I=1,NCHAN)
@@ -948,6 +965,20 @@ C
          OAMNTX(IJAC) = OAMNT(IJAC)	 
        END DO
 
+       IF ((IPROF .GT. 1) .AND. (MOD(IPROF,IPRINTJAC) .EQ. 1)) THEN
+         CLOSE(IOUNJ)
+
+         WRITE(STR5A, '(I5)') IPROF
+	 WRITE(STR5B, '(I5)') MIN(IPROF+IPRINTJAC-1,INUMPROF)
+	 FJACOBN = TRIM(FJACOB0) // '_' // TRIM(ADJUSTL(STR5A)) // '_' // TRIM(ADJUSTL(STR5B))
+	 OPEN(unit=IOUNJ,FILE=FJACOBN,STATUS='UNKNOWN',FORM='UNFORMATTED')
+         IJUNKNUM = MIN(IPROF+IPRINTJAC-1,INUMPROF)-IPROF+1
+	 WRITE (IOUNJ) IJUNKNUM,NCHAN
+	 WRITE (IOUNJ) DST,DQ	 
+	 WRITE (IOUNJ) (LSTCHN(I),I=1,NCHAN)	
+	 WRITE (IOUNJ) (FREQ(I),I=1,NCHAN)
+       END IF
+       
        ISELECTLAY = -1   !! do all layers
        IDOCOLJAC = -1    !! not yet done col jacs
        IDOTZJAC = -1     !! not yet done T(z) jacs
