@@ -165,7 +165,7 @@ c------------------------------------------------------------------------
            END DO
 
  	   IO3ZLAYJAC = IO3ZLAYJAC + 1
-	   print *,'IPROF,OZlayjac,LBOT = ',IPROF,IO3ZLAYJAC,LBOT
+c	   print *,'IPROF,OZlayjac,LBOT = ',IPROF,IO3ZLAYJAC,LBOT
   	   OAMNTX(IO3ZLAYJAC) = OAMNTX(IO3ZLAYJAC)*(1.0 + DQ)
 	   !ISELECTLAY = -1	   !!! testing, but slow since it makes sarta re-run and re-run
 	   ISELECTLAY = IO3ZLAYJAC	   

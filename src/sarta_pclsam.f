@@ -648,11 +648,11 @@ C          ---------------------------
 	 END IF
        END IF
 ccc
-      print *, 'sergio nwantp =', NWANTP
-      print *, 'sergio listp  =', (LISTP(I),I=1,NWANTP)
-      print *, 'sergio FIN    = ',FIN
-      print *, 'sergio FOUT   = ',FOUT
-      print *, 'sergio FJACOB = ',FJACOB,IDOJACOB,INUMPROF
+c      print *, 'sergio nwantp =', NWANTP
+c      print *, 'sergio listp  =', (LISTP(I),I=1,NWANTP)
+c      print *, 'sergio FIN    = ',FIN
+c      print *, 'sergio FOUT   = ',FOUT
+c      print *, 'sergio FJACOB = ',FJACOB,IDOJACOB,INUMPROF
 ccc
 
 C      -------------------------
@@ -775,7 +775,7 @@ C      ---------------------------
 C      Do you want this profile?
  10    LWANT=.TRUE.
        
-       print *,'IPROF=',IPROF
+c       print *,'IPROF=',IPROF
        IF (NWANTP .GT. 1) THEN
 C         Look for current profile on list of wanted profiles
           LWANT=.FALSE.
@@ -794,7 +794,6 @@ C      --------------
      $    FEMIS, XEMIS, XRHO,
      $    TEMP, WAMNT, OAMNT, CAMNT, MAMNT, FAMNT, SAMNT, HAMNT, NAMNT,
      $     ALT, PROF, ISTAT )
-       PRINT *,'ISTAT=',ISTAT
        IF (ISTAT .EQ. -1) GOTO 9999  ! reached End Of File
 C
        IF (.NOT. LWANT) THEN
@@ -1214,7 +1213,11 @@ ccc      https://docs.oracle.com/cd/E19957-01/805-4939/6j4m0vnb3/index.html
 
        
        GOTO 1234
+       
 ccccc >>>>>>>> THIS IS ORIG WORKING TZJAC CODE >>>>>>>>>>
+ccccc >>>>>>>> THIS IS ORIG WORKING TZJAC CODE >>>>>>>>>>
+ccccc >>>>>>>> THIS IS ORIG WORKING TZJAC CODE >>>>>>>>>>
+
        IF ((IDOJACOB .GT. 0) .AND. (ITZLAYJAC .LE. LBOT)) THEN
          !! TEMP JAC
 	 IF (ITZLAYJAC .EQ. -1) THEN
@@ -1263,6 +1266,9 @@ ccccc >>>>>>>> THIS IS ORIG WORKING TZJAC CODE >>>>>>>>>>
 	   END IF
 	 END IF
        END IF
+
+ccccc >>>>>>>> THIS IS ORIG WORKING TZJAC CODE >>>>>>>>>>
+ccccc >>>>>>>> THIS IS ORIG WORKING TZJAC CODE >>>>>>>>>>
 ccccc >>>>>>>> THIS IS ORIG WORKING TZJAC CODE >>>>>>>>>>
 
  1234   CONTINUE

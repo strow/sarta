@@ -165,7 +165,7 @@ c------------------------------------------------------------------------
            END DO
 
  	   ITZLAYJAC = ITZLAYJAC + 1
-	   print *,'IPROF,Tlayjac,LBOT = ',IPROF,ITZLAYJAC,LBOT
+c	   print *,'IPROF,Tlayjac,LBOT = ',IPROF,ITZLAYJAC,LBOT
   	   TEMPX(ITZLAYJAC) = TEMPX(ITZLAYJAC) + DST
 	   !ISELECTLAY = -1	   !!! testing, but slow since it makes sarta re-run and re-run
 	   ISELECTLAY = ITZLAYJAC	   

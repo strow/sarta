@@ -165,7 +165,7 @@ c------------------------------------------------------------------------
            END DO
 
  	   IWVZLAYJAC = IWVZLAYJAC + 1
-	   print *,'IPROF,WVlayjac,LBOT = ',IPROF,IWVZLAYJAC,LBOT
+c	   print *,'IPROF,WVlayjac,LBOT = ',IPROF,IWVZLAYJAC,LBOT
   	   WAMNTX(IWVZLAYJAC) = WAMNTX(IWVZLAYJAC)*(1.0 + DQ)
 	   !ISELECTLAY = -1	   !!! testing, but slow since it makes sarta re-run and re-run
 	   ISELECTLAY = IWVZLAYJAC	   

@@ -80,7 +80,11 @@ for ii = 1 : 100
   [hjunk,hajunk,pjunk,pajunk] = rtpread('new.rp.rtp');
   raaO3(ii,:,:) = pjunk.rcalc;
 end
-toc
+
+wtime = toc;
+fprintf ( 1, '  finite diff jac took %f seconds to run.\n', wtime );
+
+error('finished finite diff')
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 iDo = -1

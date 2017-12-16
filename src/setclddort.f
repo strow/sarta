@@ -463,17 +463,17 @@ C         Total the clear & various cloudy radiances
      $       RADC12*CFRA12
 
 ccc this block for testing
-       IF (I .EQ. 1291) THEN
-cc         print *,'chan1291 : iPROF,rad0,radc1,radc2,radc12,FINAL=',
-cc     $      IPROF,RAD0,RADC1,RADC2,RADC12,RAD(I)
-         print *,'1291:I,TS,rF=',IPROF,TSURF,RAD(I)
-c         print *,'1291:I,CLR,C1,C2,C12,TS,rad0,radC1,radC2,radC12,rF=',
-c     $      IPROF,FCLEAR,CFRA1X,CFRA2X,CFRA12,
-c     $      TSURF,rad0,radC1,radC2,radC12,RAD(I)
-cc         PRINT *,'CLOUD1 emis,temp = ',CEMIS1(I),TCTOP1
-cc         PRINT *,'CLOUD2 emis,temp = ',CEMIS2(I),TCTOP2
-       endif
-ccc
+c       IF (I .EQ. 1291) THEN
+ccc         print *,'chan1291 : iPROF,rad0,radc1,radc2,radc12,FINAL=',
+ccc     $      IPROF,RAD0,RADC1,RADC2,RADC12,RAD(I)
+c         print *,'1291:I,TS,rF=',IPROF,TSURF,RAD(I)
+cc         print *,'1291:I,CLR,C1,C2,C12,TS,rad0,radC1,radC2,radC12,rF=',
+cc     $      IPROF,FCLEAR,CFRA1X,CFRA2X,CFRA12,
+cc     $      TSURF,rad0,radC1,radC2,radC12,RAD(I)
+ccc         PRINT *,'CLOUD1 emis,temp = ',CEMIS1(I),TCTOP1
+ccc         PRINT *,'CLOUD2 emis,temp = ',CEMIS2(I),TCTOP2
+c       endif
+ccc this block is for testing
 
        ENDDO ! channels
 
