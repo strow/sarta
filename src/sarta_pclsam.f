@@ -1104,7 +1104,8 @@ C
      $       TRCPRD, INDCO2, COFCO2, CO2MLT, INDN2O, COFN2O, N2OMLT,
      $       TAUSN, TAUZSN )
 
-C
+
+C this has been moved inside SetCldDoRT
 c          IF (SUNFDG .GT. 1.0001) THEN
 c             DO I=1,NCHAN
 c                DO L=1,LBOT
