@@ -556,6 +556,9 @@ C      --------------------
 	 LMAX = ISELECTLAY
        END IF
 
+       LMIN = 1
+       LMAX = LBOT
+       
        IF (LMIN .EQ. LMAX) THEN
          DO L = 1,LMIN
            IF (L .EQ. 1) THEN

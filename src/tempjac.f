@@ -2,6 +2,7 @@ ccc      note the alternative return to statement 77
 ccc      https://docs.oracle.com/cd/E19957-01/805-4939/6j4m0vnb3/index.html
 
       SUBROUTINE TempJac(*,ITZLAYJAC,IDOTZJAC,IOUNJ,IPROF,LBOT,NCHAN,DST,DQ,
+     $       PSURF,PLAY,TEMPRAW,
      $       TAU,TAUZ,TAUSN,TAUZSN,CO2TOP,
      $	     FIXMUL,CONPRD,FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
      $       WPRED1,WPRED2,WPRED3,WPRED4,WPRED5,WPRED6,WPRED7,
@@ -26,6 +27,12 @@ C-----------------------------------------------------------------------
        include 'incFTC.f'
        include 'rtpdefs.f'
 
+       REAL  PSURF                ! surface pressure
+       REAL PLAY(MAXLAY)   ! layer mean pressure
+C      Boundary pressure levels
+       COMMON /COMLEV/ PLEV
+       REAL PLEV(MAXLAY+1)
+       
        REAL CO2TOP                ! top layers CO2 mixing ratio
        REAL FIXMUL(MAXLAY)        ! "fixed" amount multiplier (~1)
        REAL CONPRD( N1CON,MAXLAY) ! water continuum predictors
@@ -122,7 +129,8 @@ C      for CALT
 
        REAL RAD(MXCHAN)
        INTEGER ISELECTLAY
-       
+
+       REAL TEMPRAW(MAXLAY) ! orig read-in prof layer average temperature
        REAL   TEMP(MAXLAY) ! prof layer average temperature
        REAL  WAMNT(MAXLAY) ! prof layer water (H2O) amount
        REAL  OAMNT(MAXLAY) ! prof layer ozone (O3) amount
@@ -134,6 +142,7 @@ C      for CALT
        REAL DST,DQ
 c local var
        INTEGER IJAC,J
+       REAL RJUNK1,RJUNK2
        
 c------------------------------------------------------------------------
          !! TEMP JAC
@@ -160,6 +169,7 @@ c------------------------------------------------------------------------
 
            DO IJAC = 1,MAXLAY
              TEMPX(IJAC)  = TEMP(IJAC)
+             TEMPX(IJAC)  = TEMPRAW(IJAC)	     
              WAMNTX(IJAC) = WAMNT(IJAC)
              OAMNTX(IJAC) = OAMNT(IJAC)	 
            END DO
@@ -167,6 +177,15 @@ c------------------------------------------------------------------------
  	   ITZLAYJAC = ITZLAYJAC + 1
 c	   print *,'IPROF,Tlayjac,LBOT = ',IPROF,ITZLAYJAC,LBOT
   	   TEMPX(ITZLAYJAC) = TEMPX(ITZLAYJAC) + DST
+
+C         Calc mean pressure for bottom fractional layer
+          RJUNK1 = ( PSURF - PLEV(LBOT) )/LOG( PSURF/PLEV(LBOT) )
+C         Do interpolation for fractional bottom layer mean temperature
+C         assuming T is in linear in log(P)
+           RJUNK2=( TEMPX(LBOT) - TEMPX(LBOT-1) )/
+     $       LOG( PLAY(LBOT)/PLAY(LBOT-1) )             ! slope
+           TEMPX(LBOT)=RJUNK2*LOG( RJUNK1/PLAY(LBOT-1) ) + TEMPX(LBOT - 1)
+
 	   !ISELECTLAY = -1	   !!! testing, but slow since it makes sarta re-run and re-run
 	   ISELECTLAY = ITZLAYJAC	   
   	   RETURN 1

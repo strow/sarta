@@ -237,8 +237,13 @@ C***********************************************************************
 	 LMAX = NLAY
        ELSE
          LMIN = ISELECTLAY
+         LMIN = 1	 
 	 LMAX = ISELECTLAY
        END IF
+
+       LMIN = 1
+       LMAX = NLAY
+
 C
 C      ---------------------------
 C      Loop on channel (frequency)

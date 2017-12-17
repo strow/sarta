@@ -257,8 +257,13 @@ C***********************************************************************
 	 LMAX = NLAY
        ELSE
          LMIN = ISELECTLAY
+	 LMIN = 1
 	 LMAX = ISELECTLAY
        END IF
+
+       LMIN = 1
+       LMAX = NLAY
+
 C
 C      ---------------------------
 C      Loop on channel (frequency)
@@ -492,6 +497,11 @@ C
 C            Calc layer-to-space optical depth
              KZ=KZ + KLAYER
              TAUZ(ILAY,J)=KZ
+
+c          IF (J .EQ. 757) THEN
+c	    print *,'calt2',J,ILAY,KCON,KFIX,KOZO,KWAT,DK,KLAYER
+c	  END IF
+
 C
           ENDDO
 C         End loop on levels

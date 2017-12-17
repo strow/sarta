@@ -295,8 +295,8 @@ C***********************************************************************
 	 LMAX = ISELECTLAY
        END IF
 
-c         LMIN = 1
-c	 LMAX = NLAY
+        LMIN = 1
+        LMAX = NLAY
 
 C
 C      ---------------------------
@@ -559,7 +559,11 @@ c	        print *,'coef1  LMIN',(COEF1(IJ,ILAY,I),IJ=1,7)
 c	        print *,'conpd1 LMIN',(CONPD1(IJ,ILAY),IJ=1,7)		
 c	      END IF
 c	    END IF
-	  
+
+c          IF (J .EQ. 757) THEN
+c	    print *,'calt1',J,ILAY,KCON,KFIX,KOZO,KW(ILAY),DK,KLAYER
+c	  END IF
+
           ENDDO
 C         End loop on levels
 C

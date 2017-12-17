@@ -10,7 +10,7 @@
      $    LRHOT, LBOT, INDMI1,INDMI2,
      $    EMIS, RHOSUN, RHOTHR, 
      $                NCHNTE, CLISTN, COEFN, CO2TOP, 
-     $                TEMP,TAU,TAUZ,TAUSN,TAUZSN,
+     $                TEMPRAW, TEMP,TAU,TAUZ,TAUSN,TAUZSN,
      $                TSURF,DOSUN, SUNFDG, BLMULT, SECSUN, SECANG, COSDAZ,
      $                SUNFAC,HSUN, LABOVE, COEFF,
      $                FCLEAR, TEMPC1, TEMPC2, 
@@ -32,6 +32,7 @@ c output
 C      Boundary pressure levels
        COMMON /COMLEV/ PLEV
        REAL PLEV(MAXLAY+1)
+       REAL TEMPRAW(MAXLAY) ! raw input prof layer average temperature             
        REAL   TEMP(MAXLAY) ! prof layer average temperature
        REAL    TAU(MAXLAY,MXCHAN) ! chan layer effective optical depth
        REAL   TAUZ(MAXLAY,MXCHAN) ! chan surface-to-space trans
@@ -196,7 +197,7 @@ c************************************************************************
      $    LRHOT, LBOT, INDMI1,INDMI2,
      $    EMIS, RHOSUN, RHOTHR, 
      $                NCHNTE, CLISTN, COEFN, CO2TOP, 
-     $                TEMP,TAU,TAUZ,TAUSN,TAUZSN,
+     $                TEMPRAW,TEMP,TAU,TAUZ,TAUSN,TAUZSN,
      $                TSURF+DST,DOSUN, SUNFDG, BLMULT, SECSUN, SECANG, COSDAZ,
      $                SUNFAC,HSUN, LABOVE, COEFF,
      $                FCLEAR, TEMPC1, TEMPC2, 
@@ -222,7 +223,7 @@ c************************************************************************
      $    LRHOT, LBOT, INDMI1,INDMI2,
      $    EMIS, RHOSUN, RHOTHR, 
      $                NCHNTE, CLISTN, COEFN, CO2TOP, 
-     $                TEMP,TAU,TAUZ,TAUSN,TAUZSN,
+     $                TEMPRAW,TEMP,TAU,TAUZ,TAUSN,TAUZSN,
      $                TSURF,DOSUN, SUNFDG, BLMULT, SECSUN, SECANG, COSDAZ,
      $                SUNFAC,HSUN, LABOVE, COEFF,
      $                FCLEAR, TEMPC1, TEMPC2, 
@@ -248,7 +249,7 @@ c************************************************************************
      $    LRHOT, LBOT, INDMI1,INDMI2,
      $    EMIS, RHOSUN, RHOTHR, 
      $                NCHNTE, CLISTN, COEFN, CO2TOP, 
-     $                TEMP,TAU,TAUZ,TAUSN,TAUZSN,
+     $                TEMPRAW,TEMP,TAU,TAUZ,TAUSN,TAUZSN,
      $                TSURF,DOSUN, SUNFDG, BLMULT, SECSUN, SECANG, COSDAZ,
      $                SUNFAC,HSUN, LABOVE, COEFF,
      $                FCLEAR, TEMPC1, TEMPC2, 
@@ -274,7 +275,7 @@ c************************************************************************
      $    LRHOT, LBOT, INDMI1,INDMI2,
      $    EMIS, RHOSUN, RHOTHR, 
      $                NCHNTE, CLISTN, COEFN, CO2TOP, 
-     $                TEMP,TAU,TAUZ,TAUSN,TAUZSN,
+     $                TEMPRAW,TEMP,TAU,TAUZ,TAUSN,TAUZSN,
      $                TSURF,DOSUN, SUNFDG, BLMULT, SECSUN, SECANG, COSDAZ,
      $                SUNFAC,HSUN, LABOVE, COEFF,
      $                FCLEAR, TEMPC1, TEMPC2, 
@@ -300,7 +301,7 @@ c************************************************************************
      $    LRHOT, LBOT, INDMI1,INDMI2,
      $    EMIS, RHOSUN, RHOTHR, 
      $                NCHNTE, CLISTN, COEFN, CO2TOP, 
-     $                TEMP,TAU,TAUZ,TAUSN,TAUZSN,
+     $                TEMPRAW,TEMP,TAU,TAUZ,TAUSN,TAUZSN,
      $                TSURF,DOSUN, SUNFDG, BLMULT, SECSUN, SECANG, COSDAZ,
      $                SUNFAC,HSUN, LABOVE, COEFF,
      $                FCLEAR, TEMPC1, TEMPC2, 
@@ -314,7 +315,7 @@ c************************************************************************
         write(IOUNJ) (1000.0*RAD(J),J=1,NCHAN)
 
 c************************************************************************
-
+       
        RETURN
        END
        

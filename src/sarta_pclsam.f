@@ -317,6 +317,7 @@ C      for RDRTP; profile to calculate
        REAL  HAMNT(MAXLAY) ! prof layer HNO3 amount
        REAL  NAMNT(MAXLAY) ! prof layer N2O amount
 
+       REAL TEMPRAW(MAXLAY) ! orig read-in prof layer average temperature
        REAL   TEMPX(MAXLAY) ! prof layer average temperature
        REAL  WAMNTX(MAXLAY) ! prof layer water (H2O) amount
        REAL  OAMNTX(MAXLAY) ! prof layer ozone (O3) amount
@@ -823,7 +824,10 @@ C      -------------------------------------
 C      Determine bottom layer, CO2, & angles
 C      -------------------------------------
        CALL GETBOT(NLAY, PLEV, PSURF, LBOT, BLMULT)
-
+       DO IJAC = 1,MAXLAY
+         TEMPRAW(IJAC) = TEMP(IJAC)
+       END DO
+       
 C      Calc the fractional bottom layer air temperature
 ccc
 c       TEMP(LBOT)=TEMP(LBOT-1) + BLMULT*( TEMP(LBOT) - TEMP(LBOT-1) )
@@ -1127,7 +1131,7 @@ C      Calculate cloudy radiance
      $    LRHOT, LBOT, INDMI1,INDMI2,
      $    EMIS, RHOSUN, RHOTHR, 
      $                NCHNTE, CLISTN, COEFN, max(CO2TOP,CO2TOP0), 
-     $                TEMPX,TAU, TAUZ, TAUSN, TAUZSN,
+     $                TEMPRAW, TEMPX, TAU, TAUZ, TAUSN, TAUZSN,
      $                TSURF,DOSUN, SUNFDG, BLMULT, SECSUN, SECANG, COSDAZ,
      $                SUNFAC,HSUN, LABOVE, COEFF,
      $                FCLEAR, TEMPC1, TEMPC2, 
@@ -1148,6 +1152,7 @@ C      -------------------
        END IF
 C
        IF ((IDOJACOB .GT. 0) .AND. (IDOCOLJAC .LT. 0)) THEN
+       
 	 CALL copypredictors(+1,NCHAN,
      $     TAU,TAUZ,TAUSN,TAUZSN,CO2TOP,
      $	   FIXMUL,CONPRD,FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
@@ -1160,7 +1165,8 @@ C
      $     OPRED10,OPRED20,OPRED40,OPRED50,OPRED60,OPRED70,
      $     MPRED30,CPRED40,TRCPRD0,CO2MLT0,SO2MLT0,HNOMLT0,N2OMLT0)
 	 
-         IDOCOLJAC = +1  !! doing coljacs       
+         IDOCOLJAC = +1  !! doing coljacs
+	 
          CALL ColJac(
      $        RAD, IPROF, HEAD, PROF, INDCHN, NCHAN, FREQ, DST, DQ, IOUNJ, 
      $    MIETYP, MIENPS, MIEPS, MIEABS, MIEEXT, MIEASY,
@@ -1173,7 +1179,7 @@ C
      $    LRHOT, LBOT, INDMI1,INDMI2,
      $    EMIS, RHOSUN, RHOTHR, 
      $                NCHNTE, CLISTN, COEFN, max(CO2TOP,CO2TOP0), 
-     $                TEMPX,TAU,TAUZ,TAUSN,TAUZSN,
+     $                TEMPRAW, TEMPX, TAU, TAUZ,TAUSN,TAUZSN,
      $                TSURF,DOSUN, SUNFDG, BLMULT, SECSUN, SECANG, COSDAZ,
      $                SUNFAC,HSUN, LABOVE, COEFF,
      $                FCLEAR, TEMPC1, TEMPC2, 
@@ -1182,13 +1188,15 @@ C
      $                NEXTO1, NSCAO1, G_ASY1, 
      $                LCBOT2, LCTOP2, CLRB2,CLRT2, TCBOT2, TCTOP2, MASEC2, CFRCL2, 
      $                NEXTO2, NSCAO2, G_ASY2
-     $   )      
+     $   )
+
       END IF
        
        IF ((IDOJACOB .GT. 0) .AND. (ITZLAYJAC .LE. LBOT)) THEN
 ccc      note the alternative return to statement 77
 ccc      https://docs.oracle.com/cd/E19957-01/805-4939/6j4m0vnb3/index.html
          CALL TempJac(*77,ITZLAYJAC,IDOTZJAC,IOUNJ,IPROF,LBOT,NCHAN,DST,DQ,
+     $       PSURF,PLAY,TEMPRAW,
      $       TAU,TAUZ,TAUSN,TAUZSN,CO2TOP,
      $	     FIXMUL,CONPRD,FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
      $       WPRED1,WPRED2,WPRED3,WPRED4,WPRED5,WPRED6,WPRED7,
@@ -1208,6 +1216,7 @@ ccc      https://docs.oracle.com/cd/E19957-01/805-4939/6j4m0vnb3/index.html
 ccc      note the alternative return to statement 77
 ccc      https://docs.oracle.com/cd/E19957-01/805-4939/6j4m0vnb3/index.html
          CALL WaterJac(*77,IWVZLAYJAC,IDOWVZJAC,IOUNJ,IPROF,LBOT,NCHAN,DST,DQ,
+     $       PSURF,PLAY,TEMPRAW,
      $       TAU,TAUZ,TAUSN,TAUZSN,CO2TOP,
      $	     FIXMUL,CONPRD,FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
      $       WPRED1,WPRED2,WPRED3,WPRED4,WPRED5,WPRED6,WPRED7,
@@ -1227,6 +1236,7 @@ ccc      https://docs.oracle.com/cd/E19957-01/805-4939/6j4m0vnb3/index.html
 ccc      note the alternative return to statement 77
 ccc      https://docs.oracle.com/cd/E19957-01/805-4939/6j4m0vnb3/index.html
          CALL OzoneJac(*77,IO3ZLAYJAC,IDOO3ZJAC,IOUNJ,IPROF,LBOT,NCHAN,DST,DQ,
+     $       PSURF,PLAY,TEMPRAW,
      $       TAU,TAUZ,TAUSN,TAUZSN,CO2TOP,
      $	     FIXMUL,CONPRD,FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
      $       WPRED1,WPRED2,WPRED3,WPRED4,WPRED5,WPRED6,WPRED7,

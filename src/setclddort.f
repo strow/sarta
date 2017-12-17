@@ -11,7 +11,7 @@
      $    LRHOT, LBOT, INDMI1,INDMI2,
      $    EMIS, RHOSUN, RHOTHR, 
      $                NCHNTE, CLISTN, COEFN, CO2TOP, 
-     $                TEMP, TAU, TAUZ, TAUSN, TAUZSN,
+     $                TEMPRAW, TEMP, TAU, TAUZ, TAUSN, TAUZSN,
      $                TSURF,DOSUN, SUNFDG, BLMULT, SECSUN, SECANG, COSDAZ,
      $                SUNFAC,HSUN, LABOVE, COEFF,
      $                FCLEAR, TEMPC1, TEMPC2, 
@@ -33,7 +33,8 @@ c output
 C      Boundary pressure levels
        COMMON /COMLEV/ PLEV
        REAL PLEV(MAXLAY+1)
-       REAL   TEMP(MAXLAY) ! prof layer average temperature
+       REAL TEMPRAW(MAXLAY) ! raw input prof layer average temperature       
+       REAL   TEMP(MAXLAY)  ! prof layer average temperature
        REAL    TAU(MAXLAY,MXCHAN) ! chan layer effective optical depth
        REAL   TAUZ(MAXLAY,MXCHAN) ! chan surface-to-space trans
        REAL TAUSN(MAXLAY,MXCHAN) ! sun OD       
@@ -226,6 +227,11 @@ c       REAL   TAUZ(MAXLAY,MXCHAN) ! chan surface-to-space trans
  	   END DO
          END DO       
        END IF
+
+c       DO L = 1,100
+c         print *,'tempraw(z),T(z),tau(z)',L,TEMPRAW(L),TEMP(L),TAU(L,757)
+c       END DO
+
        
 C      Get basic cloud parameters from input RTP
        CALL GETCLD( IPROF, HEAD, PROF,

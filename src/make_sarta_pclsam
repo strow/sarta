@@ -41,7 +41,7 @@ RTPINC = -I/asl/code/rtp/include
 # -us : puts trailing underscore
 F77 = ifort
 FLIB = 
-#OPT = -O -C -g -traceback -convert big_endian -extend-source 132 -warn unused 
+##OPT = -O -C -g -traceback -convert big_endian -extend-source 132 -warn unused
 ##OPT = -O -C -g -traceback -convert big_endian -extend-source 132 -warn unused -gen-interfaces
 OPT = -O -convert big_endian -extend-source 132
 
@@ -51,8 +51,9 @@ OPT = -O -convert big_endian -extend-source 132
 #    -C           array bounds checking
 #    -g           include symbol table info
 #    -O           moderate optimization
-#OPT = -O -byteswapio
-#F77 = pgf77
+#FLIB = 
+#OPT = -O -byteswapio -Mextend
+#F77 = /cm/shared/apps/pgi/current/linux86-64/16.5/bin/pgf95
 
 # ------------------------------------------------------------------------
 # Build

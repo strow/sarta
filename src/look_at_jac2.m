@@ -114,6 +114,9 @@ Tjac = cat(3,cat(3,Tjac1,Tjac2),Tjac3);
 WVjac = cat(3,cat(3,WVjac1,WVjac2),WVjac3);
 O3jac = cat(3,cat(3,O3jac1,O3jac2),O3jac3);
 
+fjacob = '/home/sergio/SARTA_CLOUDY/GitSarta/sarta/src/xjacob.dat';
+[vchan,ichan,stempjac,cldjac,Tjac,WVjac,O3jac] = read_sarta_jacob(fjacob);
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% compare stemp jac
@@ -142,9 +145,8 @@ cldjacNew = rad2bt(vchan,squeeze(cldjac(4,:,:)))-rad2bt(vchan,r0);
 figure(1); plot(vchan,cldjacOld); figure(2); plot(vchan,cldjacNew); figure(3); plot(vchan,cldjacOld-cldjacNew);
 
 %% compare T jacs for profile 1
-iProf = 1;
+iProf = 1; nlays = p0.nlevs(iProf)-1;
 TjacNew = squeeze(Tjac(:,:,iProf)); TjacNew = TjacNew'; TjacNew = rad2bt(vchan,TjacNew)-rad2bt(vchan,r0(:,iProf))*ones(1,100);
-nlays = p0.nlevs(iProf)-1;
 for ii = 1 : 100
   TjacOld(:,ii) = rad2bt(vchan,squeeze(raaT(ii,:,iProf))')-rad2bt(vchan,r0(:,iProf));
 end
@@ -158,7 +160,6 @@ xyz = squeeze(Tjac(:,:,iProf)); xyz = xyz'; xyz = rad2bt(vchan,xyz(:,nlays));
 figure(7); plot(h.vchan,rad2bt(h.vchan,r0(:,iProf)),'.-',h.vchan,xyz); title(['calculated rads0 and at lay ' num2str(nlays-0)])
 
 WVjacNew = squeeze(WVjac(:,:,iProf)); WVjacNew = WVjacNew'; WVjacNew = rad2bt(vchan,WVjacNew)-rad2bt(vchan,r0(:,iProf))*ones(1,100);
-nlays = p0.nlevs(iProf)-1;
 for ii = 1 : 100
   WVjacOld(:,ii) = rad2bt(vchan,squeeze(raaWV(ii,:,iProf))')-rad2bt(vchan,r0(:,iProf));
 end
@@ -172,7 +173,6 @@ xyz = squeeze(WVjac(:,:,iProf)); xyz = xyz'; xyz = rad2bt(vchan,xyz(:,nlays));
 figure(7); plot(h.vchan,rad2bt(h.vchan,r0(:,iProf)),'.-',h.vchan,xyz); title(['calculated rads0 and at lay ' num2str(nlays-0)])
 
 O3jacNew = squeeze(O3jac(:,:,iProf)); O3jacNew = O3jacNew'; O3jacNew = rad2bt(vchan,O3jacNew)-rad2bt(vchan,r0(:,iProf))*ones(1,100);
-nlays = p0.nlevs(iProf)-1;
 for ii = 1 : 100
   O3jacOld(:,ii) = rad2bt(vchan,squeeze(raaO3(ii,:,iProf))')-rad2bt(vchan,r0(:,iProf));
 end
