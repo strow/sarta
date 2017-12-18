@@ -1,15 +1,14 @@
 clear all
 tic
-[h,ha,p0,pa] = rtpread('junk135_2014_02_08_save27prof.rp.rtp');
+[h,ha,p0,pa] = rtpread('junk135_2014_02_08.rtp');
 
 addpath /home/sergio/MATLABCODE/matlib/clouds/sarta
 addpath /home/sergio/MATLABCODE/CRODGERS_FAST_CLOUD
 addpath /home/sergio/MATLABCODE/CLOUD
-g = dogoodchan;
-clist = get_retrieval_chans(h,g,4,2);
-
-[h,p0] = subset_rtp_allcloudfields(h,p0,[],clist,[]);
-rtpwrite('junk135_2014_02_08_save27prof_419chans.rp.rtp',h,ha,p0,pa);
+%g = dogoodchan;
+%clist = get_retrieval_chans(h,g,4,2);
+%[h,p0] = subset_rtp_allcloudfields(h,p0,[],clist,[]);
+%rtpwrite('junk135_2014_02_08_save27prof_419chans.rp.rtp',h,ha,p0,pa);
 
 rtpwrite('junkjunk.rp.rtp',h,ha,p0,pa);
 dojac = ['!time a.out fin=junkjunk.rp.rtp fout=new.rp.rtp >& newugh'];
@@ -98,21 +97,33 @@ error('finished finite diff')
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 iDo = -1
 if iDo > 0
-  dojac = ['!time a.out fin=junk135_2014_02_08_save27prof_419chans.rp.rtp fout=new.rp.rtp fjacob=xjacob.dat >& newugh; more newugh'];
-  dojac = ['!time a.out fin=junk135_2014_02_08_save27prof_419chans.rp.rtp fout=new.rp.rtp fjacob=xjacob.dat >& newugh'];
+  dojac = ['!time a.out fin=junk135_2014_02_08.rtp fout=new.rp.rtp fjacob=xjacob.dat >& newugh; more newugh'];
+  dojac = ['!time a.out fin=junk135_2014_02_08.rtp fout=new.rp.rtp fjacob=xjacob.dat >& newugh'];
   eval(dojac)
 end
-fjacob1 = '/home/sergio/SARTA_CLOUDY/GitSarta/sarta/src/xjacob.dat_1_10';
-fjacob2 = '/home/sergio/SARTA_CLOUDY/GitSarta/sarta/src/xjacob.dat_11_20';
-fjacob3 = '/home/sergio/SARTA_CLOUDY/GitSarta/sarta/src/xjacob.dat_21_27';
-[vchan,ichan,stempjac1,cldjac1,Tjac1,WVjac1,O3jac1] = read_sarta_jacob(fjacob1);
-[vchan,ichan,stempjac2,cldjac2,Tjac2,WVjac2,O3jac2] = read_sarta_jacob(fjacob2);
-[vchan,ichan,stempjac3,cldjac3,Tjac3,WVjac3,O3jac3] = read_sarta_jacob(fjacob3);
-stempjac = [stempjac1 stempjac2 stempjac3];
-cldjac = cat(3,cat(3,cldjac1,cldjac2),cldjac3);
-Tjac = cat(3,cat(3,Tjac1,Tjac2),Tjac3);
-WVjac = cat(3,cat(3,WVjac1,WVjac2),WVjac3);
-O3jac = cat(3,cat(3,O3jac1,O3jac2),O3jac3);
+
+iStart = 1; iEnd = iStart + 25 -1;
+iCnt = 0;
+while iStart <= 135
+  iCnt = iCnt + 1;
+  fjacobX = ['/home/sergio/SARTA_CLOUDY/GitSarta/sarta/src/xjacob.dat_' num2str(iStart) '_' num2str(iEnd)];    
+  [vchan,ichan,stempjacX,cldjacX,TjacX,WVjacX,O3jacX] = read_sarta_jacob(fjacobX);
+  if iCnt == 1
+    stempjac = stempjacX;
+    cldjac = cldjacX;
+    Tjac = TjacX;
+    WVjac = WVjacX;
+    O3jac = O3jacX;
+  else
+    stempjac = [stempjac stempjacX];
+    cldjac = cat(3,cldjac,cldjacX);
+    Tjac   = cat(3,Tjac,TjacX);
+    WVjac  = cat(3,WVjac,WVjacX);
+    O3jac  = cat(3,O3jac,O3jacX);
+  end
+  iStart = iStart + 25;
+  iEnd   = min(iStart + 25 - 1,length(p0.stemp));
+end
 
 fjacob = '/home/sergio/SARTA_CLOUDY/GitSarta/sarta/src/xjacob.dat';
 [vchan,ichan,stempjac,cldjac,Tjac,WVjac,O3jac] = read_sarta_jacob(fjacob);

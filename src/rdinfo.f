@@ -121,7 +121,7 @@ C 12 Dec 2017 Sergio Machado    Add FJACOB argument and associated code
 
 
 C      =================================================================
-       SUBROUTINE RDINFO(FIN, FOUT, LRHOT, NWANTP, LISTP, FJACOB)
+       SUBROUTINE RDINFO(FIN, FOUT, LRHOT, NWANTP, LISTP, FJACOB, NGASJACOB)
 C      =================================================================
 
 
@@ -158,7 +158,7 @@ C      Output:
        LOGICAL  LRHOT
        INTEGER NWANTP
        INTEGER  LISTP(MAXPRO)
-
+       INTEGER NGASJACOB
 
 C-----------------------------------------------------------------------
 C      LOCAL VARIABLES
@@ -196,9 +196,10 @@ C      Set defaults
 C      ------------
        FIN='sarta_in.rtp'                 ! input filename
        FOUT='sarta_out.rtp'               ! output filename
-       NWANTP=-1   ! do sarta for all profiles found in input file
-       LRHOT=.FALSE. ! use input rho for reflected thermal
-       FJACOB='DNE'                       ! output jacob name              
+       NWANTP=-1       ! do sarta for all profiles found in input file
+       LRHOT=.FALSE.   ! use input rho for reflected thermal
+       FJACOB='DNE'    ! output jacob name
+       NGASJACOB=2     ! do WV and O3 
 C
 C      -----------------------------------------------------------------
 C      Loop on program parameters
@@ -236,6 +237,9 @@ C            ----------------------------
              ELSEIF (VAR(1:6) .EQ. 'FJACOB') THEN
                 FJACOB=VAL
 
+             ELSEIF (VAR(1:9) .EQ. 'NGASJACOB') THEN
+                READ(VAL,*) NGASJACOB
+                
              ELSEIF (VAR(1:5) .EQ. 'LRHOT') THEN
                 LRHOT=STR2BO(VAL)
 

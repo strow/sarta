@@ -343,7 +343,10 @@ C***********************************************************************
        ELSE
          LMIN = ISELECTLAY
 	 LMAX = ISELECTLAY
-       END IF
+      END IF
+
+      LMIN = 1
+      LMAX = LBOT
 C
 C
 C      Initialize the sum terms to zero

@@ -228,10 +228,12 @@ c       REAL   TAUZ(MAXLAY,MXCHAN) ! chan surface-to-space trans
          END DO       
        END IF
 
+ 1234  FORMAT(3I,2(F12.4),2(F12.4))
 c       DO L = 1,100
-c         print *,'tempraw(z),T(z),tau(z)',L,TEMPRAW(L),TEMP(L),TAU(L,757)
+cc        print *,'tempraw(z),T(z),tau(z)',L,TEMPRAW(L),TEMP(L),TAU(L,757),TAUZSN(L,757)  !! 900 cm-1
+cc        print *,'tempraw(z),T(z),tau(z)',L,TEMPRAW(L),TEMP(L),TAU(L,2333),TAUZSN(L,2333) !! 2616 cm-1
+c         print *,L,TEMPRAW(L),TEMP(L),TAU(L,2333),TAUSN(L,2333) !! 2616 cm-1                 
 c       END DO
-
        
 C      Get basic cloud parameters from input RTP
        CALL GETCLD( IPROF, HEAD, PROF,

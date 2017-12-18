@@ -202,7 +202,8 @@ C      for RDINFO
        CHARACTER*92 FJACOBN   ! current output binary JACOB filename       
        LOGICAL  LRHOT         ! force refl therm rho=(1-emis)/pi?
        INTEGER NWANTP         ! number of wanted profiles (-1=all)
-       INTEGER  LISTP(MAXPRO) ! list of wanted profiles
+       INTEGER  LISTP(MAXPRO)   ! list of wanted profiles
+       INTEGER  NGASJACOB       ! do WV,O3 (2=default) or just WV (1)
 C
 C      for FNMIE
        CHARACTER*240 VCLOUD        ! cloud version string
@@ -618,10 +619,16 @@ C      ---------------------
 C      Get command-line info
 C      ---------------------
        INUMPROF = -1
-       CALL RDINFO(FIN, FOUT, LRHOT, NWANTP, LISTP, FJACOB0)
+       CALL RDINFO(FIN, FOUT, LRHOT, NWANTP, LISTP, FJACOB0, NGASJACOB)
        IDOJACOB = -1
        IF (FJACOB0(1:3) .NE. 'DNE') THEN
 
+         IF (NGASJACOB .GT. 2) THEN
+           print *,'resetting NGASJACOB to 2 (WV,O3) instead of ',NGASJACOB
+         ELSEIF (NGASJACOB .LT. 0) THEN
+           print *,'resetting NGASJACOB to 1 (WV) instead of ',NGASJACOB
+         END IF
+           
          IDOJACOB = +1
          DST = 1.0;
 	 DQ =  0.1
@@ -745,6 +752,7 @@ c       print *, 'read open status = ', ISTAT
 ccc
        IF (IDOJACOB .GT. 0) THEN
          IPRINTJAC = 150
+         IPRINTJAC = 25          
          IF (INUMPROF .LE. IPRINTJAC) THEN
 	   FJACOBN = FJACOB0
 	 ELSE
@@ -1233,7 +1241,15 @@ ccc      https://docs.oracle.com/cd/E19957-01/805-4939/6j4m0vnb3/index.html
        END IF
        IWVZLAYJAC = LBOT + 1
 
-       IF ((IDOJACOB .GT. 0) .AND. (IO3ZLAYJAC .LE. LBOT)) THEN
+       IF ((IDOJACOB .GT. 0) .AND. (IO3ZLAYJAC .LE. LBOT) .AND.
+     $    (NGASJACOB .EQ. 1)) THEN
+          !! O3 JAC
+          write(IOUNJ) IPROF,+300
+	  DO IJAC = 1,100
+            write(IOUNJ) (0.0*1000.0*RAD(J),J=1,NCHAN)
+          END DO       
+       ELSEIF ((IDOJACOB .GT. 0) .AND. (IO3ZLAYJAC .LE. LBOT) .AND.
+     $         (NGASJACOB .EQ. 2)) THEN          
 ccc      note the alternative return to statement 77
 ccc      https://docs.oracle.com/cd/E19957-01/805-4939/6j4m0vnb3/index.html
          CALL OzoneJac(*77,IO3ZLAYJAC,IDOO3ZJAC,IOUNJ,IPROF,LBOT,NCHAN,DST,DQ,
@@ -1252,7 +1268,6 @@ ccc      https://docs.oracle.com/cd/E19957-01/805-4939/6j4m0vnb3/index.html
      $       ISELECTLAY,RAD)     
        END IF
        IO3ZLAYJAC = LBOT + 1
-
        
        GOTO 1234
        
@@ -1312,7 +1327,7 @@ ccccc >>>>>>>> THIS IS ORIG WORKING TZJAC CODE >>>>>>>>>>
 ccccc >>>>>>>> THIS IS ORIG WORKING TZJAC CODE >>>>>>>>>>
 ccccc >>>>>>>> THIS IS ORIG WORKING TZJAC CODE >>>>>>>>>>
 ccccc >>>>>>>> THIS IS ORIG WORKING TZJAC CODE >>>>>>>>>>
-
+       
  1234   CONTINUE
  
 c        IF (IDOJACOB .GT. 0) THEN

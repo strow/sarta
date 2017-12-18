@@ -1,15 +1,38 @@
 clear all
 tic
-[h,ha,p0,pa] = rtpread('junk135_2014_02_08_save27prof.rp.rtp');
+[h,ha,p0,pa] = rtpread('junk135_2014_02_08_prof10.rtp');
 
-addpath /home/sergio/MATLABCODE/matlib/clouds/sarta
-addpath /home/sergio/MATLABCODE/CRODGERS_FAST_CLOUD
-addpath /home/sergio/MATLABCODE/CLOUD
-g = dogoodchan;
-clist = get_retrieval_chans(h,g,4,2);
+rtpwrite('junkjunk.rp.rtp',h,ha,p0,pa);
+dojac = ['!time a.out fin=junkjunk.rp.rtp fout=new.rp.rtp >& newugh0'];
+eval(dojac)
+[hjunk,hajunk,pjunk,pajunk] = rtpread('new.rp.rtp');
+r0 = pjunk.rcalc;
 
-[h,p0] = subset_rtp_allcloudfields(h,p0,[],clist,[]);
-rtpwrite('junk135_2014_02_08_save27prof_419chans.rp.rtp',h,ha,p0,pa);
+p = p0;
+p.ptemp(95,:) = p.ptemp(95,:) + 1;
+rtpwrite('junkjunk.rp.rtp',h,ha,p,pa);
+dojac = ['!time a.out fin=junkjunk.rp.rtp fout=new.rp.rtp >& newugh95'];
+eval(dojac)
+[hjunk,hajunk,pjunk,pajunk] = rtpread('new.rp.rtp');
+rST = pjunk.rcalc;
+
+p = p0;
+p.ptemp(96,:) = p.ptemp(96,:) + 1;
+rtpwrite('junkjunk.rp.rtp',h,ha,p,pa);
+dojac = ['!time a.out fin=junkjunk.rp.rtp fout=new.rp.rtp >& newugh96'];
+eval(dojac)
+[hjunk,hajunk,pjunk,pajunk] = rtpread('new.rp.rtp');
+rST = pjunk.rcalc;
+
+p = p0;
+p.ptemp(97,:) = p.ptemp(97,:) + 1;
+rtpwrite('junkjunk.rp.rtp',h,ha,p,pa);
+dojac = ['!time a.out fin=junkjunk.rp.rtp fout=new.rp.rtp >& newugh97'];
+eval(dojac)
+[hjunk,hajunk,pjunk,pajunk] = rtpread('new.rp.rtp');
+rST = pjunk.rcalc;
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 rtpwrite('junkjunk.rp.rtp',h,ha,p0,pa);
 dojac = ['!time a.out fin=junkjunk.rp.rtp fout=new.rp.rtp >& newugh'];
@@ -98,21 +121,10 @@ error('finished finite diff')
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 iDo = -1
 if iDo > 0
-  dojac = ['!time a.out fin=junk135_2014_02_08_save27prof_419chans.rp.rtp fout=new.rp.rtp fjacob=xjacob.dat >& newugh; more newugh'];
-  dojac = ['!time a.out fin=junk135_2014_02_08_save27prof_419chans.rp.rtp fout=new.rp.rtp fjacob=xjacob.dat >& newugh'];
+  dojac = ['!time a.out fin=junk135_2014_02_08_prof10.rtp fout=new.rp.rtp fjacob=xjacob.dat >& newugh; more newugh'];
+  dojac = ['!time a.out fin=junk135_2014_02_08_prof10.rtp fout=new.rp.rtp fjacob=xjacob.dat >& newugh'];
   eval(dojac)
 end
-fjacob1 = '/home/sergio/SARTA_CLOUDY/GitSarta/sarta/src/xjacob.dat_1_10';
-fjacob2 = '/home/sergio/SARTA_CLOUDY/GitSarta/sarta/src/xjacob.dat_11_20';
-fjacob3 = '/home/sergio/SARTA_CLOUDY/GitSarta/sarta/src/xjacob.dat_21_27';
-[vchan,ichan,stempjac1,cldjac1,Tjac1,WVjac1,O3jac1] = read_sarta_jacob(fjacob1);
-[vchan,ichan,stempjac2,cldjac2,Tjac2,WVjac2,O3jac2] = read_sarta_jacob(fjacob2);
-[vchan,ichan,stempjac3,cldjac3,Tjac3,WVjac3,O3jac3] = read_sarta_jacob(fjacob3);
-stempjac = [stempjac1 stempjac2 stempjac3];
-cldjac = cat(3,cat(3,cldjac1,cldjac2),cldjac3);
-Tjac = cat(3,cat(3,Tjac1,Tjac2),Tjac3);
-WVjac = cat(3,cat(3,WVjac1,WVjac2),WVjac3);
-O3jac = cat(3,cat(3,O3jac1,O3jac2),O3jac3);
 
 fjacob = '/home/sergio/SARTA_CLOUDY/GitSarta/sarta/src/xjacob.dat';
 [vchan,ichan,stempjac,cldjac,Tjac,WVjac,O3jac] = read_sarta_jacob(fjacob);
@@ -126,22 +138,26 @@ figure(1); plot(vchan,stempjacOld); figure(2); plot(vchan,stempjacNew); figure(3
 
 %% compare cngwat
 cldjacOld = rad2bt(vchan,rcngwat1)-rad2bt(vchan,r0);
-cldjacNew = rad2bt(vchan,squeeze(cldjac(1,:,:)))-rad2bt(vchan,r0);
+%cldjacNew = rad2bt(vchan,squeeze(cldjac(1,:,:)))-rad2bt(vchan,r0);
+cldjacNew = rad2bt(vchan,cldjac(1,:)')-rad2bt(vchan,r0);
 figure(1); plot(vchan,cldjacOld); figure(2); plot(vchan,cldjacNew); figure(3); plot(vchan,cldjacOld-cldjacNew);
 
 %% compare cngwat2
 cldjacOld = rad2bt(vchan,rcngwat2)-rad2bt(vchan,r0);
-cldjacNew = rad2bt(vchan,squeeze(cldjac(2,:,:)))-rad2bt(vchan,r0);
+%cldjacNew = rad2bt(vchan,squeeze(cldjac(2,:,:)))-rad2bt(vchan,r0);
+cldjacNew = rad2bt(vchan,cldjac(2,:)')-rad2bt(vchan,r0);
 figure(1); plot(vchan,cldjacOld); figure(2); plot(vchan,cldjacNew); figure(3); plot(vchan,cldjacOld-cldjacNew);
 
 %% compare cpsize
 cldjacOld = rad2bt(vchan,rcpsize1)-rad2bt(vchan,r0);
-cldjacNew = rad2bt(vchan,squeeze(cldjac(3,:,:)))-rad2bt(vchan,r0);
+%cldjacNew = rad2bt(vchan,squeeze(cldjac(3,:,:)))-rad2bt(vchan,r0);
+cldjacNew = rad2bt(vchan,cldjac(3,:)')-rad2bt(vchan,r0);
 figure(1); plot(vchan,cldjacOld); figure(2); plot(vchan,cldjacNew); figure(3); plot(vchan,cldjacOld-cldjacNew);
 
 %% compare cpsize
 cldjacOld = rad2bt(vchan,rcpsize2)-rad2bt(vchan,r0);
-cldjacNew = rad2bt(vchan,squeeze(cldjac(4,:,:)))-rad2bt(vchan,r0);
+%cldjacNew = rad2bt(vchan,squeeze(cldjac(4,:,:)))-rad2bt(vchan,r0);
+cldjacNew = rad2bt(vchan,cldjac(4,:)')-rad2bt(vchan,r0);
 figure(1); plot(vchan,cldjacOld); figure(2); plot(vchan,cldjacNew); figure(3); plot(vchan,cldjacOld-cldjacNew);
 
 %% compare T jacs for profile 1
