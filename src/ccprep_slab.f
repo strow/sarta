@@ -281,7 +281,8 @@ c      print *, 'tcbot=', TCBOT
 c      print *, 'cleart=', CLEART
 c      print *, 'clearb=', CLEARB
 ccccccccc
-
+c       print *,'CLD',TCTOP,TCBOT,CLEART,CLEARB
+       
 C      -----------------------------------------------------------------
 C      Calc mean secant angles thru cloud and fraction of cloud in layer
 C      -----------------------------------------------------------------

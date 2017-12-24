@@ -65,6 +65,9 @@ for ii = 1 : 100
   p.ptemp(ii,:) =  p.ptemp(ii,:) + 1;
   rtpwrite('junkjunk.rp.rtp',h,ha,p,pa);
   dojac = ['!time a.out fin=junkjunk.rp.rtp fout=new.rp.rtp >& newugh'];
+  if ii > 95
+    dojac = ['!time a.out fin=junkjunk.rp.rtp fout=new.rp.rtp >& newugh' num2str(ii)];
+  end
   eval(dojac)
   [hjunk,hajunk,pjunk,pajunk] = rtpread('new.rp.rtp');
   raaT(ii,:,:) = pjunk.rcalc;
@@ -104,6 +107,8 @@ if iDo > 0
   dojac = ['!time a.out fin=junk135_2014_02_08_save27prof_419chans.rp.rtp fout=new.rp.rtp fjacob=xjacob.dat >& newugh'];
   eval(dojac)
 end
+
+%% in 3 bunches
 fjacob1 = '/home/sergio/SARTA_CLOUDY/GitSarta/sarta/src/xjacob.dat_1_10';
 fjacob2 = '/home/sergio/SARTA_CLOUDY/GitSarta/sarta/src/xjacob.dat_11_20';
 fjacob3 = '/home/sergio/SARTA_CLOUDY/GitSarta/sarta/src/xjacob.dat_21_27';
@@ -116,6 +121,18 @@ Tjac = cat(3,cat(3,Tjac1,Tjac2),Tjac3);
 WVjac = cat(3,cat(3,WVjac1,WVjac2),WVjac3);
 O3jac = cat(3,cat(3,O3jac1,O3jac2),O3jac3);
 
+%% in 2 bunches
+fjacob1 = '/home/sergio/SARTA_CLOUDY/GitSarta/sarta/src/xjacob.dat_1_25';
+fjacob2 = '/home/sergio/SARTA_CLOUDY/GitSarta/sarta/src/xjacob.dat_26_27';
+[vchan,ichan,stempjac1,cldjac1,Tjac1,WVjac1,O3jac1] = read_sarta_jacob(fjacob1);
+[vchan,ichan,stempjac2,cldjac2,Tjac2,WVjac2,O3jac2] = read_sarta_jacob(fjacob2);
+stempjac = [stempjac1 stempjac2];
+cldjac = cat(3,cldjac1,cldjac2);
+Tjac = cat(3,Tjac1,Tjac2);
+WVjac = cat(3,WVjac1,WVjac2);
+O3jac = cat(3,O3jac1,O3jac2);
+
+%% in 1 bunch
 fjacob = '/home/sergio/SARTA_CLOUDY/GitSarta/sarta/src/xjacob.dat';
 [vchan,ichan,stempjac,cldjac,Tjac,WVjac,O3jac] = read_sarta_jacob(fjacob);
 

@@ -1159,6 +1159,7 @@ C      Calculate cloudy radiance
      $  )
        IEMIS = +1
        ICLD = +1
+c       ICLD = -1       ! testing
 
 C      -------------------
 C      Output the radiance
@@ -1207,6 +1208,7 @@ C
      $                NEXTO2, NSCAO2, G_ASY2
      $   )
        ICLD = +1
+c       ICLD = -1       ! testing       
       END IF
        
        IF ((IDOJACOB .GT. 0) .AND. (ITZLAYJAC .LE. LBOT)) THEN
@@ -1218,6 +1220,7 @@ ccc      https://docs.oracle.com/cd/E19957-01/805-4939/6j4m0vnb3/index.html
 	 ELSE
 	   !! now everything onwards should be fine
 	   ICLD = +1
+c          ICLD = -1       ! testing       	   
 	 END IF
          CALL TempJac(*77,ITZLAYJAC,IDOTZJAC,IOUNJ,IPROF,LBOT,NCHAN,DST,DQ,
      $       PSURF,PLAY,TEMPRAW,
@@ -1365,6 +1368,7 @@ C      End loop over profiles
 C      ----------------------
        IPROF=IPROF + 1  ! increment profile counter
 c       print *, 'sergio iprof=', IPROF
+c       STOP
        GOTO 10
 C>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>       
 C
