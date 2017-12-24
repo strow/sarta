@@ -1,3 +1,6 @@
+addpath /asl/matlib/h4tools
+addpath /asl/matlib/aslutil
+
 clear all
 tic
 [h,ha,p0,pa] = rtpread('junk135_2014_02_08_prof10.rtp');

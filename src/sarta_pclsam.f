@@ -215,7 +215,7 @@ C
 C      for OPNRTP
        INTEGER  PTYPE         ! profile type
        INTEGER  NCHAN         ! # of selected channels
-       REAL     FCHAN(MXCHAN) ! chan center frequency
+       REAL     FCHAN(MXCHAN) ! chan center frequency  -- from input/user set vchan (could be wrong)
        INTEGER LSTCHN(MXCHAN) ! list of selected channels
        INTEGER INDCHN(MXCHAN) ! array indices for user selected channels
        INTEGER IH2O           ! index of H2O in gamnt
@@ -254,7 +254,9 @@ C      for RDCOEF             ! Info for selected channels only
        INTEGER CLIST6(MXCHN6) ! list of set6 channels
        INTEGER CLIST7(MXCHN7) ! list of set7 channels
        INTEGER LABOVE(MXCHAN) ! chan downwelling thermal layer above
-       REAL   FREQ(MXCHAN)    ! chan center frequency
+       REAL   FREQ(MXCHAN)    ! chan center frequency, from CODE set by Scott/Chris ...
+                              !this is correct from FNCOFX files
+			      !paired with ICHAN from the same FNCOFX files
        REAL  COEF1(N1COEF,MAXLAY,MXCHN1) ! coefs for set1 chans
        REAL  COEF2(N2COEF,MAXLAY,MXCHN2) ! coefs for set2 chans
        REAL  COEF3(N3COEF,MAXLAY,MXCHN3) ! coefs for set3 chans
@@ -327,12 +329,12 @@ C      for RDRTP; profile to calculate
        
 C      for surface
        INTEGER   LBOT             ! bottom layer index number
-       INTEGER  NEMIS             ! # of emis pts
        REAL  PSURF                ! surface pressure
        REAL BLMULT                ! bottom layer fractional multiplier
-       REAL  FEMIS(MXEMIS)        ! emis freq pts
-       REAL  XEMIS(MXEMIS)        ! emis pts
-       REAL   XRHO(MXEMIS)        ! reflec pts
+       INTEGER  NEMIS             ! # of emis pts from rtp       
+       REAL  FEMIS(MXEMIS)        ! emis freq pts from rtp
+       REAL  XEMIS(MXEMIS)        ! emis pts from rtp
+       REAL   XRHO(MXEMIS)        ! reflec pts from rtp
 C
 C      for MEAN_T
        REAL TPSEUD(MAXLAY)
@@ -424,6 +426,7 @@ C      for CALT
        REAL   WAOP(MXOWLY)        ! OPTRAN abs coef scaling factor
 C
 C      for SETEMS
+       INTEGER IEMIS       ! have we already set the chan emiss (-1 NO +1 YES)
        REAL   EMIS(MXCHAN) ! chan surface emissivity
        REAL RHOSUN(MXCHAN) ! chan reflectivity for sun
        REAL RHOTHR(MXCHAN) ! chan reflectivity for downwelling thermal
@@ -473,6 +476,8 @@ C
 C      for RDRTP
        INTEGER  IPROF      ! profile loop counter
        LOGICAL  LWANT      ! do you want this profile?
+
+       INTEGER ICLD       ! have we already set the cloud param (-1 NO +1 YES)
 C
 C      Basic cloud info
        REAL XCEMI1(MXEMIS)    ! cloud1 emissivity
@@ -516,7 +521,7 @@ C      for CCPREP cloud1
        REAL TCBOT1            ! temperature at cloud bottom
        REAL TCTOP1            ! temperature at cloud top
        REAL MASEC1            ! mean cloud view angle secant
-c       REAL MASUN1            ! mean cloud sun-only angle secant
+       REAL MASUN1            ! mean cloud sun-only angle secant
        REAL CFRCL1(MAXLAY)    ! fraction of cloud in layer
        REAL G_ASY1(MXCHAN)    ! "g" asymmetry
        REAL NEXTO1(MXCHAN)    ! nadir extinction optical depth
@@ -530,7 +535,7 @@ C      for CCPREP cloud2
        REAL TCBOT2            ! temperature at cloud bottom
        REAL TCTOP2            ! temperature at cloud top
        REAL MASEC2            ! mean cloud view angle secant
-c       REAL MASUN2            ! mean cloud sun-only angle secant
+       REAL MASUN2            ! mean cloud sun-only angle secant
        REAL CFRCL2(MAXLAY)    ! fraction of cloud in layer
        REAL G_ASY2(MXCHAN)    ! "g" asymmetry
        REAL NEXTO2(MXCHAN)    ! nadir extinction optical depth
@@ -1000,6 +1005,8 @@ C
        IWVZLAYJAC  = -1  !! not yet done
        IO3ZLAYJAC  = -1  !! not yet done       
        CO2TOP0     = 0.0 !! not yet done
+       IEMIS       = -1  !! not yet done
+       ICLD        = -1  !! not yet done
        
  77    CONTINUE   !!! come back here if JACOBIANS needed
  
@@ -1138,19 +1145,20 @@ C      Calculate cloudy radiance
      $    XCEMI2, XCRHO2, CSTMP2, CFRA2X, CFRA12, 
      $        NEMIS, FEMIS, XEMIS, XRHO,
      $    LRHOT, LBOT, INDMI1,INDMI2,
-     $    EMIS, RHOSUN, RHOTHR, 
+     $    IEMIS, EMIS, RHOSUN, RHOTHR, 
      $                NCHNTE, CLISTN, COEFN, max(CO2TOP,CO2TOP0), 
      $                TEMPRAW, TEMPX, TAU, TAUZ, TAUSN, TAUZSN,
      $                TSURF,DOSUN, SUNFDG, BLMULT, SECSUN, SECANG, COSDAZ,
      $                SUNFAC,HSUN, LABOVE, COEFF,
-     $                FCLEAR, TEMPC1, TEMPC2, 
-     $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, 
+     $                ICLD, FCLEAR, TEMPC1, TEMPC2, 
+     $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, MASUN1, MASUN2,
      $                LCBOT1, LCTOP1, CLRB1,CLRT1, TCBOT1, TCTOP1, MASEC1, CFRCL1, 
      $                NEXTO1, NSCAO1, G_ASY1, 
      $                LCBOT2, LCTOP2, CLRB2,CLRT2, TCBOT2, TCTOP2, MASEC2, CFRCL2, 
      $                NEXTO2, NSCAO2, G_ASY2 
      $  )
-       
+       IEMIS = +1
+       ICLD = +1
 
 C      -------------------
 C      Output the radiance
@@ -1186,24 +1194,31 @@ C
      $    XCEMI2, XCRHO2, CSTMP2, CFRA2X, CFRA12, 
      $        NEMIS, FEMIS, XEMIS, XRHO,
      $    LRHOT, LBOT, INDMI1,INDMI2,
-     $    EMIS, RHOSUN, RHOTHR, 
+     $    IEMIS, EMIS, RHOSUN, RHOTHR, 
      $                NCHNTE, CLISTN, COEFN, max(CO2TOP,CO2TOP0), 
      $                TEMPRAW, TEMPX, TAU, TAUZ,TAUSN,TAUZSN,
      $                TSURF,DOSUN, SUNFDG, BLMULT, SECSUN, SECANG, COSDAZ,
      $                SUNFAC,HSUN, LABOVE, COEFF,
      $                FCLEAR, TEMPC1, TEMPC2, 
-     $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, 
+     $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, MASUN1, MASUN2,
      $                LCBOT1, LCTOP1, CLRB1,CLRT1, TCBOT1, TCTOP1, MASEC1, CFRCL1, 
      $                NEXTO1, NSCAO1, G_ASY1, 
      $                LCBOT2, LCTOP2, CLRB2,CLRT2, TCBOT2, TCTOP2, MASEC2, CFRCL2, 
      $                NEXTO2, NSCAO2, G_ASY2
      $   )
-
+       ICLD = +1
       END IF
        
        IF ((IDOJACOB .GT. 0) .AND. (ITZLAYJAC .LE. LBOT)) THEN
 ccc      note the alternative return to statement 77
 ccc      https://docs.oracle.com/cd/E19957-01/805-4939/6j4m0vnb3/index.html
+         IF (ITZLAYJAC .EQ. -1) THEN
+	   !! the col jacs perturb the cloud params, so re-set them for this topmost T(z) jac
+	   ICLD = -1
+	 ELSE
+	   !! now everything onwards should be fine
+	   ICLD = +1
+	 END IF
          CALL TempJac(*77,ITZLAYJAC,IDOTZJAC,IOUNJ,IPROF,LBOT,NCHAN,DST,DQ,
      $       PSURF,PLAY,TEMPRAW,
      $       TAU,TAUZ,TAUSN,TAUZSN,CO2TOP,

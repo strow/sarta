@@ -296,7 +296,8 @@ C         Read data for this frequency/channel
      $       IL=1,MAXLAY)
 C
           SETCHN(ICHAN)=1
-C
+c	  print *,ICHAN,FRQCHN,SETCHN(ICHAN)
+C        
 C         Keep the data if the current channel is on the list
           IF (INDCHN(ICHAN) .NE. 0) THEN
              CLIST1(J)=ICHAN
@@ -326,6 +327,7 @@ C         Read data for this frequency/channel
      $       IL=1,MAXLAY)
 C
           SETCHN(ICHAN)=2
+c	  print *,ICHAN,FRQCHN,SETCHN(ICHAN)	  
 C
 C         Keep the data if the current channel is on the list
           IF (INDCHN(ICHAN) .NE. 0) THEN
@@ -356,6 +358,7 @@ C         Read data for this frequency/channel
      $       IL=1,MAXLAY)
 C
           SETCHN(ICHAN)=3
+c	  print *,ICHAN,FRQCHN,SETCHN(ICHAN)	  
 C
 C         Keep the data if the current channel is on the list
           IF (INDCHN(ICHAN) .NE. 0) THEN
@@ -386,6 +389,7 @@ C         Read data for this frequency/channel
      $       IL=1,MAXLAY)
 C
           SETCHN(ICHAN)=4
+c	  print *,ICHAN,FRQCHN,SETCHN(ICHAN)	  
 C
 C         Keep the data if the current channel is on the list
           IF (INDCHN(ICHAN) .NE. 0) THEN
@@ -417,6 +421,7 @@ C         Read data for this frequency/channel
      $       IL=1,MAXLAY)
 C
           SETCHN(ICHAN)=5
+c	  print *,ICHAN,FRQCHN,SETCHN(ICHAN)	  
 C
 C         Keep the data if the current channel is on the list
           IF (INDCHN(ICHAN) .NE. 0) THEN
@@ -447,6 +452,7 @@ C         Read data for this frequency/channel
      $       IL=1,MAXLAY)
 C
           SETCHN(ICHAN)=6
+c	  print *,ICHAN,FRQCHN,SETCHN(ICHAN)	  
 C
 C         Keep the data if the current channel is on the list
           IF (INDCHN(ICHAN) .NE. 0) THEN
@@ -477,6 +483,7 @@ C         Read data for this frequency/channel
      $       IL=1,MAXLAY)
 C
           SETCHN(ICHAN)=7
+c	  print *,ICHAN,FRQCHN,SETCHN(ICHAN)	  
 C
 C         Keep the data if the current channel is on the list
           IF (INDCHN(ICHAN) .NE. 0) THEN

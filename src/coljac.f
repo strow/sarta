@@ -8,13 +8,13 @@
      $    XCEMI2, XCRHO2, CSTMP2, CFRA2X, CFRA12, 
      $        NEMIS, FEMIS, XEMIS, XRHO,
      $    LRHOT, LBOT, INDMI1,INDMI2,
-     $    EMIS, RHOSUN, RHOTHR, 
+     $    IEMIS, EMIS, RHOSUN, RHOTHR, 
      $                NCHNTE, CLISTN, COEFN, CO2TOP, 
      $                TEMPRAW, TEMP,TAU,TAUZ,TAUSN,TAUZSN,
      $                TSURF,DOSUN, SUNFDG, BLMULT, SECSUN, SECANG, COSDAZ,
      $                SUNFAC,HSUN, LABOVE, COEFF,
      $                FCLEAR, TEMPC1, TEMPC2, 
-     $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, 
+     $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, MASUN1, MASUN2,
      $                LCBOT1, LCTOP1, CLRB1,CLRT1, TCBOT1, TCTOP1, MASEC1, CFRCL1, 
      $                NEXTO1, NSCAO1, G_ASY1, 
      $                LCBOT2, LCTOP2, CLRB2,CLRT2, TCBOT2, TCTOP2, MASEC2, CFRCL2, 
@@ -54,6 +54,7 @@ C      Boundary pressure levels
 
        LOGICAL  LRHOT         ! force refl therm rho=(1-emis)/pi?
 C      for SETEMS
+       INTEGER IEMIS       ! already set??? (-1 NO  +1 YES)
        REAL   EMIS(MXCHAN) ! chan surface emissivity
        REAL CEMIS1(MXCHAN) ! chan surface emissivity cloud1
        REAL CRHOS1(MXCHAN) ! chan solar reflectivity cloud1
@@ -67,6 +68,8 @@ C      for SETEMS
        REAL    SUNFDG      ! fudge for large sun angles
        INTEGER   LBOT             ! bottom layer index number
        REAL BLMULT                ! bottom layer fractional multiplier
+
+       INTEGER ICLD       ! have we already set the cloud param (-1 NO +1 YES)
        
 C      for CCPREP cloud1
        INTEGER LCBOT1         ! layer containing cloud bottom
@@ -76,7 +79,7 @@ C      for CCPREP cloud1
        REAL TCBOT1            ! temperature at cloud bottom
        REAL TCTOP1            ! temperature at cloud top
        REAL MASEC1            ! mean cloud view angle secant
-c       REAL MASUN1            ! mean cloud sun-only angle secant
+       REAL MASUN1            ! mean cloud sun-only angle secant
        REAL CFRCL1(MAXLAY)    ! fraction of cloud in layer
        REAL G_ASY1(MXCHAN)    ! "g" asymmetry
        REAL NEXTO1(MXCHAN)    ! nadir extinction optical depth
@@ -90,7 +93,7 @@ C      for CCPREP cloud2
        REAL TCBOT2            ! temperature at cloud bottom
        REAL TCTOP2            ! temperature at cloud top
        REAL MASEC2            ! mean cloud view angle secant
-c       REAL MASUN2            ! mean cloud sun-only angle secant
+       REAL MASUN2            ! mean cloud sun-only angle secant
        REAL CFRCL2(MAXLAY)    ! fraction of cloud in layer
        REAL G_ASY2(MXCHAN)    ! "g" asymmetry
        REAL NEXTO2(MXCHAN)    ! nadir extinction optical depth
@@ -104,11 +107,11 @@ C      for RDCLDT
        REAL MIEASY(MXCHAN,MXMIEA,NMIETY) ! Mie asymmetry table
        
 C      for surface
-       INTEGER  NEMIS             ! # of emis pts
+       INTEGER  NEMIS             ! # of emis pts from rtp
 c       REAL  PSURF                ! surface pressure
-       REAL  FEMIS(MXEMIS)        ! emis freq pts
-       REAL  XEMIS(MXEMIS)        ! emis pts
-       REAL   XRHO(MXEMIS)        ! reflec pts
+       REAL  FEMIS(MXEMIS)        ! emis freq pts from rtp
+       REAL  XEMIS(MXEMIS)        ! emis pts from rtp 
+       REAL   XRHO(MXEMIS)        ! reflec pts from rtp
        
 C      for RDRTP
        RECORD /RTPPROF/ PROF            ! profile
@@ -195,13 +198,13 @@ c************************************************************************
      $    XCEMI2, XCRHO2, CSTMP2, CFRA2X, CFRA12, 
      $        NEMIS, FEMIS, XEMIS, XRHO,
      $    LRHOT, LBOT, INDMI1,INDMI2,
-     $    EMIS, RHOSUN, RHOTHR, 
+     $    IEMIS, EMIS, RHOSUN, RHOTHR, 
      $                NCHNTE, CLISTN, COEFN, CO2TOP, 
      $                TEMPRAW,TEMP,TAU,TAUZ,TAUSN,TAUZSN,
      $                TSURF+DST,DOSUN, SUNFDG, BLMULT, SECSUN, SECANG, COSDAZ,
      $                SUNFAC,HSUN, LABOVE, COEFF,
-     $                FCLEAR, TEMPC1, TEMPC2, 
-     $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, 
+     $                -1, FCLEAR, TEMPC1, TEMPC2, 
+     $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, MASUN1, MASUN2,
      $                LCBOT1, LCTOP1, CLRB1,CLRT1, TCBOT1, TCTOP1, MASEC1, CFRCL1, 
      $                NEXTO1, NSCAO1, G_ASY1, 
      $                LCBOT2, LCTOP2, CLRB2,CLRT2, TCBOT2, TCTOP2, MASEC2, CFRCL2, 
@@ -221,13 +224,13 @@ c************************************************************************
      $    XCEMI2, XCRHO2, CSTMP2, CFRA2X, CFRA12, 
      $        NEMIS, FEMIS, XEMIS, XRHO,
      $    LRHOT, LBOT, INDMI1,INDMI2,
-     $    EMIS, RHOSUN, RHOTHR, 
+     $    IEMIS, EMIS, RHOSUN, RHOTHR, 
      $                NCHNTE, CLISTN, COEFN, CO2TOP, 
      $                TEMPRAW,TEMP,TAU,TAUZ,TAUSN,TAUZSN,
      $                TSURF,DOSUN, SUNFDG, BLMULT, SECSUN, SECANG, COSDAZ,
      $                SUNFAC,HSUN, LABOVE, COEFF,
-     $                FCLEAR, TEMPC1, TEMPC2, 
-     $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, 
+     $                -1, FCLEAR, TEMPC1, TEMPC2, 
+     $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, MASUN1, MASUN2,
      $                LCBOT1, LCTOP1, CLRB1,CLRT1, TCBOT1, TCTOP1, MASEC1, CFRCL1, 
      $                NEXTO1, NSCAO1, G_ASY1, 
      $                LCBOT2, LCTOP2, CLRB2,CLRT2, TCBOT2, TCTOP2, MASEC2, CFRCL2, 
@@ -247,13 +250,13 @@ c************************************************************************
      $    XCEMI2, XCRHO2, CSTMP2, CFRA2X, CFRA12, 
      $        NEMIS, FEMIS, XEMIS, XRHO,
      $    LRHOT, LBOT, INDMI1,INDMI2,
-     $    EMIS, RHOSUN, RHOTHR, 
+     $    IEMIS, EMIS, RHOSUN, RHOTHR, 
      $                NCHNTE, CLISTN, COEFN, CO2TOP, 
      $                TEMPRAW,TEMP,TAU,TAUZ,TAUSN,TAUZSN,
      $                TSURF,DOSUN, SUNFDG, BLMULT, SECSUN, SECANG, COSDAZ,
      $                SUNFAC,HSUN, LABOVE, COEFF,
-     $                FCLEAR, TEMPC1, TEMPC2, 
-     $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, 
+     $                -1, FCLEAR, TEMPC1, TEMPC2, 
+     $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, MASUN1, MASUN2,
      $                LCBOT1, LCTOP1, CLRB1,CLRT1, TCBOT1, TCTOP1, MASEC1, CFRCL1, 
      $                NEXTO1, NSCAO1, G_ASY1, 
      $                LCBOT2, LCTOP2, CLRB2,CLRT2, TCBOT2, TCTOP2, MASEC2, CFRCL2, 
@@ -273,13 +276,13 @@ c************************************************************************
      $    XCEMI2, XCRHO2, CSTMP2, CFRA2X, CFRA12, 
      $        NEMIS, FEMIS, XEMIS, XRHO,
      $    LRHOT, LBOT, INDMI1,INDMI2,
-     $    EMIS, RHOSUN, RHOTHR, 
+     $    IEMIS, EMIS, RHOSUN, RHOTHR, 
      $                NCHNTE, CLISTN, COEFN, CO2TOP, 
      $                TEMPRAW,TEMP,TAU,TAUZ,TAUSN,TAUZSN,
      $                TSURF,DOSUN, SUNFDG, BLMULT, SECSUN, SECANG, COSDAZ,
      $                SUNFAC,HSUN, LABOVE, COEFF,
-     $                FCLEAR, TEMPC1, TEMPC2, 
-     $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, 
+     $                -1, FCLEAR, TEMPC1, TEMPC2, 
+     $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, MASUN1, MASUN2,
      $                LCBOT1, LCTOP1, CLRB1,CLRT1, TCBOT1, TCTOP1, MASEC1, CFRCL1, 
      $                NEXTO1, NSCAO1, G_ASY1, 
      $                LCBOT2, LCTOP2, CLRB2,CLRT2, TCBOT2, TCTOP2, MASEC2, CFRCL2, 
@@ -299,13 +302,13 @@ c************************************************************************
      $    XCEMI2, XCRHO2, CSTMP2, CFRA2X, CFRA12, 
      $        NEMIS, FEMIS, XEMIS, XRHO,
      $    LRHOT, LBOT, INDMI1,INDMI2,
-     $    EMIS, RHOSUN, RHOTHR, 
+     $    IEMIS, EMIS, RHOSUN, RHOTHR, 
      $                NCHNTE, CLISTN, COEFN, CO2TOP, 
      $                TEMPRAW,TEMP,TAU,TAUZ,TAUSN,TAUZSN,
      $                TSURF,DOSUN, SUNFDG, BLMULT, SECSUN, SECANG, COSDAZ,
      $                SUNFAC,HSUN, LABOVE, COEFF,
-     $                FCLEAR, TEMPC1, TEMPC2, 
-     $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, 
+     $                -1, FCLEAR, TEMPC1, TEMPC2, 
+     $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2,  MASUN1, MASUN2,
      $                LCBOT1, LCTOP1, CLRB1,CLRT1, TCBOT1, TCTOP1, MASEC1, CFRCL1, 
      $                NEXTO1, NSCAO1, G_ASY1, 
      $                LCBOT2, LCTOP2, CLRB2,CLRT2, TCBOT2, TCTOP2, MASEC2, CFRCL2, 

@@ -1,4 +1,3 @@
-
        SUBROUTINE SetCldDoRT(
      $        RAD, IPROF, HEAD, PROF, INDCHN, NCHAN, FREQ, IJACCLD, DQ,
      $    MIETYP, MIENPS, MIEPS, MIEABS, MIEEXT, MIEASY,
@@ -9,13 +8,13 @@
      $    XCEMI2, XCRHO2, CSTMP2, CFRA2X, CFRA12, 
      $        NEMIS, FEMIS, XEMIS, XRHO,
      $    LRHOT, LBOT, INDMI1,INDMI2,
-     $    EMIS, RHOSUN, RHOTHR, 
+     $    IEMIS, EMIS, RHOSUN, RHOTHR, 
      $                NCHNTE, CLISTN, COEFN, CO2TOP, 
      $                TEMPRAW, TEMP, TAU, TAUZ, TAUSN, TAUZSN,
      $                TSURF,DOSUN, SUNFDG, BLMULT, SECSUN, SECANG, COSDAZ,
      $                SUNFAC,HSUN, LABOVE, COEFF,
-     $                FCLEAR, TEMPC1, TEMPC2, 
-     $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, 
+     $                ICLD, FCLEAR, TEMPC1, TEMPC2, 
+     $                CEMIS1, CEMIS2, CRHOT1, CRHOT2, CRHOS1, CRHOS2, MASUN1, MASUN2,
      $                LCBOT1, LCTOP1, CLRB1,CLRT1, TCBOT1, TCTOP1, MASEC1, CFRCL1, 
      $                NEXTO1, NSCAO1, G_ASY1, 
      $                LCBOT2, LCTOP2, CLRB2,CLRT2, TCBOT2, TCTOP2, MASEC2, CFRCL2, 
@@ -57,6 +56,7 @@ C      Boundary pressure levels
 
        LOGICAL  LRHOT         ! force refl therm rho=(1-emis)/pi?
 C      for SETEMS
+       INTEGER IEMIS       ! have we already set the chan emiss (-1 NO +1 YES)
        REAL   EMIS(MXCHAN) ! chan surface emissivity
        REAL CEMIS1(MXCHAN) ! chan surface emissivity cloud1
        REAL CRHOS1(MXCHAN) ! chan solar reflectivity cloud1
@@ -70,6 +70,8 @@ C      for SETEMS
        LOGICAL DOSUN       ! do sun calc?
        INTEGER   LBOT             ! bottom layer index number
        REAL BLMULT                ! bottom layer fractional multiplier
+
+       INTEGER ICLD       ! have we already set the cloud param (-1 NO +1 YES)
        
 C      for CCPREP cloud1
        INTEGER LCBOT1         ! layer containing cloud bottom
@@ -107,11 +109,11 @@ C      for RDCLDT
        REAL MIEASY(MXCHAN,MXMIEA,NMIETY) ! Mie asymmetry table
        
 C      for surface
-       INTEGER  NEMIS             ! # of emis pts
        REAL  PSURF                ! surface pressure
-       REAL  FEMIS(MXEMIS)        ! emis freq pts
-       REAL  XEMIS(MXEMIS)        ! emis pts
-       REAL   XRHO(MXEMIS)        ! reflec pts
+       INTEGER  NEMIS             ! # of emis pts from rtp       
+       REAL  FEMIS(MXEMIS)        ! emis freq pts from rtp
+       REAL  XEMIS(MXEMIS)        ! emis pts from rtp
+       REAL   XRHO(MXEMIS)        ! reflec pts from rtp
        
 C      for RDRTP
        RECORD /RTPPROF/ PROF            ! profile
@@ -258,46 +260,53 @@ c     $                          CPRBO1, CNGWA1,CFRA1X
 C      ---------------------------------------------------
 C      Set the emissivity & reflectivity for every channel
 C      ---------------------------------------------------
-       CALL SETEMS( NCHAN, NEMIS, FREQ, FEMIS, XEMIS, XRHO,
-     $    XCEMI1, XCRHO1, XCEMI2, XCRHO2, LRHOT,
-     $    EMIS, RHOSUN, RHOTHR, CEMIS1, CRHOS1, CRHOT1,
-     $    CEMIS2, CRHOS2, CRHOT2) 
-C
-C      Check and prepare (top) cloud1
-       IF (CFRAC1 .GT. 0.0) THEN
-          IF (LBLAC1) THEN
+       IF (IEMIS .LT. 0) THEN
+c         print *,'setting emiss'
+         CALL SETEMS( NCHAN, NEMIS, FREQ, FEMIS, XEMIS, XRHO,
+     $     XCEMI1, XCRHO1, XCEMI2, XCRHO2, LRHOT,
+     $     EMIS, RHOSUN, RHOTHR, CEMIS1, CRHOS1, CRHOT1,
+     $     CEMIS2, CRHOS2, CRHOT2) 
+       END IF
+
+       IF (ICLD .LT. 0) THEN
+c         print *,'setting cld'       
+C        Check and prepare (top) cloud1
+         IF (CFRAC1 .GT. 0.0) THEN
+           IF (LBLAC1) THEN
              CALL BKPREP(IPROF, 1, CTYPE1, CFRAC1, CPRTO1,
-     $          LBOT, PSURF, PLEV, PLAY, TEMP, LCTOP1, TCTOP1,
-     $          TEMPC1, CLRT1)
-             IF (CSTMP1 .GT. 0.0) TCTOP1=CSTMP1
-          ELSE
+     $          LBOT, PSURF, PLEV, PLAY, TEMP, 
+     $          LCTOP1, TCTOP1, TEMPC1, CLRT1)    !! output
+             IF (CSTMP1 .GT. 0.0) TCTOP1=CSTMP1   !! output
+           ELSE
 C            Determine which lookup table to use
              CALL GETMIE(CTYPE1,MIETYP,INDMI1,IERR1)
 C            Prepare selected lookup table for given cpsize
              CALL CCPREP( NCHAN, LBOT, INDMI1, MIENPS,
      $          CNGWA1, CPSIZ1, CPRTO1, CPRBO1, PLEV, TEMP, SECANG,
-     $          SECSUN, MIEPS, MIEABS, MIEEXT, MIEASY, LCBOT1, LCTOP1,
-     $          CLRB1, CLRT1, TCBOT1, TCTOP1, MASEC1, MASUN1,
-     $          CFRCL1, G_ASY1, NEXTO1, NSCAO1 )
-          ENDIF
-       ENDIF
+     $          SECSUN, MIEPS, MIEABS, MIEEXT, MIEASY,
+     $          LCBOT1, LCTOP1,                               !! output
+     $          CLRB1, CLRT1, TCBOT1, TCTOP1, MASEC1, MASUN1, !! output
+     $          CFRCL1, G_ASY1, NEXTO1, NSCAO1 )              !! output
+           ENDIF
+         ENDIF
 
-C      Check and prepare (bottom) cloud2
-       IF (CFRAC2 .GT. 0.0) THEN
-          IF (LBLAC2) THEN
+C        Check and prepare (bottom) cloud2
+         IF (CFRAC2 .GT. 0.0) THEN
+           IF (LBLAC2) THEN
              CALL BKPREP(IPROF, 2, CTYPE2, CFRAC2, CPRTO2,
-     $          LBOT, PSURF, PLEV, PLAY, TEMP, LCTOP2, TCTOP2,
-     $          TEMPC2, CLRT2)
-             IF (CSTMP2 .GT. 0.0) TCTOP2=CSTMP2
-          ELSE
+     $          LBOT, PSURF, PLEV, PLAY, TEMP, 
+     $          LCTOP2, TCTOP2, TEMPC2, CLRT2)               !! output
+             IF (CSTMP2 .GT. 0.0) TCTOP2=CSTMP2              !! output
+           ELSE
 C            Determine which lookup table to use
              CALL GETMIE(CTYPE2,MIETYP,INDMI2,IERR2)
 C            Prepare lookup data for cloud2
              CALL CCPREP( NCHAN, LBOT, INDMI2, MIENPS,
      $          CNGWA2, CPSIZ2, CPRTO2, CPRBO2, PLEV, TEMP, SECANG,
-     $          SECSUN, MIEPS, MIEABS, MIEEXT, MIEASY, LCBOT2, LCTOP2,
-     $          CLRB2, CLRT2, TCBOT2, TCTOP2, MASEC2, MASUN2,
-     $          CFRCL2, G_ASY2, NEXTO2, NSCAO2 )
+     $          SECSUN, MIEPS, MIEABS, MIEEXT, MIEASY,
+     $          LCBOT2, LCTOP2,                                !! output
+     $          CLRB2, CLRT2, TCBOT2, TCTOP2, MASEC2, MASUN2,  !! output
+     $          CFRCL2, G_ASY2, NEXTO2, NSCAO2 )               !! output
 c             print *,NCHAN,LBOT,INDMI2,MIENPS,CNGWA2, CPSIZ2, CPRTO2, CPRBO2,
 c     $               G_ASY2(1291),NEXTO2(1291),NSCAO2(1291)
 c            print *,'ABC=',LCBOT2, LCTOP2,CLRB2, CLRT2, TCBOT2, TCTOP2, MASEC2, MASUN2
@@ -305,10 +314,12 @@ c            print *,MIEPS(1,1),MIEPS(1,2),MIEPS(1,3)
 c            print *,MIEABS(1,1,1),MIEABS(1,1,2),MIEABS(1,1,3)
 c            print *,MIEEXT(1,1,1),MIEEXT(1,1,2),MIEEXT(1,1,3)
 c            print *,MIEASY(1,1,1),MIEASY(1,1,2),MIEASY(1,1,3)
-          ENDIF
-       ELSE
-C         Safe default for non-existant cloud2
-          LCTOP2=1
+            ENDIF
+         ELSE
+C           Safe default for non-existant cloud2
+            LCTOP2=1                                          !! output
+	 ENDIF
+	 
        ENDIF
 
 cccccccc this block for testing only

@@ -1,3 +1,5 @@
+addpath /home/sergio/MATLABCODE
+
 clear all
 tic
 [h,ha,p0,pa] = rtpread('junk135_2014_02_08_save27prof.rp.rtp');
