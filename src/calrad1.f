@@ -26,7 +26,9 @@ C    CALRAD1( DOSUN, I, LBOT, RPLNCK, RSURFE, SECANG,
 C       ODL, TAUL, TAUZ, SUNFAC, HSUN, TAUZSN, RHOSUN,
 C       RHOTHR, LABOVE, COEFF,
 C       CFRCL1, MASEC1, MASUN1, COSDAZ,
-C       NEXTO1, NSCAO1, G_ASY1, LCTOP1, LCBOT1, RAD1 )
+C       NEXTO1, NSCAO1, G_ASY1, LCTOP1, LCBOT1, 
+C       CLD1EFFOD, CLD1SUN,
+C       RAD1)
 
 
 !INPUT PARAMETERS:
@@ -57,7 +59,8 @@ C    REAL arr  NSCAO1  cloud scattering opt depth  none
 C    REAL arr  G_ASY1  cloud asymmetry parameter   none
 C    INTEGER   LCTOP1  cloud top layer index       none
 C    INTEGER   LCBOT1  cloud bottom layer index    none
-
+C    REAL arr  CLD1EFFOD  cloud eff optical depth  none
+C    REAL arr  CLD1SUN    solar scat due to cld    none
 
 !OUTPUT PARAMETERS:
 C    type      name    purpose                     units
@@ -136,7 +139,9 @@ C      =================================================================
        SUBROUTINE CALRAD1( DOSUN, I, LBOT, RPLNCK, RSURFE, SECANG,
      $    ODL, TAUL, TAUZ, SUNFAC, HSUN, TAUZSN, RHOSUN,
      $    RHOTHR, LABOVE, COEFF, CFRCL1, MASEC1, MASUN1, COSDAZ,
-     $    NEXTO1, NSCAO1, G_ASY1, LCTOP1,LCBOT1, RAD1 )
+     $    NEXTO1, NSCAO1, G_ASY1, LCTOP1,LCBOT1,
+     $    CLD1EFFOD, CLD1SUN,
+     $    RAD1 )
 C      =================================================================
 
 C-----------------------------------------------------------------------
@@ -187,6 +192,8 @@ C      Cloud1 info
        REAL G_ASY1(MXCHAN) ! cloud asymmetry
        INTEGER LCTOP1      ! cloud top layer index
        INTEGER LCBOT1      ! cloud bottom layer index
+       REAL    CLD1SUN(MAXLAY,MXCHAN)  ! chan solar scat due to cld1 at each lay
+       REAL    CLD1EFFOD(MXCHAN)       ! chan cld1 effOD       
 C
 C      Output
        REAL   RAD1         ! upwelling radiance at satellite
@@ -247,6 +254,7 @@ C***********************************************************************
 C
 C      Optical depth of cloud1 including scattering adjustment
        K1=NEXTO1(I) - NSCAO1(I)*(1.0+G_ASY1(I))/2.0
+c       K1 = CLD1EFFOD(I)
 
 C      -----------------------------------------------------------------
 C      Loop downward over the layers

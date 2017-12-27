@@ -27,7 +27,9 @@ C       ODL, TAUL, TAUZ, SUNFAC, HSUN, TAUZSN, RHOSUN,
 C       RHOTHR, LABOVE, COEFF,
 C       CFRCL1, MASEC1, MASUN1, NEXTO1, NSCAO1, G_ASY1, LCTOP1, LCBOT1,
 C       CFRCL2, MASEC2, MASUN2, COSDAZ,
-C       NEXTO2, NSCAO2, G_ASY2, LCTOP2, LCBOT2, RAD2 )
+C       NEXTO2, NSCAO2, G_ASY2, LCTOP2, LCBOT2,
+C       CLD1EFFOD,CLD2EFFOD,CLD1SUN,CLD2SUN,
+C       RAD2 )
 
 
 !INPUT PARAMETERS:
@@ -147,7 +149,9 @@ C      =================================================================
      $    RHOTHR, LABOVE, COEFF, CFRCL1, MASEC1, MASUN1,
      $    NEXTO1, NSCAO1, G_ASY1, LCTOP1,LCBOT1,
      $    CFRCL2, MASEC2, MASUN2, COSDAZ,
-     $    NEXTO2, NSCAO2, G_ASY2, LCTOP2,LCBOT2, RAD2 )
+     $    NEXTO2, NSCAO2, G_ASY2, LCTOP2,LCBOT2,
+     $    CLD1EFFOD,CLD2EFFOD,CLD1SUN,CLD2SUN,
+     $    RAD2 )
 C      =================================================================
 
 C-----------------------------------------------------------------------
@@ -207,6 +211,10 @@ C      Cloud2 info
        REAL G_ASY2(MXCHAN) ! cloud2 asymmetry
        INTEGER LCTOP2      ! cloud2 top layer index
        INTEGER LCBOT2      ! cloud2 bottom layer index
+       REAL    CLD1SUN(MAXLAY,MXCHAN)  ! chan solar scat due to cld1 at each lay
+       REAL    CLD2SUN(MAXLAY,MXCHAN)  ! chan solar scat due to cld2 at each lay
+       REAL    CLD1EFFOD(MXCHAN)       ! chan cld1 effOD
+       REAL    CLD2EFFOD(MXCHAN)       ! chan cld2 effOD       
 C
 C      Output
        REAL   RAD2         ! upwelling radiance at satellite
@@ -272,7 +280,9 @@ C
 C      Cloud optical depths adjusted for scattering
        K1=NEXTO1(I) - NSCAO1(I)*(1.0+G_ASY1(I))/2.0
        K2=NEXTO2(I) - NSCAO2(I)*(1.0+G_ASY2(I))/2.0
-
+c       K1 = CLD1EFFOD(I)
+c       K2 = CLD2EFFOD(I)
+       
 C      -----------------------------------------------------------------
 C      Loop downward over the layers
 C      -----------------------------------------------------------------

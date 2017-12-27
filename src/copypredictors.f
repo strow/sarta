@@ -6,11 +6,13 @@ c this subroutine makes copies of the predictors
      $     WPRED1,WPRED2,WPRED3,WPRED4,WPRED5,WPRED6,WPRED7,
      $     OPRED1,OPRED2,OPRED4,OPRED5,OPRED6,OPRED7,
      $     MPRED3,CPRED4,TRCPRD,CO2MLT,SO2MLT,HNOMLT,N2OMLT,
+     $     RAAPLNCK,RASURFE,CLD1EFFOD,CLD2EFFOD,CLD1SUN,CLD2SUN,OMEGA1LAY,OMEGA2LAY,     
      $     TAU0,TAUZ0,TAUSN0,TAUZSN0,CO2TOP0,
      $	   FIXMUL0,CONPRD0,FPRED10,FPRED20,FPRED30,FPRED40,FPRED50,FPRED60,FPRED70,
      $     WPRED10,WPRED20,WPRED30,WPRED40,WPRED50,WPRED60,WPRED70,
      $     OPRED10,OPRED20,OPRED40,OPRED50,OPRED60,OPRED70,
-     $     MPRED30,CPRED40,TRCPRD0,CO2MLT0,SO2MLT0,HNOMLT0,N2OMLT0)
+     $     MPRED30,CPRED40,TRCPRD0,CO2MLT0,SO2MLT0,HNOMLT0,N2OMLT0,
+     $     RAAPLNCK0,RASURFE0,CLD1EFFOD0,CLD2EFFOD0,CLD1SUN0,CLD2SUN0,OMEGA1LAY0,OMEGA2LAY0)     
 
 
 C-----------------------------------------------------------------------
@@ -54,6 +56,14 @@ C-----------------------------------------------------------------------
        REAL SO2MLT(MAXLAY)        ! SO2 perturbation multiplier
        REAL HNOMLT(MAXLAY)        ! HNO3 perturbation multiplier
        REAL N2OMLT(MAXLAY)        ! N2O perturbation multiplier
+       REAL    RAAPLNCK(MAXLAY,MXCHAN) ! chan radiance at each lay
+       REAL    RASURFE(MXCHAN)         ! chan radiance at surf
+       REAL    CLD1SUN(MAXLAY,MXCHAN)  ! chan solar scat due to cld1 at each lay
+       REAL    CLD2SUN(MAXLAY,MXCHAN)  ! chan solar scat due to cld2 at each lay
+       REAL    CLD1EFFOD(MXCHAN)       ! chan cld1 effOD
+       REAL    CLD2EFFOD(MXCHAN)       ! chan cld2 effOD
+       REAL    OMEGA1LAY(MAXLAY,MXCHAN) ! single scat at each lay
+       REAL    OMEGA2LAY(MAXLAY,MXCHAN) ! single scat at each lay              
 c
 c original values
        REAL CO2TOP0                ! top layers CO2 mixing ratio
@@ -86,7 +96,15 @@ c original values
        REAL SO2MLT0(MAXLAY)        ! SO2 perturbation multiplier
        REAL HNOMLT0(MAXLAY)        ! HNO3 perturbation multiplier
        REAL N2OMLT0(MAXLAY)        ! N2O perturbation multiplier
-
+       REAL    RAAPLNCK0(MAXLAY,MXCHAN) ! chan radiance at each lay
+       REAL    RASURFE0(MXCHAN)         ! chan radiance at surf
+       REAL    CLD1SUN0(MAXLAY,MXCHAN)  ! chan solar scat due to cld1 at each lay
+       REAL    CLD2SUN0(MAXLAY,MXCHAN)  ! chan solar scat due to cld2 at each lay
+       REAL    CLD1EFFOD0(MXCHAN)       ! chan cld1 effOD
+       REAL    CLD2EFFOD0(MXCHAN)       ! chan cld2 effOD
+       REAL    OMEGA1LAY0(MAXLAY,MXCHAN) ! single scat at each lay
+       REAL    OMEGA2LAY0(MAXLAY,MXCHAN) ! single scat at each lay       
+       
 C
 C      for CALOWP
 c       INTEGER LOPMIN
@@ -138,8 +156,16 @@ c local
   	     TAU0(K,J)    = TAU(K,J)
  	     TAUZ0(K,J)   = TAUZ(K,J)
  	     TAUSN0(K,J)  = TAUSN(K,J)	     	     
- 	     TAUZSN0(K,J) = TAUZSN(K,J)	     
+ 	     TAUZSN0(K,J) = TAUZSN(K,J)
+             RAAPLNCK0(K,J) = RAAPLNCK(K,J)
+	     CLD1SUN0(K,J)  = CLD1SUN(K,J)
+	     CLD2SUN0(K,J)  = CLD2SUN(K,J)
+	     OMEGA1LAY0(K,J) = OMEGA1LAY(K,J)
+	     OMEGA2LAY0(K,J) = OMEGA2LAY(K,J)	     
 	   END DO
+	   RASURFE0(J)   = RASURFE(J)
+	   CLD1EFFOD0(J) = CLD1EFFOD(J)
+	   CLD2EFFOD0(J) = CLD2EFFOD(J) 	   
 	 END DO
 
          DO J = 1,MAXLAY
@@ -250,8 +276,16 @@ c	   END DO
   	     TAU(K,J)    = TAU0(K,J)
  	     TAUZ(K,J)   = TAUZ0(K,J)
  	     TAUSN(K,J)  = TAUSN0(K,J)	     	     	     
- 	     TAUZSN(K,J) = TAUZSN0(K,J)	     	     
+ 	     TAUZSN(K,J) = TAUZSN0(K,J)
+             RAAPLNCK(K,J) = RAAPLNCK0(K,J)
+	     CLD1SUN(K,J)  = CLD1SUN0(K,J)
+	     CLD2SUN(K,J)  = CLD2SUN0(K,J)
+	     OMEGA1LAY(K,J) = OMEGA1LAY0(K,J)
+	     OMEGA2LAY(K,J) = OMEGA2LAY0(K,J)	     	     
 	   END DO
+	   RASURFE(J) = RASURFE0(J)
+	   CLD1EFFOD(J) = CLD1EFFOD0(J)
+	   CLD2EFFOD(J) = CLD2EFFOD0(J) 	   	   
 	 END DO
 
          DO J = 1,MAXLAY

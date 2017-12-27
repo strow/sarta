@@ -18,8 +18,8 @@
      $                LCBOT1, LCTOP1, CLRB1,CLRT1, TCBOT1, TCTOP1, MASEC1, CFRCL1, 
      $                NEXTO1, NSCAO1, G_ASY1, 
      $                LCBOT2, LCTOP2, CLRB2,CLRT2, TCBOT2, TCTOP2, MASEC2, CFRCL2, 
-     $                NEXTO2, NSCAO2, G_ASY2 
-     $  )
+     $                NEXTO2, NSCAO2, G_ASY2,
+     $     RAAPLNCK,RASURFE,CLD1EFFOD,CLD2EFFOD,CLD1SUN,CLD2SUN,OMEGA1LAY,OMEGA2LAY)
 
       IMPLICIT NONE
 
@@ -28,6 +28,16 @@
 
 c output
        REAL    RAD(MXCHAN) ! chan radiance
+
+c planck emission
+       REAL    RAAPLNCK(MAXLAY,MXCHAN) ! chan radiance at each lay
+       REAL    RASURFE(MXCHAN) ! chan radiance at surf
+       REAL    CLD1SUN(MAXLAY,MXCHAN)  ! chan solar scat due to cld1 at each lay
+       REAL    CLD2SUN(MAXLAY,MXCHAN)  ! chan solar scat due to cld2 at each lay
+       REAL    CLD1EFFOD(MXCHAN)       ! chan cld1 effOD
+       REAL    CLD2EFFOD(MXCHAN)       ! chan cld2 effOD
+       REAL    OMEGA1LAY(MAXLAY,MXCHAN) ! single scat at each lay
+       REAL    OMEGA2LAY(MAXLAY,MXCHAN) ! single scat at each lay              
 
 C      Boundary pressure levels
        COMMON /COMLEV/ PLEV
@@ -208,7 +218,8 @@ c************************************************************************
      $                LCBOT1, LCTOP1, CLRB1,CLRT1, TCBOT1, TCTOP1, MASEC1, CFRCL1, 
      $                NEXTO1, NSCAO1, G_ASY1, 
      $                LCBOT2, LCTOP2, CLRB2,CLRT2, TCBOT2, TCTOP2, MASEC2, CFRCL2, 
-     $                NEXTO2, NSCAO2, G_ASY2 
+     $                NEXTO2, NSCAO2, G_ASY2,
+     $     RAAPLNCK,RASURFE,CLD1EFFOD,CLD2EFFOD,CLD1SUN,CLD2SUN,OMEGA1LAY,OMEGA2LAY,
      $  )
         write(IOUNJ) IPROF,+1
         write(IOUNJ) (1000.0*RAD(J),J=1,NCHAN)
@@ -234,7 +245,8 @@ c************************************************************************
      $                LCBOT1, LCTOP1, CLRB1,CLRT1, TCBOT1, TCTOP1, MASEC1, CFRCL1, 
      $                NEXTO1, NSCAO1, G_ASY1, 
      $                LCBOT2, LCTOP2, CLRB2,CLRT2, TCBOT2, TCTOP2, MASEC2, CFRCL2, 
-     $                NEXTO2, NSCAO2, G_ASY2 
+     $                NEXTO2, NSCAO2, G_ASY2,
+     $     RAAPLNCK,RASURFE,CLD1EFFOD,CLD2EFFOD,CLD1SUN,CLD2SUN,OMEGA1LAY,OMEGA2LAY,
      $  )
         write(IOUNJ) IPROF,+11
         write(IOUNJ) (1000.0*RAD(J),J=1,NCHAN)
@@ -260,7 +272,8 @@ c************************************************************************
      $                LCBOT1, LCTOP1, CLRB1,CLRT1, TCBOT1, TCTOP1, MASEC1, CFRCL1, 
      $                NEXTO1, NSCAO1, G_ASY1, 
      $                LCBOT2, LCTOP2, CLRB2,CLRT2, TCBOT2, TCTOP2, MASEC2, CFRCL2, 
-     $                NEXTO2, NSCAO2, G_ASY2 
+     $                NEXTO2, NSCAO2, G_ASY2,
+     $     RAAPLNCK,RASURFE,CLD1EFFOD,CLD2EFFOD,CLD1SUN,CLD2SUN,OMEGA1LAY,OMEGA2LAY,
      $  )
         write(IOUNJ) IPROF,+12
         write(IOUNJ) (1000.0*RAD(J),J=1,NCHAN)
@@ -286,7 +299,8 @@ c************************************************************************
      $                LCBOT1, LCTOP1, CLRB1,CLRT1, TCBOT1, TCTOP1, MASEC1, CFRCL1, 
      $                NEXTO1, NSCAO1, G_ASY1, 
      $                LCBOT2, LCTOP2, CLRB2,CLRT2, TCBOT2, TCTOP2, MASEC2, CFRCL2, 
-     $                NEXTO2, NSCAO2, G_ASY2 
+     $                NEXTO2, NSCAO2, G_ASY2,
+     $     RAAPLNCK,RASURFE,CLD1EFFOD,CLD2EFFOD,CLD1SUN,CLD2SUN,OMEGA1LAY,OMEGA2LAY,
      $  )
         write(IOUNJ) IPROF,+21
         write(IOUNJ) (1000.0*RAD(J),J=1,NCHAN)
@@ -312,7 +326,8 @@ c************************************************************************
      $                LCBOT1, LCTOP1, CLRB1,CLRT1, TCBOT1, TCTOP1, MASEC1, CFRCL1, 
      $                NEXTO1, NSCAO1, G_ASY1, 
      $                LCBOT2, LCTOP2, CLRB2,CLRT2, TCBOT2, TCTOP2, MASEC2, CFRCL2, 
-     $                NEXTO2, NSCAO2, G_ASY2 
+     $                NEXTO2, NSCAO2, G_ASY2,
+     $     RAAPLNCK,RASURFE,CLD1EFFOD,CLD2EFFOD,CLD1SUN,CLD2SUN,OMEGA1LAY,OMEGA2LAY,
      $  )
         write(IOUNJ) IPROF,+22
         write(IOUNJ) (1000.0*RAD(J),J=1,NCHAN)

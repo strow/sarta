@@ -18,8 +18,8 @@
      $                LCBOT1, LCTOP1, CLRB1,CLRT1, TCBOT1, TCTOP1, MASEC1, CFRCL1, 
      $                NEXTO1, NSCAO1, G_ASY1, 
      $                LCBOT2, LCTOP2, CLRB2,CLRT2, TCBOT2, TCTOP2, MASEC2, CFRCL2, 
-     $                NEXTO2, NSCAO2, G_ASY2 
-     $  )
+     $                NEXTO2, NSCAO2, G_ASY2,
+     $     RAAPLNCK,RASURFE,CLD1EFFOD,CLD2EFFOD,CLD1SUN,CLD2SUN,OMEGA1LAY,OMEGA2LAY)
 
       IMPLICIT NONE
 
@@ -68,8 +68,8 @@ C      for SETEMS
        REAL  TSURF         ! surface temperature
        REAL  SUNFDG        ! sun fudge for large sun angles
        LOGICAL DOSUN       ! do sun calc?
-       INTEGER   LBOT             ! bottom layer index number
-       REAL BLMULT                ! bottom layer fractional multiplier
+       INTEGER   LBOT      ! bottom layer index number
+       REAL BLMULT         ! bottom layer fractional multiplier
 
        INTEGER ICLD       ! have we already set the cloud param (-1 NO +1 YES)
        
@@ -169,6 +169,15 @@ C      for GETMIE
        REAL  COEFF(NFCOEF,MXCHAN)        ! coefs for chan "F" factor
        
 c local
+       REAL    RAAPLNCK(MAXLAY,MXCHAN) ! chan radiance at each lay
+       REAL    RASURFE(MXCHAN) ! chan radiance at surf
+       REAL    CLD1SUN(MAXLAY,MXCHAN)  ! chan solar scat due to cld1 at each lay
+       REAL    CLD2SUN(MAXLAY,MXCHAN)  ! chan solar scat due to cld2 at each lay
+       REAL    CLD1EFFOD(MXCHAN)       ! chan cld1 effOD
+       REAL    CLD2EFFOD(MXCHAN)       ! chan cld2 effOD
+       REAL    OMEGA1LAY(MAXLAY,MXCHAN) ! single scat at each lay
+       REAL    OMEGA2LAY(MAXLAY,MXCHAN) ! single scat at each lay       
+
 C      For clear/cloudy radiances
        REAL   RAD0         ! radiance no clouds
        REAL  RADC1         ! radiance cloud1
@@ -263,11 +272,13 @@ C      ---------------------------------------------------
 C      Set the emissivity & reflectivity for every channel
 C      ---------------------------------------------------
        IF (IEMIS .LT. 0) THEN
-c         print *,'setting emiss'
+c         print *,'setting emiss and planck'
          CALL SETEMS( NCHAN, NEMIS, FREQ, FEMIS, XEMIS, XRHO,
      $     XCEMI1, XCRHO1, XCEMI2, XCRHO2, LRHOT,
      $     EMIS, RHOSUN, RHOTHR, CEMIS1, CRHOS1, CRHOT1,
-     $     CEMIS2, CRHOS2, CRHOT2) 
+     $     CEMIS2, CRHOS2, CRHOT2)
+
+         CALL planckemis(NCHAN,LBOT,TEMP,FREQ,EMIS,TSURF,RAAPLNCK,RASURFE)
        END IF
 
        IF (ICLD .LT. 0) THEN
@@ -337,7 +348,8 @@ c %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 c %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 c %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
               
-
+         CALL planckemis(NCHAN,LBOT,TEMP,FREQ,EMIS,TSURF,RAAPLNCK,RASURFE)
+	 
 C      ----------------------
 C      Loop over the channels
 C      ----------------------
@@ -417,7 +429,9 @@ c		END IF
                CALL CALRAD1( DOSUN, I, LBOT, RPLNCK, RSURFE, SECANG,
      $          TAU, TRANL, TRANZ, SUNFAC, HSUN, TRANS, RHOSUN,
      $          RHOTHR, LABOVE, COEFF, CFRCL2, MASEC2, MASUN2, COSDAZ,
-     $          NEXTO2, NSCAO2, G_ASY2, LCTOP2, LCBOT2, RADC2 )
+     $          NEXTO2, NSCAO2, G_ASY2, LCTOP2, LCBOT2,
+     $          CLD2EFFOD, CLD2SUN,
+     $          RADC2)
                 
              ENDIF
           ELSE
@@ -430,13 +444,17 @@ C         Calculate combined cloud1+cloud2 radiance
                 CALL CALRAD1( DOSUN, I, LCTOP2, RPLNCK, RSURFC, SECANG,
      $          TAU, TRANL, TRANZ, SUNFAC, HSUN, TRANS, RHOSUN,
      $          RHOTHR, LABOVE, COEFF, CFRCL1, MASEC1, MASUN1, COSDAZ,
-     $          NEXTO1, NSCAO1, G_ASY1, LCTOP1, LCBOT1, RADC12 )
+     $          NEXTO1, NSCAO1, G_ASY1, LCTOP1, LCBOT1, 
+     $          CLD1EFFOD, CLD1SUN,
+     $          RADC12)
              ELSE
                 CALL CALRAD2( DOSUN, I, LBOT, RPLNCK, RSURFE, SECANG,
      $          TAU, TRANL, TRANZ, SUNFAC, HSUN, TRANS, RHOSUN,
      $          RHOTHR, LABOVE, COEFF, CFRCL1, MASEC1, MASUN1, NEXTO1,
      $          NSCAO1, G_ASY1, LCTOP1, LCBOT1, CFRCL2, MASEC2, MASUN2,
-     $          COSDAZ, NEXTO2, NSCAO2, G_ASY2, LCTOP2, LCBOT2, RADC12 )
+     $          COSDAZ, NEXTO2, NSCAO2, G_ASY2, LCTOP2, LCBOT2, 
+     $          CLD1EFFOD,CLD2EFFOD,CLD1SUN,CLD2SUN,
+     $          RADC12)
              ENDIF
           ELSE
              RADC12=0.0
@@ -473,7 +491,9 @@ C         Calculate top cloud1 radiance
                 CALL CALRAD1( DOSUN, I, LBOT, RPLNCK, RSURFE, SECANG,
      $          TAU, TRANL, TRANZ, SUNFAC, HSUN, TRANS, RHOSUN,
      $          RHOTHR, LABOVE, COEFF, CFRCL1, MASEC1, MASUN1, COSDAZ,
-     $          NEXTO1, NSCAO1, G_ASY1, LCTOP1, LCBOT1, RADC1 )
+     $          NEXTO1, NSCAO1, G_ASY1, LCTOP1, LCBOT1, 
+     $          CLD1EFFOD, CLD1SUN,
+     $          RADC1)
              ENDIF
           ELSE
              RADC1=0.0
