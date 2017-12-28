@@ -27,7 +27,7 @@ C       ODL, TAUL, TAUZ, SUNFAC, HSUN, TAUZSN, RHOSUN,
 C       RHOTHR, LABOVE, COEFF,
 C       CFRCL1, MASEC1, MASUN1, COSDAZ,
 C       NEXTO1, NSCAO1, G_ASY1, LCTOP1, LCBOT1, 
-C       CLD1EFFOD, CLD1SUN,
+C       CLD1EFFOD, CLD1SUN, OMEGA1LAY,
 C       RAD1)
 
 
@@ -140,7 +140,7 @@ C      =================================================================
      $    ODL, TAUL, TAUZ, SUNFAC, HSUN, TAUZSN, RHOSUN,
      $    RHOTHR, LABOVE, COEFF, CFRCL1, MASEC1, MASUN1, COSDAZ,
      $    NEXTO1, NSCAO1, G_ASY1, LCTOP1,LCBOT1,
-     $    CLD1EFFOD, CLD1SUN,
+     $    CLD1EFFOD, CLD1SUN, OMEGA1LAY,
      $    RAD1 )
 C      =================================================================
 
@@ -193,7 +193,8 @@ C      Cloud1 info
        INTEGER LCTOP1      ! cloud top layer index
        INTEGER LCBOT1      ! cloud bottom layer index
        REAL    CLD1SUN(MAXLAY,MXCHAN)  ! chan solar scat due to cld1 at each lay
-       REAL    CLD1EFFOD(MXCHAN)       ! chan cld1 effOD       
+       REAL    CLD1EFFOD(MXCHAN)       ! chan cld1 effOD
+       REAL    OMEGA1LAY(MAXLAY,MXCHAN) ! single scat at each lay       
 C
 C      Output
        REAL   RAD1         ! upwelling radiance at satellite
@@ -253,8 +254,8 @@ C***********************************************************************
        PI4INV = 1.0/(4.0*PI)
 C
 C      Optical depth of cloud1 including scattering adjustment
-       K1=NEXTO1(I) - NSCAO1(I)*(1.0+G_ASY1(I))/2.0
-c       K1 = CLD1EFFOD(I)
+c       K1=NEXTO1(I) - NSCAO1(I)*(1.0+G_ASY1(I))/2.0
+       K1 = CLD1EFFOD(I)
 
 C      -----------------------------------------------------------------
 C      Loop downward over the layers
@@ -283,10 +284,7 @@ C replaced 03Feb2006          ODSUM=ODSUM + ODTOTL(L)
              ODTOTL(L)=KAIR
              ODSUM=ODSUM + KAIR
           ENDIF
-C
-c removed 28 Mar 2006; layer-to-space
-c          ODTOTZ(L)=ODSUM
-C
+	  
           IF (L .LT. LCTOP1 .OR. L .GT. LCBOT1) THEN
              TAULX(L)=TAUL(L)
           ELSE

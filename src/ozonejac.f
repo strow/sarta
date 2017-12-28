@@ -159,10 +159,12 @@ C      for CALT
 
        REAL DST,DQ
 c local var
-       INTEGER IJAC,J
+       INTEGER IJAC,J, ITZLAYJAC
        REAL RJUNK1,RJUNK2
        
 c------------------------------------------------------------------------
+         ITZLAYJAC = 9999   !!! need this for RAAPLNCK
+	 
          !! OZONE JAC
 	 IF (IO3ZLAYJAC .EQ. -1) THEN
            write(IOUNJ) IPROF,+300
@@ -203,7 +205,7 @@ C         assuming T is in linear in log(P)
            TEMPX(LBOT)=RJUNK2*LOG( RJUNK1/PLAY(LBOT-1) ) + TEMPX(LBOT - 1)
 
  	   IO3ZLAYJAC = IO3ZLAYJAC + 1
-c	   print *,'IPROF,OZlayjac,LBOT = ',IPROF,IO3ZLAYJAC,LBOT
+	   print *,'IPROF,OZlayjac,LBOT = ',IPROF,IO3ZLAYJAC,LBOT, ITZLAYJAC
   	   OAMNTX(IO3ZLAYJAC) = OAMNTX(IO3ZLAYJAC)*(1.0 + DQ)
 	   !ISELECTLAY = -1	   !!! testing, but slow since it makes sarta re-run and re-run
 	   ISELECTLAY = IO3ZLAYJAC	   

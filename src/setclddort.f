@@ -1,5 +1,5 @@
        SUBROUTINE SetCldDoRT(
-     $        RAD, IPROF, HEAD, PROF, INDCHN, NCHAN, FREQ, IJACCLD, DQ,
+     $        RAD, IPROF, HEAD, PROF, INDCHN, NCHAN, FREQ, IJACCLD, DQ, ITZLAYJAC, 
      $    MIETYP, MIENPS, MIEPS, MIEABS, MIEEXT, MIEASY,
      $    DISTES, SUNCOS, SCOS1,
      $    LBLAC1, CTYPE1, CFRAC1, CPSIZ1, CPRTO1, CPRBO1, CNGWA1,
@@ -40,6 +40,10 @@ C      Boundary pressure levels
        REAL TAUZSN(MAXLAY,MXCHAN) ! sun space-to-surface-to-space OD       
        REAL PLAY(MAXLAY)   ! layer mean pressure
 
+       INTEGER ITZLAYJAC   !if      -1,   then this is default temp (so can set RAAPLNCK)
+                           !else if 9999, then just use what was set above
+                           !else if >0,   then just redo that layer RAAPLNCK
+			   
        INTEGER IJACCLD     !cloud perturb = 0 for none,
                            !11,12 for cngwat1,2  21,22 for cpsize1,2
        REAL     DQ         ! amount of cloud perturb
@@ -277,8 +281,17 @@ c         print *,'setting emiss and planck'
      $     XCEMI1, XCRHO1, XCEMI2, XCRHO2, LRHOT,
      $     EMIS, RHOSUN, RHOTHR, CEMIS1, CRHOS1, CRHOT1,
      $     CEMIS2, CRHOS2, CRHOT2)
+       END IF
 
-         CALL planckemis(NCHAN,LBOT,TEMP,FREQ,EMIS,TSURF,RAAPLNCK,RASURFE)
+       IF ((IEMIS .LT. 0) .AND. (ITZLAYJAC .LT. 0)) THEN
+         CALL planckemis(NCHAN,LBOT,TEMP,FREQ,EMIS,TSURF,RAAPLNCK,RASURFE,-1)
+       ELSEIF  ((ITZLAYJAC .GT. 0) .AND. (ITZLAYJAC .LE. LBOT)) THEN
+         CALL planckemis(NCHAN,LBOT,TEMP,FREQ,EMIS,TSURF,RAAPLNCK,RASURFE,ITZLAYJAC)
+       ELSEIF  (ITZLAYJAC .EQ. 9999) THEN
+c         print *,9999
+       ELSE
+         print *,'huh ITZLAYJAC LBOT IEMIS ',ITZLAYJAC,LBOT,IEMIS
+         STOP
        END IF
 
        IF (ICLD .LT. 0) THEN
@@ -320,21 +333,24 @@ C            Prepare lookup data for cloud2
      $          LCBOT2, LCTOP2,                                !! output
      $          CLRB2, CLRT2, TCBOT2, TCTOP2, MASEC2, MASUN2,  !! output
      $          CFRCL2, G_ASY2, NEXTO2, NSCAO2 )               !! output
-c             print *,NCHAN,LBOT,INDMI2,MIENPS,CNGWA2, CPSIZ2, CPRTO2, CPRBO2,
-c     $               G_ASY2(1291),NEXTO2(1291),NSCAO2(1291)
-c            print *,'ABC=',LCBOT2, LCTOP2,CLRB2, CLRT2, TCBOT2, TCTOP2, MASEC2, MASUN2
-c            print *,MIEPS(1,1),MIEPS(1,2),MIEPS(1,3)
-c            print *,MIEABS(1,1,1),MIEABS(1,1,2),MIEABS(1,1,3)
-c            print *,MIEEXT(1,1,1),MIEEXT(1,1,2),MIEEXT(1,1,3)
-c            print *,MIEASY(1,1,1),MIEASY(1,1,2),MIEASY(1,1,3)
             ENDIF
          ELSE
 C           Safe default for non-existant cloud2
             LCTOP2=1                                          !! output
 	 ENDIF
+
+         CALL SetCldParams(NCHAN, LBOT, DOSUN, SECANG, TAU,
+     $          HSUN, SUNFAC, COSDAZ,
+     $          LCBOT1, LCTOP1, CFRAC1,                               
+     $          CLRB1, CLRT1, TCBOT1, TCTOP1, MASEC1, MASUN1,
+     $          CFRCL1, G_ASY1, NEXTO1, NSCAO1,
+     $          LCBOT2, LCTOP2, CFRAC2,                             
+     $          CLRB2, CLRT2, TCBOT2, TCTOP2, MASEC2, MASUN2,
+     $          CFRCL2, G_ASY2, NEXTO2, NSCAO2,
+     $ CLD1EFFOD,CLD2EFFOD,CLD1SUN,CLD2SUN,OMEGA1LAY,OMEGA2LAY)
 	 
        ENDIF
-
+       
 cccccccc this block for testing only
 c      PROF%udef(19)=TCTOP1
 c      PROF%udef(20)=TCTOP2
@@ -348,24 +364,24 @@ c %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 c %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 c %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
               
-         CALL planckemis(NCHAN,LBOT,TEMP,FREQ,EMIS,TSURF,RAAPLNCK,RASURFE)
-	 
 C      ----------------------
 C      Loop over the channels
 C      ----------------------
        DO I=1,NCHAN
 
 C         Radiation constants for current channel
-          C1V3=C1*(FREQ(I)**3)
-          C2V=C2*FREQ(I)
+c          C1V3=C1*(FREQ(I)**3)
+c          C2V=C2*FREQ(I)
 
 C         Calculate Planck & clear airs trans for full layers
           DO L=1,LBOT-1
-             RPLNCK(L)=C1V3/( EXP( C2V/TEMP(L) ) - 1.0 )
+c             RPLNCK(L)=C1V3/( EXP( C2V/TEMP(L) ) - 1.0 )
+             RPLNCK(L) = RAAPLNCK(L,I)
              TRANL(L)=QIKEXP( -TAU(L,I) )
           ENDDO
 C         Note: TEMP(LBOT) already adjusted for bottom fractional layer
-          RPLNCK(LBOT)=C1V3/( EXP( C2V/TEMP(LBOT) ) - 1.0 )
+c          RPLNCK(LBOT)=C1V3/( EXP( C2V/TEMP(LBOT) ) - 1.0 )
+          RPLNCK(LBOT) = RAAPLNCK(LBOT,I)
 
 C         Calculate clear airs trans for bottom fractional layer
           RJUNK1=-TAU(LBOT,I)*BLMULT
@@ -376,8 +392,9 @@ C         Calculate clear airs trans for bottom fractional layer
      $       TAUZSN(LBOT-1,I) )
 
 C         Planck for surface
-          RSURFE=EMIS(I)*C1V3/( EXP( C2V/TSURF ) - 1.0 )
-
+c          RSURFE=EMIS(I)*C1V3/( EXP( C2V/TSURF ) - 1.0 )
+          RSURFE = RASURFE(I)
+	  
 C         Calculate clear radiance
           IF (FCLEAR .GT. 0.0) THEN
              CALL CALRAD0( DOSUN, I, LBOT, RPLNCK, RSURFE, SECANG,
@@ -398,6 +415,8 @@ c	  IF (I .EQ. 1291) print *,(VSTORE(J),J=1,6)
 	  
 C         Updates for new surface if bottom cloud2 is black
           IF (CFRAC2 .GT. 0.0 .AND. LBLAC2) THEN
+            C1V3=C1*(FREQ(I)**3)
+            C2V=C2*FREQ(I)	  
              RJUNK1=-TAU(LCTOP2,I)*CLRT2
              TRANL(LCTOP2)=QIKEXP( RJUNK1 )
              TRANZ(I)=QIKEXP( RJUNK1 - TAUZ(LCTOP2-1,I) )
@@ -430,7 +449,7 @@ c		END IF
      $          TAU, TRANL, TRANZ, SUNFAC, HSUN, TRANS, RHOSUN,
      $          RHOTHR, LABOVE, COEFF, CFRCL2, MASEC2, MASUN2, COSDAZ,
      $          NEXTO2, NSCAO2, G_ASY2, LCTOP2, LCBOT2,
-     $          CLD2EFFOD, CLD2SUN,
+     $          CLD2EFFOD, CLD2SUN, OMEGA2LAY,
      $          RADC2)
                 
              ENDIF
@@ -445,7 +464,7 @@ C         Calculate combined cloud1+cloud2 radiance
      $          TAU, TRANL, TRANZ, SUNFAC, HSUN, TRANS, RHOSUN,
      $          RHOTHR, LABOVE, COEFF, CFRCL1, MASEC1, MASUN1, COSDAZ,
      $          NEXTO1, NSCAO1, G_ASY1, LCTOP1, LCBOT1, 
-     $          CLD1EFFOD, CLD1SUN,
+     $          CLD1EFFOD, CLD1SUN, OMEGA1LAY,
      $          RADC12)
              ELSE
                 CALL CALRAD2( DOSUN, I, LBOT, RPLNCK, RSURFE, SECANG,
@@ -469,6 +488,8 @@ C         Restore original values
           RPLNCK(LCTOP2)=VSTORE(6)
 C         Updates for new surface if top cloud1 is black
           IF (CFRAC1 .GT. 0.0 .AND. LBLAC1) THEN
+            C1V3=C1*(FREQ(I)**3)
+            C2V=C2*FREQ(I)	  
              RJUNK1=-TAU(LCTOP1,I)*CLRT1
              TRANL(LCTOP1)=QIKEXP( RJUNK1 )
              TRANZ(I)=QIKEXP( RJUNK1 - TAUZ(LCTOP1-1,I) )
@@ -492,7 +513,7 @@ C         Calculate top cloud1 radiance
      $          TAU, TRANL, TRANZ, SUNFAC, HSUN, TRANS, RHOSUN,
      $          RHOTHR, LABOVE, COEFF, CFRCL1, MASEC1, MASUN1, COSDAZ,
      $          NEXTO1, NSCAO1, G_ASY1, LCTOP1, LCBOT1, 
-     $          CLD1EFFOD, CLD1SUN,
+     $          CLD1EFFOD, CLD1SUN, OMEGA1LAY, 
      $          RADC1)
              ENDIF
           ELSE

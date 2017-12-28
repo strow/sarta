@@ -448,6 +448,7 @@ c       REAL  TRANS(MXCHAN) ! clear air total reflected solar trans
        REAL  TSURF         ! surface temperature
        REAL    RAD(MXCHAN) ! chan radiance
 
+       INTEGER ICLD                     ! have we already set up cld params
        REAL    RAAPLNCK(MAXLAY,MXCHAN)  ! chan radiance at each lay
        REAL    RASURFE(MXCHAN)          ! chan radiance at surf
        REAL    CLD1SUN(MAXLAY,MXCHAN)   ! chan solar scat due to cld1 at each lay
@@ -494,8 +495,6 @@ C
 C      for RDRTP
        INTEGER  IPROF      ! profile loop counter
        LOGICAL  LWANT      ! do you want this profile?
-
-       INTEGER ICLD       ! have we already set the cloud param (-1 NO +1 YES)
 C
 C      Basic cloud info
        REAL XCEMI1(MXEMIS)    ! cloud1 emissivity
@@ -1138,16 +1137,6 @@ C
      $       TRCPRD, INDCO2, COFCO2, CO2MLT, INDN2O, COFN2O, N2OMLT,
      $       TAUSN, TAUZSN )
 
-
-C this has been moved inside SetCldDoRT
-c          IF (SUNFDG .GT. 1.0001) THEN
-c             DO I=1,NCHAN
-c                DO L=1,LBOT
-c                   TAUZSN(L,I)=TAUZSN(L,I)*SUNFDG
-c                ENDDO
-c             ENDDO
-c          ENDIF
-C
        ENDIF
 C
 
@@ -1155,7 +1144,7 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C      Calculate cloudy radiance
  
        CALL SetCldDoRT(
-     $        RAD, IPROF, HEAD, PROF, INDCHN, NCHAN, FREQ, 0, DQ,
+     $        RAD, IPROF, HEAD, PROF, INDCHN, NCHAN, FREQ, 0, DQ, ITZLAYJAC,
      $    MIETYP, MIENPS, MIEPS, MIEABS, MIEEXT, MIEASY,
      $    DISTES, SUNCOS, SCOS1,
      $    LBLAC1, CTYPE1, CFRAC1, CPSIZ1, CPRTO1, CPRBO1, CNGWA1,
@@ -1206,7 +1195,10 @@ C
      $     RAAPLNCK0,RASURFE0,CLD1EFFOD0,CLD2EFFOD0,CLD1SUN0,CLD2SUN0,OMEGA1LAY0,OMEGA2LAY0)
 	 
          IDOCOLJAC = +1  !! doing coljacs
-	 
+
+         ! at this point ITZLAYJAC is -1 so no need to worry
+	 ! internally inside coljac, ITZLAYJAC is set to 9999
+	 print *,'before coljac ',ITZLAYJAC
          CALL ColJac(
      $        RAD, IPROF, HEAD, PROF, INDCHN, NCHAN, FREQ, DST, DQ, IOUNJ, 
      $    MIETYP, MIENPS, MIEPS, MIEABS, MIEEXT, MIEASY,
@@ -1263,6 +1255,7 @@ c          ICLD = -1       ! testing
      $       ISELECTLAY,RAD)     
        END IF
        ITZLAYJAC = LBOT + 1
+       ITZLAYJAC = 9999  !!! just use the RAAPLNCK that was used originally
        
        IF ((IDOJACOB .GT. 0) .AND. (IWVZLAYJAC .LE. LBOT)) THEN
 ccc      note the alternative return to statement 77

@@ -5,8 +5,8 @@ C    University of Maryland Baltimore County [UMBC]
 C
 C    AIRS
 C
-C    CALRAD2
-C    Calculate the channel radiance for an atmosphere with two clouds.
+C    CALRAD1
+C    Calculate the channel radiance for an atmosphere with one cloud
 C    This version of CALRAD uses "Parameterization for Cloud
 C    Longwave Scattering for Atmospheric Models" (PCLSAM)
 C
@@ -14,22 +14,21 @@ C
 
 
 !ROUTINE NAME:
-C    CALRAD2
+C    CALRAD1
 
 
 !ABSTRACT:
-C    Calculate the channel radiance for an atmosphere with two clouds.
+C    Calculate the channel radiance for an atmosphere with one cloud.
 
 
 !CALL PROTOCOL:
-C    CALRAD2( DOSUN, I, LBOT, RPLNCK, RSURFE, SECANG,
+C    CALRAD1( DOSUN, I, LBOT, RPLNCK, RSURFE, SECANG,
 C       ODL, TAUL, TAUZ, SUNFAC, HSUN, TAUZSN, RHOSUN,
 C       RHOTHR, LABOVE, COEFF,
-C       CFRCL1, MASEC1, MASUN1, NEXTO1, NSCAO1, G_ASY1, LCTOP1, LCBOT1,
-C       CFRCL2, MASEC2, MASUN2, COSDAZ,
-C       NEXTO2, NSCAO2, G_ASY2, LCTOP2, LCBOT2,
-C       CLD1EFFOD,CLD2EFFOD,CLD1SUN,CLD2SUN,
-C       RAD2 )
+C       CFRCL1, MASEC1, MASUN1, COSDAZ,
+C       NEXTO1, NSCAO1, G_ASY1, LCTOP1, LCBOT1, 
+C       CLD1EFFOD, CLD1SUN,
+C       RAD1)
 
 
 !INPUT PARAMETERS:
@@ -54,25 +53,19 @@ C    REAL arr  COEFF   "F" factor coefficients     various
 C    REAL arr  CFRCL1  fraction of cloud in layer  none
 C    REAL      MASEC1  mean view secant in cloud   none
 C    REAL      MASUN1  mean sun-only sec in cloud  none
+C    REAL      COSDAZ  cosine(satazi-solazi)       none
 C    REAL arr  NEXTO1  cloud extinction opt depth  none
 C    REAL arr  NSCAO1  cloud scattering opt depth  none
 C    REAL arr  G_ASY1  cloud asymmetry parameter   none
 C    INTEGER   LCTOP1  cloud top layer index       none
 C    INTEGER   LCBOT1  cloud bottom layer index    none
-C    REAL arr  CFRCL2  fraction of cloud in layer  none
-C    REAL      MASEC2  mean view secant in cloud   none
-C    REAL      MASUN2  mean sun-only sec in cloud  none
-C    REAL      COSDAZ  cosine(satazi - solazi)     none
-C    REAL arr  NEXTO2  cloud extinction opt depth  none
-C    REAL arr  NSCAO2  cloud scattering opt depth  none
-C    REAL arr  G_ASY2  cloud asymmetry parameter   none
-C    INTEGER   LCTOP2  cloud top layer index       none
-C    INTEGER   LCBOT2  cloud bottom layer index    none
+C    REAL arr  CLD1EFFOD  cloud eff optical depth  none
+C    REAL arr  CLD1SUN    solar scat due to cld    none
 
 !OUTPUT PARAMETERS:
 C    type      name    purpose                     units
 C    --------  ------  --------------------------  ---------------------
-C    REAL arr  RAD2    radiance                    mW/(m^2 cm^-1 sterad)
+C    REAL arr  RAD1    radiance                    mW/(m^2 cm^-1 sterad)
 
 
 !INPUT/OUTPUT PARAMETERS:
@@ -102,7 +95,7 @@ C    none
 
 
 !DESCRIPTION:
-C    Calculates the channel radiance for an atmosphere with two clouds
+C    Calculates the radiance for an atmosphere with one cloud
 C    with the PCLSAM method.
 
 
@@ -121,37 +114,34 @@ C    radiance hitting the surface is for a clear sky.
 
 
 !ROUTINE HISTORY:
-C Date        Programmer     Comments
-C ----------- -------------- -------------------------------------------
-C 13 Jan 2006 Scott Hannon   Created
-C 01 Feb 2006 S.Machado      correct solar scattering by 2pi (replace
-C    0.5 by PI4INV)
-C 03 Feb 2006 S.Hannon       Remove scattering adjustments from some
-C    downward optical depths to be consistenct with kcarta. Correct
-C    ODSUM=0 initialization by moving it outside layer loop.
-C 08 Feb 2006 S.Hannon       Correct error in RSUNSC so HSUN is
-C    multiplied by SUNFAC not SCOSL
-C 28 Mar 2006 S.Hannon       Implement Sergio's RSUNSC fudge
-C    (non-standard PCLSAM) to improve agreement with other codes.
-C    Change ODTOTZ used by RSUNSC to layer-above-to-space (was
-C    (layer-to-space).
-C 29 Mar 2006 S.Hannon       Updated RTHERM for sartaV107
-C 03 Apr 2006 S.Hannon/S.Machado  Add missing w_tilde to RSUNSC
-C 24 Mar 2008 S.Hannon       Add COSDAZ and use HG3 instead of HG2
-C 29 Apr 2009 S.Hannon       Bug fix: initialize RDOWN and TDOWNN
+C    Date        Programmer     Comments
+C    ----------- -------------- ----------------------------------------
+C    13 Jan 2006 Scott Hannon   Created
+C    01 Feb 2006 S.Machado      Correct solar scattering by 2pi (replace
+C       0.5 by PI4INV)
+C    03 Feb 2006 S.Hannon       Remove scattering adjustments from some
+C       downward optical depths to be consistenct with kcarta. Correct
+C       ODSUM=0 initialization by moving it outside layer loop.
+C    08 Feb 2006 S.Hannon       Correct error in RSUNSC so HSUN is
+C       multiplied by SUNFAC not SCOSL
+C    28 Mar 2006 S.Hannon       Implement Sergio's RSUNSC fudge
+C       (non-standard PCLSAM) to improve agreement with other codes.
+C       Change ODTOTZ used by RSUNSC to layer-above-to-space (was
+C       (layer-to-space).
+C    29 Mar 2006 S.Hannon       Updated RTHERM for sartaV107
+C    03 Apr 2006 S.Hannon/S.Machado  Add missing w_tilde to RSUNSC
+C    24 Mar 2008 S.Hannon       Add COSDAZ and use HG3 instead of HG2
 
 
 !END====================================================================
 
 C      =================================================================
-       SUBROUTINE CALRAD2( DOSUN, I, LBOT, RPLNCK, RSURFE, SECANG,
+       SUBROUTINE CALRAD1( DOSUN, I, LBOT, RPLNCK, RSURFE, SECANG,
      $    ODL, TAUL, TAUZ, SUNFAC, HSUN, TAUZSN, RHOSUN,
-     $    RHOTHR, LABOVE, COEFF, CFRCL1, MASEC1, MASUN1,
+     $    RHOTHR, LABOVE, COEFF, CFRCL1, MASEC1, MASUN1, COSDAZ,
      $    NEXTO1, NSCAO1, G_ASY1, LCTOP1,LCBOT1,
-     $    CFRCL2, MASEC2, MASUN2, COSDAZ,
-     $    NEXTO2, NSCAO2, G_ASY2, LCTOP2,LCBOT2,
-     $    CLD1EFFOD,CLD2EFFOD,CLD1SUN,CLD2SUN,
-     $    RAD2 )
+     $    CLD1EFFOD, CLD1SUN,
+     $    RAD1 )
 C      =================================================================
 
 C-----------------------------------------------------------------------
@@ -193,49 +183,34 @@ C      Downwelling thermal info
        INTEGER LABOVE(MXCHAN) ! representative layer above surface
        REAL  COEFF(NFCOEF,MXCHAN) ! "F" factor coefficients
 C      Cloud1 info
-       REAL CFRCL1(MAXLAY) ! fraction of cloud1 in layer
-       REAL MASEC1         ! mean view secant in cloud1
-       REAL MASUN1         ! mean sun-only secant in cloud1
-       REAL NEXTO1(MXCHAN) ! cloud1 nadir extinction optical depth
-       REAL NSCAO1(MXCHAN) ! cloud1 nadir scattering optical depth
-       REAL G_ASY1(MXCHAN) ! cloud1 asymmetry
-       INTEGER LCTOP1      ! cloud1 top layer index
-       INTEGER LCBOT1      ! cloud1 bottom layer index
-C      Cloud2 info
-       REAL CFRCL2(MAXLAY) ! fraction of cloud2 in layer
-       REAL MASEC2         ! mean view secant in cloud2
-       REAL MASUN2         ! mean sun-only secant in cloud2
+       REAL CFRCL1(MAXLAY) ! fraction of cloud in layer
+       REAL MASEC1         ! mean view secant in cloud
+       REAL MASUN1         ! mean sun-only secant in cloud
        REAL COSDAZ         ! cosine of delta azimuth angles
-       REAL NEXTO2(MXCHAN) ! cloud2 nadir extinction optical depth
-       REAL NSCAO2(MXCHAN) ! cloud2 nadir scattering optical depth
-       REAL G_ASY2(MXCHAN) ! cloud2 asymmetry
-       INTEGER LCTOP2      ! cloud2 top layer index
-       INTEGER LCBOT2      ! cloud2 bottom layer index
+       REAL NEXTO1(MXCHAN) ! cloud nadir extinction optical depth
+       REAL NSCAO1(MXCHAN) ! cloud nadir scattering optical depth
+       REAL G_ASY1(MXCHAN) ! cloud asymmetry
+       INTEGER LCTOP1      ! cloud top layer index
+       INTEGER LCBOT1      ! cloud bottom layer index
        REAL    CLD1SUN(MAXLAY,MXCHAN)  ! chan solar scat due to cld1 at each lay
-       REAL    CLD2SUN(MAXLAY,MXCHAN)  ! chan solar scat due to cld2 at each lay
-       REAL    CLD1EFFOD(MXCHAN)       ! chan cld1 effOD
-       REAL    CLD2EFFOD(MXCHAN)       ! chan cld2 effOD       
+       REAL    CLD1EFFOD(MXCHAN)       ! chan cld1 effOD       
 C
 C      Output
-       REAL   RAD2         ! upwelling radiance at satellite
+       REAL   RAD1         ! upwelling radiance at satellite
 
 C-----------------------------------------------------------------------
 C      LOCAL VARIABLES
 C-----------------------------------------------------------------------
        LOGICAL DOSUNL(MAXLAY) ! layer solar scattering true/false
-       LOGICAL LCLOUD      ! layer contains cloud true/false
        INTEGER      L      ! layer index
        INTEGER LTHERM      ! layer for RTHERM calc
        REAL      F         ! reflected therm "F" (fudge) factor
        REAL     GL(MAXLAY) ! layer scattering asymmetry
        REAL     K1         ! cloud1 optical depth
-       REAL     K1L        ! cloud1 optical depth in current layer
-       REAL     K2         ! cloud2 optical depth
-       REAL     K2L        ! cloud2 optical depth in current layer
-       REAL    KAIR        ! air (no cloud) optical depth in current layer
+       REAL   KAIR         ! layer nadir air (no cloud) optical depth
        REAL  ODSUM         ! sum of optical depth
        REAL ODTOTL(MAXLAY) ! total nadir layer optical depth
-       REAL ODTOTZ(MAXLAY) ! total nadir layer-to-space optical depth
+       REAL ODTOTZ(MAXLAY) ! tot nadir layer-above-to-space OD no scat adjust
        REAL RADUP          ! upward radiance
        REAL RSUN           ! reflected solar radiance
        REAL RSUNSC         ! scatter solar radiance
@@ -244,7 +219,7 @@ C-----------------------------------------------------------------------
        REAL  SCOSL(MAXLAY) ! solar angle cosine
        REAL  TAULX(MAXLAY) ! layer transmittance
        REAL TAUZCU         ! cloud transmittance at upward view angle
-       REAL TAUZCD         ! cloud transmittance at downward sun angle
+       REAL TAUZCD         ! cloud trans at down sun angle no scat adjust
        REAL  VCOSL(MAXLAY) ! view angle cosine
        REAL PI4INV         ! 1/4pi
 C
@@ -277,76 +252,51 @@ C***********************************************************************
 
        PI4INV = 1.0/(4.0*PI)
 C
-C      Cloud optical depths adjusted for scattering
+C      Optical depth of cloud1 including scattering adjustment
 c       K1=NEXTO1(I) - NSCAO1(I)*(1.0+G_ASY1(I))/2.0
-c       K2=NEXTO2(I) - NSCAO2(I)*(1.0+G_ASY2(I))/2.0
        K1 = CLD1EFFOD(I)
-       K2 = CLD2EFFOD(I)
-       
+
 C      -----------------------------------------------------------------
 C      Loop downward over the layers
 C      -----------------------------------------------------------------
        ODSUM=0.0
        DO L=1,LBOT
           DOSUNL(L)=.FALSE.
-          LCLOUD=.FALSE.
-C
           KAIR=ODL(L,I)/SECANG(L)
 c added 28 Mar 2006; layer-above-to-space
           ODTOTZ(L)=ODSUM
           WTILDE(L)=0.0
 C
           IF (CFRCL1(L) .GT. 0.0) THEN
-             LCLOUD=.TRUE.
              SSECL(L)=MASUN1       ! note: if no sun, this is garbage
              SCOSL(L)=1.0/SSECL(L) ! note: if no sun, this is garbage
              VCOSL(L)=1.0/SECANG(L)
              GL(L)=G_ASY1(I)
              DOSUNL(L)=DOSUN
-             K1L=CFRCL1(L)*K1
-          ELSE
-             K1L=0.0
-          ENDIF
-C
-          IF (CFRCL2(L) .GT. 0.0) THEN
-             LCLOUD=.TRUE.
-             SSECL(L)=MASUN2       ! note: if no sun, this is garbage
-             SCOSL(L)=1.0/SSECL(L) ! note: if no sun, this is garbage
-             VCOSL(L)=1.0/SECANG(L)
-             GL(L)=G_ASY2(I)
-             DOSUNL(L)=DOSUN
-             K2L=CFRCL2(L)*K2
-             IF (CFRCL1(L) .GT. 0.0) THEN
-C               Compute weighted mean asymmetry factor for both clouds
-                GL(L)=( CFRCL1(L)*NSCAO1(I)*G_ASY1(I) +
-     $                  CFRCL2(L)*NSCAO2(I)*G_ASY2(I) ) /
-     $                ( CFRCL1(L)*NSCAO1(I)+CFRCL2(L)*NSCAO2(I) )
-             ENDIF
-          ELSE
-             K2L=0.0
-          ENDIF
-C
-          IF (LCLOUD) THEN
-             ODTOTL(L)=KAIR + K1L + K2L
-C replaced 03Feb2006             ODSUM=ODSUM + ODTOTL(L)
-             ODSUM=ODSUM +KAIR +CFRCL1(L)*NEXTO1(I) +CFRCL2(L)*NEXTO2(I)
-             TAULX(L)=QIKEXP( -ODTOTL(L)*SECANG(L) )
-             XFUDGE(L)=KAIR +CFRCL1(L)*NEXTO1(I) +CFRCL2(L)*NEXTO2(I)
-             WTILDE(L)=( CFRCL1(L)*NSCAO1(I) + CFRCL2(L)*NSCAO2(I) ) /
-     $          XFUDGE(L)
+             ODTOTL(L)=KAIR + K1*CFRCL1(L)
+C replaced 03Feb2006          ODSUM=ODSUM + ODTOTL(L)
+             ODSUM=ODSUM + KAIR + NEXTO1(I)*CFRCL1(L)
+             XFUDGE(L)=KAIR + NEXTO1(I)*CFRCL1(L)
+             WTILDE(L)=CFRCL1(L)*NSCAO1(I) / XFUDGE(L)
           ELSE
              XFUDGE(L)=KAIR
              ODTOTL(L)=KAIR
              ODSUM=ODSUM + KAIR
-             TAULX(L)=TAUL(L)
           ENDIF
+C
 c removed 28 Mar 2006; layer-to-space
 c          ODTOTZ(L)=ODSUM
+C
+          IF (L .LT. LCTOP1 .OR. L .GT. LCBOT1) THEN
+             TAULX(L)=TAUL(L)
+          ELSE
+             TAULX(L)=QIKEXP( -ODTOTL(L)*SECANG(L) )
+          ENDIF
 
        ENDDO ! downward loop over layers
 
 C      Calc the surface-to-space transmittance thru the clouds(only)
-       TAUZCU=QIKEXP(-K1*MASEC1 -K2*MASEC2) ! upward path
+       TAUZCU=QIKEXP(-K1*MASEC1) ! upward path
 C
 
 C      -----------------------------------------------------------------
@@ -356,6 +306,7 @@ C      -----------------------------------------------------------------
        RDOWN=0.0
        TDOWNN=1.0
        DO L=LBOT,1,-1
+
           IF (DOSUNL(L)) THEN
 C            Scattered solar
              RSUNSC=(SCOSL(L)/(VCOSL(L)+SCOSL(L)))*PI4INV*WTILDE(L)*
@@ -373,22 +324,23 @@ C scattering term is increased.
           ELSE
              RSUNSC=0.0
           ENDIF
+          RADUP=RADUP*TAULX(L) + RPLNCK(L)*(1.0 - TAULX(L)) + RSUNSC
 
 C         Calc the downward radiance from this layer
           TDOWNF=TDOWNN*TAULX(L)
           RDOWN = RDOWN + ( RPLNCK(L)*(TDOWNN - TDOWNF) )
           TDOWNN=TDOWNF
-C
-          RADUP=RADUP*TAULX(L) + RPLNCK(L)*(1.0 - TAULX(L)) + RSUNSC
+
        ENDDO
 C
 
 C      ------------------------
 C      Reflected solar radiance
 C      ------------------------
+C      Calc the reflected solar reaching the satellite
        IF (DOSUN) THEN
-C replaced 03Feb2006          TAUZCD=QIKEXP(-MASUN1*K1-MASUN2*K2) ! downward path
-          TAUZCD=QIKEXP(-MASUN1*NEXTO1(I)-MASUN2*NEXTO2(I)) ! downward path
+C replaced 03Feb2006          TAUZCD=QIKEXP( -MASUN1*K1 ) ! downward path
+          TAUZCD=QIKEXP( -MASUN1*NEXTO1(I) ) ! downward path
           RSUN=RHOSUN(I)*SUNFAC*HSUN(I)*TAUZSN(I)*TAUZCU*TAUZCD
        ELSE
           RSUN=0.0
@@ -415,7 +367,7 @@ C
 C      --------------
 C      Total radiance
 C      --------------
-       RAD2=RADUP + RSUN + RTHERM
+       RAD1=RADUP + RSUN + RTHERM
 C
        RETURN
        END

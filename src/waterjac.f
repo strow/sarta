@@ -159,10 +159,12 @@ C      for CALT
 
        REAL DST,DQ
 c local var
-       INTEGER IJAC,J
+       INTEGER IJAC,J, ITZLAYJAC
        REAL RJUNK1,RJUNK2
        
 c------------------------------------------------------------------------
+         ITZLAYJAC = 9999  !! need this for RAAPLNCK
+	 
          !! WATER JAC
 	 IF (IWVZLAYJAC .EQ. -1) THEN
            write(IOUNJ) IPROF,+100
