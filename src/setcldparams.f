@@ -86,6 +86,7 @@ c code for CLD1 and CLD2
 
 c code for CLD1
        DO I = 1,NCHAN
+         ODSUM=0.0       
          DO L=1,LBOT
            DOSUNL(L)=.FALSE.
            KAIR=ODL(L,I)/SECANG(L)
@@ -125,6 +126,7 @@ c     $          HG3(-SCOSL(L),VCOSL(L),COSDAZ,GL(L))*SUNFAC*HSUN(I)
 
 c code for CLD2
        DO I = 1,NCHAN
+         ODSUM=0.0       
          DO L=1,LBOT
            DOSUNL(L)=.FALSE.
            KAIR=ODL(L,I)/SECANG(L)

@@ -31,7 +31,7 @@ m140_icebaumGHM_waterdrop_desertdust:
 	sed 's/XCSNAMEX/m140/' incFTC_airs_apr08.f > incFTC.f
 	ln -s fnmie_iceGHMbaum_waterdrop_desertdust.f fnmie.f
 	make -f make_sarta_pclsam
-	mv a.out ../bin/sarta_apr08_m140_iceGHMbaum_waterdrop_desertdust_slabcloud_hg3X
+	mv a.out ../bin/sarta_apr08_m140_iceGHMbaum_waterdrop_desertdust_slabcloud_hg3_jac
 
 # CrisHiRes
 crisg4_hires_dec17_icebaumGHM_waterdrop_desertdust:
@@ -39,7 +39,7 @@ crisg4_hires_dec17_icebaumGHM_waterdrop_desertdust:
 	ln -s incFTC_crisg4_oct16.f incFTC.f
 	ln -s fnmie_iceGHMbaum_waterdrop_desertdust_cris_hires.f fnmie.f	
 	make -f make_sarta_pclsam
-	mv a.out ../bin/crisg4_hires_dec17_iceGHMbaum_waterdrop_desertdust_slabcloud_hg3
+	mv a.out ../bin/crisg4_hires_dec17_iceGHMbaum_waterdrop_desertdust_slabcloud_hg3_jac
 
 #----------------------------------------------------------------------------------------
 # Builds clear

@@ -5,9 +5,11 @@ tic
 addpath /home/sergio/MATLABCODE/matlib/clouds/sarta
 addpath /home/sergio/MATLABCODE/CRODGERS_FAST_CLOUD
 addpath /home/sergio/MATLABCODE/CLOUD
-%g = dogoodchan;
-%clist = get_retrieval_chans(h,g,4,2);
-%[h,p0] = subset_rtp_allcloudfields(h,p0,[],clist,[]);
+g = dogoodchan;
+clist = get_retrieval_chans(h,g,4,2);
+clist = [clist; 2321; 2333];
+[h,p0] = subset_rtp_allcloudfields(h,p0,[],clist,[]);
+rtpwrite('junk135_2014_02_08_421chans.rtp',h,ha,p0,pa);
 
 rtpwrite('junkjunk.rp.rtp',h,ha,p0,pa);
 dojac = ['!time a.out fin=junkjunk.rp.rtp fout=new.rp.rtp >& newugh'];
@@ -96,8 +98,8 @@ error('finished finite diff')
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 iDo = -1
 if iDo > 0
-  dojac = ['!time a.out fin=junk135_2014_02_08.rtp fout=new.rp.rtp fjacob=xjacob.dat >& newugh; more newugh'];
-  dojac = ['!time a.out fin=junk135_2014_02_08.rtp fout=new.rp.rtp fjacob=xjacob.dat >& newugh'];
+  dojac = ['!time a.out fin=junk135_2014_02_08_421chans.rtp fout=new.rp.rtp fjacob=xjacob.dat >& newugh; more newugh'];
+  dojac = ['!time a.out fin=junk135_2014_02_08_421chans.rtp fout=new.rp.rtp fjacob=xjacob.dat >& newugh'];
   eval(dojac)
 end
 

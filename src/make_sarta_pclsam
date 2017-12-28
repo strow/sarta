@@ -4,7 +4,7 @@
 # ------------
 # Object files
 # ------------
-OBJS = planckemis.o tempjac.o waterjac.o ozonejac.o copypredictors.o coljac.o setclddort.o \
+OBJS = setcldparams.o planckemis.o tempjac.o waterjac.o ozonejac.o copypredictors.o coljac.o setclddort.o \
        rdprof.o  vaconv.o  calpar.o  qikexp.o  hg3.o  setems_pclsam.o  getbot.o \
        calt1_od.o  calt2_od.o  calt3_od.o  calt4_od.o  calt5_od.o \
        calt6_od.o  calt7_od.o  bkprep.o  getcld_slab.o \
