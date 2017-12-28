@@ -195,7 +195,7 @@ c------------------------------------------------------------------------
            END DO
 
  	   ITZLAYJAC = ITZLAYJAC + 1
-	   print *,'IPROF,Tlayjac,LBOT = ',IPROF,ITZLAYJAC,LBOT
+c	   print *,'IPROF,Tlayjac,LBOT = ',IPROF,ITZLAYJAC,LBOT
   	   TEMPX(ITZLAYJAC) = TEMPX(ITZLAYJAC) + DST
 
 C         Calc mean pressure for bottom fractional layer

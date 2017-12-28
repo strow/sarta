@@ -205,7 +205,7 @@ C         assuming T is in linear in log(P)
            TEMPX(LBOT)=RJUNK2*LOG( RJUNK1/PLAY(LBOT-1) ) + TEMPX(LBOT - 1)
 
  	   IO3ZLAYJAC = IO3ZLAYJAC + 1
-	   print *,'IPROF,OZlayjac,LBOT = ',IPROF,IO3ZLAYJAC,LBOT, ITZLAYJAC
+c	   print *,'IPROF,OZlayjac,LBOT = ',IPROF,IO3ZLAYJAC,LBOT, ITZLAYJAC
   	   OAMNTX(IO3ZLAYJAC) = OAMNTX(IO3ZLAYJAC)*(1.0 + DQ)
 	   !ISELECTLAY = -1	   !!! testing, but slow since it makes sarta re-run and re-run
 	   ISELECTLAY = IO3ZLAYJAC	   

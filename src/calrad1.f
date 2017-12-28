@@ -238,6 +238,7 @@ C      for function QIKEXP
 C      for function HG3
        REAL HG3
 
+       REAL RJUNK
 
 C-----------------------------------------------------------------------
 C      SAVE STATEMENTS
@@ -307,21 +308,21 @@ C      -----------------------------------------------------------------
 
           IF (DOSUNL(L)) THEN
 C            Scattered solar
-             RSUNSC=(SCOSL(L)/(VCOSL(L)+SCOSL(L)))*PI4INV*WTILDE(L)*
-     $          HG3(-SCOSL(L),VCOSL(L),COSDAZ,GL(L))*SUNFAC*HSUN(I)*
+c             RJUNK=(SCOSL(L)/(VCOSL(L)+SCOSL(L)))*PI4INV*WTILDE(L)*
+c     $          HG3(-SCOSL(L),VCOSL(L),COSDAZ,GL(L))*SUNFAC*HSUN(I)*
+c     $          QIKEXP( -ODTOTZ(L)*SSECL(L) )*
+c     $          (1.0 - QIKEXP( -XFUDGE(L)*(SECANG(L)+SSECL(L)) ))
+c              RSUNSC = RJUNK
+             RSUNSC=WTILDE(L)*CLD1SUN(L,I)*
      $          QIKEXP( -ODTOTZ(L)*SSECL(L) )*
-ccc fudged PCLSAM equation uses XFUDGE instead of ODTOTL
      $          (1.0 - QIKEXP( -XFUDGE(L)*(SECANG(L)+SSECL(L)) ))
-ccc standard PCLSAM equation
-c     $          (1.0 - QIKEXP( -ODTOTL(L)*(SECANG(L)+SSECL(L)) ))
-C comment: According to Sergio Machado, the standard PCLSAM equation
-C under-estimates the amount of solar radianced scattered into the
-C view angle (RSUNSC).  If ODTOTL is replaced by XFUDGE the solar
-C scattering term is increased.
-
           ELSE
              RSUNSC=0.0
           ENDIF
+c	  IF (DOSUNL(L)) print *,I,L,WTILDE(L),CLD1SUN(L,I),RJUNK,RSUNSC
+c	  IF (DOSUNL(L) .AND. (I .EQ. 421)) print *,I,L,
+c     $      (SCOSL(L)/(VCOSL(L)+SCOSL(L)))*PI4INV*HG3(-SCOSL(L),VCOSL(L),COSDAZ,GL(L))*SUNFAC*HSUN(I),CLD1SUN(L,I)
+
           RADUP=RADUP*TAULX(L) + RPLNCK(L)*(1.0 - TAULX(L)) + RSUNSC
 
 C         Calc the downward radiance from this layer

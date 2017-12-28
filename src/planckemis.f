@@ -28,6 +28,7 @@ c local
        ELSE
          LTOP = IWHICHLAY
          LBOT = IWHICHLAY
+	 IF ((NLAY-LBOT) .LE. 3) LBOT = NLAY
        END IF
        
        DO I=1,NCHAN

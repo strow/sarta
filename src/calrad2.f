@@ -361,14 +361,12 @@ C            Scattered solar
              RSUNSC=(SCOSL(L)/(VCOSL(L)+SCOSL(L)))*PI4INV*WTILDE(L)*
      $          HG3(-SCOSL(L),VCOSL(L),COSDAZ,GL(L))*SUNFAC*HSUN(I)*
      $          QIKEXP( -ODTOTZ(L)*SSECL(L) )*
-ccc fudged PCLSAM equation uses XFUDGE instead of ODTOTL
      $          (1.0 - QIKEXP( -XFUDGE(L)*(SECANG(L)+SSECL(L)) ))
-ccc standard PCLSAM equation
-c     $          (1.0 - QIKEXP( -ODTOTL(L)*(SECANG(L)+SSECL(L)) ))
-C comment: According to Sergio Machado, the standard PCLSAM equation
-C under-estimates the amount of solar radianced scattered into the
-C view angle (RSUNSC).  If ODTOTL is replaced by XFUDGE the solar
-C scattering term is increased.
+CCCC can I really put in CLD1SUN(L.I) HERE??????????
+CCCC can I really put in CLD1SUN(L.I) HERE??????????
+CCCC             RSUNSC=WTILDE(L)*CLD1SUN(L,I)*
+CCCC     $          QIKEXP( -ODTOTZ(L)*SSECL(L) )*
+CCCC     $          (1.0 - QIKEXP( -XFUDGE(L)*(SECANG(L)+SSECL(L)) ))
 
           ELSE
              RSUNSC=0.0

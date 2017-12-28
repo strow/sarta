@@ -339,6 +339,7 @@ C           Safe default for non-existant cloud2
             LCTOP2=1                                          !! output
 	 ENDIF
 
+         SUNFAC=SUNCOS*PI*(RADSUN/DISTES)**2
          CALL SetCldParams(NCHAN, LBOT, DOSUN, SECANG, TAU,
      $          HSUN, SUNFAC, COSDAZ,
      $          LCBOT1, LCTOP1, CFRAC1,                               

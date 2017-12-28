@@ -113,7 +113,9 @@ C      -----------------------------------------------------------------
          DO L=LBOT,1,-1
            IF (DOSUNL(L)) THEN
 C            Scattered solar
-             CLD1SUN(L,I) = (SCOSL(L)/(VCOSL(L)+SCOSL(L)))*PI4INV*OMEGA1LAY(L,I)*
+c             CLD1SUN(L,I) = (SCOSL(L)/(VCOSL(L)+SCOSL(L)))*PI4INV*OMEGA1LAY(L,I)*
+c     $          HG3(-SCOSL(L),VCOSL(L),COSDAZ,GL(L))*SUNFAC*HSUN(I)
+             CLD1SUN(L,I) = (SCOSL(L)/(VCOSL(L)+SCOSL(L)))*PI4INV*
      $          HG3(-SCOSL(L),VCOSL(L),COSDAZ,GL(L))*SUNFAC*HSUN(I)
            ELSE
              CLD1SUN(L,I) = 0.0
@@ -150,7 +152,9 @@ C      -----------------------------------------------------------------
          DO L=LBOT,1,-1
            IF (DOSUNL(L)) THEN
 C            Scattered solar
-             CLD2SUN(L,I) = (SCOSL(L)/(VCOSL(L)+SCOSL(L)))*PI4INV*OMEGA2LAY(L,I)*
+c             CLD2SUN(L,I) = (SCOSL(L)/(VCOSL(L)+SCOSL(L)))*PI4INV*OMEGA2LAY(L,I)*
+c     $          HG3(-SCOSL(L),VCOSL(L),COSDAZ,GL(L))*SUNFAC*HSUN(I)
+             CLD2SUN(L,I) = (SCOSL(L)/(VCOSL(L)+SCOSL(L)))*PI4INV*
      $          HG3(-SCOSL(L),VCOSL(L),COSDAZ,GL(L))*SUNFAC*HSUN(I)
            ELSE
              CLD2SUN(L,I) = 0.0

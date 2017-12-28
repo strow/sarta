@@ -1198,7 +1198,6 @@ C
 
          ! at this point ITZLAYJAC is -1 so no need to worry
 	 ! internally inside coljac, ITZLAYJAC is set to 9999
-	 print *,'before coljac ',ITZLAYJAC
          CALL ColJac(
      $        RAD, IPROF, HEAD, PROF, INDCHN, NCHAN, FREQ, DST, DQ, IOUNJ, 
      $    MIETYP, MIENPS, MIEPS, MIEABS, MIEEXT, MIEASY,
