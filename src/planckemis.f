@@ -1,4 +1,8 @@
 c this computes planck for layers and for surface
+c       INTEGER IWHICHLAY   !if      -1,    then this is default temp (so can set RAAPLNCK,RASURFE)
+c                           !else if +9999, then just use what was set above
+c                           !else if -9999, then just use what was set above for RAAPLNCK, adjust RASURFE
+c                           !else if >0,    then just redo that layer RAAPLNCK, keep RASURFE same
 
       SUBROUTINE planckemis(NCHAN,NLAY,TEMP,FREQ,EMIS,TSURF,RAAPLNCK,RASURFE, IWHICHLAY)
 
@@ -22,9 +26,12 @@ c local
        INTEGER I,L,LTOP,LBOT
        REAL C1V3,C2V
 
-       IF (IWHICHLAY .LT. 0) THEN
+       IF ((IWHICHLAY .LT. 0) .AND. (IWHICHLAY .GT. -9999)) THEN
          LTOP = 1
          LBOT = NLAY
+       ELSEIF (IWHICHLAY .LE. -9999) THEN
+         LTOP = 1
+         LBOT = -NLAY
        ELSE
          LTOP = IWHICHLAY
          LBOT = IWHICHLAY

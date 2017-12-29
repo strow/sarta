@@ -40,9 +40,10 @@ C      Boundary pressure levels
        REAL TAUZSN(MAXLAY,MXCHAN) ! sun space-to-surface-to-space OD       
        REAL PLAY(MAXLAY)   ! layer mean pressure
 
-       INTEGER ITZLAYJAC   !if      -1,   then this is default temp (so can set RAAPLNCK)
-                           !else if 9999, then just use what was set above
-                           !else if >0,   then just redo that layer RAAPLNCK
+       INTEGER ITZLAYJAC   !if      -1,    then this is default temp (so can set RAAPLNCK,RASURFE)
+                           !else if +9999, then just use what was set above
+                           !else if -9999, then just use what was set above for RAAPLNCK, adjust RASURFE
+                           !else if >0,    then just redo that layer RAAPLNCK, keep RASURFE same
 			   
        INTEGER IJACCLD     !cloud perturb = 0 for none,
                            !11,12 for cngwat1,2  21,22 for cpsize1,2
@@ -287,6 +288,8 @@ c         print *,'setting emiss and planck'
          CALL planckemis(NCHAN,LBOT,TEMP,FREQ,EMIS,TSURF,RAAPLNCK,RASURFE,-1)
        ELSEIF  ((ITZLAYJAC .GT. 0) .AND. (ITZLAYJAC .LE. LBOT)) THEN
          CALL planckemis(NCHAN,LBOT,TEMP,FREQ,EMIS,TSURF,RAAPLNCK,RASURFE,ITZLAYJAC)
+       ELSEIF  (ITZLAYJAC .EQ. -9999) THEN
+         CALL planckemis(NCHAN,LBOT,TEMP,FREQ,EMIS,TSURF,RAAPLNCK,RASURFE,-9999)
        ELSEIF  (ITZLAYJAC .EQ. 9999) THEN
 c         print *,9999
        ELSE

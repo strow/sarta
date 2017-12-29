@@ -197,9 +197,9 @@ c       REAL C2V            ! rad constant c2 times freq
        
 c************************************************************************
 
-         !!! this is SurfTempJacobian, ITZLAYJAC set to 9999 so no need to worry about redo RAAPLNCK
+         !!! this is SurfTempJacobian, ITZLAYJAC set to -9999 so no need to worry about redo RAAPLNCK, redo RASURFE
          CALL SetCldDoRT(
-     $        RAD, IPROF, HEAD, PROF, INDCHN, NCHAN, FREQ, 0, DQ, 9999,
+     $        RAD, IPROF, HEAD, PROF, INDCHN, NCHAN, FREQ, 0, DQ, -9999,
      $    MIETYP, MIENPS, MIEPS, MIEABS, MIEEXT, MIEASY,
      $    DISTES, SUNCOS, SCOS1,
      $    LBLAC1, CTYPE1, CFRAC1, CPSIZ1, CPRTO1, CPRBO1, CNGWA1,
@@ -224,9 +224,9 @@ c************************************************************************
         write(IOUNJ) IPROF,+1
         write(IOUNJ) (1000.0*RAD(J),J=1,NCHAN)
 
-         !!! this is cloud1 amt jac, ITZLAYJAC set to 9999 so no need to worry about redo RAAPLNCK
+         !!! this is cloud1 amt jac, ITZLAYJAC set to +9999 so no need to worry about redo RAAPLNCK
          CALL SetCldDoRT(
-     $        RAD, IPROF, HEAD, PROF, INDCHN, NCHAN, FREQ, 11, DQ, 9999, 
+     $        RAD, IPROF, HEAD, PROF, INDCHN, NCHAN, FREQ, 11, DQ, +9999, 
      $    MIETYP, MIENPS, MIEPS, MIEABS, MIEEXT, MIEASY,
      $    DISTES, SUNCOS, SCOS1,
      $    LBLAC1, CTYPE1, CFRAC1, CPSIZ1, CPRTO1, CPRBO1, CNGWA1,
@@ -251,9 +251,9 @@ c************************************************************************
         write(IOUNJ) IPROF,+11
         write(IOUNJ) (1000.0*RAD(J),J=1,NCHAN)
 
-         !!! this is cloud2 amt jac, ITZLAYJAC set to 9999 so no need to worry about redo RAAPLNCK
+         !!! this is cloud2 amt jac, ITZLAYJAC set to +9999 so no need to worry about redo RAAPLNCK
          CALL SetCldDoRT(
-     $        RAD, IPROF, HEAD, PROF, INDCHN, NCHAN, FREQ, 12, DQ, 9999,
+     $        RAD, IPROF, HEAD, PROF, INDCHN, NCHAN, FREQ, 12, DQ, +9999,
      $    MIETYP, MIENPS, MIEPS, MIEABS, MIEEXT, MIEASY,
      $    DISTES, SUNCOS, SCOS1,
      $    LBLAC1, CTYPE1, CFRAC1, CPSIZ1, CPRTO1, CPRBO1, CNGWA1,
@@ -278,9 +278,9 @@ c************************************************************************
         write(IOUNJ) IPROF,+12
         write(IOUNJ) (1000.0*RAD(J),J=1,NCHAN)
 
-         !!! this is cloud1 sze jac, ITZLAYJAC set to 9999 so no need to worry about redo RAAPLNCK
+         !!! this is cloud1 sze jac, ITZLAYJAC set to +9999 so no need to worry about redo RAAPLNCK
          CALL SetCldDoRT(
-     $        RAD, IPROF, HEAD, PROF, INDCHN, NCHAN, FREQ, 21, DQ, 9999,
+     $        RAD, IPROF, HEAD, PROF, INDCHN, NCHAN, FREQ, 21, DQ, +9999,
      $    MIETYP, MIENPS, MIEPS, MIEABS, MIEEXT, MIEASY,
      $    DISTES, SUNCOS, SCOS1,
      $    LBLAC1, CTYPE1, CFRAC1, CPSIZ1, CPRTO1, CPRBO1, CNGWA1,
@@ -305,9 +305,9 @@ c************************************************************************
         write(IOUNJ) IPROF,+21
         write(IOUNJ) (1000.0*RAD(J),J=1,NCHAN)
 
-         !!! this is cloud2 amt jac, ITZLAYJAC set to 9999 so no need to worry about redo RAAPLNCK
+         !!! this is cloud2 amt jac, ITZLAYJAC set to +9999 so no need to worry about redo RAAPLNCK
          CALL SetCldDoRT(
-     $        RAD, IPROF, HEAD, PROF, INDCHN, NCHAN, FREQ, 22, DQ, 9999,
+     $        RAD, IPROF, HEAD, PROF, INDCHN, NCHAN, FREQ, 22, DQ, +9999,
      $    MIETYP, MIENPS, MIEPS, MIEABS, MIEEXT, MIEASY,
      $    DISTES, SUNCOS, SCOS1,
      $    LBLAC1, CTYPE1, CFRAC1, CPSIZ1, CPRTO1, CPRBO1, CNGWA1,
