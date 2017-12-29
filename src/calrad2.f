@@ -262,7 +262,8 @@ C      for function QIKEXP
 C      for function HG3
        REAL HG3
 
-
+       REAL SECFAC
+       
 C-----------------------------------------------------------------------
 C      SAVE STATEMENTS
 C-----------------------------------------------------------------------
@@ -276,6 +277,8 @@ C***********************************************************************
 C***********************************************************************
 
        PI4INV = 1.0/(4.0*PI)
+       SECFAC = 1.66/SECANG(LBOT)
+       
 C
 C      Cloud optical depths adjusted for scattering
 c       K1=NEXTO1(I) - NSCAO1(I)*(1.0+G_ASY1(I))/2.0
@@ -373,7 +376,8 @@ CCCC     $          (1.0 - QIKEXP( -XFUDGE(L)*(SECANG(L)+SSECL(L)) ))
           ENDIF
 
 C         Calc the downward radiance from this layer
-          TDOWNF=TDOWNN*TAULX(L)
+c          TDOWNF=TDOWNN*TAULX(L)
+          TDOWNF=TDOWNN*TAULX(L)**SECFAC	  	  
           RDOWN = RDOWN + ( RPLNCK(L)*(TDOWNN - TDOWNF) )
           TDOWNN=TDOWNF
 C
@@ -396,18 +400,19 @@ C
 C      --------------------------------------
 C      Reflected downwelling thermal radiance
 C      --------------------------------------
-       F=1.0
-       IF (TAUZ(I) .GT. 0.0005) THEN
-          F=   COEFF(1,I) +
-     $       ( COEFF(2,I)/SECANG(LBOT) ) +
-     $       ( COEFF(3,I)*TAUZ(I) ) +
-     $       ( COEFF(4,I)*TAUZ(I)*TAUZ(I) ) +
-     $       ( COEFF(5,I)*TAUZ(I)/SECANG(LBOT) ) +
-     $       ( COEFF(6,I)*TAUZ(I)/RDOWN )
-C         Truncate F at limits as needed
-          F = MAX( MIN(F,2.09), 0.696 )
-       ENDIF
-       RTHERM=RHOTHR(I)*PI*RDOWN*F*TAUZ(I)*TAUZCU
+c$$$       F=1.0
+c$$$       IF (TAUZ(I) .GT. 0.0005) THEN
+c$$$          F=   COEFF(1,I) +
+c$$$     $       ( COEFF(2,I)/SECANG(LBOT) ) +
+c$$$     $       ( COEFF(3,I)*TAUZ(I) ) +
+c$$$     $       ( COEFF(4,I)*TAUZ(I)*TAUZ(I) ) +
+c$$$     $       ( COEFF(5,I)*TAUZ(I)/SECANG(LBOT) ) +
+c$$$     $       ( COEFF(6,I)*TAUZ(I)/RDOWN )
+c$$$C         Truncate F at limits as needed
+c$$$          F = MAX( MIN(F,2.09), 0.696 )
+c$$$       ENDIF
+c       RTHERM=RHOTHR(I)*PI*RDOWN*F*TAUZ(I)*TAUZCU
+       RTHERM=RHOTHR(I)*PI*RDOWN*TAUZ(I)
 C
 
 C      --------------

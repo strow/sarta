@@ -47,7 +47,8 @@ RTPINC = -I/asl/code/rtp/include
 # -64 : 64-bit objects (libraries must match)
 # -us : puts trailing underscore
 F77 = ifort
-FLIB = 
+FLIB =
+#OPT = -O -C -g -traceback -convert big_endian -extend-source 132 -warn unused
 OPT = -O -convert big_endian -extend-source 132
 
 # Portland Group F77:

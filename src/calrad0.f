@@ -160,7 +160,8 @@ C      Downwelling atmospheric thermal emission terms
        REAL TDOWNN ! "near-side" layer-to-surface trans
        REAL TDOWNF ! "far-side" layer-to-surface trans
        REAL  RDOWN ! downward radiance
-
+       REAL SECFAC
+       
 C-----------------------------------------------------------------------
 C      SAVE STATEMENTS
 C-----------------------------------------------------------------------
@@ -176,6 +177,8 @@ C***********************************************************************
 C      -----------------------------------------------------------------
 C      Loop upward over layers
 C      -----------------------------------------------------------------
+       SECFAC = 1.66/SECANG(LBOT)
+       
        RADUP=RSURFE
        RDOWN=0.0
        TDOWNN=1.0
@@ -183,16 +186,23 @@ C      -----------------------------------------------------------------
           RADUP=RADUP*TAUL(L) + RPLNCK(L)*(1.0 - TAUL(L))
 
 C         Calc the downward radiance from this layer
-          TDOWNF=TDOWNN*TAUL(L)
+c          TDOWNF=TDOWNN*TAUL(L)
+          TDOWNF=TDOWNN*TAUL(L)**SECFAC	  
           RDOWN = RDOWN + ( RPLNCK(L)*(TDOWNN - TDOWNF) )
           TDOWNN=TDOWNF
+
+c      if (I .EQ. 111) then
+c      print *, L,RADUP
+c      endif
 
        ENDDO
 C
 c       IF (I .EQ. 1291) THEN
+c       IF (I .EQ. 111) THEN
 c         PRINT *,'FINAL',RSURFE,L,RPLNCK(L),RADUP
 c         PRINT *,'sergio stop A'
 c       END IF
+
 
 C      ------------------------
 C      Reflected solar radiance
@@ -207,23 +217,30 @@ C
 C      --------------------------------------
 C      Reflected downwelling thermal radiance
 C      --------------------------------------
-       F=1.0
-       IF (TAUZ(I) .GT. 0.0005) THEN
-          F=   COEFF(1,I) +
-     $       ( COEFF(2,I)/SECANG(LBOT) ) +
-     $       ( COEFF(3,I)*TAUZ(I) ) +
-     $       ( COEFF(4,I)*TAUZ(I)*TAUZ(I) ) +
-     $       ( COEFF(5,I)*TAUZ(I)/SECANG(LBOT) ) +
-     $       ( COEFF(6,I)*TAUZ(I)/RDOWN )
-C         Truncate F at limits as needed
-          F = MAX( MIN(F,2.09), 0.696 )
-       ENDIF
-       RTHERM=RHOTHR(I)*PI*RDOWN*F*TAUZ(I)
+c$$$       F=1.0
+c$$$       IF (TAUZ(I) .GT. 0.0005) THEN
+c$$$          F=   COEFF(1,I) +
+c$$$     $       ( COEFF(2,I)/SECANG(LBOT) ) +
+c$$$     $       ( COEFF(3,I)*TAUZ(I) ) +
+c$$$     $       ( COEFF(4,I)*TAUZ(I)*TAUZ(I) ) +
+c$$$     $       ( COEFF(5,I)*TAUZ(I)/SECANG(LBOT) ) +
+c$$$     $       ( COEFF(6,I)*TAUZ(I)/RDOWN )
+c$$$C         Truncate F at limits as needed
+c$$$          F = MAX( MIN(F,2.09), 0.696 )
+c$$$       ENDIF
+c       RTHERM=RHOTHR(I)*PI*RDOWN*F*TAUZ(I)
+       RTHERM=RHOTHR(I)*PI*RDOWN*TAUZ(I)
 C
 
 C      --------------
 C      Total radiance
 C      --------------
+
+c      if (I .EQ. 111) then
+c        print *, 999999,I,3.1415,RADUP,RSUN,RTHERM
+c        print *, RHOTHR(I),TAUZ(I),RDOWN
+c      endif
+
        RAD0=RADUP + RSUN + RTHERM
 C
 C

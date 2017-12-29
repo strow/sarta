@@ -190,7 +190,12 @@ C      for RDINFO
        LOGICAL  LRHOT         ! force refl therm rho=(1-emis)/pi?
        INTEGER NWANTP         ! number of wanted profiles (-1=all)
        INTEGER  LISTP(MAXPRO) ! list of wanted profiles
-C
+c extra stuff, not needed       
+       CHARACTER*80 FJACOB0   ! root output binary JACOB filename
+       CHARACTER*92 FJACOBN   ! current output binary JACOB filename       
+       INTEGER  NGASJACOB     ! do WV,O3 (2=default) or just WV (1)       
+       INTEGER  ISELECTLAY    ! gah!
+
 C      for OPNRTP
        INTEGER  PTYPE         ! profile type
        INTEGER  NCHAN         ! # of selected channels
@@ -423,6 +428,7 @@ C***********************************************************************
 C
 C      CONV = pi/180 = degrees to radians conversion factor
        CONV=1.7453292E-02
+       ISELECTLAY = -1    !!! do all
 C
 C      --------------------------
 C      Assign the I/O unit number
@@ -448,7 +454,8 @@ C
 C      ---------------------
 C      Get command-line info
 C      ---------------------
-       CALL RDINFO(FIN, FOUT, LRHOT, NWANTP, LISTP)
+c       CALL RDINFO(FIN, FOUT, LRHOT, NWANTP, LISTP)
+       CALL RDINFO(FIN, FOUT, LRHOT, NWANTP, LISTP, FJACOB0, NGASJACOB)       
 ccc
 c      print *, 'nwantp=', NWANTP
 c      print *, 'listp=', (LISTP(I),I=1,NWANTP)
@@ -732,7 +739,7 @@ C      -----------------------------------
 C      Calculate the fast trans predictors
 C      -----------------------------------
 C
-       CALL CALPAR (LBOT,
+       CALL CALPAR (ISELECTLAY, LBOT,
      $    RTEMP,RFAMNT,RWAMNT,ROAMNT,RCAMNT,RMAMNT,RSAMNT,RHAMNT,RNAMNT,
      $     TEMP, FAMNT, WAMNT, OAMNT, CAMNT, MAMNT, SAMNT, HAMNT, NAMNT,
      $    RPRES,SECANG,   LAT,    FX,   RDZ,
@@ -746,7 +753,7 @@ C      write(6,'(A)') 'sarta: completed CALPAR'
 C      -----------------------------------
 C      Calculate the OPTRAN H2O predictors
 C      -----------------------------------
-       CALL CALOWP ( LBOT, WAMNT, RPRES, TEMP, SECANG, WAZOP, WAVGOP,
+       CALL CALOWP (ISELECTLAY, LBOT, WAMNT, RPRES, TEMP, SECANG, WAZOP, WAVGOP,
      $    WAANG, LOPMIN, LOPMAX, LOPUSE, H2OPRD, LOPLOW, DAOP )
 C
 C      write(6,'(A)') 'sarta: completed CALOWP'
@@ -803,7 +810,7 @@ C         ---------------------------------------------
 C         Calculate the fast trans predictors *for sun*
 C         ---------------------------------------------
 C
-          CALL SUNPAR ( LBOT,
+          CALL SUNPAR ( ISELECTLAY, LBOT,
      $       RTEMP, RWAMNT, ROAMNT, RCAMNT,
      $        TEMP,  WAMNT,  OAMNT,  CAMNT,
      $       RPRES,  SECSUN, CONPRD,

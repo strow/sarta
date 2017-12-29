@@ -293,8 +293,8 @@ C            TDOWNF=TDOWNN*TAU(L,I)
              TDOWNN=TDOWNF
 
 ccc
-c      if (I .EQ. 1928) then
-c      print*, RAD(I)
+c      if (I .EQ. 111) then
+c      print *, L,RAD(I)
 c      endif
 ccc
 
@@ -333,6 +333,11 @@ c for testing
 c      RTHERM=0.0
 c      RSUN=0.0
 ccc
+
+c      if (I .EQ. 111) then
+c        print *, 999999,I,FREQ(I),RAD(I),RSUN,RTHERM
+c      endif
+
           RAD(I)=RAD(I) + RSUN + RTHERM
 C
 C         ------------------------------------------
