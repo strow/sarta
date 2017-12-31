@@ -1,4 +1,4 @@
-function [vchan,ichan,stempjac,cldjac,Tjac,WVjac,O3jac] = read_sarta_jacob(fjacob);
+function [vchan,ichan,stempjac,cldjac,Tjac,WVjac,O3jac,nlay] = read_sarta_jacob(fjacob);
 
 w        = [];
 cldjac   = [];
@@ -6,6 +6,7 @@ stempjac = [];
 Tjac  = [];
 WVjac = [];
 O3jac = [];
+nlay  = [];
 
 [fid,msg] = fopen(fjacob, 'r', 'ieee-be'); %%% GAHHHHHRRR
 if fid == -1
@@ -30,6 +31,7 @@ cldjac   = zeros(4,nchan,numprof);
 Tjac     = zeros(100,nchan,numprof);
 WVjac    = zeros(100,nchan,numprof);
 O3jac    = zeros(100,nchan,numprof);
+nlay     = zeros(1,numprof);
 
 flen   = fread(fid, 1, 'integer*4');
 ichan  = fread(fid,nchan,'integer*4');
@@ -147,7 +149,8 @@ for ii = 1 : numprof
   %% T jac
   flen = fread(fid, 1, 'integer*4');
   ixprof = fread(fid, 1, 'integer*4');
-  itype   = fread(fid, 1, 'integer*4');
+  itype  = fread(fid, 1, 'integer*4');
+  nlay(ii) = fread(fid, 1, 'integer*4');
   flen = fread(fid, 1, 'integer*4');
 %  if ixprof ~= ii
 %    [ixprof ii]
@@ -168,7 +171,8 @@ for ii = 1 : numprof
   %% WV jac
   flen = fread(fid, 1, 'integer*4');
   ixprof = fread(fid, 1, 'integer*4');
-  itype   = fread(fid, 1, 'integer*4');
+  itype  = fread(fid, 1, 'integer*4');
+  nlay(ii) = fread(fid, 1, 'integer*4');  
   flen = fread(fid, 1, 'integer*4');
 %  if ixprof ~= ii
 %    [ixprof ii]
@@ -189,7 +193,8 @@ for ii = 1 : numprof
   %% O3 jac
   flen = fread(fid, 1, 'integer*4');
   ixprof = fread(fid, 1, 'integer*4');
-  itype   = fread(fid, 1, 'integer*4');
+  itype  = fread(fid, 1, 'integer*4');
+  nlay(ii) = fread(fid, 1, 'integer*4');  
   flen = fread(fid, 1, 'integer*4');
 %  if ixprof ~= ii
 %    [ixprof ii]

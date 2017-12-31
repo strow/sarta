@@ -237,12 +237,12 @@ C***********************************************************************
 	 LMAX = NLAY
        ELSE
          LMIN = ISELECTLAY
-         LMIN = 1	 
+c         LMIN = 1	 
 	 LMAX = ISELECTLAY
        END IF
 
-       LMIN = 1
-       LMAX = NLAY
+c       LMIN = 1
+c       LMAX = NLAY
 
 C
 C      ---------------------------

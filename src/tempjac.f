@@ -1,7 +1,7 @@
 ccc      note the alternative return to statement 77
 ccc      https://docs.oracle.com/cd/E19957-01/805-4939/6j4m0vnb3/index.html
 
-      SUBROUTINE TempJac(*,ITZLAYJAC,IDOTZJAC,IOUNJ,IPROF,LBOT,NCHAN,DST,DQ,
+      SUBROUTINE TempJac(*,ITZLAYJAC,IDOTZJAC,IOUNJ,IPROF,LBOT,NCHAN,DST,DQ,RAD0,
      $       PSURF,PLAY,TEMPRAW,
      $       TAU,TAUZ,TAUSN,TAUZSN,CO2TOP,
      $	     FIXMUL,CONPRD,FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
@@ -34,6 +34,7 @@ C-----------------------------------------------------------------------
 C      Boundary pressure levels
        COMMON /COMLEV/ PLEV
        REAL PLEV(MAXLAY+1)
+       REAL    RAD0(MXCHAN) ! chan radiance
        
        REAL CO2TOP                ! top layers CO2 mixing ratio
        REAL FIXMUL(MAXLAY)        ! "fixed" amount multiplier (~1)
@@ -165,7 +166,7 @@ c local var
 c------------------------------------------------------------------------
          !! TEMP JAC
 	 IF (ITZLAYJAC .EQ. -1) THEN
-           write(IOUNJ) IPROF,-100
+           write(IOUNJ) IPROF,-100, LBOT
 	   ITZLAYJAC = 0
 	 END IF
 	 
@@ -216,7 +217,7 @@ C         assuming T is in linear in log(P)
 	   ELSE
 	     IF (LBOT+1 .LE. 100) THEN
   	       DO IJAC = LBOT+1,100
-                 write(IOUNJ) (000.0*RAD(J),J=1,NCHAN)
+                 write(IOUNJ) (1000.0*RAD0(J),J=1,NCHAN)
 	       END DO
              END IF	     
 	   END IF

@@ -446,7 +446,8 @@ c       REAL  TRANL(MAXLAY) ! clear air layer transmittance
 c       REAL  TRANZ(MXCHAN) ! clear air layer-to-space transmittance
 c       REAL  TRANS(MXCHAN) ! clear air total reflected solar trans
        REAL  TSURF         ! surface temperature
-       REAL    RAD(MXCHAN) ! chan radiance
+       REAL    RAD(MXCHAN)  ! chan radiance
+       REAL    RAD0(MXCHAN) ! chan radiance       
 
        INTEGER ICLD                     ! have we already set up cld params
        REAL    RAAPLNCK(MAXLAY,MXCHAN)  ! chan radiance at each lay
@@ -775,7 +776,7 @@ ccc
        IPRINTJAC = 9999999
        IF (IDOJACOB .GT. 0) THEN
          IPRINTJAC = 150
-         IPRINTJAC = 25          
+         IPRINTJAC = 25
          IF (INUMPROF .LE. IPRINTJAC) THEN
 	   FJACOBN = FJACOB0
 	 ELSE
@@ -1179,7 +1180,11 @@ C      -------------------
        END IF
 C
        IF ((IDOJACOB .GT. 0) .AND. (IDOCOLJAC .LT. 0)) THEN
-       
+
+         DO J = 1,NCHAN
+	   RAD0(J) = RAD(J)
+	 END DO
+	 
 	 CALL copypredictors(+1,NCHAN,
      $     TAU,TAUZ,TAUSN,TAUZSN,CO2TOP,
      $	   FIXMUL,CONPRD,FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
@@ -1236,7 +1241,7 @@ ccc      https://docs.oracle.com/cd/E19957-01/805-4939/6j4m0vnb3/index.html
 	   ICLD = +1
 c          ICLD = -1       ! testing       	   
 	 END IF
-         CALL TempJac(*77,ITZLAYJAC,IDOTZJAC,IOUNJ,IPROF,LBOT,NCHAN,DST,DQ,
+         CALL TempJac(*77,ITZLAYJAC,IDOTZJAC,IOUNJ,IPROF,LBOT,NCHAN,DST,DQ,RAD0,
      $       PSURF,PLAY,TEMPRAW,
      $       TAU,TAUZ,TAUSN,TAUZSN,CO2TOP,
      $	     FIXMUL,CONPRD,FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
@@ -1256,10 +1261,18 @@ c          ICLD = -1       ! testing
        ITZLAYJAC = LBOT + 1
        ITZLAYJAC = 9999  !!! just use the RAAPLNCK that was used originally
        
-       IF ((IDOJACOB .GT. 0) .AND. (IWVZLAYJAC .LE. LBOT)) THEN
+       IF ((IDOJACOB .GT. 0) .AND. (IWVZLAYJAC .LE. LBOT) .AND.
+     $    (NGASJACOB .EQ. 0)) THEN
+          !! WV JAC
+          write(IOUNJ) IPROF,+100
+	  DO IJAC = 1,100
+            write(IOUNJ) (1000.0*RAD0(J),J=1,NCHAN)
+          END DO       
+       ELSEIF ((IDOJACOB .GT. 0) .AND. (IWVZLAYJAC .LE. LBOT) .AND.
+     $         (NGASJACOB .GE. 1)) THEN          
 ccc      note the alternative return to statement 77
 ccc      https://docs.oracle.com/cd/E19957-01/805-4939/6j4m0vnb3/index.html
-         CALL WaterJac(*77,IWVZLAYJAC,IDOWVZJAC,IOUNJ,IPROF,LBOT,NCHAN,DST,DQ,
+         CALL WaterJac(*77,IWVZLAYJAC,IDOWVZJAC,IOUNJ,IPROF,LBOT,NCHAN,DST,DQ,RAD0,
      $       PSURF,PLAY,TEMPRAW,
      $       TAU,TAUZ,TAUSN,TAUZSN,CO2TOP,
      $	     FIXMUL,CONPRD,FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
@@ -1283,13 +1296,13 @@ ccc      https://docs.oracle.com/cd/E19957-01/805-4939/6j4m0vnb3/index.html
           !! O3 JAC
           write(IOUNJ) IPROF,+300
 	  DO IJAC = 1,100
-            write(IOUNJ) (0.0*1000.0*RAD(J),J=1,NCHAN)
+            write(IOUNJ) (1000.0*RAD0(J),J=1,NCHAN)
           END DO       
        ELSEIF ((IDOJACOB .GT. 0) .AND. (IO3ZLAYJAC .LE. LBOT) .AND.
      $         (NGASJACOB .EQ. 2)) THEN          
 ccc      note the alternative return to statement 77
 ccc      https://docs.oracle.com/cd/E19957-01/805-4939/6j4m0vnb3/index.html
-         CALL OzoneJac(*77,IO3ZLAYJAC,IDOO3ZJAC,IOUNJ,IPROF,LBOT,NCHAN,DST,DQ,
+         CALL OzoneJac(*77,IO3ZLAYJAC,IDOO3ZJAC,IOUNJ,IPROF,LBOT,NCHAN,DST,DQ,RAD0,
      $       PSURF,PLAY,TEMPRAW,
      $       TAU,TAUZ,TAUSN,TAUZSN,CO2TOP,
      $	     FIXMUL,CONPRD,FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
@@ -1314,6 +1327,8 @@ C      ----------------------
        IPROF=IPROF + 1  ! increment profile counter
 c       print *, 'sergio iprof=', IPROF
 c       STOP
+
+c       IF (IPROF .GT. 60) GOTO 9999    !! to check times scale linearly with profiole number
        GOTO 10
 C>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>       
 C
