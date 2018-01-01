@@ -160,8 +160,9 @@ cldjacNew = rad2bt(vchan,squeeze(cldjac(4,:,:)))-rad2bt(vchan,r0);
 figure(1); plot(vchan,cldjacOld); figure(2); plot(vchan,cldjacNew); figure(3); plot(vchan,cldjacOld-cldjacNew);
 
 %% compare T jacs for profile 1
-iProf = 1; nlays = p0.nlevs(iProf)-1;
-TjacNew = squeeze(Tjac(:,:,iProf)); TjacNew = TjacNew'; TjacNew = rad2bt(vchan,TjacNew)-rad2bt(vchan,r0(:,iProf))*ones(1,100);
+iProf = 1; nlays = p0.nlevs(iProf)-1; dT = 1; dQ = 0.1;
+TjacNew = squeeze(Tjac(:,:,iProf)); TjacNew = TjacNew';
+%TjacNew = rad2bt(vchan,TjacNew)-rad2bt(vchan,r0(:,iProf))*ones(1,100);
 for ii = 1 : 100
   TjacOld(:,ii) = rad2bt(vchan,squeeze(raaT(ii,:,iProf))')-rad2bt(vchan,r0(:,iProf));
 end
@@ -178,13 +179,14 @@ figure(7); dJ = TjacOld(:,1:nlays)'-TjacNew(:,1:nlays)';
 figure(7); dJ = 100*dJ ./(TjacNew(:,1:nlays)'+eps);  pcolor(h.vchan,1:nlays,dJ); shading flat; colormap jet; colorbar; set(gca,'ydir','reverse');
   caxis([-1 +1]); colorbar
   
-WVjacNew = squeeze(WVjac(:,:,iProf)); WVjacNew = WVjacNew'; WVjacNew = rad2bt(vchan,WVjacNew)-rad2bt(vchan,r0(:,iProf))*ones(1,100);
+WVjacNew = squeeze(WVjac(:,:,iProf)); WVjacNew = WVjacNew';
+%WVjacNew = rad2bt(vchan,WVjacNew)-rad2bt(vchan,r0(:,iProf))*ones(1,100);
 for ii = 1 : 100
   WVjacOld(:,ii) = rad2bt(vchan,squeeze(raaWV(ii,:,iProf))')-rad2bt(vchan,r0(:,iProf));
 end
 figure(1); pcolor(vchan,1:nlays,WVjacOld(:,1:nlays)'); shading flat; colormap jet; colorbar; set(gca,'ydir','reverse'); cx = caxis;
 figure(2); pcolor(vchan,1:nlays,WVjacNew(:,1:nlays)'); shading flat; colormap jet; colorbar; set(gca,'ydir','reverse'); caxis(cx);
-figure(3); plot(h.vchan,WVjacOld(:,81),'.-',h.vchan,WVjacNew(:,81)); title('lay 81')
+figure(3); plot(h.vchan,WVjacOld(:,65),'.-',h.vchan,WVjacNew(:,65)); title('lay 65')
 figure(4); plot(h.vchan,WVjacOld(:,nlays-2),'.-',h.vchan,WVjacNew(:,nlays-2)); title(['lay ' num2str(nlays-2)])
 figure(5); plot(h.vchan,WVjacOld(:,nlays-1),'.-',h.vchan,WVjacNew(:,nlays-1)); title(['lay ' num2str(nlays-1)])
 figure(6); plot(h.vchan,WVjacOld(:,nlays-0),'.-',h.vchan,WVjacNew(:,nlays-0)); title(['lay ' num2str(nlays-0)])
@@ -195,7 +197,8 @@ figure(7); dJ = WVjacOld(:,1:nlays)'-WVjacNew(:,1:nlays)';
 figure(7); dJ = 100*dJ ./(WVjacNew(:,1:nlays)'+eps);  pcolor(h.vchan,1:nlays,dJ); shading flat; colormap jet; colorbar; set(gca,'ydir','reverse');
   caxis([-1 +1]); colorbar
   
-O3jacNew = squeeze(O3jac(:,:,iProf)); O3jacNew = O3jacNew'; O3jacNew = rad2bt(vchan,O3jacNew)-rad2bt(vchan,r0(:,iProf))*ones(1,100);
+O3jacNew = squeeze(O3jac(:,:,iProf)); O3jacNew = O3jacNew';
+%O3jacNew = rad2bt(vchan,O3jacNew)-rad2bt(vchan,r0(:,iProf))*ones(1,100);
 for ii = 1 : 100
   O3jacOld(:,ii) = rad2bt(vchan,squeeze(raaO3(ii,:,iProf))')-rad2bt(vchan,r0(:,iProf));
 end
