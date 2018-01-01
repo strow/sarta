@@ -1,7 +1,8 @@
 ccc      note the alternative return to statement 77
 ccc      https://docs.oracle.com/cd/E19957-01/805-4939/6j4m0vnb3/index.html
 
-      SUBROUTINE WaterJac(*,IWVZLAYJAC,IDOWVZJAC,IOUNJ,IPROF,LBOT,NCHAN,DST,DQ,RAD0,
+      SUBROUTINE WaterJac(*,IWVZLAYJAC,IDOWVZJAC,IOUNJ,IPROF,LBOT,NCHAN,
+     $       FREQ,DST,DQ,RAD0,BT0,IRAD2BT,
      $       PSURF,PLAY,TEMPRAW,      
      $       TAU,TAUZ,TAUSN,TAUZSN,CO2TOP,
      $	     FIXMUL,CONPRD,FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
@@ -35,6 +36,10 @@ C      Boundary pressure levels
        COMMON /COMLEV/ PLEV
        REAL PLEV(MAXLAY+1)
        REAL    RAD0(MXCHAN) ! chan radiance
+       REAL    BT0(MXCHAN)  ! chan bt before perturbations       
+       INTEGER IRAD2BT      ! do we convert to BT before layer jacs (yes)
+       REAL    FREQ(MXCHAN) ! wavenumber
+       REAL    BT(MXCHAN)   ! chan bt before perturbations
        
        REAL CO2TOP                ! top layers CO2 mixing ratio
        REAL FIXMUL(MAXLAY)        ! "fixed" amount multiplier (~1)
@@ -212,14 +217,31 @@ c	   print *,'IPROF,WVlayjac,LBOT = ',IPROF,IWVZLAYJAC,LBOT
 	   ISELECTLAY = IWVZLAYJAC	   
   	   RETURN 1
 	 ELSE
-           write(IOUNJ) (1000.0*RAD(J),J=1,NCHAN)
+           IF (IRAD2BT .LT. 0) THEN
+           !! write rad since Matlab code will do rad0--rad and say the jacobian is whatever	 
+             write(IOUNJ) (1000.0*RAD(J),J=1,NCHAN)
+	   ELSE
+	     CALL RAD2BT(FREQ,RAD,BT,NCHAN)
+	     DO IJAC = 1,NCHAN
+	       BT(IJAC) = BT(IJAC)-BT0(IJAC)	       
+	     END DO
+             write(IOUNJ) (BT(J),J=1,NCHAN)
+	   END IF
 	   IF (IWVZLAYJAC .LT. LBOT) THEN
   	     GOTO 771
 	   ELSE
 	     IF (LBOT+1 .LE. 100) THEN
-  	       DO IJAC = LBOT+1,100
-                 write(IOUNJ) (1000.0*RAD0(J),J=1,NCHAN)
-	       END DO
+	       IF (IRAD2BT .LT. 0) THEN
+	         !! write rad0 since Matlab code will do rad0--rad0 and say the jacobian is 0
+  	         DO IJAC = LBOT+1,100
+                   write(IOUNJ) (1000.0*RAD0(J),J=1,NCHAN)
+	         END DO
+	       ELSE
+	         !! write 0 since Matlab code will do nothing
+  	         DO IJAC = LBOT+1,100
+                   write(IOUNJ) (0000.0*RAD0(J),J=1,NCHAN)
+	         END DO
+	       END IF
              END IF	     
 	   END IF
 	 END IF

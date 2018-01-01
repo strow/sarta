@@ -172,7 +172,7 @@ for ii = 1 : numprof
   flen = fread(fid, 1, 'integer*4');
   ixprof = fread(fid, 1, 'integer*4');
   itype  = fread(fid, 1, 'integer*4');
-  nlay(ii) = fread(fid, 1, 'integer*4');  
+  nlay(ii) = fread(fid, 1, 'integer*4');
   flen = fread(fid, 1, 'integer*4');
 %  if ixprof ~= ii
 %    [ixprof ii]

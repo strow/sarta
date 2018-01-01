@@ -447,8 +447,11 @@ c       REAL  TRANZ(MXCHAN) ! clear air layer-to-space transmittance
 c       REAL  TRANS(MXCHAN) ! clear air total reflected solar trans
        REAL  TSURF         ! surface temperature
        REAL    RAD(MXCHAN)  ! chan radiance
-       REAL    RAD0(MXCHAN) ! chan radiance       
-
+       REAL    BT(MXCHAN)   ! chan bt after perturbations       
+       REAL    RAD0(MXCHAN) ! chan radiance before perturbations
+       REAL    BT0(MXCHAN)  ! chan bt before perturbations       
+       INTEGER IRAD2BT      ! do we convert to BT before layer jacs (yes)
+       
        INTEGER ICLD                     ! have we already set up cld params
        REAL    RAAPLNCK(MAXLAY,MXCHAN)  ! chan radiance at each lay
        REAL    RASURFE(MXCHAN)          ! chan radiance at surf
@@ -618,7 +621,8 @@ C***********************************************************************
 C
 C      CONV = pi/180 = degrees to radians conversion factor
        CONV=1.7453292E-02
-
+       IRAD2BT = +1
+       
 C      --------------------------
 C      Assign the I/O unit number
 C      --------------------------
@@ -655,6 +659,7 @@ C      ---------------------
          IDOJACOB = +1
          DST = 1.0;
 	 DQ =  0.1
+         IRAD2BT = +1   !! convert layer jacs to BT
 	 
 	 IF  (NWANTP .GT. 1) THEN
 	   INUMPROF = NWANTP
@@ -1181,10 +1186,14 @@ C      -------------------
 C
        IF ((IDOJACOB .GT. 0) .AND. (IDOCOLJAC .LT. 0)) THEN
 
-         DO J = 1,NCHAN
-	   RAD0(J) = RAD(J)
-	 END DO
-	 
+         IF (IRAD2BT .LT. 0) THEN
+           DO J = 1,NCHAN
+  	     RAD0(J) = RAD(J)
+	   END DO
+	 ELSE
+	   CALL RAD2BT(FREQ,RAD,BT0,NCHAN)
+	 END IF
+	   
 	 CALL copypredictors(+1,NCHAN,
      $     TAU,TAUZ,TAUSN,TAUZSN,CO2TOP,
      $	   FIXMUL,CONPRD,FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
@@ -1241,7 +1250,8 @@ ccc      https://docs.oracle.com/cd/E19957-01/805-4939/6j4m0vnb3/index.html
 	   ICLD = +1
 c          ICLD = -1       ! testing       	   
 	 END IF
-         CALL TempJac(*77,ITZLAYJAC,IDOTZJAC,IOUNJ,IPROF,LBOT,NCHAN,DST,DQ,RAD0,
+         CALL TempJac(*77,ITZLAYJAC,IDOTZJAC,IOUNJ,IPROF,LBOT,NCHAN,
+     $       FREQ,DST,DQ,RAD0,BT0,IRAD2BT,
      $       PSURF,PLAY,TEMPRAW,
      $       TAU,TAUZ,TAUSN,TAUZSN,CO2TOP,
      $	     FIXMUL,CONPRD,FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
@@ -1264,15 +1274,24 @@ c          ICLD = -1       ! testing
        IF ((IDOJACOB .GT. 0) .AND. (IWVZLAYJAC .LE. LBOT) .AND.
      $    (NGASJACOB .EQ. 0)) THEN
           !! WV JAC
-          write(IOUNJ) IPROF,+100
-	  DO IJAC = 1,100
-            write(IOUNJ) (1000.0*RAD0(J),J=1,NCHAN)
-          END DO       
+          write(IOUNJ) IPROF,+100,LBOT,IRAD2BT
+	  IF (IRAD2BT .LT. 0) THEN
+c	    !! write out rad0 so that Matlab does rad0-rad0 = 0	  
+	    DO IJAC = 1,100
+              write(IOUNJ) (1000.0*RAD0(J),J=1,NCHAN)
+            END DO
+	  ELSE
+c	    !! write out 0 since Matlab routine will not do anything beyond 1/log(1+dQ)	  
+	    DO IJAC = 1,100
+              write(IOUNJ) (000.0*RAD0(J),J=1,NCHAN)
+            END DO
+          END IF	  
        ELSEIF ((IDOJACOB .GT. 0) .AND. (IWVZLAYJAC .LE. LBOT) .AND.
      $         (NGASJACOB .GE. 1)) THEN          
 ccc      note the alternative return to statement 77
 ccc      https://docs.oracle.com/cd/E19957-01/805-4939/6j4m0vnb3/index.html
-         CALL WaterJac(*77,IWVZLAYJAC,IDOWVZJAC,IOUNJ,IPROF,LBOT,NCHAN,DST,DQ,RAD0,
+         CALL WaterJac(*77,IWVZLAYJAC,IDOWVZJAC,IOUNJ,IPROF,LBOT,NCHAN,
+     $       FREQ,DST,DQ,RAD0,BT0,IRAD2BT,
      $       PSURF,PLAY,TEMPRAW,
      $       TAU,TAUZ,TAUSN,TAUZSN,CO2TOP,
      $	     FIXMUL,CONPRD,FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
@@ -1294,15 +1313,24 @@ ccc      https://docs.oracle.com/cd/E19957-01/805-4939/6j4m0vnb3/index.html
        IF ((IDOJACOB .GT. 0) .AND. (IO3ZLAYJAC .LE. LBOT) .AND.
      $    (NGASJACOB .EQ. 1)) THEN
           !! O3 JAC
-          write(IOUNJ) IPROF,+300
-	  DO IJAC = 1,100
-            write(IOUNJ) (1000.0*RAD0(J),J=1,NCHAN)
-          END DO       
+          write(IOUNJ) IPROF,+300,LBOT
+	  IF (IRAD2BT .LT. 0) THEN
+c	    !! write out rad0 so that Matlab does rad0-rad0 = 0
+  	    DO IJAC = 1,100
+              write(IOUNJ) (1000.0*RAD0(J),J=1,NCHAN)
+            END DO
+	  ELSE
+c	    !! write out 0 since Matlab routine will not do anything beyond 1/log(1+dQ)
+  	    DO IJAC = 1,100
+              write(IOUNJ) (000.0*RAD0(J),J=1,NCHAN)
+            END DO
+          END IF	  
        ELSEIF ((IDOJACOB .GT. 0) .AND. (IO3ZLAYJAC .LE. LBOT) .AND.
      $         (NGASJACOB .EQ. 2)) THEN          
 ccc      note the alternative return to statement 77
 ccc      https://docs.oracle.com/cd/E19957-01/805-4939/6j4m0vnb3/index.html
-         CALL OzoneJac(*77,IO3ZLAYJAC,IDOO3ZJAC,IOUNJ,IPROF,LBOT,NCHAN,DST,DQ,RAD0,
+         CALL OzoneJac(*77,IO3ZLAYJAC,IDOO3ZJAC,IOUNJ,IPROF,LBOT,NCHAN,
+     $       FREQ,DST,DQ,RAD0,BT0,IRAD2BT,
      $       PSURF,PLAY,TEMPRAW,
      $       TAU,TAUZ,TAUSN,TAUZSN,CO2TOP,
      $	     FIXMUL,CONPRD,FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
