@@ -248,8 +248,8 @@ c         LMIN = 1
 	 LMAX = ISELECTLAY
        END IF
 
-c       LMIN = 1
-c       LMAX = NLAY
+       LMIN = 1
+       LMAX = NLAY
 
 C      ---------------------------
 C      Loop on channel (frequency)

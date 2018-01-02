@@ -168,7 +168,7 @@ for ii = 1 : 100
 end
 figure(1); pcolor(vchan,1:nlays,TjacOld(:,1:nlays)'); shading flat; colormap jet; colorbar; set(gca,'ydir','reverse'); cx = caxis;
 figure(2); pcolor(vchan,1:nlays,TjacNew(:,1:nlays)'); shading flat; colormap jet; colorbar; set(gca,'ydir','reverse'); caxis(cx);
-figure(3); plot(h.vchan,TjacOld(:,81),'.-',h.vchan,TjacNew(:,81)); title('lay 81')
+figure(3); plot(h.vchan,TjacOld(:,65),'.-',h.vchan,TjacNew(:,65)); title('lay 65')
 figure(4); plot(h.vchan,TjacOld(:,nlays-2),'.-',h.vchan,TjacNew(:,nlays-2)); title(['lay ' num2str(nlays-2)])
 figure(5); plot(h.vchan,TjacOld(:,nlays-1),'.-',h.vchan,TjacNew(:,nlays-1)); title(['lay ' num2str(nlays-1)])
 figure(6); plot(h.vchan,TjacOld(:,nlays-0),'.-',h.vchan,TjacNew(:,nlays-0)); title(['lay ' num2str(nlays-0)])
