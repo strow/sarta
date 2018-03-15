@@ -48,6 +48,14 @@ crisg4_oct16:
 	make -f make_sarta
 	mv a.out ../bin/crisg4_oct16
 
+# CrIS  (high res) basic coef set[1-7] and wcon.
+crisg4_basic_mar18:
+	rm -f *.o incFTC.f
+	ln -s incFTC_crisHRg4_mar18_basic.f incFTC.f
+	make -f make_sarta
+	mv a.out ../bin/crisg4_basic_mar18
+
+
 # IASI
 iasi_may09_wcon_nte:
 	rm -f *.o incFTC.f
