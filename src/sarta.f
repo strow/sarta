@@ -293,7 +293,7 @@ C      for RDRTP; profile to calculate
        REAL  FAMNT(MAXLAY) ! prof layer CO2 amount
        REAL  SAMNT(MAXLAY) ! prof layer SO2 amount
        REAL  HAMNT(MAXLAY) ! prof layer HNO3 amount
-       REAL  NAMNT(MAXLAY)      ! prof layer N2O amount
+       REAL  NAMNT(MAXLAY) ! prof layer N2O amount
        REAL  AAMNT(MAXLAY) ! prof layer ammonia (NH3) amount
 C
 C      for surface
@@ -344,7 +344,7 @@ C      for CALPAR
        REAL SO2MLT(MAXLAY)        ! SO2 perturbation multiplier
        REAL HNOMLT(MAXLAY)        ! HNO3 perturbation multiplier
        REAL N2OMLT(MAXLAY)        ! N2O perturbation multiplier
-       REAL  AAMNT(MAXLAY) ! prof layer ammonia (NH3) amount
+       REAL NH3MLT(MAXLAY)        ! NH3 perturbation multiplier
        REAL CO2TOP              ! top layers CO2 mixing ratio 
 C
 C      for CALOWP
