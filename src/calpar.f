@@ -23,11 +23,11 @@ C    dependent variables for a profile.
 C    CALPAR (LBOT, RTEMP,RFAMNT,RWAMNT,ROAMNT,RCAMNT,RMAMNT,RNAMNT,
 C  $               PTEMP,PFAMNT,PWAMNT,POAMNT,PCAMNT,PMAMNT,PNAMNT,
 C  $          RES,SECANG,  ALAT,    FX, DZREF,
-C  $         LCO2,  LN2O,  LSO2, LHNO3,LCO2PM,FIXMUL,CONPRD,
+C  $         LCO2,  LN2O,  LSO2, LNH3,LHNO3,LCO2PM,FIXMUL,CONPRD,
 C  $       FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
 C  $       WPRED1,WPRED2,WPRED3,WPRED4,WPRED5,WPRED6,WPRED7,
 C  $       OPRED1,OPRED2,       OPRED4,OPRED5,OPRED6,OPRED7,
-C  $       MPRED3,CPRED4,TRCPRD,CO2MLT,SO2MLT,HNOMLT,N2OMLT )
+C  $       MPRED3,CPRED4,TRCPRD,CO2MLT,SO2MLT,HNOMLT,N2OMLT,NH3MLT )
 
 
 !INPUT PARAMETERS:
@@ -37,12 +37,14 @@ C    INTEGER   LBOT    bottom layer number         none
 C    LOGICAL   LCO2    CO2 profile switch          none
 C    LOGICAL   LN2O    N2O profile switch          none
 C    LOGICAL   LSO2    SO2 profile switch          none
+C    LOGICAL   LNH3    NH3 profile switch          none
 C    LOGICAL   LHNO3   HNO3 profile switch         none
 C    LOGICAL   LCO2PM  CO2 ppmv profile switch     none
 C    REAL      ALAT    profile latitude            degrees (-90 to +90)
 C    REAL arr  DZREF   ref prof layer thickness    meters
 C    REAL arr  FX      fixed gases adjustment      none
 C    REAL arr  PTEMP   profile temperature         K
+C    REAL arr  PAAMNT  prof ammonia (NH3) amnt     kiloMoles/cm^2
 C    REAL arr  PCAMNT  prof carbon monoxide amnt   kiloMoles/cm^2
 C    REAL arr  PFAMNT  profile CO2 gas amount      kiloMoles/cm^2
 C    REAL arr  PHAMNT  profile HNO3 gas amount     kiloMoles/cm^2
@@ -80,6 +82,7 @@ C    REAL arr  FPRED7  fixed predictors set7       various
 C    REAL arr  HNOMLT  HNO3 multiplier             none
 C    REAL arr  MPRED3  methane predictors set3     various
 C    REAL arr  N2OMLT  N2O multiplier              none
+C    REAL arr  NH3MLT  NH3 multiplier              none
 C    REAL arr  OPRED1  ozone predictors set1       various
 C    REAL arr  OPRED2  ozone predictors set2       various
 C    REAL arr  OPRED4  ozone predictors set4       various
@@ -340,7 +343,8 @@ C                               perturbation multiplier calcs; add
 C                               LCO2PM to allow CO2 ppmv profile
 C 14 May 2008 Scott Hannon   Add no prof CO2MLT calc; add CO2TOP and
 C                               CO2PPM to call; add CO2TOP calc
-
+C 08 Jun 2011 Scott Hannon   Add NH3 (by LLS in July 2018
+      
 !END====================================================================
 
 C      =================================================================
@@ -348,12 +352,12 @@ C      =================================================================
      $    RTEMP,RFAMNT,RWAMNT,ROAMNT,RCAMNT,RMAMNT,RSAMNT,RHAMNT,RNAMNT,
      $    PTEMP,PFAMNT,PWAMNT,POAMNT,PCAMNT,PMAMNT,PSAMNT,PHAMNT,PNAMNT,
      $     PRES,SECANG,  ALAT,    FX, DZREF,
-     $     LCO2,  LN2O,  LSO2, LHNO3,LCO2PM,CO2PPM,CO2TOP,
+     $     LCO2,  LN2O,  LSO2, LNH3, LHNO3,LCO2PM,CO2PPM,CO2TOP,
      $   FIXMUL,CONPRD,
      $   FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
      $   WPRED1,WPRED2,WPRED3,WPRED4,WPRED5,WPRED6,WPRED7,
      $   OPRED1,OPRED2,       OPRED4,OPRED5,OPRED6,OPRED7,
-     $   MPRED3,CPRED4,TRCPRD,CO2MLT,SO2MLT,HNOMLT,N2OMLT )
+     $   MPRED3,CPRED4,TRCPRD,CO2MLT,SO2MLT,HNOMLT,N2OMLT,NH3MLT )
 C      =================================================================
 
 
@@ -389,6 +393,7 @@ C      Input
        REAL RSAMNT(MAXLAY)
        REAL RHAMNT(MAXLAY)
        REAL RNAMNT(MAXLAY)
+       REAL RAAMNT(MAXLAY)
        REAL  PTEMP(MAXLAY)
        REAL PFAMNT(MAXLAY)
        REAL PWAMNT(MAXLAY)
@@ -398,6 +403,7 @@ C      Input
        REAL PSAMNT(MAXLAY)
        REAL PHAMNT(MAXLAY)
        REAL PNAMNT(MAXLAY)
+       REAL PAAMNT(MAXLAY)
        REAL   PRES(MAXLAY)
        REAL SECANG(MAXLAY)
        REAL   ALAT
@@ -406,6 +412,7 @@ C      Input
        LOGICAL LCO2
        LOGICAL LN2O
        LOGICAL LSO2
+       LOGICAL LNH3
        LOGICAL LHNO3
        LOGICAL LCO2PM
        REAL CO2PPM
@@ -441,7 +448,7 @@ C      Output
        REAL SO2MLT(MAXLAY)
        REAL HNOMLT(MAXLAY)
        REAL N2OMLT(MAXLAY)
-
+       REAL NH3MLT(MAXLAY)
 
 C-----------------------------------------------------------------------
 C      LOCAL VARIABLES
@@ -931,6 +938,16 @@ C            Ignore changes in SO2 of less than ~10%
              SO2MLT(L)=0.0
           ENDIF
 C
+          IF (LNH3) THEN
+C            NH3 mult=1 when prof amount = 100 * ref amount
+             NH3MLT(L)=1.0101E-2*( PAAMNT(L) - FIXMUL(L)*RAAMNT(L) )/
+     $          RAAMNT(L)
+C            Ignore changes in NH3 of less than ~10%
+             IF (ABS(NH3MLT(L)) .LT. 1E-3) NH3MLT(L)=0.0
+          ELSE
+             NH3MLT(L)=0.0
+          ENDIF
+C     
           IF (LHNO3) THEN
 C            HNO3 mult=1 when prof amount = 2 * ref amount
              HNOMLT(L)=( PHAMNT(L) - FIXMUL(L)*RHAMNT(L) )/
@@ -944,6 +961,7 @@ C
 ccc this block for testing
 c      N2OMLT(L)=0.0          
 c      SO2MLT(L)=0.0
+c      NH3MLT(L)=0.0          
 c      HNOMLT(L)=0.0
 ccc
 C

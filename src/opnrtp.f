@@ -48,6 +48,7 @@ C    INTEGER   ICO2    index of CO2 in gamnt       none
 C    INTEGER   ISO2    index of SO2 in gamnt       none
 C    INTEGER   IHNO3   index of HNO3 in gamnt      none
 C    INTEGER   IN2O    index of N2O in gamnt       none
+C    INTEGER   INH3    index of NH3 in gamnt       none
 C    INTEGER   IOPCI   input RTP file I/O unit     none
 C    INTEGER   IOPCO   output RTP file I/O unit    none
 C    STRUCT    HEAD    RTP header structure        various
@@ -111,14 +112,14 @@ C 23 Jun 2005 Scott Hannon      "trace" version for CO2,SO2,HNO3,N2O
 C 23 Jan 2008 Scott Hannon      Add LCO2PM to allow CO2 profile in ppmv
 C 24 Oct 2008 Scott Hannon      Minor update for rtpV201
 C 12 May 2009 Scott Hannon      Change VCLOUD to VTUNNG in "sarta" HATT
-
+C 08 Jun 2011 Scott Hannon      Add NH3 (by LLS July 2018)
 
 !END====================================================================
 
 
 C      =================================================================
        SUBROUTINE OPNRTP(FIN, LRHOT, PTYPE, NCHAN, FCHAN, LSTCHN,
-     $    INDCHN, IH2O, IO3, ICO, ICH4, ICO2, ISO2, IHNO3, IN2O,
+     $    INDCHN, IH2O, IO3, ICO, ICH4, ICO2, ISO2, IHNO3, IN2O, INH3,
      $    IOPCI, HEAD, HATT, PATT, LCO2PM)
 C      =================================================================
 
@@ -164,7 +165,8 @@ C      Output
        INTEGER   ISO2          ! index of SO2 in gamnt
        INTEGER  IHNO3          ! index of HNO3 in gamnt
        INTEGER   IN2O          ! index of N2O in gamnt
-       INTEGER  IOPCI  ! I/O unit ("profile channel") for input file
+       INTEGER   INH3          ! index of NH3 in gamnt
+       INTEGER  IOPCI           ! I/O unit ("profile channel") for input file
 C
 C      Structures (see "rtpdefs.f")
        RECORD /RTPHEAD/ HEAD            ! header data
@@ -284,6 +286,7 @@ C      -----------
        ICO  =-1
        ICH4 =-1
        ISO2 =-1
+       INH3 =-1
        IHNO3=-1
 C
 C      Loop over gases
@@ -373,6 +376,9 @@ C      Print a warning if a trace gas is not present
        ENDIF
        IF (ISO2 .LT. 1) THEN
           WRITE(IOERR,1035) 9, 'SO2 '
+       ENDIF
+       IF (INH3 .LT. 1) THEN
+          WRITE(IOERR,1035) 11, 'NH3 '
        ENDIF
        IF (IHNO3 .LT. 1) THEN
           WRITE(IOERR,1035) 12, 'HNO3'

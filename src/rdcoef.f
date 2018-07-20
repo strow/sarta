@@ -271,8 +271,8 @@ C      Initialize "set"-independent index arrays
        DO I=1,MXCHAN
 C         Trace gases
           INDCO2(I)=0
-C          INDSO2(I)=0
-C          INDHNO(I)=0
+          INDSO2(I)=0
+          INDHNO(I)=0
           INDN2O(I)=0
 C         OPTRAN water
           INDH2O(I)=0
@@ -643,6 +643,31 @@ C             J=J + 1
 C          ENDIF
 C       ENDDO
 
+C     ---------------------------
+C      Read NH3 perturbation coefs
+C      ---------------------------
+       OPEN(UNIT=IOUN,FILE=FNNH3,FORM='UNFORMATTED',STATUS='OLD',
+     $    IOSTAT=IERR)
+       IF (IERR .NE. 0) THEN
+          WRITE(6,1020) IERR, FNNH3
+          STOP
+       ENDIF
+C
+       J=1
+       DO I=1,MXCHNA
+C         Read data for this frequency/channel
+          READ(IOUN) ICHAN, FRQCHN, ((COFNH3(IC,IL,J),IC=1,NNH3),
+     $       IL=1,MAXLAY)
+C
+C         Keep the data if the current channel is on the list
+          IF (INDCHN(ICHAN) .NE. 0) THEN
+             INDNH3(ICHAN)=J
+             J=J + 1
+          ENDIF
+       ENDDO
+C
+       CLOSE(IOUN)
+C
 C      ---------------------
 C      Read OPTRAN H2O coefs - placeholder to disable coefficients
 C      ---------------------

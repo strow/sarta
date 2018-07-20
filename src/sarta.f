@@ -6,7 +6,7 @@ C    University of Maryland Baltimore County (UMBC)
 C
 C    AIRS
 C
-C    SARTA version with trace gases
+C    SARTA version with trace gases (and NH3)
 C
 !F77====================================================================
 
@@ -144,7 +144,8 @@ C 13 May 2008 Scott Hannon   Add CO2TOP to calpar.f & calnte.f calls;
 C                               add CO2PPM to calpar.f call; move no
 C                               prof CO2MLT calc to calpar.f
 C 24 Oct 2008 Scott Hannon   Update for rtpV201 (remove NRHO, FRHO)
-
+C 22 Jun 2011 Scott Hannon     Add NH3 (ammonia)  (by LLS)
+      
 !END====================================================================
 
 C      =================================================================
@@ -205,7 +206,8 @@ C      for OPNRTP
        INTEGER ISO2           ! index of SO2 in gamnt
        INTEGER IHNO3          ! index of HNO3 in gamnt
        INTEGER IN2O           ! index of N2O in gamnt
-       INTEGER IOPCI          ! input RTP unit
+       INTEGER INH3           ! index of NH3 in gamnt
+       INTEGER IOPCI            ! input RTP unit
        INTEGER IOPCO          ! output RTP unit
        LOGICAL LCO2PM         ! CO2 profile in ppmv?
 C
@@ -243,6 +245,8 @@ C      for RDCOEF             ! Info for selected channels only
        REAL COFHNO( NHNO3,MAXLAY,MXCHNH) ! coefs for HNO3 pert
        INTEGER INDN2O(MXCHAN)            ! chan indices for N2O pert
        REAL COFN2O(  NN2O,MAXLAY,MXCHNN) ! coefs for N2O pert
+       INTEGER INDNH3(MXCHAN)            ! chan indices for NH3 pert
+       REAL COFNH3(  NNH3,MAXLAY,MXCHNA) ! coefs for NH3 pert
        INTEGER INDH2O(MXCHAN)            ! chan indices for OPTRAN H2O
        REAL   WAZOP(MXOWLY)              ! OPTRAN water l-to-s amounts
        REAL  WAVGOP(NOWAVG,MXOWLY)       ! OPTRAN raw predictor averages
@@ -274,7 +278,8 @@ C      for RDPROF; reference profile
        REAL RSAMNT(MAXLAY) ! ref prof layer sulfer dioxide (SO2) amount
        REAL RHAMNT(MAXLAY) ! ref prof layer nitric acid (HNO3) amount
        REAL RNAMNT(MAXLAY) ! ref prof layer nitrous oxide (N2O) amount
-C
+       REAL RAAMNT(MAXLAY) ! ref prof layer ammonia (NH3) amount
+C     
 C      for RDRTP; profile to calculate
        INTEGER NLAY        ! number of layers in profile
        REAL LAT            ! prof latitude
@@ -288,7 +293,8 @@ C      for RDRTP; profile to calculate
        REAL  FAMNT(MAXLAY) ! prof layer CO2 amount
        REAL  SAMNT(MAXLAY) ! prof layer SO2 amount
        REAL  HAMNT(MAXLAY) ! prof layer HNO3 amount
-       REAL  NAMNT(MAXLAY) ! prof layer N2O amount
+       REAL  NAMNT(MAXLAY)      ! prof layer N2O amount
+       REAL  AAMNT(MAXLAY) ! prof layer ammonia (NH3) amount
 C
 C      for surface
        INTEGER   LBOT             ! bottom layer index number
@@ -306,7 +312,8 @@ C      for CALPAR
        LOGICAL   LCO2             ! CO2 profile switch
        LOGICAL   LN2O             ! N2O profile switch
        LOGICAL   LSO2             ! SO2 profile switch
-       LOGICAL  LHNO3             ! HNO3 profile switch
+       LOGICAL   LNH3           ! NH3 profile switch
+       LOGICAL  LHNO3           ! HNO3 profile switch
        REAL SECANG(MAXLAY)        ! local path angle secant
        REAL FIXMUL(MAXLAY)        ! "fixed" amount multiplier (~1)
        REAL CONPRD( N1CON,MAXLAY) ! water continuum predictors
@@ -337,7 +344,8 @@ C      for CALPAR
        REAL SO2MLT(MAXLAY)        ! SO2 perturbation multiplier
        REAL HNOMLT(MAXLAY)        ! HNO3 perturbation multiplier
        REAL N2OMLT(MAXLAY)        ! N2O perturbation multiplier
-       REAL CO2TOP                ! top layers CO2 mixing ratio 
+       REAL  AAMNT(MAXLAY) ! prof layer ammonia (NH3) amount
+       REAL CO2TOP              ! top layers CO2 mixing ratio 
 C
 C      for CALOWP
        REAL  WAANG(MAXLAY)
@@ -442,7 +450,8 @@ C      -----------------------------
 C      Read in the reference profile
 C      -----------------------------
        CALL RDPROF(IOUN, FNPREF, RPNAM, RALT, RDZ, RPRES, RTEMP,
-     $    RFAMNT, RWAMNT, ROAMNT, RCAMNT, RMAMNT, RSAMNT,RHAMNT,RNAMNT)
+     $    RFAMNT, RWAMNT, ROAMNT, RCAMNT, RMAMNT, RSAMNT, RHAMNT,
+     $    RNAMNT, RAAMNT)
 C
 
 C      ---------------------
@@ -458,7 +467,7 @@ C      ---------------------------
 C      Open & check input RTP file
 C      ---------------------------
        CALL OPNRTP(FIN, LRHOT, PTYPE, NCHAN, FCHAN, LSTCHN, INDCHN,
-     $    IH2O, IO3, ICO, ICH4, ICO2, ISO2, IHNO3, IN2O,
+     $    IH2O, IO3, ICO, ICH4, ICO2, ISO2, IHNO3, IN2O, INH3,
      $    IOPCI, HEAD, HATT, PATT, LCO2PM)
 C
 
@@ -481,7 +490,7 @@ C      Get and apply multipler tuning to coefficients {note: ignores HNO3}
      $ CLIST1, CLIST2, CLIST3, CLIST4, CLIST5, CLIST6, CLIST7,
      $  COEF1,  COEF2,  COEF3,  COEF4,  COEF5,  COEF6,  COEF7,
      $   FREQ, LABOVE,  COEFF, INDCO2, COFCO2, INDSO2, COFSO2,
-     $ INDHNO, COFHNO, INDN2O, COFN2O,
+     $ INDHNO, COFHNO, INDN2O, COFN2O, INDNH3, COFNH3,
      $ INDH2O,  WAZOP, WAVGOP, COFH2O, FX, NCHNTE, CLISTN, COEFN )
 C
 C      write(6,'(A)') 'sarta: completed TUNMLT'
@@ -575,11 +584,11 @@ C      --------------
 C      Read input RTP
 C      --------------
        CALL RDRTP( LWANT, IPROF, IOPCI,
-     $    IH2O, IO3, ICO, ICH4, ICO2, ISO2, IHNO3, IN2O, PTYPE,
+     $    IH2O, IO3, ICO, ICH4, ICO2, ISO2, IHNO3, IN2O, INH3, PTYPE,
      $    RALT, LCO2PM, NLAY, NEMIS, LAT, LON, SATANG, SATZEN,
      $    SALT, SUNANG, PSURF, TSURF, CO2PPM, FEMIS, XEMIS, XRHO,
      $    TEMP, WAMNT, OAMNT, CAMNT, MAMNT, FAMNT, SAMNT, HAMNT, NAMNT,
-     $     ALT, PROF, ISTAT )
+     $    AAMNT,  ALT, PROF, ISTAT )
 C
        IF (ISTAT .EQ. -1) GOTO 9999  ! reached End Of File
 C
@@ -621,6 +630,12 @@ C      SO2 profile switch
           LSO2=.FALSE.
        ELSE
           LSO2=.TRUE.
+       ENDIF
+C      NH3 profile switch
+       IF (INH3 .LT. 1) THEN
+          LNH3=.FALSE.
+       ELSE
+          LNH3=.TRUE.
        ENDIF
 C      HNO3 profile switch
        IF (IHNO3 .LT. 1) THEN
@@ -733,14 +748,15 @@ C      Calculate the fast trans predictors
 C      -----------------------------------
 C
        CALL CALPAR (LBOT,
-     $    RTEMP,RFAMNT,RWAMNT,ROAMNT,RCAMNT,RMAMNT,RSAMNT,RHAMNT,RNAMNT,
-     $     TEMP, FAMNT, WAMNT, OAMNT, CAMNT, MAMNT, SAMNT, HAMNT, NAMNT,
-     $    RPRES,SECANG,   LAT,    FX,   RDZ,
-     $     LCO2,  LN2O,  LSO2, LHNO3,LCO2PM,CO2PPM,CO2TOP,FIXMUL,CONPRD,
+     $    RTEMP, RFAMNT, RWAMNT, ROAMNT, RCAMNT, RMAMNT, RSAMNT,
+     $   RHAMNT, RNAMNT, RAAMNT,   TEMP,  FAMNT,  WAMNT,  OAMNT,
+     $    CAMNT,  MAMNT,  SAMNT,  HAMNT,  NAMNT,  AAMNT,
+     $    RPRES, SECANG,    LAT,     FX,    RDZ,   LCO2,  LN2O,
+     $     LSO2, LNH3, LHNO3,LCO2PM,CO2PPM,CO2TOP,FIXMUL,CONPRD,
      $   FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
      $   WPRED1,WPRED2,WPRED3,WPRED4,WPRED5,WPRED6,WPRED7,
      $   OPRED1,OPRED2,       OPRED4,OPRED5,OPRED6,OPRED7,
-     $   MPRED3,CPRED4,TRCPRD,CO2MLT,SO2MLT,HNOMLT,N2OMLT )
+     $   MPRED3,CPRED4,TRCPRD,CO2MLT,SO2MLT,HNOMLT,N2OMLT,NH3MLT)
 C
 C      write(6,'(A)') 'sarta: completed CALPAR'
 C      -----------------------------------
@@ -759,6 +775,7 @@ C
      $     FIXMUL, CONPRD, FPRED1, WPRED1, OPRED1, TRCPRD,
      $     INDCO2, COFCO2, CO2MLT, INDSO2, COFSO2, SO2MLT,
      $     INDHNO, COFHNO, HNOMLT, INDN2O, COFN2O, N2OMLT,
+     $     INDNH3, COFNH3, NH3MLT,
      $     INDH2O, H2OPRD, COFH2O, LOPMIN, LOPMAX, LOPLOW,
      $     LOPUSE,   WAOP,   DAOP, WAANG,     TAU,   TAUZ)
 C
@@ -766,12 +783,13 @@ C      write(6,'(A)') 'sarta: completed CALT1'
        CALL CALT2( INDCHN, LBOT, BLMULT, NCHN2, CLIST2, COEF2,
      $    FIXMUL, CONPRD, FPRED2, OPRED2, WPRED2, TRCPRD,
      $    INDCO2, COFCO2, CO2MLT, INDSO2, COFSO2, SO2MLT,
-     $    INDHNO, COFHNO, HNOMLT, INDN2O, COFN2O, N2OMLT, TAU, TAUZ)
+     $    INDHNO, COFHNO, HNOMLT, INDN2O, COFN2O, N2OMLT,
+     $    INDNH3, COFNH3, NH3MLT,    TAU,   TAUZ)
 C
-       CALL CALT3( INDCHN,   LBOT, BLMULT,  NCHN3, CLIST3,  COEF3,
+      CALL CALT3( INDCHN,   LBOT, BLMULT,  NCHN3, CLIST3,  COEF3,
      $     FIXMUL, CONPRD, FPRED3, MPRED3, WPRED3, TRCPRD,
      $     INDSO2, COFSO2, SO2MLT, INDHNO, COFHNO, HNOMLT,
-     $     INDN2O, COFN2O, N2OMLT,
+     $     INDN2O, COFN2O, N2OMLT, INDNH3, COFNH3, NH3MLT,
      $     INDH2O, H2OPRD, COFH2O, LOPMIN, LOPMAX, LOPLOW, LOPUSE,
      $       WAOP,   DAOP,  WAANG,    TAU,   TAUZ)
 C

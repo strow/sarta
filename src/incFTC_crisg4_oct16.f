@@ -395,6 +395,14 @@ C      ----------------------
        PARAMETER(  NN2O = 7)     ! was 7
 C
 C      ----------------------
+C      For NH3
+C      ----------------------
+       INTEGER MXCHNA ! max # of channels with NH3 pert coefs (placeholder 1)
+       INTEGER   NNH3 ! number of NH3 coefficients (placeholder 1)
+       PARAMETER(MXCHNA = 563)  
+       PARAMETER(  NNH3 = 4)    
+C
+C      ----------------------
 C      For non-LTE - placeholder while no coef file
 C      ----------------------
        INTEGER MXCNTE ! max # of channels for non-LTE (placeholder 1)
@@ -437,6 +445,7 @@ C      ---------
        CHARACTER*80 FNCO2  ! coef co2
        CHARACTER*90 FNOPTR ! coef optran
        CHARACTER*80 FNN2O  ! coef N2O
+       CHARACTER*80 FNNH3  ! coef NH3
        CHARACTER*80 FNSO2  ! coef SO2
        CHARACTER*80 FNHNO3 ! coef HNO3
        CHARACTER*80 FNTHER ! coef therm
@@ -455,6 +464,7 @@ C
        PARAMETER(FNCO2='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/co2.dat')
        PARAMETER(FNOPTR='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/optran.dat')
        PARAMETER(FNN2O='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/n2o.dat')
+       PARAMETER(FNNH3 ='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/nh3.dat')
        PARAMETER(FNSO2='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/so2.dat')
        PARAMETER(FNHNO3='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/hno3.dat')
        PARAMETER(FNTHER='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/therm.dat')
