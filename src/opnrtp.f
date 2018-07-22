@@ -329,6 +329,10 @@ C         Exception: CO2 will use CO2PPM
              ISO2=I
              LNEED=.TRUE.
           ENDIF
+          IF (GLISTI(I) .EQ. 11) THEN
+             INH3=I
+             LNEED=.TRUE.
+          ENDIF
           IF (GLISTI(I) .EQ. 12) THEN
              IHNO3=I
              LNEED=.TRUE.

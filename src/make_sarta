@@ -32,15 +32,16 @@ RTPINC = -I/asl/code/rtp/include
 
 # INTEL ifort F77
 # ------------------------------------------------------------------------
-F77 = ifort
-FLIB = 
-OPT = -O -convert big_endian -extend-source 132
+#F77 = ifort
+#FLIB = 
+#OPT = -O -convert big_endian -extend-source 132
 
 # gfortran
 # ------------------------------------------------------------------------
-#F77 = gfortran
-#OPT = -fdec-structure -fconvert=swap
-#OPT = -fconvert=swap
+F77 = gfortran
+#OPT =  
+OPT = -fconvert=swap  -ffixed-line-length-132  -fdec-structure
+
 
 # ------------
 # JPL Linux absoft: 
