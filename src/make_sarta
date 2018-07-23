@@ -18,7 +18,7 @@ OBJS = rdcoef.o  rdprof.o  vaconv.o  calpar.o  qikexp.o  setems.o  getbot.o \
 HDFLIB = -L/asl/code/external/hdf/hdf4/lib -ldf \
         -L/asl/code/external/jpeg -ljpeg       \
 	-L/asl/code/external/zlib -lz   \
-	-L/asl/code/external/szip/lib -lsz
+	-L/asl/code/external/szip/lib
 
 # ------------------------------------------------------------------------
 # RTP LIB and INCLUDE
