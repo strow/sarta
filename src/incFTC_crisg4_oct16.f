@@ -470,7 +470,7 @@ C
        PARAMETER(FNTHER='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/therm.dat')
        PARAMETER(FNCOFN='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/nte_7term.dat')
        PARAMETER(FNFX='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/fx.txt')
-       PARAMETER(FNPREF='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/profref_trace400')
+       PARAMETER(FNPREF='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/profref_trace400_nh3')
        PARAMETER(FNSUN='/asl/data/sarta_coef/Data_CrIS_oct16/Solar/sol.txt')
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC

@@ -18,7 +18,7 @@ OBJS = rdcoef.o  rdprof.o  vaconv.o  calpar.o  qikexp.o  setems.o  getbot.o \
 HDFLIB = -L/asl/code/external/hdf/hdf4/lib -ldf \
         -L/asl/code/external/jpeg -ljpeg       \
 	-L/asl/code/external/zlib -lz   \
-	-L/asl/code/external/szip/lib -lsz
+#	-L/asl/code/external/szip/lib -lsz
 
 # ------------------------------------------------------------------------
 # RTP LIB and INCLUDE
@@ -32,15 +32,15 @@ RTPINC = -I/asl/code/rtp/include
 
 # INTEL ifort F77
 # ------------------------------------------------------------------------
-#F77 = ifort
+F77 = ifort
 #FLIB = 
-#OPT = -O -convert big_endian -extend-source 132
+OPT = -O -convert big_endian -extend-source 132
 
 # gfortran
 # ------------------------------------------------------------------------
-F77 = gfortran
+#F77 = gfortran
 #OPT =  
-OPT = -fconvert=swap  -ffixed-line-length-132  -fdec-structure
+#OPT = -fconvert=swap  -ffixed-line-length-132  -fdec-structure
 
 
 # ------------
