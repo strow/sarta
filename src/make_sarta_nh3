@@ -5,26 +5,30 @@
 # ------------------------------------------------------------------------
 # Object files
 # ------------------------------------------------------------------------
-OBJS = rdcoef_basic.o  rdprof.o  vaconv.o  calpar.o  qikexp.o  setems.o  getbot.o \
-        calt1.o   calt2.o   calt3.o   calt4.o   calt5.o   calt6.o   calt7.o \
-        faketz.o  sunpar.o  calrad.o  rdsun.o   saconv.o  calowp.o  calokw.o \
-        util.o    opnrtp.o  rdrtp.o   wrtrtp.o  mean_t.o  rdinfo.o  cbplev.o \
-        tunmlt.o  calnte.o  sarta.o
+OBJS = rdcoef_nh3.o  rdprof_nh3.o calt1_nh3.o calt2_nh3.o calt3_nh3.o \
+	calpar_nh3.o opnrtp_nh3.o rdrtp_nh3.o \
+	vaconv.o qikexp.o  setems.o  getbot.o \
+	calt4.o   calt5.o   calt6.o   calt7.o \
+	faketz.o  sunpar.o  calrad.o  rdsun.o   saconv.o  calowp.o  calokw.o \
+	util.o    wrtrtp.o  mean_t.o  rdinfo.o  cbplev.o \
+	tunmlt.o  calnte.o  sarta_nh3.o
 
 
 # ------------------------------------------------------------------------
 # UMBC HDF LIBS
 # ------------------------------------------------------------------------
 HDFLIB = -L/asl/code/external/hdf/hdf4/lib -ldf \
-        -L/asl/code/external/jpeg -ljpeg       \
+	-L/asl/code/external/jpeg -ljpeg       \
 	-L/asl/code/external/zlib -lz   
 #	-L/asl/code/external/szip/lib -lsz
 
 # ------------------------------------------------------------------------
 # RTP LIB and INCLUDE
 # ------------------------------------------------------------------------
-RTPLIB = -L/asl/code/rtp/lib -lrtp
-RTPINC = -I/asl/code/rtp/include
+RTPLIB = -L/home/chepplew/myLib/rtp/lib -lrtp
+RTPINC = -I/home/chepplew/myLib/rtp/include
+#RTPLIB = -L/asl/packages/rtpV201/lib -lrtp
+#RTPINC = -I/asl/packages/rtpV201/include
 
 # ------------------------------------------------------------------------
 # Compilers
@@ -34,13 +38,14 @@ RTPINC = -I/asl/code/rtp/include
 # ------------------------------------------------------------------------
 F77 = ifort
 FLIB = 
-OPT = -O -convert big_endian -extend-source 132 -check all
+OPT = -O -convert big_endian -extend-source 132
+#-check all -g -silent
 
 # gfortran
 # ------------------------------------------------------------------------
 #F77 = gfortran
 #OPT = -fdec-structure -fconvert=swap
-#OPT = -fconvert=swap
+#OPT = -fconvert=swap -ffixed-line-length-132 -ffixed-form -fall-intrinsics
 
 # ------------
 # JPL Linux absoft: 

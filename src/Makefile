@@ -21,7 +21,7 @@ m140_icebaumGHM_waterdrop_desertdust:
 # Builds clear
 #----------------------------------------------------------------------------------------
 
-# AIRS
+########## AIRS ################
 apr08_m140_wcon_nte_2016tuning:
 	rm -f *.o incFTC.f
 	sed 's/XCSNAMEX/m140/g' incFTC_airs_apr08_template_m130_m140_m150_wcon_nte.f > incFTC.f
@@ -34,6 +34,7 @@ apr08_m140_pge_v6_tunmlt:
 	make -f make_sarta
 	mv a.out ../bin/apr08_m140_pge_v6_tunmlt
 
+# ####### CrIS ################
 # CrIS standard resolution
 crisg4_nov09_wcon_nte:
 	rm -f *.o incFTC.f
@@ -49,12 +50,18 @@ crisg4_oct16:
 	mv a.out ../bin/crisg4_oct16
 
 # CrIS  (high res) basic coef set[1-7] and wcon.
-crisg4_basic_mar18:
+crisg4_mar18:
 	rm -f *.o incFTC.f
-	ln -s incFTC_crisHRg4_mar18_basic.f incFTC.f
+	ln -s incFTC_crisHRg4_mar18_basic_optr_co2_so2_nte.f incFTC.f
 	make -f make_sarta
-	mv a.out ../bin/crisg4_basic_mar18
+	mv a.out ../bin/crisg4_mar18_basic_so2
 
+# CrIS (high Res) with var NH3
+crisg4_may18_nh3:
+	rm -f *.o incFTC.f
+	ln -s incFTC_crisHRg4_may18_optr_co2_so2_nh3_nte.f incFTC.f
+	make -f make_sarta_nh3
+	mv a.out ../bin/crisg4_may18_nh3
 
 # IASI
 iasi_may09_wcon_nte:

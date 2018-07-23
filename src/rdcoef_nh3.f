@@ -5,7 +5,7 @@ C    University of Maryland Baltimore Country (UMBC)
 C
 C    AIRS
 C
-C    RDCOEF version for CrIS HR G2 with trace gases CO2.
+C    RDCOEF version for CrIS HR G2 with CO2, SO2, HNO3, NH3.
 C
 !F77====================================================================
 
@@ -20,11 +20,11 @@ C    Read in the AIRS fast transmittance coefficients.
 
 !CALL PROTOCOL
 C    RDCOEF ( IOUN, NCHAN, INDCHN, SETCHN,
-C       NCHN1, NCHN2, NCHN3, NCHN4, NCHN5, NCHN6, NCHN7,
+C       NCHN1,  NCHN2,  NCHN3,  NCHN4,  NCHN5,  NCHN6,  NCHN7,
 C       CLIST1, CLIST2, CLIST3, CLIST4, CLIST5, CLIST6, CLIST7,
-C       COEF1, COEF2, COEF3, COEF4, COEF5, COEF6, COEF7,
-C       FREQ, LABOVE, COEFF, INDCO2, COFCO2, INDSO2, COFSO2,
-C       INDHNO, COFHNO, INDN2O, COFN2O,
+C       COEF1,  COEF2,  COEF3,  COEF4,  COEF5,  COEF6,  COEF7,
+C       FREQ,  LABOVE,  COEFF,  INDCO2, COFCO2, INDSO2, COFSO2,
+C       INDHNO, COFHNO, INDN2O, COFN2O, INDNH3, COFNH3,
 C       INDH2O, WAZOP, WAVGOP, COFH2O, FX, NCHNTE, CLISTN, COEFN )
 
 
@@ -60,6 +60,7 @@ C    REAL arr  COFCO2  CO2 perturbation coefs      various
 C    REAL arr  COFSO2  SO2 perturbation coefs      various
 C    REAL arr  COFHNO  HNO3 perturbation coefs     various
 C    REAL arr  COFN2O  N2O perturbation coefs      various
+C    REAL arr  COFNH3  NH3 perturbation coefs      various
 C    REAL arr  COFH2O  OPTRAN H2O coefs            various
 C    REAL arr  FREQ    channel freqs               cm-1
 C    REAL arr  FX      fixed gases adjustment      none
@@ -67,6 +68,7 @@ C    INT arr   INDCO2  CO2 pert channel indices    none
 C    INT arr   INDSO2  SO2 pert channel indices    none
 C    INT arr   INDHNO  HNO3 pert channel indices   none
 C    INT arr   INDN2O  N2O pert channel indices    none
+C    INT arr   INDNH3  NH3 pert channel indices    none
 C    INT arr   INDH2O  OPTRAN H2O channel indices  none
 C    INT arr   LABOVE  layer above for thermal     none
 C    INTEGER   NCHN1   set1 number of channels     none
@@ -154,6 +156,7 @@ C    28 Jun 2005 Scott Hannon   "trace" version for CO2,SO2,HNO3,N2O
 C    13 Oct 2005 Scott Hannon   Add non-LTE variables
 C    17 Mar 2016 C Hepplewhite  sections ommitted due to absence of
 C    coefficients.
+C    10 May 2018 C Hepplewhite  Add NH3
 
 !END====================================================================
 
@@ -163,7 +166,7 @@ C      =================================================================
      $    CLIST1, CLIST2, CLIST3, CLIST4, CLIST5, CLIST6, CLIST7,
      $     COEF1,  COEF2,  COEF3,  COEF4,  COEF5,  COEF6,  COEF7,
      $      FREQ, LABOVE,  COEFF, INDCO2, COFCO2, INDSO2, COFSO2,
-     $    INDHNO, COFHNO, INDN2O, COFN2O,
+     $    INDHNO, COFHNO, INDN2O, COFN2O, INDNH3, COFNH3,
      $    INDH2O,  WAZOP, WAVGOP, COFH2O, FX, NCHNTE, CLISTN, COEFN )
 C      =================================================================
 
@@ -228,6 +231,9 @@ C      Output
        REAL COFHNO( NHNO3,MAXLAY,MXCHNH)
        INTEGER INDN2O(MXCHAN)
        REAL COFN2O(  NN2O,MAXLAY,MXCHNN)
+       INTEGER INDNH3(MXCHAN)
+       REAL COFNH3(  NNH3,MAXLAY,MXCHNA)
+       INTEGER NCHNNH3
        INTEGER INDH2O(MXCHAN)
        REAL   WAZOP(MXOWLY)
        REAL  WAVGOP(NOWAVG,MXOWLY)
@@ -271,9 +277,10 @@ C      Initialize "set"-independent index arrays
        DO I=1,MXCHAN
 C         Trace gases
           INDCO2(I)=0
-C          INDSO2(I)=0
-C          INDHNO(I)=0
+          INDSO2(I)=0
+          INDHNO(I)=0
           INDN2O(I)=0
+          INDNH3(I)=0
 C         OPTRAN water
           INDH2O(I)=0
        ENDDO
@@ -554,7 +561,7 @@ C
 C
        J=1
        DO I=1,MXCHNS
-CC         Read data for this frequency/channel
+C         Read data for this frequency/channel
           READ(IOUN) ICHAN, FRQCHN, ((COFSO2(IC,IL,J),IC=1,NSO2),
      $       IL=1,MAXLAY)
 C
@@ -642,6 +649,48 @@ C         Keep the data if the current channel is on the list
              J=J + 1
           ENDIF
        ENDDO
+
+C      ---------------------------
+C      Read NH3 perturbation coefs
+C      ---------------------------
+       OPEN(UNIT=IOUN,FILE=FNNH3,FORM='UNFORMATTED',STATUS='OLD',
+     $    IOSTAT=IERR)
+       IF (IERR .NE. 0) THEN
+          WRITE(6,1020) IERR, FNNH3
+          STOP
+       ENDIF
+C
+       J=1
+       DO I=1,MXCHNA
+C         Read data for this frequency/channel
+          READ(IOUN) ICHAN, FRQCHN, ((COFNH3(IC,IL,J),IC=1,NNH3),
+     $       IL=1,MAXLAY)
+C
+C         Keep the data if the current channel is on the list
+          IF (INDCHN(ICHAN) .NE. 0) THEN
+             INDNH3(ICHAN)=J
+             J=J + 1
+          ENDIF
+       ENDDO
+       NCHNNH3=J-1
+C
+       CLOSE(IOUN)
+C
+
+C - these lines used as placeholder when no ceofficients are available.
+C       J=1
+C       DO I=1,MXCHNA
+C          DO IC=1,NNH3
+C             DO IL=1,MAXLAY
+C               COFNH3(IC,IL,J) = 0.0
+C             ENDDO
+C          ENDDO
+C         Keep the data if the current channel is on the list
+C          IF (INDCHN(ICHAN) .NE. 0) THEN
+C             INDNH3(ICHAN)=J
+C             J=J + 1
+C          ENDIF
+C       ENDDO
 
 C      ---------------------
 C      Read OPTRAN H2O coefs - placeholder to disable coefficients
@@ -794,14 +843,15 @@ C      ----------------------------
 C      Show summary of channel sets
 C      ----------------------------
 ccc
-C       WRITE(6,1060) 1, NCHN1
-C 1060  FORMAT('Number of channels for set',I1,' = ',I4)
-C       WRITE(6,1060) 2, NCHN2
-C       WRITE(6,1060) 3, NCHN3
-C       WRITE(6,1060) 4, NCHN4
-C       WRITE(6,1060) 5, NCHN5
-C       WRITE(6,1060) 6, NCHN6
-C       WRITE(6,1060) 7, NCHN7
+       WRITE(6,1060) 1, NCHN1
+ 1060  FORMAT('Number of channels for set',I1,' = ',I4)
+       WRITE(6,1060) 2, NCHN2
+       WRITE(6,1060) 3, NCHN3
+       WRITE(6,1060) 4, NCHN4
+       WRITE(6,1060) 5, NCHN5
+       WRITE(6,1060) 6, NCHN6
+       WRITE(6,1060) 7, NCHN7
+       WRITE(6,1060) 11,NCHNNH3
 ccc
 C
        RETURN
