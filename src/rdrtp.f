@@ -6,7 +6,7 @@ C              University of Maryland Baltimore County [UMBC]
 C
 C              AIRS
 C
-C              RDRTP version with trace gases including NH3
+C              RDRTP version with NH3 trace gas
 C
 !F77====================================================================
 
@@ -20,7 +20,7 @@ C    Read a profile from a previously openned RTP file
 
 !CALL PROTOCOL:
 C    RDRTP( LWANT, IPROF, IOPCI,
-C       IH2O, IO3, ICO, ICH4, ICO2, ISO2, IHNO3, IN2O, INH3
+C       IH2O, IO3, ICO, ICH4, ICO2, ISO2, IHNO3, IN2O, INH3,
 C       PTYPE, RALT,LCO2PM,NLAY, NEMIS, LAT, LON, SATANG, SATZEN,
 C       ZSAT, SUNANG, PSURF, TSURF, CO2PPM, FEMIS, EMIS, RHO,
 C       TEMP, WAMNT, OAMNT, CAMNT, MAMNT, FAMNT, SAMNT, HAMNT, NAMNT,
@@ -131,7 +131,7 @@ C 24 Oct 2008 Scott Hannon      Update for RTP v2.01; emis & rho now
 C                                  use the same freq points; set RHO
 C                                  to (1-e)/pi if input < 0
 C
-C 08 Jun 2011 Scott Hannon      Add NH3 (by LLS July 2018)
+C 08 Jun 2011 Scott Hannon      Add NH3
 
 !END====================================================================
 
@@ -181,7 +181,7 @@ C      Input parameters:
        INTEGER IHNO3      ! index of HNO3 in gamnt
        INTEGER IN2O       ! index of N2O in gamnt
        INTEGER INH3       ! index of NH3 in gamnt
-       INTEGER PTYPE            ! profile type code number
+       INTEGER PTYPE      ! profile type code number
        REAL RALT(MAXLAY)  ! ref prof layer average altitudes
        LOGICAL LCO2PM     ! CO2 profile in ppmv?
 
@@ -227,7 +227,7 @@ C-----------------------------------------------------------------------
        INTEGER IHNOX    ! index for reading HNO3 in gamnt
        INTEGER IN2OX    ! index for reading N2O in gamnt
        INTEGER INH3X    ! index for reading NH3 in gamnt
-       INTEGER L                ! layer looping
+       INTEGER L        ! layer looping
        INTEGER LR       ! reversed layer looping
        INTEGER NLEV     ! number of levels
        INTEGER rtpread  ! for calling read rtp interface routine
@@ -260,8 +260,8 @@ C      --------------------
 C      Pull out needed data
 C      --------------------
 C      Latitude & longitude
-       LAT=PROF%plat
-       LON=PROF%plon
+       LAT=PROF.plat
+       LON=PROF.plon
 C
 C      Can not correctly compute gravity if LAT is bad
        IF (ABS(LAT) .GT. 90.01) THEN
@@ -273,7 +273,7 @@ C      Can not correctly compute gravity if LAT is bad
 C      Note: LON is not currently used and thus need not be checked
 C
 C      Number of levels
-       NLEV=PROF%nlevs
+       NLEV=PROF.nlevs
        IF (NLEV .LT. 2 .OR. NLEV .GT. MAXLAY+1) THEN
           WRITE(IOERR,1010) IPROF, NLEV, MAXLAY+1
  1010     FORMAT('ERROR! input profile PROF(',I4,').nlevs=',I4,
@@ -291,7 +291,7 @@ C         Special case for AIRS pseudo-levels
 C
 C      Assign read indices for trace gas CO2
        IF (ICO2 .LT. 1) THEN
-          CO2PPM=PROF%co2ppm
+          CO2PPM=PROF.co2ppm
           IF (CO2PPM .LT. -998) CO2PPM=CO2STD
           RJUNK1=0.8*CO2STD
           RJUNK2=1.2*CO2STD
@@ -332,17 +332,17 @@ C      Assign read indices for trace gas NH3
        ENDIF
 C
 C      Angles
-       SUNANG=PROF%solzen
-       SATANG=PROF%scanang
-       SATZEN=PROF%satzen
+       SUNANG=PROF.solzen
+       SATANG=PROF.scanang
+       SATZEN=PROF.satzen
 C
 C      Satellite altitude above ellipsoid surface (convert m to km)
-       ZSAT=PROF%zobs/1000
+       ZSAT=PROF.zobs/1000
 C
 C      Surface
-       PSURF=PROF%spres
-       TSURF=PROF%stemp
-       ZSURF=PROF%salti  ! note: ZSURF is currently ignored
+       PSURF=PROF.spres
+       TSURF=PROF.stemp
+       ZSURF=PROF.salti  ! note: ZSURF is currently ignored
        IF (PSURF .LE. 0) THEN
           WRITE(IOERR,1017) IPROF
  1017     FORMAT('ERROR! Prof(',I4,') has no surface pressure')
@@ -355,19 +355,19 @@ C      Surface
        ENDIF
 C
 C      Emissivity (range 0 to 1) and Reflectance (range 0 to 1/pi)
-       NEMIS=PROF%nemis
+       NEMIS=PROF.nemis
        IF (NEMIS .EQ. 0) THEN
           WRITE(IOERR,1020) IPROF
  1020     FORMAT('ERROR! PROF(',I4,') has no emissivity')
           STOP
        ENDIF
        DO I=1,NEMIS
-          FEMIS(I)=PROF%efreq(I)
-          EMIS(I)=PROF%emis(I)
-          IF (PROF%rho(I) .LT. 0.0) THEN
+          FEMIS(I)=PROF.efreq(I)
+          EMIS(I)=PROF.emis(I)
+          IF (PROF.rho(I) .LT. 0.0) THEN
              RHO(I)=(1 - EMIS(I))/PI
           ELSE
-             RHO(I)=PROF%rho(I)
+             RHO(I)=PROF.rho(I)
           ENDIF
        ENDDO
 C
@@ -376,78 +376,82 @@ C      Get layer temperature & gas amount
 C      ----------------------------------
        IF (GUCIN .EQ. 1) THEN
 C         Input gas units are molecules/cm^2; convert to kilomoles/cm^2
-          IF (PROF%plevs(1) .LT. PROF%plevs(NLEV)) THEN
+          IF (PROF.plevs(1) .LT. PROF.plevs(NLEV)) THEN
 C            Prof is in top-down order
              DO L=1,NLAY
-                TEMP(L)=PROF%ptemp(L)
-                WAMNT(L)=PROF%gamnt(L,IH2O )/6.02214199E+26
-                OAMNT(L)=PROF%gamnt(L,IO3  )/6.02214199E+26
-                CAMNT(L)=PROF%gamnt(L,ICO  )/6.02214199E+26
-                MAMNT(L)=PROF%gamnt(L,ICH4 )/6.02214199E+26
-                FAMNT(L)=PROF%gamnt(L,ICO2X)/6.02214199E+26
-                SAMNT(L)=PROF%gamnt(L,ISO2X)/6.02214199E+26
-                HAMNT(L)=PROF%gamnt(L,IHNOX)/6.02214199E+26
-                NAMNT(L)=PROF%gamnt(L,IN2OX)/6.02214199E+26
-                ALT(L)=0.5*( PROF%palts(L) + PROF%palts(L+1) )
+                TEMP(L)=PROF.ptemp(L)
+                WAMNT(L)=PROF.gamnt(L,IH2O )/6.02214199E+26
+                OAMNT(L)=PROF.gamnt(L,IO3  )/6.02214199E+26
+                CAMNT(L)=PROF.gamnt(L,ICO  )/6.02214199E+26
+                MAMNT(L)=PROF.gamnt(L,ICH4 )/6.02214199E+26
+                FAMNT(L)=PROF.gamnt(L,ICO2X)/6.02214199E+26
+                SAMNT(L)=PROF.gamnt(L,ISO2X)/6.02214199E+26
+                HAMNT(L)=PROF.gamnt(L,IHNOX)/6.02214199E+26
+                NAMNT(L)=PROF.gamnt(L,IN2OX)/6.02214199E+26
+                AAMNT(L)=PROF.gamnt(L,INH3X)/6.02214199E+26
+                ALT(L)=0.5*( PROF.palts(L) + PROF.palts(L+1) )
              ENDDO
              IF (LCO2PM) THEN
                 DO L=1,NLAY
-                   FAMNT(L)=PROF%gamnt(L,ICO2X)
+                   FAMNT(L)=PROF.gamnt(L,ICO2X)
                 ENDDO
              ENDIF
           ELSE
 C            Prof is in bottom-up order
              DO L=1,NLAY
                 LR=1 + NLAY - L  ! reversed layer index
-                TEMP(L)=PROF%ptemp(LR)
-                WAMNT(L)=PROF%gamnt(LR,IH2O )/6.02214199E+26
-                OAMNT(L)=PROF%gamnt(LR,IO3  )/6.02214199E+26
-                CAMNT(L)=PROF%gamnt(LR,ICO  )/6.02214199E+26
-                MAMNT(L)=PROF%gamnt(LR,ICH4 )/6.02214199E+26
-                FAMNT(L)=PROF%gamnt(LR,ICO2X)/6.02214199E+26
-                SAMNT(L)=PROF%gamnt(LR,ISO2X)/6.02214199E+26
-                HAMNT(L)=PROF%gamnt(LR,IHNOX)/6.02214199E+26
-                NAMNT(L)=PROF%gamnt(LR,IN2OX)/6.02214199E+26
-                ALT(L)=0.5*( PROF%palts(LR) + PROF%palts(LR+1) )
+                TEMP(L)=PROF.ptemp(LR)
+                WAMNT(L)=PROF.gamnt(LR,IH2O )/6.02214199E+26
+                OAMNT(L)=PROF.gamnt(LR,IO3  )/6.02214199E+26
+                CAMNT(L)=PROF.gamnt(LR,ICO  )/6.02214199E+26
+                MAMNT(L)=PROF.gamnt(LR,ICH4 )/6.02214199E+26
+                FAMNT(L)=PROF.gamnt(LR,ICO2X)/6.02214199E+26
+                SAMNT(L)=PROF.gamnt(LR,ISO2X)/6.02214199E+26
+                HAMNT(L)=PROF.gamnt(LR,IHNOX)/6.02214199E+26
+                NAMNT(L)=PROF.gamnt(LR,IN2OX)/6.02214199E+26
+                AAMNT(L)=PROF.gamnt(LR,INH3X)/6.02214199E+26
+                ALT(L)=0.5*( PROF.palts(LR) + PROF.palts(LR+1) )
              ENDDO
              IF (LCO2PM) THEN
                 DO L=1,NLAY
                    LR=1 + NLAY - L  ! reversed layer index
-                   FAMNT(L)=PROF%gamnt(LR,ICO2X)
+                   FAMNT(L)=PROF.gamnt(LR,ICO2X)
                 ENDDO
              ENDIF
           ENDIF
 C
        ELSEIF (GUCIN .EQ. 2) THEN
 C         Input gas units are kilomoles/cm^2
-          IF (PROF%plevs(1) .LT. PROF%plevs(NLEV)) THEN
+          IF (PROF.plevs(1) .LT. PROF.plevs(NLEV)) THEN
 C            Prof is in top-down order
              DO L=1,NLAY
-                TEMP(L)=PROF%ptemp(L)
-                WAMNT(L)=PROF%gamnt(L,IH2O)
-                OAMNT(L)=PROF%gamnt(L,IO3)
-                CAMNT(L)=PROF%gamnt(L,ICO)
-                MAMNT(L)=PROF%gamnt(L,ICH4)
-                FAMNT(L)=PROF%gamnt(L,ICO2X)
-                SAMNT(L)=PROF%gamnt(L,ISO2X)
-                HAMNT(L)=PROF%gamnt(L,IHNOX)
-                NAMNT(L)=PROF%gamnt(L,IN2OX)
-                ALT(L)=0.5*( PROF%palts(L) + PROF%palts(L+1) )
+                TEMP(L)=PROF.ptemp(L)
+                WAMNT(L)=PROF.gamnt(L,IH2O)
+                OAMNT(L)=PROF.gamnt(L,IO3)
+                CAMNT(L)=PROF.gamnt(L,ICO)
+                MAMNT(L)=PROF.gamnt(L,ICH4)
+                FAMNT(L)=PROF.gamnt(L,ICO2X)
+                SAMNT(L)=PROF.gamnt(L,ISO2X)
+                HAMNT(L)=PROF.gamnt(L,IHNOX)
+                NAMNT(L)=PROF.gamnt(L,IN2OX)
+                AAMNT(L)=PROF.gamnt(L,INH3X)
+                ALT(L)=0.5*( PROF.palts(L) + PROF.palts(L+1) )
              ENDDO
           ELSE
 C            Prof is in bottom-up order
              DO L=1,NLAY
                 LR=1 + NLAY - L  ! reversed layer index
-                TEMP(L)=PROF%ptemp(LR)
-                WAMNT(L)=PROF%gamnt(LR,IH2O)
-                OAMNT(L)=PROF%gamnt(LR,IO3)
-                CAMNT(L)=PROF%gamnt(LR,ICO)
-                MAMNT(L)=PROF%gamnt(LR,ICH4)
-                FAMNT(L)=PROF%gamnt(LR,ICO2X)
-                SAMNT(L)=PROF%gamnt(LR,ISO2X)
-                HAMNT(L)=PROF%gamnt(LR,IHNOX)
-                NAMNT(L)=PROF%gamnt(LR,IN2OX)
-                ALT(L)=0.5*( PROF%palts(LR) + PROF%palts(LR+1) )
+                TEMP(L)=PROF.ptemp(LR)
+                WAMNT(L)=PROF.gamnt(LR,IH2O)
+                OAMNT(L)=PROF.gamnt(LR,IO3)
+                CAMNT(L)=PROF.gamnt(LR,ICO)
+                MAMNT(L)=PROF.gamnt(LR,ICH4)
+                FAMNT(L)=PROF.gamnt(LR,ICO2X)
+                SAMNT(L)=PROF.gamnt(LR,ISO2X)
+                HAMNT(L)=PROF.gamnt(LR,IHNOX)
+                NAMNT(L)=PROF.gamnt(LR,IN2OX)
+                AAMNT(L)=PROF.gamnt(LR,INH3X)
+                ALT(L)=0.5*( PROF.palts(LR) + PROF.palts(LR+1) )
              ENDDO
           ENDIF
        ELSE ! empty else
@@ -457,7 +461,7 @@ C
 C      -----------------
 C      Default altitudes
 C      -----------------
-       IF (PROF%palts(1) .LT. -998 .OR. PTYPE .EQ. AIRSLAY) THEN
+       IF (PROF.palts(1) .LT. -998 .OR. PTYPE .EQ. AIRSLAY) THEN
 C         No altitudes, use reference
           DO L=1,NLAY
              ALT(L)=RALT(L)

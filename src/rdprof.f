@@ -46,7 +46,7 @@ C    CHAR*40   PNAM    profile name/comment        none
 C    REAL arr  SAMNT   SO2 amount                  k.mol/cm2
 C    REAL arr  TEMP    temperature                 K
 C    REAL arr  WAMNT   water amount                k.mol/cm2
-
+C    REAL arr  AAMNT   ammonia (NH3) amount        k.mol/cm2
 
 !INPUT/OUTPUT PARAMETERS:
 C    none

@@ -60,6 +60,7 @@ C    REAL arr  COFCO2  CO2 perturbation coefs      various
 C    REAL arr  COFSO2  SO2 perturbation coefs      various
 C    REAL arr  COFHNO  HNO3 perturbation coefs     various
 C    REAL arr  COFN2O  N2O perturbation coefs      various
+C    REAL arr  COFNH3  NH3 perturbation coefs      various
 C    REAL arr  COFH2O  OPTRAN H2O coefs            various
 C    REAL arr  FREQ    channel freqs               cm-1
 C    REAL arr  FX      fixed gases adjustment      none
@@ -67,6 +68,7 @@ C    INT arr   INDCO2  CO2 pert channel indices    none
 C    INT arr   INDSO2  SO2 pert channel indices    none
 C    INT arr   INDHNO  HNO3 pert channel indices   none
 C    INT arr   INDN2O  N2O pert channel indices    none
+C    INT arr   INDNH3  NH3 pert channel indices    none
 C    INT arr   INDH2O  OPTRAN H2O channel indices  none
 C    INT arr   LABOVE  layer above for thermal     none
 C    INTEGER   NCHN1   set1 number of channels     none
@@ -163,7 +165,7 @@ C      =================================================================
      $    CLIST1, CLIST2, CLIST3, CLIST4, CLIST5, CLIST6, CLIST7,
      $     COEF1,  COEF2,  COEF3,  COEF4,  COEF5,  COEF6,  COEF7,
      $      FREQ, LABOVE,  COEFF, INDCO2, COFCO2, INDSO2, COFSO2,
-     $    INDHNO, COFHNO, INDN2O, COFN2O,
+     $    INDHNO, COFHNO, INDN2O, COFN2O, INDNH3, COFNH3,
      $    INDH2O,  WAZOP, WAVGOP, COFH2O, FX, NCHNTE, CLISTN, COEFN )
 C      =================================================================
 
@@ -276,6 +278,7 @@ C         Trace gases
           INDSO2(I)=0
           INDHNO(I)=0
           INDN2O(I)=0
+          INDNH3(I)=0
 C         OPTRAN water
           INDH2O(I)=0
        ENDDO
