@@ -285,6 +285,7 @@ C         OPTRAN water
           INDH2O(I)=0
        ENDDO
 C
+C       write(6,*) 'rdcoef_nh3: started OK'
 C      ----------
 C      Read set 1
 C      ----------
@@ -649,6 +650,7 @@ C         Keep the data if the current channel is on the list
              J=J + 1
           ENDIF
        ENDDO
+C       write(6,*) 'rdcoef_nh3: read N2O coeffs'
 
 C      ---------------------------
 C      Read NH3 perturbation coefs
@@ -828,7 +830,7 @@ C             COEFN(IC,I)=0.0
 C          ENDDO
 C       ENDDO
 C      ---------------------------------------------
-
+       write(6,*) 'rdcoef_nh3: read all coefficients'
 C      ---------------------------------------------
 C      Make sure all channels on the list were found
 C      ---------------------------------------------

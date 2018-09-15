@@ -406,7 +406,7 @@ C      For variable NH3
 C      ----------------
        INTEGER MXCHNA ! max # of channels with NH3 pert coefs (391)
        INTEGER   NNH3 ! number of NH3 coefficients
-       PARAMETER(MXCHNA = 563)
+       PARAMETER(MXCHNA = 920)
        PARAMETER(  NNH3 = 4)
 C       PARAMETER(MXCHNA = 1)      ! Placeholder when not using this set
 C       PARAMETER(  NNH3 = 1)      ! Placeholder when not using this set
