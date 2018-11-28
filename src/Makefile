@@ -33,6 +33,12 @@ apr08_m140_pge_v6_tunmlt:
 	sed 's/XCSNAMEX/m140/g' incFTC_airs_apr08_template_m130_m140_m150_pge_v6_tunmlt.f > incFTC.f
 	make -f make_sarta
 	mv a.out ../bin/apr08_m140_pge_v6_tunmlt
+# AIRS L1C
+airs_l1c_basic:
+	rm -f *.o incFTC.f
+	ln -s incFTC_airs_l1c_sep18_basic.f  incFTC.f
+	make -f make_sarta
+	mv a.out ../bin/airs_l1c_sep18_basic_optr
 
 # CrIS standard resolution
 crisg4_nov09_wcon_nte:
