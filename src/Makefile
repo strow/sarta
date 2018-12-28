@@ -64,6 +64,12 @@ crisg4_may18_nh3:
 	mv a.out ../bin/crisg4_may18_nh3
 
 # IASI
+iasi_dec2018_basic:
+	rm -f *.o incFTC.f
+	ln -s incFTC_iasi_dec2018_basic.f incFTC.f
+	make -f make_sarta
+	mv a.out ../bin/iasi_dec2018_basic
+
 iasi_may09_wcon_nte:
 	rm -f *.o incFTC.f
 	ln -s incFTC_iasi_may09_wcon_nte.f incFTC.f

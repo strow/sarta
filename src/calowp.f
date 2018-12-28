@@ -208,12 +208,15 @@ C         Temperature above sum
 C
        ENDDO
 C
+       print*,'calowp: completed raw predictors'
 C      --------------------------------------------------
 C      Find the max OPTRAN level that is less than WAZ(1)
 C      --------------------------------------------------
        LOPMIN=1
+       WRITE(6,'(A, F6.1)') 'calowp: WAZ(1) = ',WAZ(1)
  30    IF (WAZOP(LOPMIN+1) .LT. WAZ(1)) THEN
           LOPMIN=LOPMIN + 1
+C          write(6,'(A, I6)') 'calowp: LOPMIN = ', LOPMIN
           GOTO 30
        ENDIF
 C
@@ -222,6 +225,7 @@ C      Initialize the upper and lower (pressure) layer index
        LU=2
        LAST=.FALSE.
 C
+       print*,'calowp: completed find max optran level'
 C      ----------------------------------------
 C      Loop over the OPTRAN layers (while loop)
 C      ----------------------------------------
