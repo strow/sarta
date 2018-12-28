@@ -206,6 +206,7 @@ C         Temperature above sum
           WTZSUM=WAANG(L)*T(L) + WTZSUM
           TZ(L)=WTZSUM/WAZSUM
 C
+c          write(6,'(A,I3,X,E11.4,X,E11.4)') 'calowp:WAZ(L),WAZSUM : ',L,WAZ(L),WAZSUM
        ENDDO
 C
        print*,'calowp: completed raw predictors'
@@ -213,10 +214,10 @@ C      --------------------------------------------------
 C      Find the max OPTRAN level that is less than WAZ(1)
 C      --------------------------------------------------
        LOPMIN=1
-       WRITE(6,'(A, F6.1)') 'calowp: WAZ(1) = ',WAZ(1)
+       WRITE(6,'(A, E11.4)') 'calowp: WAZ(1) = ',WAZ(1)
  30    IF (WAZOP(LOPMIN+1) .LT. WAZ(1)) THEN
           LOPMIN=LOPMIN + 1
-C          write(6,'(A, I6)') 'calowp: LOPMIN = ', LOPMIN
+          write(6,'(A, I6,X,E11.4)') 'calowp: LOPMIN, WAZOP(LOPMIN) = ', LOPMIN,WAZOP(LOPMIN)
           GOTO 30
        ENDIF
 C

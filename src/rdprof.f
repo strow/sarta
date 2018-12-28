@@ -232,6 +232,7 @@ C         fixed, H2O, O3, CO, and CH4 amounts
           READ(IOUN,*) IJUNK, ALT(L), DZ(L), PRES(L), TEMP(L),
      $       FAMNT(L), WAMNT(L), OAMNT(L), CAMNT(L), MAMNT(L),
      $       SAMNT(L), HAMNT(L), NAMNT(L)
+c          write(6,'(A,I6,X,E11.3)') 'rdprof: WAMNT(L)',L,WAMNT(L)
        ENDDO
 C
 C      ----------------------

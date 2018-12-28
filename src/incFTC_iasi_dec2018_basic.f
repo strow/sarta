@@ -490,7 +490,7 @@ C
        PARAMETER(FNFX  =
      $ '/home/chepplew/data/sarta/prod_2019/iasi/dec2018/dbase/Coef/fx.txt')
        PARAMETER(FNPREF=
-     $ '/home/chepplew/data/sarta/prod_2019/iasi/dec2018/dbase/Coef/profref_trace385')
+     $ '/home/chepplew/data/sarta/prod_2019/iasi/dec2018/dbase/Coef/refprof_nh3')
        PARAMETER(FNSUN =
      $ '/home/chepplew/data/sarta/prod_2019/iasi/dec2018/dbase/Solar/solardata.txt')
 
