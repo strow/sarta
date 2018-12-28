@@ -271,8 +271,8 @@ C      Initialize "set"-independent index arrays
        DO I=1,MXCHAN
 C         Trace gases
           INDCO2(I)=0
-C          INDSO2(I)=0
-C          INDHNO(I)=0
+          INDSO2(I)=0
+          INDHNO(I)=0
           INDN2O(I)=0
 C         OPTRAN water
           INDH2O(I)=0

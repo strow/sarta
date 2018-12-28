@@ -367,9 +367,9 @@ C      Used in part by modules: 12, 11, 10, 9, 7, 6, 5, 2b, 1b, 2a
        INTEGER MXCHNC ! max # of channels with CO2 pert coefs (2863)
        INTEGER NCO2   ! number of CO2 pert predictors/coefs (5)
        PARAMETER(MXCHNC = 1)        ! placeholder when not using this set
-       PARAMETER( NCO2 = 1)         ! placeholder when not using this set
+C       PARAMETER( NCO2 = 1)         ! placeholder when not using this set
 c       PARAMETER(MXCHNC = 2863)
-c       PARAMETER(  NCO2 = 5)
+       PARAMETER(  NCO2 = 5)
 C
 C
 C      ----------------
@@ -378,9 +378,9 @@ C      ----------------
        INTEGER MXCHNS ! max # of channels with SO2 pert coefs (1419)
        INTEGER   NSO2 ! number of SO2 coefficients (4)
        PARAMETER(MXCHNS = 1)        ! placeholder when not using this set
-       PARAMETER( NSO2 = 1)         ! placeholder when not using this set
+C       PARAMETER( NSO2 = 1)         ! placeholder when not using this set
 c       PARAMETER(MXCHNS = 1419)
-c       PARAMETER(  NSO2 = 4)
+       PARAMETER(  NSO2 = 4)
 C
 C
 C      -----------------
@@ -389,9 +389,9 @@ C      -----------------
        INTEGER MXCHNH ! max # of channels with HNO3 pert coefs (921)
        INTEGER  NHNO3 ! number of HNO3 coefficients (4)
        PARAMETER(MXCHNH = 1)        ! placeholder when not using this set
-       PARAMETER( NHNO3 = 1)         ! placeholder when not using this set
+C       PARAMETER( NHNO3 = 1)         ! placeholder when not using this set
 c       PARAMETER(MXCHNH = 921)
-c       PARAMETER( NHNO3 = 4)
+       PARAMETER( NHNO3 = 4)
 C
 C
 C      -----------------
@@ -400,9 +400,9 @@ C      -----------------
        INTEGER MXCHNN ! max # of channels with N2O pert coefs (2075)
        INTEGER   NN2O ! number of N2O coefficients (7)
        PARAMETER(MXCHNN = 1)        ! placeholder when not using this set
-       PARAMETER( NN2O = 1)         ! placeholder when not using this set
+C       PARAMETER( NN2O = 1)         ! placeholder when not using this set
 c       PARAMETER(MXCHNN = 2075)
-c       PARAMETER(  NN2O = 7)
+       PARAMETER(  NN2O = 7)
 C
 C
 C      ----------------------
@@ -414,8 +414,8 @@ C      Used in part by modules:
        INTEGER NOWAVG ! # of OPTRAN water average profile values (4)
        INTEGER NH2O   ! number of OPTRAN H2O predictors/coefs (9)
        PARAMETER(MXCHNW = 1)        ! placeholder when not using this set
-       PARAMETER( NH2O = 1)         ! placeholder when not using this set
-c       PARAMETER(  NH2O = 9)
+C       PARAMETER( NH2O = 1)         ! placeholder when not using this set
+       PARAMETER(  NH2O = 9)
 c       PARAMETER(MXCHNW = 2559)
        PARAMETER(MXOWLY = 300)
        PARAMETER(NOWAVG = 4)
@@ -428,9 +428,9 @@ C      -----------
        INTEGER NTEBOT ! bottom layer for CO2TOP calc
        REAL CO2NTE ! ref CO2 mixing ratio for non-LTE coefs (ppmv)
 c       PARAMETER(MXCNTE = 687)
-c       PARAMETER(NNCOEF = 7)
+       PARAMETER(NNCOEF = 7)
        PARAMETER(MXCNTE = 1)         ! placeholder when not used
-       PARAMETER(NNCOEF = 1)         ! placeholder when not used
+C       PARAMETER(NNCOEF = 1)         ! placeholder when not used
        PARAMETER(NTEBOT = 10)
        PARAMETER(CO2NTE = 370.0)
 C
