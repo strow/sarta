@@ -413,10 +413,10 @@ C      Used in part by modules:
        INTEGER MXOWLY ! number of OPTRAN water layers (300)
        INTEGER NOWAVG ! # of OPTRAN water average profile values (4)
        INTEGER NH2O   ! number of OPTRAN H2O predictors/coefs (9)
-       PARAMETER(MXCHNW = 1)        ! placeholder when not using this set
+C       PARAMETER(MXCHNW = 1)        ! placeholder when not using this set
 C       PARAMETER( NH2O = 1)         ! placeholder when not using this set
        PARAMETER(  NH2O = 9)
-c       PARAMETER(MXCHNW = 2559)
+       PARAMETER(MXCHNW = 2211)
        PARAMETER(MXOWLY = 300)
        PARAMETER(NOWAVG = 4)
 C

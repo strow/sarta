@@ -63,12 +63,19 @@ crisg4_may18_nh3:
 	make -f make_sarta_nh3
 	mv a.out ../bin/crisg4_may18_nh3
 
-# IASI
+# IASI basic 7-set w/continuum
 iasi_dec2018_basic:
 	rm -f *.o incFTC.f
 	ln -s incFTC_iasi_dec2018_basic.f incFTC.f
 	make -f make_sarta
 	mv a.out ../bin/iasi_dec2018_basic
+
+# IASI basic 7-set w/cont w/optran
+iasi_dec2018_basic_optr:
+	rm -f *.o incFTC.f
+	ln -s incFTC_iasi_dec2018_basic.f incFTC.f
+	make -f make_sarta_basic_optr
+	mv a.out ../bin/iasi_dec2018_basic_optr
 
 iasi_may09_wcon_nte:
 	rm -f *.o incFTC.f
