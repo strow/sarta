@@ -31,6 +31,12 @@ crisg4_oct16:
 	make -f make_sarta
 	mv a.out ../bin/crisg4_oct16
 
+cris_hr_basic_optr_co2_n2o:
+	rm -f *.o incFTC.f
+	ln -s incFTC_cris_hrg4_basic_optr_co2_n2o.f incFTC.f
+	make -f make_sarta
+	mv a.out ../bin/cris_hr_basic_optr_co2_n2o
+
 # IASI
 iasi_may09_wcon_nte:
 	rm -f *.o incFTC.f

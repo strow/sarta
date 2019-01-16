@@ -14,7 +14,8 @@
 #       tunmlt.o  calnte.o  sarta.o
 
 # TEMPORARY, correct OBJS below for AIRS, IASI, cris_nov09
-OBJS = rdcoef.o  rdprof.o  vaconv.o  calpar.o  qikexp.o  setems.o  getbot.o \
+OBJS = rdcoef_basic_optr_co2_n2o.o  rdprof.o  vaconv.o  calpar.o  qikexp.o \
+        setems.o  getbot.o \
         calt1.o   calt2.o   calt3.o   calt4.o   calt5.o   calt6.o   calt7.o \
         faketz.o  sunpar.o  calrad.o  rdsun.o   saconv.o  calowp.o  calokw.o \
         util.o    opnrtp.o  rdrtp.o   wrtrtp.o  mean_t.o  rdinfo.o  cbplev.o \
@@ -48,7 +49,7 @@ RTPINC = -I/asl/code/rtp/include
 # -us : puts trailing underscore
 F77 = ifort
 FLIB = 
-OPT = -O -convert big_endian -extend-source 132
+OPT = -O2 -convert big_endian -extend-source 132 -g -traceback
 
 # Portland Group F77:
 # ------------------------------------------------------------------------

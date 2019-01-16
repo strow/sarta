@@ -260,7 +260,7 @@ C                    EXECUTABLE CODE
 C***********************************************************************
 C***********************************************************************
 C
-
+      write(6,*) 'tunmlt: entered executable code'
 C      -------------------------------
 C      Open the tuning multiplier file
 C      -------------------------------
@@ -317,8 +317,8 @@ C
  910   CLOSE(IOUN)
 
 ccc
-c       write(6,*) 'usemlt(fixed,H2Oline,H2Ocon,O3,CO,CH4,NTE)=',
-c     $    (USEMLT(J),J=1,7)
+       write(6,*) 'usemlt(fixed,H2Oline,H2Ocon,O3,CO,CH4,NTE)=',
+     $    (USEMLT(J),J=1,7)
 ccc
 
 C      ------------
@@ -397,6 +397,7 @@ C         Set 7
           ENDDO
 
        ENDIF ! end of Fixed
+       write(6,*) 'tunmlt: end of fixed'
 C
 C      ---------------
 C      Adjust H2O line
@@ -563,7 +564,7 @@ C         Set 7
           ENDDO
 
        ENDIF ! end of H2O con
-
+       write(6,*) 'tunmlt: end of h2o con'
 C      ------------
 C      Adjust ozone
 C      ------------
@@ -629,7 +630,7 @@ C         Set 7
           ENDDO
 
        ENDIF ! end of O3
-
+       write(6,*) 'tunmlt: end of O3'
 
 C      ---------
 C      Adjust CO
@@ -645,7 +646,7 @@ C         Set 4
              ENDDO
           ENDDO
        ENDIF
-
+       write(6,*) 'tunmlt: end of CO'
 
 C      --------------
 C      Adjust methane
@@ -661,24 +662,24 @@ C         Set 3
              ENDDO
           ENDDO
        ENDIF
-
+       write(6,*) 'tunmlt: end of ch4'
 
 C      --------------
 C      Adjust non-LTE
 C      --------------
-       IF (USEMLT(7)) THEN
+C       IF (USEMLT(7)) THEN
 c wrong          NJUNK=MIN0(NCHNTE,6)
 c wrong          DO I=1,NJUNK ! do not adjust 7th coef
-          NJUNK=MIN0(NNCOEF,6)
-          DO I=1,NCHNTE
-             ICHAN=CLISTN(I)
+C          NJUNK=MIN0(NNCOEF,6)
+C          DO I=1,NCHNTE
+C             ICHAN=CLISTN(I)
 c wrong            DO J=1,NNCOEF
-             DO J=1,NJUNK
-                COEFN(J,I)=XMULTS(7,ICHAN)*COEFN(J,I)
-             ENDDO
-          ENDDO
-       ENDIF
-
+C             DO J=1,NJUNK
+C                COEFN(J,I)=XMULTS(7,ICHAN)*COEFN(J,I)
+C             ENDDO
+C          ENDDO
+C       ENDIF
+       write(6,*) 'tunmlt: end of nonLTE'
 ccc
 cC      ---------------
 cC      Adjust CO2 pert
