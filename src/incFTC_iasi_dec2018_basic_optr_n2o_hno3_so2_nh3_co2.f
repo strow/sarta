@@ -101,7 +101,8 @@ C 14 May 2008 Scott Hannon   Updated for v1.08; add CO2NTE and NTEBOT
 C                            and increase NNCOEF from 6 to 7
 C 12 May 2009 Scott Hannon   Add VTUNNG string; delete VCLOUD
 C 19 Dec 2018 C Hepplewhite  new version for IASI
-
+C 21 Jan 2019 C Hepplewhite  Added NH3
+C
 !END====================================================================
 C
 C-----------------------------------------------------------------------
@@ -366,9 +367,9 @@ C      ----------------
 C      Used in part by modules: 12, 11, 10, 9, 7, 6, 5, 2b, 1b, 2a
        INTEGER MXCHNC ! max # of channels with CO2 pert coefs (2863)
        INTEGER NCO2   ! number of CO2 pert predictors/coefs (5)
-       PARAMETER(MXCHNC = 1)        ! placeholder when not using this set
+C       PARAMETER(MXCHNC = 1)        ! placeholder when not using this set
 C       PARAMETER( NCO2 = 1)         ! placeholder when not using this set
-c       PARAMETER(MXCHNC = 2863)
+       PARAMETER(MXCHNC = 3827)
        PARAMETER(  NCO2 = 5)
 C
 C
@@ -377,9 +378,9 @@ C      For variable SO2
 C      ----------------
        INTEGER MXCHNS ! max # of channels with SO2 pert coefs (1419)
        INTEGER   NSO2 ! number of SO2 coefficients (4)
-       PARAMETER(MXCHNS = 1)        ! placeholder when not using this set
+C       PARAMETER(MXCHNS = 1)        ! placeholder when not using this set
 C       PARAMETER( NSO2 = 1)         ! placeholder when not using this set
-c       PARAMETER(MXCHNS = 1419)
+       PARAMETER(MXCHNS = 1419)
        PARAMETER(  NSO2 = 4)
 C
 C
@@ -388,9 +389,9 @@ C      For variable HNO3
 C      -----------------
        INTEGER MXCHNH ! max # of channels with HNO3 pert coefs (921)
        INTEGER  NHNO3 ! number of HNO3 coefficients (4)
-       PARAMETER(MXCHNH = 1)        ! placeholder when not using this set
+C       PARAMETER(MXCHNH = 1)        ! placeholder when not using this set
 C       PARAMETER( NHNO3 = 1)         ! placeholder when not using this set
-c       PARAMETER(MXCHNH = 921)
+       PARAMETER(MXCHNH = 921)
        PARAMETER( NHNO3 = 4)
 C
 C
@@ -399,10 +400,20 @@ C      For variable N2O
 C      -----------------
        INTEGER MXCHNN ! max # of channels with N2O pert coefs (2075)
        INTEGER   NN2O ! number of N2O coefficients (7)
-       PARAMETER(MXCHNN = 1)        ! placeholder when not using this set
+C       PARAMETER(MXCHNN = 1)        ! placeholder when not using this set
 C       PARAMETER( NN2O = 1)         ! placeholder when not using this set
-c       PARAMETER(MXCHNN = 2075)
+       PARAMETER(MXCHNN = 2075)
        PARAMETER(  NN2O = 7)
+C
+C      -----------------
+C      For variable NH3
+C      -----------------
+       INTEGER MXCHNA ! max # of channels with NH3 pert coefs (2075)
+       INTEGER   NNH3 ! number of N2O coefficients (4)
+C       PARAMETER(MXCHNA = 1)        ! placeholder when not using this set
+C       PARAMETER( NNH3 = 1)         ! placeholder when not using this set
+       PARAMETER(MXCHNA = 3342)
+       PARAMETER(  NNH3 = 4)
 C
 C
 C      ----------------------
@@ -448,6 +459,7 @@ C      ---------
        CHARACTER*80 FNSO2  ! coef SO2
        CHARACTER*80 FNHNO3 ! coef HNO3
        CHARACTER*80 FNN2O  ! coef N2O
+       CHARACTER*80 FNNH3  ! coef NH3
        CHARACTER*80 FNOPTR ! coef optran
        CHARACTER*80 FNTHER ! coef therm
        CHARACTER*80 FNFX   ! coef fx
@@ -482,6 +494,9 @@ C
      $ '/home/chepplew/data/sarta/prod_2019/iasi/dec2018/dbase/Coef/hno3.dat')
        PARAMETER(FNN2O =
      $ '/home/chepplew/data/sarta/prod_2019/iasi/dec2018/dbase/Coef/n2o.dat')
+       PARAMETER(FNNH3 =
+     $ '/home/chepplew/data/sarta/prod_2019/iasi/dec2018/dbase/Coef/nh3.dat')
+
 C
        PARAMETER(FNTHER=
      $ '/home/chepplew/data/sarta/prod_2019/iasi/dec2018/dbase/Coef/therm.dat')

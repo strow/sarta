@@ -399,9 +399,9 @@ C      For variable N2O
 C      -----------------
        INTEGER MXCHNN ! max # of channels with N2O pert coefs (2075)
        INTEGER   NN2O ! number of N2O coefficients (7)
-       PARAMETER(MXCHNN = 1)        ! placeholder when not using this set
+C       PARAMETER(MXCHNN = 1)        ! placeholder when not using this set
 C       PARAMETER( NN2O = 1)         ! placeholder when not using this set
-c       PARAMETER(MXCHNN = 2075)
+       PARAMETER(MXCHNN = 2075)
        PARAMETER(  NN2O = 7)
 C
 C

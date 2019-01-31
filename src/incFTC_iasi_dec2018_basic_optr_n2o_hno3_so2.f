@@ -377,9 +377,9 @@ C      For variable SO2
 C      ----------------
        INTEGER MXCHNS ! max # of channels with SO2 pert coefs (1419)
        INTEGER   NSO2 ! number of SO2 coefficients (4)
-       PARAMETER(MXCHNS = 1)        ! placeholder when not using this set
+C       PARAMETER(MXCHNS = 1)        ! placeholder when not using this set
 C       PARAMETER( NSO2 = 1)         ! placeholder when not using this set
-c       PARAMETER(MXCHNS = 1419)
+       PARAMETER(MXCHNS = 1419)
        PARAMETER(  NSO2 = 4)
 C
 C
@@ -388,9 +388,9 @@ C      For variable HNO3
 C      -----------------
        INTEGER MXCHNH ! max # of channels with HNO3 pert coefs (921)
        INTEGER  NHNO3 ! number of HNO3 coefficients (4)
-       PARAMETER(MXCHNH = 1)        ! placeholder when not using this set
+C       PARAMETER(MXCHNH = 1)        ! placeholder when not using this set
 C       PARAMETER( NHNO3 = 1)         ! placeholder when not using this set
-c       PARAMETER(MXCHNH = 921)
+       PARAMETER(MXCHNH = 921)
        PARAMETER( NHNO3 = 4)
 C
 C
@@ -399,9 +399,9 @@ C      For variable N2O
 C      -----------------
        INTEGER MXCHNN ! max # of channels with N2O pert coefs (2075)
        INTEGER   NN2O ! number of N2O coefficients (7)
-       PARAMETER(MXCHNN = 1)        ! placeholder when not using this set
+C       PARAMETER(MXCHNN = 1)        ! placeholder when not using this set
 C       PARAMETER( NN2O = 1)         ! placeholder when not using this set
-c       PARAMETER(MXCHNN = 2075)
+       PARAMETER(MXCHNN = 2075)
        PARAMETER(  NN2O = 7)
 C
 C

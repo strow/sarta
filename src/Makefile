@@ -70,12 +70,12 @@ iasi_dec2018_basic:
 	make -f make_sarta
 	mv a.out ../bin/iasi_dec2018_basic
 
-# IASI basic 7-set w/cont w/optran
-iasi_dec2018_basic_optr:
+# IASI basic 7-set w/cont w/optran w/n2o etc
+iasi_dec2018_basic_optr_n2o_hno3_so2_nh3_co2:
 	rm -f *.o incFTC.f
-	ln -s incFTC_iasi_dec2018_basic.f incFTC.f
-	make -f make_sarta_basic_optr
-	mv a.out ../bin/iasi_dec2018_basic_optr
+	ln -s incFTC_iasi_dec2018_basic_optr_n2o_hno3_so2_nh3_co2.f incFTC.f
+	make -f make_sarta_basic_optr_n2o_hno3_so2_nh3_co2
+	mv a.out ../bin/iasi_dec2018_basic_optr_n2o_hno3_so2_nh3_co2
 
 iasi_may09_wcon_nte:
 	rm -f *.o incFTC.f
