@@ -217,7 +217,7 @@ C      --------------------------------------------------
        WRITE(6,'(A, E11.4)') 'calowp: WAZ(1) = ',WAZ(1)
  30    IF (WAZOP(LOPMIN+1) .LT. WAZ(1)) THEN
           LOPMIN=LOPMIN + 1
-          write(6,'(A, I6,X,E11.4)') 'calowp: LOPMIN, WAZOP(LOPMIN) = ', LOPMIN,WAZOP(LOPMIN)
+C          write(6,'(A, I6,X,E11.4)') 'calowp: LOPMIN, WAZOP(LOPMIN) = ', LOPMIN,WAZOP(LOPMIN)
           GOTO 30
        ENDIF
 C

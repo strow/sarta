@@ -969,9 +969,9 @@ C            Ignore changes in HNO3 less than ~1%
 C
           IF (LHDO) THEN
 C            HDO mult=1 when prof amount = 1 * ref amount (
-             HDOMLT(L)=3.0101E-4*( PWAMNT(L) - RWAMNT(L) )/RWAMNT(L)
+             HDOMLT(L)=1.0101E-0*( PWAMNT(L) - RWAMNT(L) )/RWAMNT(L)
 C            Ignore changes in HDO of less than ~1%
-C             IF (ABS(HDOMLT(L)) .LT. 1E-5) HDOMLT(L)=0.0
+             IF (ABS(HDOMLT(L)) .LT. 1E-5) HDOMLT(L)=0.0
           ELSE
              HDOMLT(L)=0.0
           ENDIF
@@ -981,7 +981,7 @@ c      N2OMLT(L)=0.0
 c      SO2MLT(L)=0.0
 c      NH3MLT(L)=0.0
 c      HNOMLT(L)=0.0
-C      HDOMLT(L)=0.0
+c      HDOMLT(L)=0.0
 ccc
 C
        ENDDO

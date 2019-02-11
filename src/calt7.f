@@ -5,7 +5,8 @@ C    University of Maryland Baltimore County [UMBC]
 C
 C    AIRS
 C
-C    CALT7 (set7=FWO sun mfbw) version for trace gases (no SO2 or HNO3)
+C    CALT7 (set7=FWO sun mfbw) version for trace gases (CO2, N2O, HDO)
+C    (no SO2 or HNO3 or NH3)
 C
 !F77====================================================================
 
@@ -47,6 +48,9 @@ C    REAL arr  CO2MLT  CO2 pert multiplier         none
 C    INT arr   INDN2O  N2O pert chan indices       none
 C    REAL arr  COFN2O  N2O pert coefs              various
 C    REAL arr  N2OMLT  N2O pert multiplier         none
+C    INT arr   INDHDO  HDO pert chan indices       none
+C    REAL arr  COFHDO  HDO pert coefs              various
+C    REAL arr  HDOMLT  HDO pert multiplier         none
 C    REAL      XZ      optical depth mult for TAUZ none
 
 
@@ -145,13 +149,15 @@ C  3 Jan 2003 Scott Hannon   Add XZ
 C 12 Oct 2004 Scott Hannon   Change CO2MLT from scaler to vector
 C 28 Jun 2005 Scott Hannon   "trace" version for CO2,N2O
 C 30 Apr 2008 Scott Hannon   Change CO2 from 4 to 5 predictors
+C 1  Feb 2019 C Hepplewhite  Add HDO
 
 !END====================================================================
 
 C      =================================================================
        SUBROUTINE CALT7 ( LTAU, INDCHN, NLAY, BLMULT, NCHN7, CLIST7,
-     $    COEF7, FIXMUL, CONPD7, FPRED7, WPRED7, OPRED7, TRCPRD, INDCO2,
-     $    COFCO2, CO2MLT, INDN2O, COFN2O, N2OMLT, XZ, TAU, TAUZ )
+     $    COEF7,  FIXMUL, CONPD7, FPRED7, WPRED7, OPRED7, TRCPRD, 
+     $    INDCO2, COFCO2, CO2MLT, INDN2O, COFN2O, N2OMLT, 
+     $    INDHDO, COFHDO, HDOMLT, XZ, TAU, TAUZ )
 C      =================================================================
 
 C-----------------------------------------------------------------------
@@ -195,6 +201,9 @@ C      Input
        INTEGER INDN2O(MXCHAN)
        REAL COFN2O(  NN2O,MAXLAY,MXCHNN)
        REAL N2OMLT(MAXLAY)
+       INTEGER INDHDO(MXCHAN)
+       REAL COFHDO(  NHDO,MAXLAY,MXCHND)
+       REAL HDOMLT(MAXLAY)
        REAL     XZ
 C
 C      Output
@@ -209,10 +218,12 @@ C-----------------------------------------------------------------------
        INTEGER   ICO2
        INTEGER   ILAY
        INTEGER   IN2O
+       INTEGER   IHDO
        INTEGER      J
        REAL     DK
        REAL  DKCO2
        REAL  DKN2O
+       REAL  DKHDO
        REAL   KCON
        REAL   KFIX
        REAL   KOZO
@@ -221,6 +232,7 @@ C-----------------------------------------------------------------------
        REAL     KZ
        LOGICAL   LCO2
        LOGICAL   LN2O
+       LOGICAL   LHDO
 C
 C      for function QIKEXP
        REAL QIKEXP
@@ -260,6 +272,14 @@ C         Determine whether or not to do variable CO2
              LN2O=.TRUE.
           ELSE
              LN2O=.FALSE.
+          ENDIF
+C
+C         Determine whether or not to do variable HDO calc
+          IHDO=INDHDO( CLIST7(I) )
+          IF (IHDO .GT. 0) THEN
+             LHDO=.TRUE.
+          ELSE
+             LHDO=.FALSE.
           ENDIF
 C
 C         Initialize the layer-to-space optical depth
@@ -390,13 +410,28 @@ C            ----------------------------
                 DKN2O=0.0
              ENDIF
 C
+C            ----------------------------
+C            Calc change in total optical
+C            depth due to variable HDO
+C            ----------------------------
+             IF (LHDO .AND. HDOMLT(ILAY) .NE. 0) THEN
+                DKHDO=( COFHDO(1,ILAY,IHDO)*TRCPRD(1,ILAY) ) +
+     $                ( COFHDO(2,ILAY,IHDO)*TRCPRD(2,ILAY) ) +
+     $                ( COFHDO(3,ILAY,IHDO)*TRCPRD(3,ILAY) ) +
+     $                ( COFHDO(4,ILAY,IHDO)*TRCPRD(4,ILAY) )
+                DKHDO=DKHDO*HDOMLT(ILAY)
+             ELSE
+                DKHDO=0.0
+             ENDIF
+C
 ccc
 c this block for testing
-c      DKCO2=0.0
-c      DKN2O=0.0
+      DKCO2=0.0
+      DKN2O=0.0
+C      DKHDO=0.0
 ccc
 C            Limit -DK so it can never totally totally cancel KFIX
-             DK = DKCO2 + DKN2O
+             DK = DKCO2 + DKN2O + DKHDO
              IF (-DK .GE. KFIX) THEN
                 DK = -0.999*KFIX
              ENDIF

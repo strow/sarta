@@ -5,7 +5,8 @@ C    University of Maryland Baltimore County [UMBC]
 C
 C    AIRS
 C
-C    CALT4 (for set4 = FCOW) version with trace gases (no SO2 or HNO3)
+C    CALT4 (for set4 = FCOW) version with trace gases 
+C          (no SO2 or HNO3 or NH3 or HDO)
 C
 !F77====================================================================
 
@@ -21,8 +22,9 @@ C    fast transmittance coefficients.
 
 !CALL PROTOCOL:
 C    CALT4( LTAU, INDCHN, NLAY, BLMULT, NCHN4, CLIST4, COEF4,
-C       FIXMUL, CONPD4, FPRED4, CPRED4, OPRED4, WPRED4, TRCPRD, INDCO2,
-C       COFCO2, CO2MLT, INDN2O, COFN2O, N2OMLT, XZ, TAU, TAUZ )
+C       FIXMUL, CONPD4, FPRED4, CPRED4, OPRED4, WPRED4, TRCPRD, 
+C       INDCO2, COFCO2, CO2MLT, INDN2O, COFN2O, N2OMLT, XZ, 
+C       TAU, TAUZ )
 
 
 !INPUT PARAMETERS:
@@ -424,8 +426,8 @@ C            ----------------------------
 C
 ccc
 c this block for testing
-c      DKCO2=0.0
-c      DKN2O=0.0
+      DKCO2=0.0
+      DKN2O=0.0
 ccc
 C            Limit -DK so it can never totally totally cancel KFIX
              DK = DKCO2 + DKN2O

@@ -385,8 +385,8 @@ C            ----------------------------
 C
 ccc
 c this block for testing
-c      DKCO2=0.0
-c      DKN2O=0.0
+      DKCO2=0.0
+      DKN2O=0.0
 ccc
 C            Limit -DK so it can never totally totally cancel KFIX
              DK = DKCO2 + DKN2O
