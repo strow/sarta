@@ -184,6 +184,7 @@ C-----------------------------------------------------------------------
 C      LOCAL VARIABLES
 C-----------------------------------------------------------------------
 C
+C
        INTEGER   IOUN         ! I/O unit number
 C
 C      for RDINFO
@@ -338,6 +339,7 @@ C      for CALPAR
        REAL WPRED5( N5H2O,MAXLAY) ! set5 water predictors
        REAL WPRED6( N6H2O,MAXLAY) ! set6 water predictors
        REAL WPRED7( N7H2O,MAXLAY) ! set7 water predictors
+       REAL  DPRED(  NHDO,MAXLAY) ! HDO perturbation predictors
        REAL OPRED1(  N1O3,MAXLAY) ! set1 ozone predictors
        REAL OPRED2(  N2O3,MAXLAY) ! set2 ozone predictors
        REAL OPRED4(  N4O3,MAXLAY) ! set4 ozone predictors
@@ -467,8 +469,10 @@ C      Get command-line info
 C      ---------------------
        CALL RDINFO(FIN, FOUT, LRHOT, NWANTP, LISTP)
 ccc
-C       print *, 'nwantp=', NWANTP
-C       print *, 'listp=', (LISTP(I),I=1,NWANTP)
+       if (DEBUG) then
+         print *, 'nwantp=', NWANTP
+         print *, 'listp=', (LISTP(I),I=1,NWANTP)
+       endif
 ccc
 C
 C      ---------------------------
@@ -478,7 +482,7 @@ C      ---------------------------
      $    IH2O, IO3, ICO, ICH4, ICO2, ISO2, IHNO3, IN2O, INH3,
      $    IOPCI, HEAD, HATT, PATT, LCO2PM)
 C
-C       print*, 'sarta: completed call opnrtp'
+       if (DEBUG) print*, 'sarta: completed call opnrtp'
 C      ------------------------
 C      Read the coef data files
 C      ------------------------
@@ -491,7 +495,7 @@ C      ------------------------
      $ COFHDO, INDH2O,  WAZOP, WAVGOP, COFH2O, FX, NCHNTE, 
      $ CLISTN, COEFN )
 C
-      write(6,'(A)') 'sarta: completed RDCOEF'
+      if (DEBUG) write(6,'(A)') 'sarta: completed RDCOEF'
 C      Get and apply multipler tuning to coefficients {note: ignores HNO3}
        CALL TUNMLT( IOUN, NCHAN, INDCHN, SETCHN,
      $  NCHN1,  NCHN2,  NCHN3,  NCHN4,  NCHN5,  NCHN6,  NCHN7,
@@ -501,7 +505,7 @@ C      Get and apply multipler tuning to coefficients {note: ignores HNO3}
      $ INDHNO, COFHNO, INDN2O, COFN2O,
      $ INDH2O,  WAZOP, WAVGOP, COFH2O, FX, NCHNTE, CLISTN, COEFN )
 C
-      write(6,'(A)') 'sarta: completed TUNMLT'
+      if (DEBUG) write(6,'(A)') 'sarta: completed TUNMLT'
 C      Calc OPTRAN absorption coefficient scaling factor WAOP
        WAOP(1)=WAZOP(1)
        DO L=2,MXOWLY
@@ -516,7 +520,7 @@ C      --------------------------
 C
        DISTES=1.496E+11  ! distance Earth to Sun
 C
-      write(6,'(A)') 'sarta: completed RDSUN'
+       if (DEBUG) write(6,'(A)') 'sarta: completed RDSUN'
 C      --------------------
 C      Check FREQ and FCHAN
 C      --------------------
@@ -547,7 +551,7 @@ C      ------------------------
        MODE='c'
        ISTAT=rtpopen(FOUT, MODE, HEAD, HATT, PATT, IOPCO)
 ccc
-       print *, 'sarta: rtpopen status = ', ISTAT
+       if (DEBUG) print *, 'sarta: rtpopen status = ', ISTAT
 ccc
 C
 
@@ -607,14 +611,16 @@ C         Skip this profile
           GOTO 10
        ENDIF
 C
-C      write(6,2010) IPROF
-C 2010 FORMAT('sarta RDRTP IPROF: ', I5)
+      if (DEBUG) write(6,2010) IPROF
+ 2010 FORMAT('sarta RDRTP IPROF: ', I5)
 C      -------------------------------------
 C      Determine bottom layer, CO2, & angles
 C      -------------------------------------
        CALL GETBOT(NLAY, PLEV, PSURF, LBOT, BLMULT)
-C       write(6,"('sarta:LBOT ',I7)") LBOT
-C       write(6,'(A)') 'sarta: completed GETBOT'
+       if (DEBUG) then
+         write(6,"('sarta:LBOT ',I7)") LBOT
+         write(6,'(A)') 'sarta: completed GETBOT'
+       endif
 C      Calc the fractional bottom layer air temperature
 ccc
 c       TEMP(LBOT)=TEMP(LBOT-1) + BLMULT*( TEMP(LBOT) - TEMP(LBOT-1) )
@@ -754,7 +760,7 @@ C
 
        ENDIF
 C
-       write(6,'(A)') 'sarta: completed satellite geometry'
+       if (DEBUG) write(6,'(A)') 'sarta: completed satellite geometry'
       
 C      -----------------------------------
 C      Calculate the fast trans predictors
@@ -764,51 +770,51 @@ C
      $    RTEMP,RFAMNT, RWAMNT,ROAMNT,RCAMNT,RMAMNT,RSAMNT,RHAMNT,RNAMNT,
      $    RAAMNT, TEMP,  FAMNT, WAMNT, OAMNT, CAMNT, MAMNT, SAMNT, HAMNT, 
      $     NAMNT, AAMNT, RPRES,SECANG,   LAT,    FX,   RDZ,
-     $   LCO2,LN2O,LSO2,LNH3,LHDO,LHNO3,LCO2PM, CO2PPM,CO2TOP,
-     $   FIXMUL,CONPRD,  FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
+     $   LCO2, LN2O, LSO2,LNH3,LHDO, LHNO3,LCO2PM, CO2PPM,CO2TOP,
+     $   FIXMUL,CONPRD,DPRED,
+     $   FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
      $   WPRED1,WPRED2,WPRED3,WPRED4,WPRED5,WPRED6,WPRED7,
      $   OPRED1,OPRED2,       OPRED4,OPRED5,OPRED6,OPRED7,
      $   MPRED3,CPRED4,TRCPRD,CO2MLT,SO2MLT,HNOMLT,N2OMLT,NH3MLT,HDOMLT )
 C
-       write(6,'(A)') 'sarta: completed CALPAR'
+       if (DEBUG) write(6,'(A)') 'sarta: completed CALPAR'
 C      -----------------------------------
 C      Calculate the OPTRAN H2O predictors
 C      -----------------------------------
        CALL CALOWP ( LBOT, WAMNT, RPRES, TEMP, SECANG, WAZOP, WAVGOP,
      $    WAANG, LOPMIN, LOPMAX, LOPUSE, H2OPRD, LOPLOW, DAOP )
 C
-       write(6,'(A)') 'sarta: completed CALOWP'
-       write(6,'(A,X,I6,X,I6)') 'sarta: LOPLOW(1,LBOT): ', LOPLOW(1),LOPLOW(LBOT)
+       if (DEBUG) write(6,'(A)') 'sarta: completed CALOWP'
+       if (DEBUG) write(6,'(A,X,I6,X,I6)') 'sarta: LOPLOW(1,LBOT): ', LOPLOW(1),LOPLOW(LBOT)
 C      ----------------------------------
 C      Calculate the layer transmittances
 C      ----------------------------------
 C      Calculate TAU for set 1 thru 7
 C
        CALL CALT1( INDCHN,  NLAY,  BLMULT,  NCHN1, CLIST1, COEF1,
-     $     FIXMUL, CONPRD, FPRED1, WPRED1, OPRED1, TRCPRD,
+     $     FIXMUL, CONPRD, FPRED1, WPRED1, DPRED,  OPRED1, TRCPRD,
      $     INDCO2, COFCO2, CO2MLT, INDSO2, COFSO2, SO2MLT,
      $     INDHNO, COFHNO, HNOMLT, INDN2O, COFN2O, N2OMLT,
      $     INDNH3, COFNH3, NH3MLT, INDHDO, COFHDO, HDOMLT,
      $     INDH2O, H2OPRD, COFH2O, LOPMIN, LOPMAX, LOPLOW,
      $     LOPUSE,   WAOP,   DAOP, WAANG,     TAU,   TAUZ)
 C
-C       write(6,'(A)') 'sarta: completed CALT1'
+       if (DEBUG) write(6,'(A)') 'sarta: completed CALT1'
        CALL CALT2( INDCHN, NLAY, BLMULT, NCHN2, CLIST2, COEF2,
-     $    FIXMUL, CONPRD, FPRED2, OPRED2, WPRED2, TRCPRD,
+     $    FIXMUL, CONPRD, FPRED2, OPRED2, WPRED2, DPRED, TRCPRD,
      $    INDCO2, COFCO2, CO2MLT, INDSO2, COFSO2, SO2MLT,
      $    INDHNO, COFHNO, HNOMLT, INDN2O, COFN2O, N2OMLT, 
      $    INDNH3, COFNH3, NH3MLT, INDHDO, COFHDO, HDOMLT,TAU, TAUZ)
 C
-C       print*, 'sarta: completed CALT2'
+       if(DEBUG)  print*, 'sarta: completed CALT2'
        CALL CALT3( INDCHN,   NLAY, BLMULT,  NCHN3, CLIST3,  COEF3,
-     $     FIXMUL, CONPRD, FPRED3, MPRED3, WPRED3, TRCPRD,
+     $     FIXMUL, CONPRD, FPRED3, MPRED3, WPRED3, DPRED,  TRCPRD,
      $     INDSO2, COFSO2, SO2MLT, INDHNO, COFHNO, HNOMLT,
      $     INDN2O, COFN2O, N2OMLT, INDNH3, COFNH3, NH3MLT,
      $     INDHDO, COFHDO, HDOMLT, INDH2O, H2OPRD, COFH2O,
      $     LOPMIN, LOPMAX, LOPLOW, LOPUSE,
      $     WAOP,   DAOP,   WAANG,  TAU,    TAUZ)
 C
-C       print*,'sarta: completed CALT3'
        LTAU=.TRUE.
        XZ=1.0
 C
@@ -823,17 +829,16 @@ C
      $        XZ,    TAU,   TAUZ )
 C
        CALL CALT6(  LTAU, INDCHN,   LBOT, BLMULT,  NCHN6, CLIST6,
-     $     COEF6, FIXMUL, CONPRD, FPRED6, WPRED6, OPRED6, TRCPRD,
-     $    INDCO2, COFCO2, CO2MLT, INDSO2, COFSO2, SO2MLT,
-     $    INDN2O, COFN2O, N2OMLT, INDHDO, COFHDO, HDOMLT,
-     $    XZ,     TAU,    TAUZ )
+     $   COEF6, FIXMUL, CONPRD, FPRED6, WPRED6, OPRED6, DPRED, TRCPRD,
+     $  INDCO2, COFCO2, CO2MLT, INDSO2, COFSO2, SO2MLT,
+     $  INDN2O, COFN2O, N2OMLT, INDHDO, COFHDO, HDOMLT,
+     $  XZ,     TAU,    TAUZ )
 C
        CALL CALT7(  LTAU, INDCHN,   LBOT, BLMULT,  NCHN7, CLIST7,
-     $     COEF7, FIXMUL, CONPRD, FPRED7, WPRED7, OPRED7,
-     $    TRCPRD, INDCO2, COFCO2, CO2MLT, INDN2O, COFN2O, N2OMLT,
-     $    INDHDO, COFHDO, HDOMLT, XZ,    TAU,   TAUZ )
+     $   COEF7, FIXMUL, CONPRD, FPRED7, WPRED7, OPRED7, DPRED,
+     $   TRCPRD, INDCO2, COFCO2, CO2MLT, INDN2O, COFN2O, N2OMLT,
+     $   INDHDO, COFHDO, HDOMLT, XZ,    TAU,   TAUZ )
 C
-C       print*, 'sarta: completed CALT7'
        IF (DOSUN) THEN
 C         ---------------------------------------------
 C         Calculate the fast trans predictors *for sun*
@@ -847,7 +852,7 @@ C
      $       WPRED4, WPRED5, WPRED6, WPRED7,
      $       OPRED4, OPRED5, OPRED6, OPRED7,
      $       CPRED4, TRCPRD )
-C          print*, 'sarta: completed SUNPAR'
+         if (DEBUG)  print*, 'sarta: completed SUNPAR'
 C         --------------------------------------------
 C         Calculate the layer transmittances *for sun*
 C         --------------------------------------------
@@ -873,13 +878,13 @@ C
      $       XZ, TAU, TAUZSN )
 C
           CALL CALT6( LTAU, INDCHN, LBOT, BLMULT, NCHN6, CLIST6,
-     $       COEF6, FIXMUL, CONPRD, FPRED6, WPRED6, OPRED6,
+     $       COEF6, FIXMUL, CONPRD, FPRED6, WPRED6, OPRED6, DPRED,
      $       TRCPRD, INDCO2, COFCO2, CO2MLT, INDSO2, COFSO2, SO2MLT,
      $       INDN2O, COFN2O, N2OMLT, INDHDO, COFHDO, HDOMLT,
      $       XZ, TAU, TAUZSN )
 C
           CALL CALT7( LTAU, INDCHN, LBOT, BLMULT, NCHN7, CLIST7,
-     $       COEF7, FIXMUL, CONPRD, FPRED7, WPRED7, OPRED7,
+     $       COEF7, FIXMUL, CONPRD, FPRED7, WPRED7, OPRED7, DPRED,
      $       TRCPRD, INDCO2, COFCO2, CO2MLT, INDN2O, COFN2O, N2OMLT,
      $       INDHDO, COFHDO, HDOMLT, XZ, TAU, TAUZSN )
 C
@@ -903,7 +908,7 @@ C      ---------------------------------------------------
        CALL SETEMS( NCHAN, NEMIS, FREQ, FEMIS, XEMIS,
      $    XRHO,LRHOT,  EMIS,RHOSUN,RHOTHR)
 C
-C       print*, 'sarta: completed SETEMS'
+       if (DEBUG) print*, 'sarta: completed SETEMS'
 
 C      ----------------------
 C      Calculate the radiance
@@ -912,7 +917,7 @@ C      ----------------------
      $    SUNCOS, RHOSUN, DISTES, HSUN, TAUZSN,
      $    SECANG(LBOT), RHOTHR, LABOVE, COEFF, TAUZ, RAD, BT)
 C
-C       print*, 'sarta: completed CALRAD'
+       if (DEBUG) print*, 'sarta: completed CALRAD'
 C      -----------------
 C      Calculate non-LTE
 C      -----------------
@@ -926,7 +931,7 @@ c      do I=1,NCHAN
 c      print *, BT(I), RAD(I)
 c      enddo
 ccc
-C       print*, 'sarta: completed CALNTE'
+       if (DEBUG) print*, 'sarta: completed CALNTE'
 
 C      -------------------
 C      Output the radiance

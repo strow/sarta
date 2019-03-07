@@ -155,7 +155,7 @@ C 1  Feb 2019 C Hepplewhite  Add HDO
 
 C      =================================================================
        SUBROUTINE CALT7 ( LTAU, INDCHN, NLAY, BLMULT, NCHN7, CLIST7,
-     $    COEF7,  FIXMUL, CONPD7, FPRED7, WPRED7, OPRED7, TRCPRD, 
+     $    COEF7,  FIXMUL, CONPD7, FPRED7, WPRED7, OPRED7, DPRED, TRCPRD, 
      $    INDCO2, COFCO2, CO2MLT, INDN2O, COFN2O, N2OMLT, 
      $    INDHDO, COFHDO, HDOMLT, XZ, TAU, TAUZ )
 C      =================================================================
@@ -194,6 +194,7 @@ C      Input
        REAL FPRED7( N7FIX,MAXLAY)
        REAL WPRED7( N7H2O,MAXLAY)
        REAL OPRED7(  N7O3,MAXLAY)
+       REAL  DPRED(  NHDO,MAXLAY)
        REAL TRCPRD(NTRACE,MAXLAY)
        INTEGER INDCO2(MXCHAN)
        REAL COFCO2(  NCO2,MAXLAY,MXCHNC)
@@ -224,6 +225,7 @@ C-----------------------------------------------------------------------
        REAL  DKCO2
        REAL  DKN2O
        REAL  DKHDO
+       REAL   KHDO
        REAL   KCON
        REAL   KFIX
        REAL   KOZO
@@ -363,6 +365,28 @@ C
                 KOZO=1.0E+1
              ENDIF
 C
+C            --------------------------
+C            Compute the HDO abs coef
+C            --------------------------
+             IF (LHDO) THEN
+               	KHDO=( COFHDO(1,ILAY,IHDO)*DPRED( 1,ILAY) ) +
+     $               ( COFHDO(2,ILAY,IHDO)*DPRED( 2,ILAY) ) +
+     $               ( COFHDO(3,ILAY,IHDO)*DPRED( 3,ILAY) ) +
+     $               ( COFHDO(4,ILAY,IHDO)*DPRED( 4,ILAY) ) +
+     $               ( COFHDO(5,ILAY,IHDO)*DPRED( 5,ILAY) ) +
+     $               ( COFHDO(6,ILAY,IHDO)*DPRED( 6,ILAY) ) +
+     $               ( COFHDO(7,ILAY,IHDO)*DPRED( 7,ILAY) ) +
+     $               ( COFHDO(8,ILAY,IHDO)*DPRED( 8,ILAY) )
+C     $               ( COFHDO(9,ILAY,IHDO)*DPRED( 9,ILAY) ) +
+C     $               ( COFHDO(10,ILAY,IHDO)*DPRED(10,ILAY) ) +
+C     $               ( COFHDO(11,ILAY,IHDO)*DPRED(11,ILAY) )
+C
+C                IF (KHDO .LT. 0.0E+0) KHDO=0.0E+0
+                KHDO=KHDO*HDOMLT(ILAY)
+             ELSE
+                KHDO=0.0
+             ENDIF
+C
 C
 C            ----------------------------------
 C            Calc the total layer transmittance
@@ -376,6 +400,7 @@ c           kcon=0.0E+0
 c           kfix=0.0E+0
 c           kwat=0.0E+0
 c           kozo=0.0E+0
+c           KHDO=0.0E+0
 ccccc
 C
 C            ----------------------------
@@ -414,30 +439,31 @@ C            ----------------------------
 C            Calc change in total optical
 C            depth due to variable HDO
 C            ----------------------------
-             IF (LHDO .AND. HDOMLT(ILAY) .NE. 0) THEN
-                DKHDO=( COFHDO(1,ILAY,IHDO)*TRCPRD(1,ILAY) ) +
-     $                ( COFHDO(2,ILAY,IHDO)*TRCPRD(2,ILAY) ) +
-     $                ( COFHDO(3,ILAY,IHDO)*TRCPRD(3,ILAY) ) +
-     $                ( COFHDO(4,ILAY,IHDO)*TRCPRD(4,ILAY) )
-                DKHDO=DKHDO*HDOMLT(ILAY)
-             ELSE
-                DKHDO=0.0
-             ENDIF
+C             IF (LHDO .AND. HDOMLT(ILAY) .NE. 0) THEN
+C                DKHDO=( COFHDO(1,ILAY,IHDO)*TRCPRD(1,ILAY) ) +
+C     $                ( COFHDO(2,ILAY,IHDO)*TRCPRD(2,ILAY) ) +
+C     $                ( COFHDO(3,ILAY,IHDO)*TRCPRD(3,ILAY) ) +
+C     $                ( COFHDO(4,ILAY,IHDO)*TRCPRD(4,ILAY) )
+C                DKHDO=DKHDO*HDOMLT(ILAY)
+C             ELSE
+C                DKHDO=0.0
+C             ENDIF
 C
 ccc
 c this block for testing
       DKCO2=0.0
       DKN2O=0.0
 C      DKHDO=0.0
+C      KHDO=0.0
 ccc
 C            Limit -DK so it can never totally totally cancel KFIX
-             DK = DKCO2 + DKN2O + DKHDO
+             DK = DKCO2 + DKN2O
              IF (-DK .GE. KFIX) THEN
                 DK = -0.999*KFIX
              ENDIF
 
 C            Calc total layer optical depth
-             KLAYER=KCON + KFIX + KWAT + KOZO + DK
+             KLAYER=KCON + KFIX + KWAT + KOZO + KHDO + DK
 C
 C            Adjust the optical depth of the bottom layer
              IF (ILAY .EQ. NLAY) KLAYER=BLMULT*KLAYER

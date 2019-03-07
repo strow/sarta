@@ -209,15 +209,14 @@ C
 c          write(6,'(A,I3,X,E11.4,X,E11.4)') 'calowp:WAZ(L),WAZSUM : ',L,WAZ(L),WAZSUM
        ENDDO
 C
-       print*,'calowp: completed raw predictors'
+       if (DEBUG) print*,'calowp: completed raw predictors'
 C      --------------------------------------------------
 C      Find the max OPTRAN level that is less than WAZ(1)
 C      --------------------------------------------------
        LOPMIN=1
-       WRITE(6,'(A, E11.4)') 'calowp: WAZ(1) = ',WAZ(1)
+       if (DEBUG) WRITE(6,'(A, E11.4)') 'calowp: WAZ(1) = ',WAZ(1)
  30    IF (WAZOP(LOPMIN+1) .LT. WAZ(1)) THEN
           LOPMIN=LOPMIN + 1
-C          write(6,'(A, I6,X,E11.4)') 'calowp: LOPMIN, WAZOP(LOPMIN) = ', LOPMIN,WAZOP(LOPMIN)
           GOTO 30
        ENDIF
 C
@@ -226,7 +225,7 @@ C      Initialize the upper and lower (pressure) layer index
        LU=2
        LAST=.FALSE.
 C
-       print*,'calowp: completed find max optran level'
+       if (DEBUG) print*,'calowp: completed find max optran level'
 C      ----------------------------------------
 C      Loop over the OPTRAN layers (while loop)
 C      ----------------------------------------

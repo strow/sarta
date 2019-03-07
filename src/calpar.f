@@ -359,7 +359,7 @@ C      =================================================================
      $    RAAMNT,PTEMP,PFAMNT,PWAMNT,POAMNT,PCAMNT,PMAMNT,PSAMNT,PHAMNT,
      $    PNAMNT,PAAMNT,PRES,SECANG,  ALAT,    FX, DZREF,
      $     LCO2,  LN2O,  LSO2, LNH3,  LHDO, LHNO3,LCO2PM,CO2PPM,CO2TOP,
-     $   FIXMUL,CONPRD,
+     $   FIXMUL,CONPRD,DPRED, 
      $   FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
      $   WPRED1,WPRED2,WPRED3,WPRED4,WPRED5,WPRED6,WPRED7,
      $   OPRED1,OPRED2,       OPRED4,OPRED5,OPRED6,OPRED7,
@@ -448,6 +448,7 @@ C      Output
        REAL OPRED5(  N5O3,MAXLAY)
        REAL OPRED6(  N6O3,MAXLAY)
        REAL OPRED7(  N7O3,MAXLAY)
+       REAL  DPRED(  NHDO,MAXLAY)
        REAL MPRED3( N3CH4,MAXLAY)
        REAL CPRED4(  N4CO,MAXLAY)
        REAL TRCPRD(NTRACE,MAXLAY)
@@ -499,6 +500,11 @@ C-----------------------------------------------------------------------
        REAL WJUNKS
        REAL WJUNKZ
        REAL WJUNK4
+       REAL DJUNKA
+       REAL DJUNKR
+       REAL DJUNKS
+       REAL DJUNKZ
+       REAL DJUNK4
        REAL OJUNKA
        REAL OJUNKR
        REAL OJUNKZ
@@ -559,6 +565,7 @@ C      Initialize the sum terms to zero
        TMZ=0.0E+0
        CO2TOP=0.0E+0
 C
+       if (DEBUG) write(6,'(A,X,L3,X,ES11.3)') 'calpar: LCO2PM,CO2PPM ',LCO2PM,CO2PPM
 C      --------------------
 C      Loop over the layers
 C      --------------------
@@ -627,6 +634,9 @@ C         Methane terms
           MZREF=MZREF + PDP*RMAMNT(L)
           MZ=MZ + PDP*PMAMNT(L)
           AZ_M=MZ/MZREF
+C
+C         HDO terms
+C         use water terms - but see below
 C
 C         ----------------------
 C         Load up the predictors
@@ -876,6 +886,29 @@ C         ---------------
           CONPRD(6,L)=CONPRD(1,L)/TJUNKS
           CONPRD(7,L)=WJUNKA
 C
+C         ---------------
+C         HDO
+C         ---------------
+        if (DEBUG) then
+          IF(L .EQ. 96) write(6,'(A,X,I4,X,F6.2)') 'calpar: L,HDOFCT ',L,HDOFCT
+        endif
+          DJUNKA=SECANG(L)*A_W      ! *(1 - HDOFCT)
+          DJUNKR=SQRT( DJUNKA )
+          DJUNKS=DJUNKA*DJUNKA
+          DJUNKZ=DJUNKA*A_W/AZ_W    ! *(1 - HDOFCT)
+          DJUNK4=SQRT( DJUNKR )
+C
+          DPRED( 1,L)=DJUNKA
+C          DPRED( 2,L)=DJUNKR
+C          DPRED( 3,L)=DJUNKZ
+          DPRED( 2,L)=DJUNKA*DT
+          DPRED( 3,L)=DJUNKS
+          DPRED( 4,L)=DJUNKR*DT
+          DPRED( 5,L)=DJUNK4
+          DPRED( 6,L)=DJUNKZ/DJUNKR
+C          DPRED( 9,L)=DJUNKS*DJUNKA
+          DPRED(7,L)=A_W                   ! *(1 - HDOFCT)
+          DPRED(8,L)=DJUNKA*DT*ABS( DT )
 C
 C         ---------------
 C         Carbon monoxide for FCOW = set4
@@ -925,7 +958,8 @@ C               Ignore changes in CO2 of less than ~0.03%
           IF (L .LE. NTEBOT) THEN
              CO2TOP=CO2TOP + CO2STD*(1.0 + CO2MLT(L)*3.0E-2)
           ENDIF
-
+          if (DEBUG) write(6,'(a,X,I4,3(X,ES11.3E3))') 
+     $     'calpar: L,CO2MLT(L) ',L,PFAMNT(L),RFAMNT(L),CO2MLT(L)
 C
           IF (LN2O) THEN
 C            N2O mult=-1 when prof amount = 0.75 * ref amount
@@ -968,8 +1002,8 @@ C            Ignore changes in HNO3 less than ~1%
           ENDIF
 C
           IF (LHDO) THEN
-C            HDO mult=1 when prof amount = 1 * ref amount (
-             HDOMLT(L)=3.0101E-4*( PWAMNT(L) - RWAMNT(L) )/RWAMNT(L)
+C            HDO mult=1 when no depletion/enhancement of HDO
+             HDOMLT(L)=( 1 - HDOFCT )
 C            Ignore changes in HDO of less than ~1%
 C             IF (ABS(HDOMLT(L)) .LT. 1E-5) HDOMLT(L)=0.0
           ELSE

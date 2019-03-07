@@ -166,6 +166,9 @@ C      a change to the minor version number.
 C      See the "Doc/last_update.txt" file for a description of the
 C      changes associated with every change of VSARTA.
 C
+       LOGICAL DEBUG
+       PARAMETER(DEBUG = .FALSE.)
+C
        CHARACTER*40 VSARTA  ! SARTA source code version
        CHARACTER*40 VSCOEF  ! SARTA coefficient version
        CHARACTER*60 VTUNNG  ! optical depth tuning version

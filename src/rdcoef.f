@@ -683,6 +683,7 @@ C         Keep the data if the current channel is on the list
           ENDIF
        ENDDO
        NCHNNH3=J-1
+       write(6,'(A,X,I4)') 'rdcoef.NH3: INDCHN(7235)= ',INDCHN(7235)
 C
        CLOSE(IOUN)
 C
@@ -712,27 +713,26 @@ C      ---------------------------
           STOP
        ENDIF
 C
-C       write(6,'(a,i6,X,i6)') 'rdcoef: MXCHND,NHDO',MXCHND,NHDO
+       write(6,'(a,i6,X,i6)') 'rdcoef: MXCHND,NHDO',MXCHND,NHDO
        J=1
        DO I=1,MXCHND
 C         Read data for this frequency/channel
           READ(IOUN) ICHAN, FRQCHN, ((COFHDO(IC,IL,J),IC=1,NHDO),
      $       IL=1,MAXLAY)
 C
-          IF (I .EQ. 1843) THEN
-C            write(6,'(a,X,i6)') 'rdcoef: HDO ICHAN',ICHAN
-          ENDIF
 C         Keep the data if the current channel is on the list
           IF (INDCHN(ICHAN) .NE. 0) THEN
+C             write(6,'(A,X,I4,X,I4,X,I5)') 'rdcoef: I,J,INDCHN(ICHAN)= ', I,J,INDCHN(ICHAN)
              INDHDO(ICHAN)=J
              J=J + 1
           ENDIF
        ENDDO
        NCHNHDO=J-1
+C       write(6,'(A,X,I4)') 'rdcoef: INDCHN(125)= ',INDCHN(125)
 C
        CLOSE(IOUN)
 C
-       write(6,*) 'rdcoef: completed read hdo'
+       write(6,'(A,X,I6)') 'rdcoef: completed read hdo',NCHNHDO
 
 C - these lines used as placeholder when no ceofficients are available.
 C       J=1
@@ -862,33 +862,33 @@ C
 C      ------------
 C      Read non-LTE
 C      ------------
-C       OPEN(UNIT=IOUN,FILE=FNCOFN,FORM='UNFORMATTED',STATUS='OLD',
-C     $    IOSTAT=IERR)
-C       IF (IERR .NE. 0) THEN
-C          WRITE(6,1020) IERR, FNCOFN
-C          STOP
-C       ENDIF
+       OPEN(UNIT=IOUN,FILE=FNCOFN,FORM='UNFORMATTED',STATUS='OLD',
+     $    IOSTAT=IERR)
+       IF (IERR .NE. 0) THEN
+          WRITE(6,1020) IERR, FNCOFN
+          STOP
+       ENDIF
 C
-C       J=1
-C       DO I=1,MXCNTE
+       J=1
+       DO I=1,MXCNTE
 C         Read data for this frequency/channel
-C          READ(IOUN) ICHAN, FRQCHN, (COEFN(IC,J),IC=1,NNCOEF)
+          READ(IOUN) ICHAN, FRQCHN, (COEFN(IC,J),IC=1,NNCOEF)
 C
 C         Keep the data if the current channel is on the list
-C          IF (INDCHN(ICHAN) .NE. 0) THEN
-C             CLISTN(J)=ICHAN
-C             J=J + 1
-C          ENDIF
-C       ENDDO
-C       NCHNTE=J - 1
-C
-C       CLOSE(IOUN)
-C placeholder set to zero
-       DO I=1,MXCNTE
-          DO IC=1,NNCOEF
-             COEFN(IC,I)=0.0
-          ENDDO
+          IF (INDCHN(ICHAN) .NE. 0) THEN
+             CLISTN(J)=ICHAN
+             J=J + 1
+          ENDIF
        ENDDO
+       NCHNTE=J - 1
+C
+       CLOSE(IOUN)
+C placeholder set to zero
+C       DO I=1,MXCNTE
+C          DO IC=1,NNCOEF
+C             COEFN(IC,I)=0.0
+C          ENDDO
+C       ENDDO
 C      ---------------------------------------------
        write(6,*) 'rdcoef: read all coefficients'
 C      ---------------------------------------------
@@ -906,7 +906,7 @@ C      Show summary of channel sets
 C      ----------------------------
 ccc
        WRITE(6,1060) 1, NCHN1
- 1060  FORMAT('Number of channels for set',I2,' = ',I5)
+ 1060  FORMAT('Number of channels for set',I3,' = ',I5)
        WRITE(6,1060) 2, NCHN2
        WRITE(6,1060) 3, NCHN3
        WRITE(6,1060) 4, NCHN4
@@ -914,7 +914,7 @@ ccc
        WRITE(6,1060) 6, NCHN6
        WRITE(6,1060) 7, NCHN7
        WRITE(6,1060) 11,NCHNNH3
-C       WRITE(6,1060) 99,NCHNHDO
+       WRITE(6,1060) 162,NCHNHDO
 ccc
 C
        RETURN
