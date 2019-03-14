@@ -563,12 +563,12 @@ C
 C            Calc the total layer effective optical depth
 ccc
 c this block for testing
-       DKSO2=0.0
-       DKHNO3=0.0
-       DKN2O=0.0
-       DKNH3=0.0
+C       DKSO2=0.0
+C       DKHNO3=0.0
+C       DKN2O=0.0
+C       DKNH3=0.0
 C       DKHDO=0.0
-C      KHDO=0.0
+      KHDO=0.0
 ccc
 C            Limit -DK so it can never totally totally cancel KFIX
              DK = DKSO2 + DKHNO3 + DKN2O + DKNH3

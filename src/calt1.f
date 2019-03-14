@@ -615,7 +615,7 @@ c this block for testing
       DKN2O=0.0
       DKNH3=0.0
 C      DKHDO=0.0
-C      KHDO=0.0
+      KHDO=0.0
 ccc
 C            Limit -DK so it can never totally totally cancel KFIX
              DK = DKCO2 + DKSO2 + DKHNO3 + DKN2O + DKNH3
