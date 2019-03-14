@@ -485,7 +485,7 @@ C       DKCO2=0.0
 C       DKSO2=0.0
 C       DKN2O=0.0
 C       DKHDO=0.0
-C       KHDO=0.0
+       KHDO=0.0
 ccc
 C            Limit -DK so it can never totally totally cancel KFIX
              DK = DKCO2 + DKSO2 + DKN2O

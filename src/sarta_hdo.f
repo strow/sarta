@@ -146,7 +146,8 @@ C                               prof CO2MLT calc to calpar.f
 C 24 Oct 2008 Scott Hannon   Update for rtpV201 (remove NRHO, FRHO)
 C 10 May 2018 C Hepplewhite  Add NH3
 C 1  Feb 2019 C Hepplewhite  Add HDO
-
+C                            Nulls HDO computations
+C                            Includes correction factor for Optran WAOP
 !END====================================================================
 
 C      =================================================================
@@ -463,7 +464,7 @@ C      -----------------------------
      $    RFAMNT, RWAMNT, ROAMNT, RCAMNT, RMAMNT, RSAMNT,
      $    RHAMNT, RNAMNT, RAAMNT)
 C
-C       print*, 'sarta: completed call rdprof'
+       if (DEBUG) print*, 'sarta: completed call rdprof'
 C      ---------------------
 C      Get command-line info
 C      ---------------------
@@ -509,7 +510,7 @@ C
 C      Calc OPTRAN absorption coefficient scaling factor WAOP
        WAOP(1)=WAZOP(1)
        DO L=2,MXOWLY
-          WAOP(L)=WAZOP(L) - WAZOP(L-1)
+          WAOP(L)=1.02*(WAZOP(L) - WAZOP(L-1))
        ENDDO
 C
 

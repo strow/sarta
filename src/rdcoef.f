@@ -161,7 +161,8 @@ C    17 Mar 2016 C Hepplewhite  sections ommitted due to absence of
 C    coefficients.
 C    10 May 2018 C Hepplewhite  Add NH3
 C    1  Feb 2019 C Hepplewhite  Add HDO
-
+C                version sets HDO o/d to zero
+C
 !END====================================================================
 
 C      =================================================================
@@ -706,48 +707,48 @@ C       write(6,*) 'rdcoef: completed to NH3'
 C      ---------------------------
 C      Read HDO perturbation coefs
 C      ---------------------------
-       OPEN(UNIT=IOUN,FILE=FNHDO,FORM='UNFORMATTED',STATUS='OLD',
-     $    IOSTAT=IERR)
-       IF (IERR .NE. 0) THEN
-          WRITE(6,1020) IERR, FNHDO
-          STOP
-       ENDIF
+C       OPEN(UNIT=IOUN,FILE=FNHDO,FORM='UNFORMATTED',STATUS='OLD',
+C     $    IOSTAT=IERR)
+C       IF (IERR .NE. 0) THEN
+C          WRITE(6,1020) IERR, FNHDO
+C          STOP
+C       ENDIF
 C
-       write(6,'(a,i6,X,i6)') 'rdcoef: MXCHND,NHDO',MXCHND,NHDO
-       J=1
-       DO I=1,MXCHND
-C         Read data for this frequency/channel
-          READ(IOUN) ICHAN, FRQCHN, ((COFHDO(IC,IL,J),IC=1,NHDO),
-     $       IL=1,MAXLAY)
-C
-C         Keep the data if the current channel is on the list
-          IF (INDCHN(ICHAN) .NE. 0) THEN
-C             write(6,'(A,X,I4,X,I4,X,I5)') 'rdcoef: I,J,INDCHN(ICHAN)= ', I,J,INDCHN(ICHAN)
-             INDHDO(ICHAN)=J
-             J=J + 1
-          ENDIF
-       ENDDO
-       NCHNHDO=J-1
-C       write(6,'(A,X,I4)') 'rdcoef: INDCHN(125)= ',INDCHN(125)
-C
-       CLOSE(IOUN)
-C
-       write(6,'(A,X,I6)') 'rdcoef: completed read hdo',NCHNHDO
-
-C - these lines used as placeholder when no ceofficients are available.
+C       write(6,'(a,i6,X,i6)') 'rdcoef: MXCHND,NHDO',MXCHND,NHDO
 C       J=1
 C       DO I=1,MXCHND
-C          DO IC=1,NHDO
-C             DO IL=1,MAXLAY
-C               COFHDO(IC,IL,J) = 0.0
-C             ENDDO
-C          ENDDO
+C         Read data for this frequency/channel
+C          READ(IOUN) ICHAN, FRQCHN, ((COFHDO(IC,IL,J),IC=1,NHDO),
+C     $       IL=1,MAXLAY)
+C
 C         Keep the data if the current channel is on the list
 C          IF (INDCHN(ICHAN) .NE. 0) THEN
+C             write(6,'(A,X,I4,X,I4,X,I5)') 'rdcoef: I,J,INDCHN(ICHAN)= ', I,J,INDCHN(ICHAN)
 C             INDHDO(ICHAN)=J
 C             J=J + 1
 C          ENDIF
 C       ENDDO
+C       NCHNHDO=J-1
+C       write(6,'(A,X,I4)') 'rdcoef: INDCHN(125)= ',INDCHN(125)
+C
+C       CLOSE(IOUN)
+C
+C       write(6,'(A,X,I6)') 'rdcoef: completed read hdo',NCHNHDO
+
+C - these lines used as placeholder when no ceofficients are available.
+       J=1
+       DO I=1,MXCHND
+          DO IC=1,NHDO
+             DO IL=1,MAXLAY
+               COFHDO(IC,IL,J) = 0.0
+             ENDDO
+          ENDDO
+C         Keep the data if the current channel is on the list
+          IF (INDCHN(ICHAN) .NE. 0) THEN
+             INDHDO(ICHAN)=J
+             J=J + 1
+          ENDIF
+       ENDDO
 C
 C      ---------------------
 C      Read OPTRAN H2O coefs - placeholder to disable coefficients
@@ -914,7 +915,7 @@ ccc
        WRITE(6,1060) 6, NCHN6
        WRITE(6,1060) 7, NCHN7
        WRITE(6,1060) 11,NCHNNH3
-       WRITE(6,1060) 162,NCHNHDO
+C       WRITE(6,1060) 162,NCHNHDO
 ccc
 C
        RETURN
