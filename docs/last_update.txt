@@ -700,3 +700,28 @@ instrument except CrIS high-resolution.
 
 See the github history for more details.  
 -------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+15 March 2019: v1.08 2019-03-15 new IASI version
+
+Right now this is ONLY is the "iasi" branch of git, it has not been
+merged to "master"
+
+This version has a lien, in sarta.f we had to multiply WAOP by 1.014.  This
+changes the OPTRAN layering, and was found to reduce biases by 0.15K or so and
+standard deviations by a bit less.  We clearly have a bias problem without
+this factor.   This factor is very close to 1013/1000, which is the ratio
+of the two sets of pressure levels we often use for testing.   So, it is
+possible this factor is a test artifact, so users might want to consider
+changing it back to 1.00.  All test documentation for this build uses the
+existing 1.014 factor.
+
+Create regression coefficients for the high spectral resolution
+version of SARTA.
+
+Modified reflected thermal: Now use tauz from observation angle
+converted directly to diffusivity angle tauz.  Previously converted
+tauz using F-coefficients from regression.  NOT tested on any
+instrument except CrIS high-resolution.
+
+See the github history for more details.  
+-------------------------------------------------------------------------------

@@ -1,0 +1,11 @@
+To compile:
+
+make iasi_mar2019
+
+Coefficient files:
+
+Their paths are defined in:
+incFTC_iasi_dec2018_basic_optr_5tra_hdo_nte.f
+
+Basically replace /asl/data/sarta_coef/Data_IASI_mar19/Coef with your path.
+
