@@ -510,7 +510,8 @@ C
 C      Calc OPTRAN absorption coefficient scaling factor WAOP
        WAOP(1)=WAZOP(1)
        DO L=2,MXOWLY
-          WAOP(L)=1.02*(WAZOP(L) - WAZOP(L-1))
+C          WAOP(L)=1.02*(WAZOP(L) - WAZOP(L-1))
+          WAOP(L)=1.014*(WAZOP(L) - WAZOP(L-1))
        ENDDO
 C
 
@@ -943,7 +944,7 @@ C
 C      ----------------------
 C      End loop over profiles
 C      ----------------------
-       write(6,2020) IPROF
+C      write(6,2020) IPROF
  2020  FORMAT('sarta: end loop over profiles IPROF: ',I5)
        IPROF=IPROF + 1  ! increment profile counter
        GOTO 10
