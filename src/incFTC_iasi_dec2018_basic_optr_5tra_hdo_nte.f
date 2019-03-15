@@ -490,47 +490,47 @@ C      ---------
 C
 C
        PARAMETER(FNCOF1=
-     $ '/home/chepplew/data/sarta/prod_2019/iasi/dec2018/dbase/Coef/set1.dat')
+     $ '/asl/data/sarta_coef/Data_IASI_mar19/Coef/set1.dat')
        PARAMETER(FNCOF2=
-     $ '/home/chepplew/data/sarta/prod_2019/iasi/dec2018/dbase/Coef/set2.dat')
+     $ '/asl/data/sarta_coef/Data_IASI_mar19/Coef/set2.dat')
        PARAMETER(FNCOF3=
-     $ '/home/chepplew/data/sarta/prod_2019/iasi/dec2018/dbase/Coef/set3.dat')
+     $ '/asl/data/sarta_coef/Data_IASI_mar19/Coef/set3.dat')
        PARAMETER(FNCOF4=
-     $ '/home/chepplew/data/sarta/prod_2019/iasi/dec2018/dbase/Coef/set4.dat')
+     $ '/asl/data/sarta_coef/Data_IASI_mar19/Coef/set4.dat')
        PARAMETER(FNCOF5=
-     $ '/home/chepplew/data/sarta/prod_2019/iasi/dec2018/dbase/Coef/set5.dat')
+     $ '/asl/data/sarta_coef/Data_IASI_mar19/Coef/set5.dat')
        PARAMETER(FNCOF6=
-     $ '/home/chepplew/data/sarta/prod_2019/iasi/dec2018/dbase/Coef/set6.dat')
+     $ '/asl/data/sarta_coef/Data_IASI_mar19/Coef/set6.dat')
        PARAMETER(FNCOF7=
-     $ '/home/chepplew/data/sarta/prod_2019/iasi/dec2018/dbase/Coef/set7.dat')
+     $ '/asl/data/sarta_coef/Data_IASI_mar19/Coef/set7.dat')
 C
        PARAMETER(FNOPTR=
-     $ '/home/chepplew/data/sarta/prod_2019/iasi/dec2018/dbase/Coef/optran.dat')
+     $ '/asl/data/sarta_coef/Data_IASI_mar19/Coef/optran.dat')
 C
        PARAMETER(FNCO2 =
-     $ '/home/chepplew/data/sarta/prod_2019/iasi/dec2018/dbase/Coef/co2.dat')
+     $ '/asl/data/sarta_coef/Data_IASI_mar19/Coef/co2.dat')
        PARAMETER(FNSO2 =
-     $ '/home/chepplew/data/sarta/prod_2019/iasi/dec2018/dbase/Coef/so2.dat')
+     $ '/asl/data/sarta_coef/Data_IASI_mar19/Coef/so2.dat')
        PARAMETER(FNHNO3 =
-     $ '/home/chepplew/data/sarta/prod_2019/iasi/dec2018/dbase/Coef/hno3.dat')
+     $ '/asl/data/sarta_coef/Data_IASI_mar19/Coef/hno3.dat')
        PARAMETER(FNN2O =
-     $ '/home/chepplew/data/sarta/prod_2019/iasi/dec2018/dbase/Coef/n2o.dat')
+     $ '/asl/data/sarta_coef/Data_IASI_mar19/Coef/n2o.dat')
        PARAMETER(FNNH3 =
-     $ '/home/chepplew/data/sarta/prod_2019/iasi/dec2018/dbase/Coef/nh3.dat')
+     $ '/asl/data/sarta_coef/Data_IASI_mar19/Coef/nh3.dat')
        PARAMETER(FNHDO =
-     $ '/home/chepplew/data/sarta/prod_2019/iasi/dec2018/dbase/Coef/hdo.dat')
+     $ '/asl/data/sarta_coef/Data_IASI_mar19/Coef/hdo.dat')
 
 C
        PARAMETER(FNTHER=
-     $ '/home/chepplew/data/sarta/prod_2019/iasi/dec2018/dbase/Coef/therm.dat')
+     $ '/asl/data/sarta_coef/Data_IASI_mar19/Coef/therm.dat')
        PARAMETER(FNCOFN=
-     $ '/home/chepplew/data/sarta/prod_2019/iasi/dec2018/dbase/Coef/nte_7term.dat')
+     $ '/asl/data/sarta_coef/Data_IASI_mar19/Coef/nte_7term.dat')
        PARAMETER(FNFX  =
-     $ '/home/chepplew/data/sarta/prod_2019/iasi/dec2018/dbase/Coef/fx.txt')
+     $ '/asl/data/sarta_coef/Data_IASI_mar19/Coef/fx.txt')
        PARAMETER(FNPREF=
-     $ '/home/chepplew/data/sarta/prod_2019/iasi/dec2018/dbase/Coef/refprof_nh3')
+     $ '/asl/data/sarta_coef/Data_IASI_mar19/Coef/refprof_nh3')
        PARAMETER(FNSUN =
-     $ '/home/chepplew/data/sarta/prod_2019/iasi/dec2018/dbase/Solar/solardata.txt')
+     $ '/asl/data/sarta_coef/Data_IASI_mar19/Solar/solardata.txt')
 
 C
 C
@@ -539,7 +539,7 @@ C Tuning filename
        CHARACTER*80 FNTMLT ! tuning multiplier filename
 C
        PARAMETER(FNTMLT=
-     $ '/home/chepplew/data/sarta/prod_2019/iasi/dec2018/dbase/Coef/'
+     $ '/asl/data/sarta_coef/Data_IASI_mar19/Coef/'
      $ // 'tunmlt_ones.txt')
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
