@@ -65,31 +65,11 @@ crisg4_may18_nh3:
 
 ######  -------  IASI  -----------
 # IASI basic 7-set w/continuum
-iasi_dec2018_basic:
-	rm -f *.o incFTC.f
-	ln -s incFTC_iasi_dec2018_basic.f incFTC.f
-	make -f make_sarta
-	mv a.out ../bin/iasi_dec2018_basic
-
-# IASI basic 7-set w/cont w/optran w/n2o etc
-iasi_dec2018_basic_optr_n2o_hno3_so2_nh3_co2:
-	rm -f *.o incFTC.f
-	ln -s incFTC_iasi_dec2018_basic_optr_n2o_hno3_so2_nh3_co2.f incFTC.f
-	make -f make_sarta_basic_optr_n2o_hno3_so2_nh3_co2
-	mv a.out ../bin/iasi_dec2018_basic_optr_n2o_hno3_so2_nh3_co2
-
-# IASI basic 7set + wcon + optr + 5tra + hdo
-iasi_dec2018_hdo:
-	rm -f *.o incFTC.f
-	ln -s incFTC_iasi_dec2018_basic_optr_5tra_hdo.f incFTC.f
-	make -f make_sarta_hdo
-	mv a.out ../bin/iasi_dec2018_hdo
-
-iasi_dec2018_hdo_nte:
+iasi_mar2019:
 	rm -f *.o incFTC.f
 	ln -s incFTC_iasi_dec2018_basic_optr_5tra_hdo_nte.f incFTC.f
-	make -f make_sarta_hdo
-	mv a.out ../bin/iasi_dec2018_hdo_nte
+	make -f make_sarta
+	mv a.out ../bin/iasi_mar2019
 
 #----------------------------------------------------------------------------------------
 # File management

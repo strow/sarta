@@ -295,7 +295,7 @@ C         OPTRAN water
           INDH2O(I)=0
        ENDDO
 C
-       write(6,*) 'rdcoef: started OK'
+C      write(6,*) 'rdcoef: started OK'
 C      ----------
 C      Read set 1
 C      ----------
@@ -508,7 +508,7 @@ C
        CLOSE(IOUN)
 C
 C
-       WRITE(6,'(A)') 'Completed rdcoef to set 7'
+C      WRITE(6,'(A)') 'Completed rdcoef to set 7'
 C      ---------------------------
 C      Read CO2 perturbation coefs - placeholder set to zero
 C      ---------------------------
@@ -684,7 +684,7 @@ C         Keep the data if the current channel is on the list
           ENDIF
        ENDDO
        NCHNNH3=J-1
-       write(6,'(A,X,I4)') 'rdcoef.NH3: INDCHN(7235)= ',INDCHN(7235)
+C      write(6,'(A,X,I4)') 'rdcoef.NH3: INDCHN(7235)= ',INDCHN(7235)
 C
        CLOSE(IOUN)
 C
@@ -794,7 +794,7 @@ C           ENDDO
 C         ENDDO
 C       ENDDO
 C
-       write(6,*) 'rdcoef: completed optran'
+C      write(6,*) 'rdcoef: completed optran'
 C      -----------------------------------------------
 C      Read the downward thermal F factor coefficients
 C      -----------------------------------------------
@@ -891,7 +891,7 @@ C             COEFN(IC,I)=0.0
 C          ENDDO
 C       ENDDO
 C      ---------------------------------------------
-       write(6,*) 'rdcoef: read all coefficients'
+C      write(6,*) 'rdcoef: read all coefficients'
 C      ---------------------------------------------
 C      Make sure all channels on the list were found
 C      ---------------------------------------------
@@ -906,15 +906,15 @@ C      ----------------------------
 C      Show summary of channel sets
 C      ----------------------------
 ccc
-       WRITE(6,1060) 1, NCHN1
- 1060  FORMAT('Number of channels for set',I3,' = ',I5)
-       WRITE(6,1060) 2, NCHN2
-       WRITE(6,1060) 3, NCHN3
-       WRITE(6,1060) 4, NCHN4
-       WRITE(6,1060) 5, NCHN5
-       WRITE(6,1060) 6, NCHN6
-       WRITE(6,1060) 7, NCHN7
-       WRITE(6,1060) 11,NCHNNH3
+c$$$       WRITE(6,1060) 1, NCHN1
+c$$$ 1060  FORMAT('Number of channels for set',I3,' = ',I5)
+c$$$       WRITE(6,1060) 2, NCHN2
+c$$$       WRITE(6,1060) 3, NCHN3
+c$$$       WRITE(6,1060) 4, NCHN4
+c$$$       WRITE(6,1060) 5, NCHN5
+c$$$       WRITE(6,1060) 6, NCHN6
+c$$$       WRITE(6,1060) 7, NCHN7
+c$$$       WRITE(6,1060) 11,NCHNNH3
 C       WRITE(6,1060) 162,NCHNHDO
 ccc
 C
