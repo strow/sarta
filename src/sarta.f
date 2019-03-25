@@ -510,8 +510,8 @@ C
 C      Calc OPTRAN absorption coefficient scaling factor WAOP
        WAOP(1)=WAZOP(1)
        DO L=2,MXOWLY
-C          WAOP(L)=1.02*(WAZOP(L) - WAZOP(L-1))
-          WAOP(L)=1.014*(WAZOP(L) - WAZOP(L-1))
+          WAOP(L)=1.00*(WAZOP(L) - WAZOP(L-1))
+C          WAOP(L)=1.014*(WAZOP(L) - WAZOP(L-1))
        ENDDO
 C
 

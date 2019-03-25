@@ -67,9 +67,9 @@ crisg4_may18_nh3:
 # IASI basic 7-set w/continuum
 iasi_mar2019:
 	rm -f *.o incFTC.f
-	ln -s incFTC_iasi_dec2018_basic_optr_5tra_hdo_nte.f incFTC.f
+	ln -s incFTC_iasi_dec2018_all_clh.f incFTC.f
 	make -f make_sarta
-	mv a.out ../bin/iasi_mar2019
+	mv a.out ../bin/iasi_mar2019_test
 
 #----------------------------------------------------------------------------------------
 # File management
