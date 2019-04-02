@@ -21,7 +21,7 @@ m140_icebaumGHM_waterdrop_desertdust:
 # Builds clear
 #----------------------------------------------------------------------------------------
 
-# AIRS
+########## AIRS ################
 apr08_m140_wcon_nte_2016tuning:
 	rm -f *.o incFTC.f
 	sed 's/XCSNAMEX/m140/g' incFTC_airs_apr08_template_m130_m140_m150_wcon_nte.f > incFTC.f
@@ -33,13 +33,16 @@ apr08_m140_pge_v6_tunmlt:
 	sed 's/XCSNAMEX/m140/g' incFTC_airs_apr08_template_m130_m140_m150_pge_v6_tunmlt.f > incFTC.f
 	make -f make_sarta
 	mv a.out ../bin/apr08_m140_pge_v6_tunmlt
-# AIRS L1C
-airs_l1c_basic:
-	rm -f *.o incFTC.f
-	ln -s incFTC_airs_l1c_sep18_basic.f  incFTC.f
-	make -f make_sarta
-	mv a.out ../bin/airs_l1c_sep18_basic_optr
 
+# AIRS L1C
+airs_basic:
+	rm -f *.o incFTC.f
+#	ln -s incFTC_airs_prod2019_dec2018_basic.f  incFTC.f
+	ln -s incFTC_airs_apr08_m130_m150_wcon_nte.f incFTC.f
+	make -f make_sarta
+	mv a.out ../bin/airs_2834_mar19_basic
+
+#  ------------  CrIS   ------------ #######
 # CrIS standard resolution
 crisg4_nov09_wcon_nte:
 	rm -f *.o incFTC.f
@@ -54,12 +57,27 @@ crisg4_oct16:
 	make -f make_sarta
 	mv a.out ../bin/crisg4_oct16
 
-# IASI
-iasi_may09_wcon_nte:
+# CrIS  (high res) basic coef set[1-7] and wcon.
+crisg4_mar18:
 	rm -f *.o incFTC.f
-	ln -s incFTC_iasi_may09_wcon_nte.f incFTC.f
+	ln -s incFTC_crisHRg4_mar18_basic_optr_co2_so2_nte.f incFTC.f
 	make -f make_sarta
-#	mv a.out ../bin/iasi
+	mv a.out ../bin/crisg4_mar18_basic_so2
+
+# CrIS (high Res) with var NH3
+crisg4_may18_nh3:
+	rm -f *.o incFTC.f
+	ln -s incFTC_crisHRg4_may18_optr_co2_so2_nh3_nte.f incFTC.f
+	make -f make_sarta_nh3
+	mv a.out ../bin/crisg4_may18_nh3
+
+######  -------  IASI  -----------
+# IASI basic 7-set w/continuum
+iasi_mar2019:
+	rm -f *.o incFTC.f
+	ln -s incFTC_iasi_dec2018_all_clh.f incFTC.f
+	make -f make_sarta
+	mv a.out ../bin/iasi_mar2019_test
 
 #----------------------------------------------------------------------------------------
 # File management
@@ -67,3 +85,4 @@ iasi_may09_wcon_nte:
 
 clean:
 	rm -f *.o
+	rm -f *_genmod.f90 *_genmod.mod

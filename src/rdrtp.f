@@ -6,7 +6,7 @@ C              University of Maryland Baltimore County [UMBC]
 C
 C              AIRS
 C
-C              RDRTP version with trace gases
+C              RDRTP version with trace gases and NH3
 C
 !F77====================================================================
 
@@ -20,11 +20,11 @@ C    Read a profile from a previously openned RTP file
 
 !CALL PROTOCOL:
 C    RDRTP( LWANT, IPROF, IOPCI,
-C       IH2O, IO3, ICO, ICH4, ICO2, ISO2, IHNO3, IN2O,
+C       IH2O, IO3, ICO, ICH4, ICO2, ISO2, IHNO3, IN2O, INH3,
 C       PTYPE, RALT,LCO2PM,NLAY, NEMIS, LAT, LON, SATANG, SATZEN,
 C       ZSAT, SUNANG, PSURF, TSURF, CO2PPM, FEMIS, EMIS, RHO,
 C       TEMP, WAMNT, OAMNT, CAMNT, MAMNT, FAMNT, SAMNT, HAMNT, NAMNT,
-C       ALT, PROF, ISTAT )
+C       AAMNT, ALT, PROF, ISTAT )
 
 
 !INPUT PARAMETERS:
@@ -41,6 +41,7 @@ C    INTEGER   ICO2    index of CO2 in gamnt       none
 C    INTEGER   ISO2    index of SO2 in gamnt       none
 C    INTEGER   IHNO3   index of HNO3 in gamnt      none
 C    INTEGER   IN2O    index of N2O in gamnt       none
+C    INTEGER   INH3    index of NH3 in gamnt       none
 C    INTEGER   PTYPE   profile type code number    none
 C    REAL arr  RALT    ref prof layer altitudes    meters
 C    LOGICAL   LCO2PM  CO2 profile in ppmv?        none
@@ -72,6 +73,7 @@ C    REAL arr  FAMNT   layer CO2 amount            */cm^2
 C    REAL arr  SAMNT   layer SO2 amount            */cm^2
 C    REAL arr  HAMNT   layer HNO3 amount           */cm^2
 C    REAL arr  NAMNT   layer N2O amount            */cm^2
+C    REAL arr  AAMNT   layer NH3 amount            */cm^2
 C    REAL arr  ALT     layer average altitude      meters
 C    STRUCT    PROF    RTP profile structure       various
 C    INTEGER   ISTAT   I/O status                  none
@@ -129,17 +131,18 @@ C 24 Oct 2008 Scott Hannon      Update for RTP v2.01; emis & rho now
 C                                  use the same freq points; set RHO
 C                                  to (1-e)/pi if input < 0
 C
+C 10 May 2018 C Hepplewhite     Add NH3
 
 !END====================================================================
 
 C      =================================================================
        SUBROUTINE RDRTP(LWANT, IPROF, IOPCI,
-     $    IH2O, IO3, ICO, ICH4, ICO2, ISO2, IHNO3, IN2O, PTYPE, RALT,
-     $    LCO2PM,
+     $    IH2O, IO3, ICO, ICH4, ICO2, ISO2, IHNO3, IN2O, INH3,
+     $    PTYPE, RALT, LCO2PM,
      $    NLAY, NEMIS, LAT, LON, SATANG, SATZEN, ZSAT, SUNANG,
      $    PSURF, TSURF, CO2PPM, FEMIS, EMIS, RHO,
      $    TEMP, WAMNT, OAMNT, CAMNT, MAMNT, FAMNT, SAMNT, HAMNT, NAMNT,
-     $    ALT, PROF, ISTAT )
+     $    AAMNT, ALT, PROF, ISTAT )
 C      =================================================================
 
 
@@ -177,6 +180,7 @@ C      Input parameters:
        INTEGER ISO2       ! index of SO2 in gamnt
        INTEGER IHNO3      ! index of HNO3 in gamnt
        INTEGER IN2O       ! index of N2O in gamnt
+       INTEGER INH3       ! index of NH3 in gamnt
        INTEGER PTYPE      ! profile type code number
        REAL RALT(MAXLAY)  ! ref prof layer average altitudes
        LOGICAL LCO2PM     ! CO2 profile in ppmv?
@@ -205,6 +209,7 @@ C      Output parameters:
        REAL  SAMNT(MAXLAY)
        REAL  HAMNT(MAXLAY)
        REAL  NAMNT(MAXLAY)
+       REAL  AAMNT(MAXLAY)
        REAL    ALT(MAXLAY)
 C
 C      Profile data structure
@@ -221,6 +226,7 @@ C-----------------------------------------------------------------------
        INTEGER ISO2X    ! index for reading SO2 in gamnt
        INTEGER IHNOX    ! index for reading HNO3 in gamnt
        INTEGER IN2OX    ! index for reading N2O in gamnt
+       INTEGER INH3X    ! index for reading NH3 in gamnt
        INTEGER L        ! layer looping
        INTEGER LR       ! reversed layer looping
        INTEGER NLEV     ! number of levels
@@ -240,7 +246,6 @@ C***********************************************************************
 C      EXECUTABLE CODE begins below
 C***********************************************************************
 C***********************************************************************
-
 C      ------------------------
 C      Read the current profile
 C      ------------------------
@@ -318,6 +323,12 @@ C      Assign read indices for trace gas N2O
        ELSE
           IN2OX=IN2O
        ENDIF
+C      Assign read indices for trace gas NH3
+       IF (INH3 .LT. 1) THEN
+          INH3X=IH2O
+       ELSE
+          INH3X=INH3
+       ENDIF
 C
 C      Angles
        SUNANG=PROF%solzen
@@ -376,6 +387,7 @@ C            Prof is in top-down order
                 SAMNT(L)=PROF%gamnt(L,ISO2X)/6.02214199E+26
                 HAMNT(L)=PROF%gamnt(L,IHNOX)/6.02214199E+26
                 NAMNT(L)=PROF%gamnt(L,IN2OX)/6.02214199E+26
+                AAMNT(L)=PROF.gamnt(L,INH3X)/6.02214199E+26
                 ALT(L)=0.5*( PROF%palts(L) + PROF%palts(L+1) )
              ENDDO
              IF (LCO2PM) THEN
@@ -396,7 +408,8 @@ C            Prof is in bottom-up order
                 SAMNT(L)=PROF%gamnt(LR,ISO2X)/6.02214199E+26
                 HAMNT(L)=PROF%gamnt(LR,IHNOX)/6.02214199E+26
                 NAMNT(L)=PROF%gamnt(LR,IN2OX)/6.02214199E+26
-                ALT(L)=0.5*( PROF%palts(LR) + PROF%palts(LR+1) )
+                AAMNT(L)=PROF.gamnt(LR,INH3X)/6.02214199E+26
+               ALT(L)=0.5*( PROF%palts(LR) + PROF%palts(LR+1) )
              ENDDO
              IF (LCO2PM) THEN
                 DO L=1,NLAY
@@ -420,6 +433,7 @@ C            Prof is in top-down order
                 SAMNT(L)=PROF%gamnt(L,ISO2X)
                 HAMNT(L)=PROF%gamnt(L,IHNOX)
                 NAMNT(L)=PROF%gamnt(L,IN2OX)
+                AAMNT(L)=PROF.gamnt(L,INH3X)
                 ALT(L)=0.5*( PROF%palts(L) + PROF%palts(L+1) )
              ENDDO
           ELSE
@@ -435,13 +449,13 @@ C            Prof is in bottom-up order
                 SAMNT(L)=PROF%gamnt(LR,ISO2X)
                 HAMNT(L)=PROF%gamnt(LR,IHNOX)
                 NAMNT(L)=PROF%gamnt(LR,IN2OX)
+                AAMNT(L)=PROF.gamnt(LR,INH3X)
                 ALT(L)=0.5*( PROF%palts(LR) + PROF%palts(LR+1) )
              ENDDO
           ENDIF
        ELSE ! empty else
        ENDIF
 C
-
 C      -----------------
 C      Default altitudes
 C      -----------------

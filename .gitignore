@@ -11,6 +11,7 @@ chepplew/
 motteler/
 tangborn/
 bin/
+src/Donotuse/
 
 # Text figures and Docs
 *.aux
@@ -27,6 +28,8 @@ bin/
 *.so
 *.mexa64
 a.out
+*.mod
+*_genmod.f90
 
 # Archives and packages
 *.tar

@@ -651,42 +651,42 @@ C         Keep the data if the current channel is on the list
 C      ---------------------
 C      Read OPTRAN H2O coefs - placeholder to disable coefficients
 C      ---------------------
-       OPEN(UNIT=IOUN,FILE=FNOPTR,FORM='UNFORMATTED',STATUS='OLD',
-     $    IOSTAT=IERR)
-       IF (IERR .NE. 0) THEN
-          WRITE(6,1020) IERR, FNOPTR
-          STOP
-       ENDIF
+C       OPEN(UNIT=IOUN,FILE=FNOPTR,FORM='UNFORMATTED',STATUS='OLD',
+C     $    IOSTAT=IERR)
+C       IF (IERR .NE. 0) THEN
+C          WRITE(6,1020) IERR, FNOPTR
+C          STOP
+C       ENDIF
 C
-       READ(IOUN) (WAZOP(IL),IL=1,MXOWLY)
-       DO IC=1,NOWAVG
+C       READ(IOUN) (WAZOP(IL),IL=1,MXOWLY)
+C       DO IC=1,NOWAVG
 C         Read the header section
-          READ(IOUN) (WAVGOP(IC,IL),IL=1,MXOWLY)
-       ENDDO
+C          READ(IOUN) (WAVGOP(IC,IL),IL=1,MXOWLY)
+C       ENDDO
 C
-       J=1
-       DO I=1,MXCHNW
-C         Read data for this frequency/channel
-          READ(IOUN) ICHAN, FRQCHN, ((COFH2O(IC,IL,J),IC=1,NH2O),
-     $       IL=1,MXOWLY)
-C
-C         Keep the data if the current channel is on the list
-          IF (INDCHN(ICHAN) .NE. 0) THEN
-             INDH2O(ICHAN)=J
-             J=J + 1
-          ENDIF
-       ENDDO
-C
-       CLOSE(IOUN)
-C      these loops for zeroing out optran coefficients
 C       J=1
 C       DO I=1,MXCHNW
-C         DO IC=1,NH2O
-C           DO IL=1,MXOWLY
-C             COFH2O(IC,IL,J) = 0.0
-C           ENDDO
-C         ENDDO
+C         Read data for this frequency/channel
+C          READ(IOUN) ICHAN, FRQCHN, ((COFH2O(IC,IL,J),IC=1,NH2O),
+C     $       IL=1,MXOWLY)
+C
+C         Keep the data if the current channel is on the list
+C          IF (INDCHN(ICHAN) .NE. 0) THEN
+C             INDH2O(ICHAN)=J
+C             J=J + 1
+C          ENDIF
 C       ENDDO
+C
+C       CLOSE(IOUN)
+C      these loops for zeroing out optran coefficients
+       J=1
+       DO I=1,MXCHNW
+         DO IC=1,NH2O
+           DO IL=1,MXOWLY
+             COFH2O(IC,IL,J) = 0.0
+           ENDDO
+         ENDDO
+       ENDDO
 C
 C      -----------------------------------------------
 C      Read the downward thermal F factor coefficients
