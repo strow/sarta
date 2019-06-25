@@ -37,10 +37,21 @@ apr08_m140_pge_v6_tunmlt:
 # AIRS L1C
 airs_basic:
 	rm -f *.o incFTC.f
-#	ln -s incFTC_airs_prod2019_dec2018_basic.f  incFTC.f
-	ln -s incFTC_airs_apr08_m130_m150_wcon_nte.f incFTC.f
+	ln -s incFTC_airs_prod2019_dec2018_basic_optr_co2.f  incFTC.f
 	make -f make_sarta
-	mv a.out ../bin/airs_2834_mar19_basic
+	mv a.out ../bin/airs_2834_mar19_basic_optr_co2
+
+airs_thrm:
+	rm -f *.o incFTC.f
+	ln -s incFTC_airs_prod2019_dec2018_basic_optr_tra_nte_thrm.f incFTC.f
+	make -f make_sarta
+	mv a.out ../bin/airs_2834_mar19_basic_optr_tra_nte_thrm
+
+airs_rd:
+	rm -f *.o incFTC.f
+	ln -s incFTC_airs_prod2019_dec2018_basic_optr_tra_nte_thrm.f incFTC.f
+	make -f make_sarta
+	mv a.out ../bin/airs_2834_mar19_rdown
 
 #  ------------  CrIS   ------------ #######
 # CrIS standard resolution

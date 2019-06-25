@@ -609,11 +609,11 @@ C            ------------------------------------------
 C            Calc total layer optical depth
 ccc
 c this block for testing
-      DKHNO3=0.0
-      DKSO2=0.0
-      DKCO2=0.0
-      DKN2O=0.0
-      DKNH3=0.0
+C      DKHNO3=0.0
+C      DKSO2=0.0
+C      DKCO2=0.0
+C      DKN2O=0.0
+C      DKNH3=0.0
 C      DKHDO=0.0
       KHDO=0.0
 ccc

@@ -512,197 +512,197 @@ C      WRITE(6,'(A)') 'Completed rdcoef to set 7'
 C      ---------------------------
 C      Read CO2 perturbation coefs - placeholder set to zero
 C      ---------------------------
-       J=1
-       DO I=1,MXCHNC
-          DO IC=1,NCO2
-             DO IL=1,MAXLAY
-                COFCO2(IC,IL,J) = 0.0
-             ENDDO
-          ENDDO
-          IF (INDCHN(ICHAN) .NE. 0) THEN
-             INDCO2(ICHAN)=J
-             J=J + 1
-          ENDIF
-       ENDDO
-C  
-C       OPEN(UNIT=IOUN,FILE=FNCO2,FORM='UNFORMATTED',STATUS='OLD',
-C     $    IOSTAT=IERR)
-C       IF (IERR .NE. 0) THEN
-C          WRITE(6,1020) IERR, FNCO2
-C          STOP
-C       ENDIF
-C
 C       J=1
 C       DO I=1,MXCHNC
-C         Read data for this frequency/channel
-C          READ(IOUN) ICHAN, FRQCHN, ((COFCO2(IC,IL,J),IC=1,NCO2),
-C     $       IL=1,MAXLAY)
-C
-C         Keep the data if the current channel is on the list
+C          DO IC=1,NCO2
+C             DO IL=1,MAXLAY
+C                COFCO2(IC,IL,J) = 0.0
+C             ENDDO
+C          ENDDO
 C          IF (INDCHN(ICHAN) .NE. 0) THEN
 C             INDCO2(ICHAN)=J
 C             J=J + 1
 C          ENDIF
 C       ENDDO
+C  
+       OPEN(UNIT=IOUN,FILE=FNCO2,FORM='UNFORMATTED',STATUS='OLD',
+     $    IOSTAT=IERR)
+       IF (IERR .NE. 0) THEN
+          WRITE(6,1020) IERR, FNCO2
+          STOP
+       ENDIF
 C
-C       CLOSE(IOUN)
-C
-C      ---------------------
-C      Read SO2 pertub coefs - placeholder while no coef file
-C      ---------------------
        J=1
-       DO I=1,MXCHNS
-          DO IC=1,NSO2
-             DO IL=1,MAXLAY
-                COFSO2(IC,IL,J) = 0.0
-             ENDDO
-          ENDDO
+       DO I=1,MXCHNC
+C         Read data for this frequency/channel
+          READ(IOUN) ICHAN, FRQCHN, ((COFCO2(IC,IL,J),IC=1,NCO2),
+     $       IL=1,MAXLAY)
+C
+C         Keep the data if the current channel is on the list
           IF (INDCHN(ICHAN) .NE. 0) THEN
-             INDSO2(ICHAN)=J
+             INDCO2(ICHAN)=J
              J=J + 1
           ENDIF
        ENDDO
 C
-C       OPEN(UNIT=IOUN,FILE=FNSO2,FORM='UNFORMATTED',STATUS='OLD',
-C     $    IOSTAT=IERR)
-C       IF (IERR .NE. 0) THEN
-C          WRITE(6,1020) IERR, FNSO2
-C          STOP
-C       ENDIF
+       CLOSE(IOUN)
 C
+C      ---------------------
+C      Read SO2 pertub coefs - placeholder while no coef file
+C      ---------------------
 C       J=1
 C       DO I=1,MXCHNS
-C         Read data for this frequency/channel
-C          READ(IOUN) ICHAN, FRQCHN, ((COFSO2(IC,IL,J),IC=1,NSO2),
-C     $       IL=1,MAXLAY)
-CC
-C         Keep the data if the current channel is on the list
+C          DO IC=1,NSO2
+C             DO IL=1,MAXLAY
+C                COFSO2(IC,IL,J) = 0.0
+C             ENDDO
+C          ENDDO
 C          IF (INDCHN(ICHAN) .NE. 0) THEN
 C             INDSO2(ICHAN)=J
 C             J=J + 1
 C          ENDIF
 C       ENDDO
 C
-C       CLOSE(IOUN)
-C      ---------------------
-C      Read HNO3 perturb coefs - placeholder while no coef file
-C      ---------------------
+       OPEN(UNIT=IOUN,FILE=FNSO2,FORM='UNFORMATTED',STATUS='OLD',
+     $    IOSTAT=IERR)
+       IF (IERR .NE. 0) THEN
+          WRITE(6,1020) IERR, FNSO2
+          STOP
+       ENDIF
+C
        J=1
-       DO I=1,MXCHNH
-          DO IC=1,NHNO3
-             DO IL=1,MAXLAY
-                COFHNO(IC,IL,J) = 0.0
-             ENDDO
-          ENDDO
+       DO I=1,MXCHNS
+C         Read data for this frequency/channel
+          READ(IOUN) ICHAN, FRQCHN, ((COFSO2(IC,IL,J),IC=1,NSO2),
+     $       IL=1,MAXLAY)
+CC
 C         Keep the data if the current channel is on the list
           IF (INDCHN(ICHAN) .NE. 0) THEN
-             INDHNO(ICHAN)=J
+             INDSO2(ICHAN)=J
              J=J + 1
           ENDIF
        ENDDO
-
-C       OPEN(UNIT=IOUN,FILE=FNHNO3,FORM='UNFORMATTED',STATUS='OLD',
-C     $    IOSTAT=IERR)
-C       IF (IERR .NE. 0) THEN
-C          WRITE(6,1020) IERR, FNHNO3
-C          STOP
-C       ENDIF
 C
+       CLOSE(IOUN)
+C      ---------------------
+C      Read HNO3 perturb coefs - placeholder while no coef file
+C      ---------------------
 C       J=1
 C       DO I=1,MXCHNH
-C         Read data for this frequency/channel
-C          READ(IOUN) ICHAN, FRQCHN, ((COFHNO(IC,IL,J),IC=1,NHNO3),
-C     $       IL=1,MAXLAY)
-C
+C          DO IC=1,NHNO3
+C             DO IL=1,MAXLAY
+C                COFHNO(IC,IL,J) = 0.0
+C             ENDDO
+C          ENDDO
 C         Keep the data if the current channel is on the list
 C          IF (INDCHN(ICHAN) .NE. 0) THEN
 C             INDHNO(ICHAN)=J
 C             J=J + 1
 C          ENDIF
 C       ENDDO
+
+       OPEN(UNIT=IOUN,FILE=FNHNO3,FORM='UNFORMATTED',STATUS='OLD',
+     $    IOSTAT=IERR)
+       IF (IERR .NE. 0) THEN
+          WRITE(6,1020) IERR, FNHNO3
+          STOP
+       ENDIF
 C
-C       CLOSE(IOUN)
+       J=1
+       DO I=1,MXCHNH
+C         Read data for this frequency/channel
+          READ(IOUN) ICHAN, FRQCHN, ((COFHNO(IC,IL,J),IC=1,NHNO3),
+     $       IL=1,MAXLAY)
+C
+C         Keep the data if the current channel is on the list
+          IF (INDCHN(ICHAN) .NE. 0) THEN
+             INDHNO(ICHAN)=J
+             J=J + 1
+          ENDIF
+       ENDDO
+C
+       CLOSE(IOUN)
 C      ---------------------
 C      Read N2O perturb coefs - placeholder while no coef file.
 C      ---------------------
-C       OPEN(UNIT=IOUN,FILE=FNN2O,FORM='UNFORMATTED',STATUS='OLD',
-C     $    IOSTAT=IERR)
-C       IF (IERR .NE. 0) THEN
-C          WRITE(6,1020) IERR, FNN2O
-C          STOP
-C       ENDIF
-CC
-C       J=1
-C       DO I=1,MXCHNN
-C         Read data for this frequency/channel
-C          READ(IOUN) ICHAN, FRQCHN, ((COFN2O(IC,IL,J),IC=1,NN2O),
-C     $       IL=1,MAXLAY)
-C         Keep the data if the current channel is on the list
-C          IF (INDCHN(ICHAN) .NE. 0) THEN
-C             INDN2O(ICHAN)=J
-C             J=J + 1
-C          ENDIF
-C       ENDDO
-C       CLOSE(IOUN)
-
-C - these lines used as placeholder when no ceofficients are available.
+       OPEN(UNIT=IOUN,FILE=FNN2O,FORM='UNFORMATTED',STATUS='OLD',
+     $    IOSTAT=IERR)
+       IF (IERR .NE. 0) THEN
+          WRITE(6,1020) IERR, FNN2O
+          STOP
+       ENDIF
+C
        J=1
        DO I=1,MXCHNN
-          DO IC=1,NN2O
-             DO IL=1,MAXLAY
-               COFN2O(IC,IL,J) = 0.0
-             ENDDO
-          ENDDO
+C         Read data for this frequency/channel
+          READ(IOUN) ICHAN, FRQCHN, ((COFN2O(IC,IL,J),IC=1,NN2O),
+     $       IL=1,MAXLAY)
 C         Keep the data if the current channel is on the list
           IF (INDCHN(ICHAN) .NE. 0) THEN
              INDN2O(ICHAN)=J
              J=J + 1
           ENDIF
        ENDDO
+       CLOSE(IOUN)
+
+C - these lines used as placeholder when no ceofficients are available.
+C       J=1
+C       DO I=1,MXCHNN
+C          DO IC=1,NN2O
+C             DO IL=1,MAXLAY
+C               COFN2O(IC,IL,J) = 0.0
+C             ENDDO
+C          ENDDO
+C         Keep the data if the current channel is on the list
+C          IF (INDCHN(ICHAN) .NE. 0) THEN
+C             INDN2O(ICHAN)=J
+C             J=J + 1
+C          ENDIF
+C       ENDDO
 C       write(6,*) 'rdcoef_nh3: read N2O coeffs'
 
 C      ---------------------------
 C      Read NH3 perturbation coefs
 C      ---------------------------
-C       OPEN(UNIT=IOUN,FILE=FNNH3,FORM='UNFORMATTED',STATUS='OLD',
-C     $    IOSTAT=IERR)
-C       IF (IERR .NE. 0) THEN
-C          WRITE(6,1020) IERR, FNNH3
-C          STOP
-C       ENDIF
+       OPEN(UNIT=IOUN,FILE=FNNH3,FORM='UNFORMATTED',STATUS='OLD',
+     $    IOSTAT=IERR)
+       IF (IERR .NE. 0) THEN
+          WRITE(6,1020) IERR, FNNH3
+          STOP
+       ENDIF
 C
-C       J=1
-C       DO I=1,MXCHNA
-C         Read data for this frequency/channel
-C          READ(IOUN) ICHAN, FRQCHN, ((COFNH3(IC,IL,J),IC=1,NNH3),
-C     $       IL=1,MAXLAY)
-C
-C         Keep the data if the current channel is on the list
-C          IF (INDCHN(ICHAN) .NE. 0) THEN
-C             INDNH3(ICHAN)=J
-C             J=J + 1
-C          ENDIF
-C       ENDDO
-C       NCHNNH3=J-1
-C      write(6,'(A,X,I4)') 'rdcoef.NH3: INDCHN(7235)= ',INDCHN(7235)
-C
-C       CLOSE(IOUN)
-C
-
-C - these lines used as placeholder when no ceofficients are available.
        J=1
        DO I=1,MXCHNA
-          DO IC=1,NNH3
-             DO IL=1,MAXLAY
-               COFNH3(IC,IL,J) = 0.0
-             ENDDO
-          ENDDO
+C         Read data for this frequency/channel
+          READ(IOUN) ICHAN, FRQCHN, ((COFNH3(IC,IL,J),IC=1,NNH3),
+     $       IL=1,MAXLAY)
+C
 C         Keep the data if the current channel is on the list
           IF (INDCHN(ICHAN) .NE. 0) THEN
              INDNH3(ICHAN)=J
              J=J + 1
           ENDIF
        ENDDO
+       NCHNNH3=J-1
+C      write(6,'(A,X,I4)') 'rdcoef.NH3: INDCHN(7235)= ',INDCHN(7235)
+C
+       CLOSE(IOUN)
+C
+
+C - these lines used as placeholder when no ceofficients are available.
+C       J=1
+C       DO I=1,MXCHNA
+C          DO IC=1,NNH3
+C             DO IL=1,MAXLAY
+C               COFNH3(IC,IL,J) = 0.0
+C             ENDDO
+C          ENDDO
+C         Keep the data if the current channel is on the list
+C          IF (INDCHN(ICHAN) .NE. 0) THEN
+C             INDNH3(ICHAN)=J
+C             J=J + 1
+C          ENDIF
+C       ENDDO
 C       write(6,*) 'rdcoef: completed to NH3'
 C      ---------------------------
 C      Read HDO perturbation coefs
@@ -753,81 +753,81 @@ C
 C      ---------------------
 C      Read OPTRAN H2O coefs - placeholder to disable coefficients
 C      ---------------------
-C       OPEN(UNIT=IOUN,FILE=FNOPTR,FORM='UNFORMATTED',STATUS='OLD',
-C     $    IOSTAT=IERR)
-C       IF (IERR .NE. 0) THEN
-C          WRITE(6,1020) IERR, FNOPTR
-C          STOP
-C       ENDIF
+       OPEN(UNIT=IOUN,FILE=FNOPTR,FORM='UNFORMATTED',STATUS='OLD',
+     $    IOSTAT=IERR)
+       IF (IERR .NE. 0) THEN
+          WRITE(6,1020) IERR, FNOPTR
+          STOP
+       ENDIF
 C       write(6,*) 'rdcoef: opened optran file successfully'
 C
-C       READ(IOUN) (WAZOP(IL),IL=1,MXOWLY)
-C       DO IC=1,NOWAVG
-CC         Read the header section
-C          READ(IOUN) (WAVGOP(IC,IL),IL=1,MXOWLY)
-C       ENDDO
+       READ(IOUN) (WAZOP(IL),IL=1,MXOWLY)
+       DO IC=1,NOWAVG
+C         Read the header section
+          READ(IOUN) (WAVGOP(IC,IL),IL=1,MXOWLY)
+       ENDDO
 C
 C       write(6,'(a,X,I6)') 'rdcoef: completed read optran header: MXCHNW',MXCHNW
-C       J=1
-C       DO I=1,MXCHNW
-C         Read data for this frequency/channel
-C          READ(IOUN) ICHAN, FRQCHN, ((COFH2O(IC,IL,J),IC=1,NH2O),
-C     $       IL=1,MXOWLY)
-C
-C         Keep the data if the current channel is on the list
-C          IF (INDCHN(ICHAN) .NE. 0) THEN
-C             INDH2O(ICHAN)=J
-C             J=J + 1
-C             write(6,'(a,X,I4,X,I6)') 'rdcoef:J, INDH2O(ICHAN)', J,INDH2O(ICHAN)
-C          ENDIF
-C       ENDDO
-C
-C       CLOSE(IOUN)
-C
-C      these loops for zeroing out optran coefficients
        J=1
        DO I=1,MXCHNW
-         DO IC=1,NH2O
-           DO IL=1,MXOWLY
-             COFH2O(IC,IL,J) = 0.0
-           ENDDO
-         ENDDO
+C         Read data for this frequency/channel
+          READ(IOUN) ICHAN, FRQCHN, ((COFH2O(IC,IL,J),IC=1,NH2O),
+     $       IL=1,MXOWLY)
+C
+C         Keep the data if the current channel is on the list
+          IF (INDCHN(ICHAN) .NE. 0) THEN
+             INDH2O(ICHAN)=J
+             J=J + 1
+C             write(6,'(a,X,I4,X,I6)') 'rdcoef:J, INDH2O(ICHAN)', J,INDH2O(ICHAN)
+          ENDIF
        ENDDO
+C
+       CLOSE(IOUN)
+C
+C      these loops for zeroing out optran coefficients
+C       J=1
+C       DO I=1,MXCHNW
+C         DO IC=1,NH2O
+C           DO IL=1,MXOWLY
+C             COFH2O(IC,IL,J) = 0.0
+C           ENDDO
+C         ENDDO
+C       ENDDO
 C
 C      write(6,*) 'rdcoef: completed optran'
 C      -----------------------------------------------
 C      Read the downward thermal F factor coefficients
 C      -----------------------------------------------
-C       OPEN(UNIT=IOUN,FILE=FNTHER,FORM='UNFORMATTED',STATUS='OLD',
-C     $    IOSTAT=IERR)
-C       IF (IERR .NE. 0) THEN
-C          WRITE(6,1020) IERR, FNTHER
-C          STOP
-C       ENDIF
+       OPEN(UNIT=IOUN,FILE=FNTHER,FORM='UNFORMATTED',STATUS='OLD',
+     $    IOSTAT=IERR)
+       IF (IERR .NE. 0) THEN
+          WRITE(6,1020) IERR, FNTHER
+          STOP
+       ENDIF
 C
-C       DO I=1,MXCHAN     ! was 2219 for thermal_matched.dat
+       DO I=1,MXCHAN     ! was 2219 for thermal_matched.dat
 C         Read data for this frequency/channel
 ccc changed 18 May 2005
 ccc          READ(IOUN) ICHAN, FRQCHN, LACHAN, (FCHAN(IC),IC=1,NFCOEF)
-C          READ(IOUN) ICHAN, FRQCHN, (FCHAN(IC),IC=1,NFCOEF)
-C          LACHAN=-1   ! assign dummy value
+          READ(IOUN) ICHAN, FRQCHN, (FCHAN(IC),IC=1,NFCOEF)
+          LACHAN=-1   ! assign dummy value
 C         Keep the data if the current channel is on the list
-C          IF (INDCHN(ICHAN) .NE. 0) THEN
-C             LABOVE( INDCHN(ICHAN) )=LACHAN
-C             DO IC=1,NFCOEF
-C                COEFF(IC,INDCHN(ICHAN))=FCHAN(IC)
-C             ENDDO
-C          ENDIF
-C       ENDDO
+          IF (INDCHN(ICHAN) .NE. 0) THEN
+             LABOVE( INDCHN(ICHAN) )=LACHAN
+             DO IC=1,NFCOEF
+                COEFF(IC,INDCHN(ICHAN))=FCHAN(IC)
+             ENDDO
+          ENDIF
+       ENDDO
 C
-C       CLOSE(IOUN)
+       CLOSE(IOUN)
 C
 C set to zero - to be used when no coeff file available 
-       DO I=1,MXCHAN
-          DO IC=1,NFCOEF
-             COEFF(IC,I)=0.0
-          ENDDO
-       ENDDO
+C       DO I=1,MXCHAN
+C          DO IC=1,NFCOEF
+C             COEFF(IC,I)=0.0
+C          ENDDO
+C       ENDDO
 C
 C      -------
 C      Read FX
@@ -863,33 +863,33 @@ C
 C      ------------
 C      Read non-LTE
 C      ------------
-C       OPEN(UNIT=IOUN,FILE=FNCOFN,FORM='UNFORMATTED',STATUS='OLD',
-C     $    IOSTAT=IERR)
-C       IF (IERR .NE. 0) THEN
-C          WRITE(6,1020) IERR, FNCOFN
-C          STOP
-C       ENDIF
+       OPEN(UNIT=IOUN,FILE=FNCOFN,FORM='UNFORMATTED',STATUS='OLD',
+     $    IOSTAT=IERR)
+       IF (IERR .NE. 0) THEN
+          WRITE(6,1020) IERR, FNCOFN
+          STOP
+       ENDIF
 C
-C       J=1
-C       DO I=1,MXCNTE
+       J=1
+       DO I=1,MXCNTE
 C         Read data for this frequency/channel
-C          READ(IOUN) ICHAN, FRQCHN, (COEFN(IC,J),IC=1,NNCOEF)
+          READ(IOUN) ICHAN, FRQCHN, (COEFN(IC,J),IC=1,NNCOEF)
 C
 C         Keep the data if the current channel is on the list
-C          IF (INDCHN(ICHAN) .NE. 0) THEN
-C             CLISTN(J)=ICHAN
-C             J=J + 1
-C          ENDIF
-C       ENDDO
-C       NCHNTE=J - 1
-C
-C       CLOSE(IOUN)
-C placeholder set to zero
-       DO I=1,MXCNTE
-          DO IC=1,NNCOEF
-             COEFN(IC,I)=0.0
-          ENDDO
+          IF (INDCHN(ICHAN) .NE. 0) THEN
+             CLISTN(J)=ICHAN
+             J=J + 1
+          ENDIF
        ENDDO
+       NCHNTE=J - 1
+C
+       CLOSE(IOUN)
+C placeholder set to zero
+C       DO I=1,MXCNTE
+C          DO IC=1,NNCOEF
+C             COEFN(IC,I)=0.0
+C          ENDDO
+C       ENDDO
 C      ---------------------------------------------
 C      write(6,*) 'rdcoef: read all coefficients'
 C      ---------------------------------------------

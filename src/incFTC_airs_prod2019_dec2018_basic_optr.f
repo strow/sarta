@@ -429,7 +429,7 @@ C      Used in part by modules:
        INTEGER MXOWLY ! number of OPTRAN water layers (300)
        INTEGER NOWAVG ! # of OPTRAN water average profile values (4)
        INTEGER NH2O   ! number of OPTRAN H2O predictors/coefs (9)
-       PARAMETER(MXCHNW = 2645)
+       PARAMETER(MXCHNW = 754)
        PARAMETER(MXOWLY = 300)
        PARAMETER(NOWAVG = 4)
        PARAMETER(  NH2O = 9)
@@ -487,7 +487,7 @@ C     $ '/asl/data/sarta_database/Data_AIRS_apr08/Coef/set1_m130x385.dat')
        PARAMETER(FNCOF7=
      $ '/home/chepplew/data/sarta/prod_2019/airs_l1c/dec2018/dbase/Coef/set7.dat')
        PARAMETER(FNOPTR=
-     $ '/home/chepplew/data/sarta/prod_2019/airs_l1c/dec2018/dbase/Coef/optran.dat')
+     $ '/home/chepplew/data/sarta/prod_2019/airs_l1c/dec2018/dbase/Coef/optran_fmw.dat')
 C
        PARAMETER(FNCO2 =
      $ '/home/chepplew/data/sarta/prod_2019/airs_l1c/dec2018/dbase/Coef/co2.dat')

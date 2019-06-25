@@ -277,7 +277,7 @@ C         Initialize downwelling thermal terms
           RDOWN=0.0
           TDOWNN=1.0
 C
-C         Loop upward over the layers
+C         Loop DOWNWARD over the layers
           DO L=LBOT,1,-1
 C            Calculate the Planck function for this layer
              RPLNCK(L)=C1V3/( EXP( C2V/TP(L) ) - 1.0 )
@@ -290,6 +290,7 @@ C            Calc the downward radiance from this layer
              TDOWNF=TDOWNN*TAU(L,I)
 C$$$             TDOWNF=TDOWNN*TAU(L,I)**SECFAC
              RDOWN = RDOWN + ( RPLNCK(L)*(TDOWNN - TDOWNF) )
+C$$$             RDOWN = RDOWN + ( RPLNCK(L)*(TDOWNF - TDOWNN) )
              TDOWNN=TDOWNF
 
 ccc
@@ -320,10 +321,11 @@ C         ----------------------------------
      $          ( COEFF(5,I)*TAUZ(I)/SEC ) +
      $          ( COEFF(6,I)*TAUZ(I)/RDOWN )
 C            Truncate F at limits as needed
-             F = MAX( MIN(F,2.09), 0.696 )
+c$$$             F = MAX( MIN(F,2.09), 0.696 )
           ENDIF
+C          write(6,'(I6,X,ES14.7)') I,F
           RTHERM=RHOTHR(I)*PI*RDOWN*F*TAUZ(I)
-C$$$          RTHERM=RHOTHR(I)*PI*RDOWN*TAUZ(I)
+C          RTHERM=RHOTHR(I)*PI*RDOWN*TAUZ(I)
 C
 C         --------------------------------------------------
 C         Add on the reflected solar and downwelling thermal
@@ -333,7 +335,8 @@ c for testing
 c      RTHERM=0.0
 c      RSUN=0.0
 ccc
-          RAD(I)=RAD(I) + RSUN + RTHERM
+C$$$          RAD(I)=RAD(I) + RSUN + RTHERM
+         RAD(I)=RDOWN
 C
 C         ------------------------------------------
 C         Convert radiance to brightness temperature

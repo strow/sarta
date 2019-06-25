@@ -369,27 +369,27 @@ C      ----------------
 C      For variable CO2
 C      ----------------
 C      Used in part by modules: 12, 11, 10, 9, 7, 6, 5, 2b, 1b, 2a
-       INTEGER MXCHNC ! max # of channels with CO2 pert coefs (563)
+       INTEGER MXCHNC ! max # of channels with CO2 pert coefs (1632)
        INTEGER NCO2   ! number of CO2 pert predictors/coefs (5)
-       PARAMETER(MXCHNC = 567)
+       PARAMETER(MXCHNC = 1632)
        PARAMETER(  NCO2 = 5)
 C
 C
 C      ----------------
 C      For variable SO2
 C      ----------------
-       INTEGER MXCHNS ! max # of channels with SO2 pert coefs (204)
+       INTEGER MXCHNS ! max # of channels with SO2 pert coefs (602)
        INTEGER   NSO2 ! number of SO2 coefficients
-       PARAMETER(MXCHNS = 212)
+       PARAMETER(MXCHNS = 602)
        PARAMETER(  NSO2 = 4)
 C
 C
 C      -----------------
 C      For variable HNO3
 C      -----------------
-       INTEGER MXCHNH ! max # of channels with HNO3 pert coefs (253)
+       INTEGER MXCHNH ! max # of channels with HNO3 pert coefs (383)
        INTEGER  NHNO3 ! number of HNO3 coefficients
-       PARAMETER(MXCHNH = 253)
+       PARAMETER(MXCHNH = 383)
        PARAMETER( NHNO3 = 4)
 C
 C
@@ -398,7 +398,7 @@ C      For variable N2O
 C      -----------------
        INTEGER MXCHNN ! max # of channels with N2O pert coefs (173)
        INTEGER   NN2O ! number of N2O coefficients
-       PARAMETER(MXCHNN = 181)
+       PARAMETER(MXCHNN = 586)
        PARAMETER(  NN2O = 7)
 C
 C      -----------------
@@ -408,7 +408,7 @@ C      -----------------
        INTEGER   NNH3 ! number of NH3 coefficients (4)
 C       PARAMETER(MXCHNA = 1)        ! placeholder when not using this set
 C       PARAMETER( NNH3 = 1)         ! placeholder when not using this set
-       PARAMETER(MXCHNA = 3342)
+       PARAMETER(MXCHNA = 1422)
        PARAMETER(  NNH3 = 4)
 C
 C      -----------------
@@ -429,7 +429,7 @@ C      Used in part by modules:
        INTEGER MXOWLY ! number of OPTRAN water layers (300)
        INTEGER NOWAVG ! # of OPTRAN water average profile values (4)
        INTEGER NH2O   ! number of OPTRAN H2O predictors/coefs (9)
-       PARAMETER(MXCHNW = 2645)
+       PARAMETER(MXCHNW = 754)
        PARAMETER(MXOWLY = 300)
        PARAMETER(NOWAVG = 4)
        PARAMETER(  NH2O = 9)
@@ -441,10 +441,10 @@ C      -----------
        INTEGER NNCOEF ! # of coefs for non-LTE (7)
        INTEGER NTEBOT ! bottom layer for CO2TOP calc
        REAL CO2NTE ! ref CO2 mixing ratio for non-LTE coefs (ppmv)
-       PARAMETER(MXCNTE = 70)
+       PARAMETER(MXCNTE = 200)
        PARAMETER(NNCOEF = 7)
        PARAMETER(NTEBOT = 10)
-       PARAMETER(CO2NTE = 370.0)
+       PARAMETER(CO2NTE = 400.0)
 C
 C      ---------
 C      Filenames
@@ -487,16 +487,17 @@ C     $ '/asl/data/sarta_database/Data_AIRS_apr08/Coef/set1_m130x385.dat')
        PARAMETER(FNCOF7=
      $ '/home/chepplew/data/sarta/prod_2019/airs_l1c/dec2018/dbase/Coef/set7.dat')
        PARAMETER(FNOPTR=
-     $ '/home/chepplew/data/sarta/prod_2019/airs_l1c/dec2018/dbase/Coef/optran.dat')
+     $ '/home/chepplew/data/sarta/prod_2019/airs_l1c/dec2018/dbase/Coef/optran_fmw.dat')
 C
        PARAMETER(FNCO2 =
-     $ '/home/chepplew/data/sarta/prod_2019/airs_l1c/dec2018/dbase/Coef/co2.dat')
+     $ '/home/chepplew/data/sarta/prod_2019/airs_l1c/dec2018/dbase/Coef/co2_5term_2.dat')
+C     $ '/asl/data/sarta_database/Data_AIRS_apr08/Coef/CO2_5term_m140x385.dat')
        PARAMETER(FNSO2 =
      $ '/home/chepplew/data/sarta/prod_2019/airs_l1c/dec2018/dbase/Coef/so2.dat')
        PARAMETER(FNHNO3 =
      $ '/home/chepplew/data/sarta/prod_2019/airs_l1c/dec2018/dbase/Coef/hno3.dat')
        PARAMETER(FNN2O =
-     $ '/home/chepplew/data/sarta/prod_2019/airs_l1c/dec2018/dbase/Coef/n2og4.dat')
+     $ '/home/chepplew/data/sarta/prod_2019/airs_l1c/dec2018/dbase/Coef/n2o.dat')
        PARAMETER(FNNH3 =
      $ '/home/chepplew/data/sarta/prod_2019/airs_l1c/dec2018/dbase/Coef/nh3.dat')
        PARAMETER(FNHDO =
@@ -513,7 +514,7 @@ C
        PARAMETER(FNTHER=
      $ '/home/chepplew/data/sarta/prod_2019/airs_l1c/dec2018/dbase/Coef/therm.dat')
        PARAMETER(FNCOFN=
-     $ '/home/chepplew/data/sarta/prod_2019/airs_l1c/dec2018/dbase/Coef/nte.dat')
+     $ '/home/chepplew/data/sarta/prod_2019/airs_l1c/dec2018/dbase/Coef/nte_7term.dat')
 C
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
