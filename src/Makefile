@@ -35,6 +35,12 @@ apr08_m140_pge_v6_tunmlt:
 	mv a.out ../bin/apr08_m140_pge_v6_tunmlt
 
 # AIRS L1C
+airs_may19:
+	rm -f *.o incFTC.f
+	ln -s incFTC_airs_may19.f incFTC.f
+	make -f make_sarta
+	mv a.out ../bin/airs_may19
+
 airs_basic:
 	rm -f *.o incFTC.f
 	ln -s incFTC_airs_prod2019_dec2018_basic_optr_co2.f  incFTC.f
