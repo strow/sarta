@@ -65,11 +65,18 @@ crisg4_may18_nh3:
 
 ######  -------  IASI  -----------
 # IASI basic 7-set w/continuum
-iasi_mar2019:
+iasi_jun19_test:
 	rm -f *.o incFTC.f
-	ln -s incFTC_iasi_dec2018_all_clh.f incFTC.f
+	ln -s incFTC_iasi_jun19_test.f incFTC.f
 	make -f make_sarta
-	mv a.out ../bin/iasi_mar2019_test
+	mv a.out ../bin/iasi_jun19_test
+
+# IASI w/trace gases and updated refl thermal (HDO not computed)
+iasi_jun19:
+	rm -f *.o incFTC.f
+	ln -s incFTC_iasi_jun19.f incFTC.f
+	make -f make_sarta
+	mv a.out ../bin/iasi_jun19
 
 #----------------------------------------------------------------------------------------
 # File management
@@ -77,3 +84,5 @@ iasi_mar2019:
 
 clean:
 	rm -f *.o
+	rm -f *_genmod.f90 *_genmod.mod
+
