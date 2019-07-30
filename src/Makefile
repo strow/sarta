@@ -41,6 +41,14 @@ m140_icebaumGHM_waterdrop_desertdust:
 	make -f make_sarta_pclsam
 	mv a.out ../bin/sarta_apr08_m140_iceGHMbaum_waterdrop_desertdust_slabcloud_hg3X
 
+# AIRS for L1C May 2019
+airs_cloudy_may19:
+	rm -f *.o incFTC.f fnmie.f
+	ln -s incFTC_airs_may19.f incFTC.f
+	ln -s fnmie_iceGHMbaum_waterdrop_desertdust.f fnmie.f
+	make -f make_sarta_pclsam
+	mv a.out ../bin/sarta_cloudy_airs_may19
+
 #----------------------------------------------------------------------------------------
 # Builds clear
 #----------------------------------------------------------------------------------------

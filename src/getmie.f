@@ -153,7 +153,8 @@ C***********************************************************************
 C      Initialize variables
        INDMIE=-9999
        IERR=2
-       IMIN=1E+16
+C$$$       IMIN=1E+16
+       IMIN=1E+6
 C
        IF (CTYPE .GT. 100) THEN
 
