@@ -5,7 +5,7 @@ C    University of Maryland Baltimore County [UMBC]
 C
 C    AIRS
 C
-C    RDPROF version with SO2, HNO3, & N2O trace gases
+C    RDPROF version with SO2, HNO3, N2O, NH3 trace gases
 C
 !F77====================================================================
 
@@ -20,7 +20,7 @@ C    Read in an AIRS FTC formatted profile. Temperature, amounts, etc.
 
 !CALL PROTOCOL:
 C    RDPROF ( IOUN, PFILE, PNAM, ALT, PRES, TEMP, FAMNT, WAMNT, OAMNT,
-C       CAMNT, MAMNT, SAMNT, HAMNT, NAMNT )
+C       CAMNT, MAMNT, SAMNT, HAMNT, NAMNT, AAMNT )
 
 
 !INPUT PARAMETERS:
@@ -45,6 +45,7 @@ C    CHAR*40   PNAM    profile name/comment        none
 C    REAL arr  SAMNT   SO2 amount                  k.mol/cm2
 C    REAL arr  TEMP    temperature                 K
 C    REAL arr  WAMNT   water amount                k.mol/cm2
+C    REAL arr  AAMNT   ammonia (NH3) amount        k.mol/cm2
 
 
 !INPUT/OUTPUT PARAMETERS:
@@ -122,13 +123,14 @@ C    Jun 23 1995  Scott Hannon    Correct some comments
 C    Jul  3 1995  Scott Hannon    Added parameter DZ for layer thickness
 C     3 Feb 1997  Scott Hannon    Add IOUN, CAMNT & MAMNT
 C    18 May 2005  Scott Hannon    Add HNO3 & N2O based on SO2 code
-
+C    10 May 2018  C Hepplewhite   Add NH3
 
 !END====================================================================
 
 C      =================================================================
        SUBROUTINE RDPROF (IOUN, PFILE, PNAM, ALT, DZ, PRES, TEMP,
-     $    FAMNT, WAMNT, OAMNT, CAMNT, MAMNT, SAMNT, HAMNT, NAMNT)
+     $    FAMNT, WAMNT, OAMNT, CAMNT, MAMNT, SAMNT, HAMNT, NAMNT,
+     $    AAMNT)
 C      =================================================================
 C
 C-----------------------------------------------------------------------
@@ -170,6 +172,7 @@ C      Output
        REAL  SAMNT(MAXLAY)
        REAL  HAMNT(MAXLAY)
        REAL  NAMNT(MAXLAY)
+       REAL  AAMNT(MAXLAY)
 
 
 C-----------------------------------------------------------------------
@@ -200,7 +203,7 @@ C      ---------------------
      $    IOSTAT=IERR)
        IF (IERR .NE. 0) THEN
           WRITE(6,1010) IERR, PFILE
- 1010     FORMAT('Error ',I5,' openning profile file:',/,A80)
+ 1010     FORMAT('Error ',I5,' opening profile file:',/,A80)
           STOP
        ENDIF
 C
@@ -231,7 +234,7 @@ C         Layer number, altitude, thickness, pressure, temperature,
 C         fixed, H2O, O3, CO, and CH4 amounts
           READ(IOUN,*) IJUNK, ALT(L), DZ(L), PRES(L), TEMP(L),
      $       FAMNT(L), WAMNT(L), OAMNT(L), CAMNT(L), MAMNT(L),
-     $       SAMNT(L), HAMNT(L), NAMNT(L)
+     $       SAMNT(L), HAMNT(L), NAMNT(L), AAMNT(L)
        ENDDO
 C
 C      ----------------------

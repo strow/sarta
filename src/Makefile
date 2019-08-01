@@ -47,7 +47,7 @@ airs_cloudy_may19:
 	ln -s incFTC_airs_may19.f incFTC.f
 	ln -s fnmie_iceGHMbaum_waterdrop_desertdust.f fnmie.f
 	make -f make_sarta_pclsam
-	mv a.out ../bin/sarta_cloudy_airs_may19
+	mv a.out ../bin/airs_l1c_2834_cloudy_may19
 
 #----------------------------------------------------------------------------------------
 # Builds clear
@@ -93,3 +93,4 @@ iasi_may09_wcon_nte:
 
 clean:
 	rm -f *.o
+	rm -f *_genmod.f90 *_genmod.mod

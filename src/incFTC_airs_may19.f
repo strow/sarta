@@ -417,9 +417,9 @@ C      For variable HDO (not used this version)
 C      -----------------
        INTEGER MXCHND ! max # of channels with HDO pert coefs (2075)
        INTEGER   NHDO ! number of HDO coefficients (4)
-C       PARAMETER(MXCHND = 1)        ! placeholder when not using this set
+       PARAMETER(MXCHND = 1)        ! placeholder when not using this set
 C       PARAMETER( NHDO = 1)         ! placeholder when not using this set
-       PARAMETER(MXCHND = 1843)
+C       PARAMETER(MXCHND = 1843)
        PARAMETER(  NHDO = 8)
 C
 C      ----------------------

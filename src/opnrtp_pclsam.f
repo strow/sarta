@@ -20,7 +20,7 @@ C    Open and check input RTP file.
 
 !CALL PROTOCOL:
 C    OPNRTP(FIN, VCLOUD, LRHOT, PTYPE, NCHAN, FCHAN, LSTCHN, INDCHN,
-C    IH2O, IO3, ICO, ICH4, ICO2, ISO2, IHNO3, IN2O,
+C    IH2O, IO3, ICO, ICH4, ICO2, ISO2, IHNO3, IN2O, INH3,
 C    IOPCI, HEAD, HATT, PATT, LCO2PM)
 
 
@@ -49,6 +49,7 @@ C    INTEGER   ICO2    index of CO2 in gamnt       none
 C    INTEGER   ISO2    index of SO2 in gamnt       none
 C    INTEGER   IHNO3   index of HNO3 in gamnt      none
 C    INTEGER   IN2O    index of N2O in gamnt       none
+C    INTEGER   INH3    index of NH3 in gamnt	   none
 C    INTEGER   IOPCI   input RTP file I/O unit     none
 C    INTEGER   IOPCO   output RTP file I/O unit    none
 C    STRUCT    HEAD    RTP header structure        various
@@ -114,7 +115,7 @@ C 24 Oct 2008 Scott Hannon      Minor update for rtpV201
 C 12 May 2009 Scott Hannon      Change VCLOUD to VTUNNG in "sarta" HATT;
 C                               add "clouds" HATT for VCLOUD; add input
 C                               argument VCLOUD; add IC2
-
+C    Jul 2019 C Hepplewhite     Add NH3
 
 !END====================================================================
 
@@ -122,7 +123,7 @@ C                               argument VCLOUD; add IC2
 C      =================================================================
        SUBROUTINE OPNRTP(FIN, VCLOUD, LRHOT,
      $    PTYPE, NCHAN, FCHAN, LSTCHN, INDCHN, IH2O, IO3, ICO, ICH4,
-     $    ICO2, ISO2, IHNO3, IN2O, IOPCI, HEAD, HATT, PATT, LCO2PM)
+     $    ICO2, ISO2, IHNO3, IN2O, INH3, IOPCI, HEAD, HATT, PATT, LCO2PM)
 C      =================================================================
 
 
@@ -168,6 +169,7 @@ C      Output
        INTEGER   ISO2          ! index of SO2 in gamnt
        INTEGER  IHNO3          ! index of HNO3 in gamnt
        INTEGER   IN2O          ! index of N2O in gamnt
+       INTEGER   INH3          ! index of NH3 in gamnt
        INTEGER  IOPCI  ! I/O unit ("profile channel") for input file
 C
 C      Structures (see "rtpdefs.f")
@@ -288,6 +290,7 @@ C      -----------
        ICH4 =-1
        ISO2 =-1
        IHNO3=-1
+       INH3 =-1
 C
 C      Loop over gases
        NGASI=HEAD%ngas
@@ -327,6 +330,10 @@ C         Exception: CO2 will use CO2PPM
           ENDIF
           IF (GLISTI(I) .EQ.  9) THEN
              ISO2=I
+             LNEED=.TRUE.
+          ENDIF
+          IF (GLISTI(I) .EQ. 11) THEN
+             INH3=I
              LNEED=.TRUE.
           ENDIF
           IF (GLISTI(I) .EQ. 12) THEN
@@ -376,6 +383,9 @@ C      Print a warning if a trace gas is not present
        ENDIF
        IF (ISO2 .LT. 1) THEN
           WRITE(IOERR,1035) 9, 'SO2 '
+       ENDIF
+       IF (INH3 .LT. 1) THEN
+          WRITE(IOERR,1035) 11, 'NH3 '
        ENDIF
        IF (IHNO3 .LT. 1) THEN
           WRITE(IOERR,1035) 12, 'HNO3'
