@@ -21,9 +21,9 @@ C    fast transmittance coefficients.
 
 !CALL PROTOCOL:
 C    CALT6( INDCHN, NLAY, NCHN6, CLIST6, COEF6,
-C       FIXMUL, CONPD6, FPRED6, WPRED6, OPRED6, TRCPRD,
+C       FIXMUL, CONPD6, FPRED6, WPRED6, OPRED6, DPRED, TRCPRD,
 C       INDCO2, COFCO2, CO2MLT, INDSO2, COFSO2, SO2MLT,
-C       INDN2O, COFN2O, N2OMLT, TAU, TAUZ )
+C       INDN2O, COFN2O, N2OMLT, INDHDO, COFHDO, HDOMLT, TAU, TAUZ )
 
 
 !INPUT PARAMETERS:
@@ -38,6 +38,7 @@ C    REAL arr  FIXMUL  fixed amount mult (~1.0)    none
 C    REAL arr  CONPD6  set6 H2O continuum preds    various
 C    REAL arr  FPRED6  set6 fixed gases preds      various
 C    REAL arr  WPRED6  set6 water predictors       various
+C    REAL arr  DPRED   HDO predictors              various
 C    REAL arr  OPRED6  set6 ozone predictors       various
 C    REAL arr  TRCPRD  trace gas pert predictors   various
 C    INT arr   INDCO2  CO2 pert chan indices       none
@@ -50,7 +51,9 @@ C    REAL arr  SO2MLT  SO2 pert multiplier         none
 C    INT arr   INDN2O  N2O pert chan indices       none
 C    REAL arr  COFN2O  N2O pert coefs              various
 C    REAL arr  N2OMLT  N2O pert multiplier         none
-
+C    INT arr   INDHDO  HDO pert chan indices       none
+C    REAL arr  COFHDO  HDO pert coefs              various
+C    REAL arr  HDOMLT  HDO pert multiplier         none
 
 !OUTPUT PARAMETERS:
 C    type      name    purpose                     units
@@ -149,14 +152,15 @@ C                            and from (1 x n) to (m x n) array;
 C                            delete func QIKEXP & arguments BLMULT
 C                            & LTAU & XZ.
 C 02 Sep 2008 Scott Hannon   Add 5th CO2 predictor
+C 1  Feb 2019 C Hepplewhite  Add HDO
 
 !END====================================================================
 
 C      =================================================================
        SUBROUTINE XCALT6 ( INDCHN, NLAY, NCHN6, CLIST6,
-     $    COEF6, FIXMUL, CONPD6, FPRED6, WPRED6, OPRED6, TRCPRD,
+     $    COEF6, FIXMUL, CONPD6, FPRED6, WPRED6, OPRED6, DPRED, TRCPRD,
      $    INDCO2, COFCO2, CO2MLT, INDSO2, COFSO2, SO2MLT,
-     $    INDN2O, COFN2O, N2OMLT, TAU, TAUZ)
+     $    INDN2O, COFN2O, N2OMLT, INDHDO, COFHDO, HDOMLT, TAU, TAUZ)
 C      =================================================================
 
 C-----------------------------------------------------------------------
@@ -190,6 +194,7 @@ C      Input
        REAL CONPD6( N6CON,MAXLAY)
        REAL FPRED6( N6FIX,MAXLAY)
        REAL WPRED6( N6H2O,MAXLAY)
+       REAL  DPRED(  NHDO,MAXLAY)
        REAL OPRED6(  N6O3,MAXLAY)
        REAL TRCPRD(NTRACE,MAXLAY)
        INTEGER INDCO2(MXCHAN)
@@ -201,6 +206,9 @@ C      Input
        INTEGER INDN2O(MXCHAN)
        REAL COFN2O(  NN2O,MAXLAY,MXCHNN)
        REAL N2OMLT(MAXLAY)
+       INTEGER INDHDO(MXCHAN)
+       REAL COFHDO(  NHDO,MAXLAY,MXCHND)
+       REAL HDOMLT(MAXLAY)
 C
 C      Output
        REAL    TAU(MAXLAY,MXCHAN)
@@ -215,11 +223,14 @@ C-----------------------------------------------------------------------
        INTEGER   ILAY
        INTEGER   IN2O
        INTEGER   ISO2
+       INTEGER   IHDO
        INTEGER      J
        REAL     DK
        REAL  DKCO2
        REAL  DKN2O
        REAL  DKSO2
+       REAL  DKHDO
+       REAL   KHDO
        REAL   KCON
        REAL   KFIX
        REAL KLAYER
@@ -229,7 +240,7 @@ C-----------------------------------------------------------------------
        LOGICAL   LCO2
        LOGICAL   LN2O
        LOGICAL   LSO2
-
+       LOGICAL   LHDO
 
 C-----------------------------------------------------------------------
 C      SAVE STATEMENTS
@@ -273,6 +284,14 @@ C         Determine whether or not to do variable N2O
              LN2O=.TRUE.
           ELSE
              LN2O=.FALSE.
+          ENDIF
+C
+C         Determine whether or not to do variable HDO calc
+          IHDO=INDHDO( CLIST6(I) )
+          IF (IHDO .GT. 0) THEN
+             LHDO=.TRUE.
+          ELSE
+             LHDO=.FALSE.
           ENDIF
 C
 C         Initialize the layer-to-space optical depth
@@ -350,6 +369,27 @@ C
                 KOZO=1.0E+1
              ENDIF
 C
+C            --------------------------
+C            Compute the HDO abs coef
+C            --------------------------
+             IF (LHDO) THEN
+                KHDO=( COFHDO(1,ILAY,IHDO)*DPRED( 1,ILAY) ) +
+     $               ( COFHDO(2,ILAY,IHDO)*DPRED( 2,ILAY) ) +
+     $               ( COFHDO(3,ILAY,IHDO)*DPRED( 3,ILAY) ) +
+     $               ( COFHDO(4,ILAY,IHDO)*DPRED( 4,ILAY) ) +
+     $               ( COFHDO(5,ILAY,IHDO)*DPRED( 5,ILAY) ) +
+     $               ( COFHDO(6,ILAY,IHDO)*DPRED( 6,ILAY) ) +
+     $               ( COFHDO(7,ILAY,IHDO)*DPRED( 7,ILAY) ) +
+     $               ( COFHDO(8,ILAY,IHDO)*DPRED( 8,ILAY) )
+C     $               ( COFHDO(9,ILAY,IHDO)*DPRED( 9,ILAY) ) +
+C     $               ( COFHDO(10,ILAY,IHDO)*DPRED(10,ILAY) ) +
+C     $               ( COFHDO(11,ILAY,IHDO)*DPRED(11,ILAY) )
+C
+C                IF (KHDO .LT. 0.0E+0) KHDO=0.0E+0
+                KHDO=KHDO*HDOMLT(ILAY)
+             ELSE
+                KHDO=0.0
+             ENDIF
 C
 C            ----------------------------------
 C            Calc the total layer transmittance
@@ -416,6 +456,8 @@ c this block for testing
 c      DKCO2=0.0
 c      DKSO2=0.0
 c      DKN2O=0.0
+C       DKHDO=0.0
+       KHDO=0.0
 ccc
 C            Limit -DK so it can never totally totally cancel KFIX
              DK = DKCO2 + DKSO2 + DKN2O
@@ -424,7 +466,7 @@ C            Limit -DK so it can never totally totally cancel KFIX
              ENDIF
 
 C            Calc total layer optical depth
-             KLAYER = KCON + KFIX + KWAT + KOZO + DK
+             KLAYER = KCON + KFIX + KWAT + KOZO + KHDO + DK
              TAU(ILAY,J)=KLAYER
 C
 C            Calc layer-to-space optical depth

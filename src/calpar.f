@@ -5,7 +5,7 @@ C    University of Maryland Baltimore County [UMBC]
 C
 C    AIRS
 C
-C    CALPAR
+C    CALPAR version with NH3. HDO
 C
 !F77====================================================================
 
@@ -20,14 +20,16 @@ C    dependent variables for a profile.
 
 
 !CALL PROTOCOL:
-C    CALPAR (LBOT, RTEMP,RFAMNT,RWAMNT,ROAMNT,RCAMNT,RMAMNT,RNAMNT,
-C  $               PTEMP,PFAMNT,PWAMNT,POAMNT,PCAMNT,PMAMNT,PNAMNT,
-C  $          RES,SECANG,  ALAT,    FX, DZREF,
-C  $         LCO2,  LN2O,  LSO2, LHNO3,LCO2PM,FIXMUL,CONPRD,
-C  $       FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
-C  $       WPRED1,WPRED2,WPRED3,WPRED4,WPRED5,WPRED6,WPRED7,
-C  $       OPRED1,OPRED2,       OPRED4,OPRED5,OPRED6,OPRED7,
-C  $       MPRED3,CPRED4,TRCPRD,CO2MLT,SO2MLT,HNOMLT,N2OMLT )
+C    CALPAR (LBOT, RTEMP,RFAMNT,RWAMNT,ROAMNT,RCAMNT,RMAMNT,RSAMNT,
+C  $    RHAMNT,RNAMNT,RAAMNT, PTEMP,PFAMNT,PWAMNT,POAMNT,PCAMNT,
+C  $    PMAMNT,PSAMNT,PHAMNT,PNAMNT,PAAMNT,
+C  $     PRES,  SECANG, ALAT,  FX,   DZREF,
+C  $     LCO2,  LN2O,  LSO2,  LNH3, LHDO, LHNO3,LCO2PM,FIXMUL,CONPRD,
+C  $     FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
+C  $     WPRED1,WPRED2,WPRED3,WPRED4,WPRED5,WPRED6,WPRED7,
+C  $     OPRED1,OPRED2,       OPRED4,OPRED5,OPRED6,OPRED7,
+C  $     MPRED3,CPRED4,TRCPRD,
+C  $     CO2MLT,SO2MLT,HNOMLT,N2OMLT,NH3MLT,HDOMLT )
 
 
 !INPUT PARAMETERS:
@@ -38,6 +40,8 @@ C    LOGICAL   LCO2    CO2 profile switch          none
 C    LOGICAL   LN2O    N2O profile switch          none
 C    LOGICAL   LSO2    SO2 profile switch          none
 C    LOGICAL   LHNO3   HNO3 profile switch         none
+C    LOGICAL   LNH3    NH3 profile switch          none
+C    LOGICAL   LHDO    HDO profile switch          none
 C    LOGICAL   LCO2PM  CO2 ppmv profile switch     none
 C    REAL      ALAT    profile latitude            degrees (-90 to +90)
 C    REAL arr  DZREF   ref prof layer thickness    meters
@@ -51,6 +55,7 @@ C    REAL arr  PNAMNT  profile N2O amount          kiloMoles/cm^2
 C    REAL arr  POAMNT  profile ozone amount        kiloMoles/cm^2
 C    REAL arr  PRES    layer pressures             atm
 C    REAL arr  PSAMNT  profile SO2 amount          kiloMoles/cm^2
+C    REAL arr  PAAMNT  prof ammonia (NH3) amnt     kiloMoles/cm^2
 C    REAL arr  PWAMNT  profile water amount        kiloMoles/cm^2
 C    REAL arr  RTEMP   reference temperature       K
 C    REAL arr  RCAMNT  ref carbon monoxide amount  kiloMoles/cm^2
@@ -60,6 +65,7 @@ C    REAL arr  RMAMNT  reference methane amount    kiloMoles/cm^2
 C    REAL arr  RNAMNT  reference N2O amount        kiloMoles/cm^2
 C    REAL arr  ROAMNT  reference ozone amount      kiloMoles/cm^2
 C    REAL arr  RSAMNT  reference SO2 amount        kiloMoles/cm^2
+C    REAL arr  RAAMNT  ref ammonia (NH3) amount    kiloMoles/cm^2
 C    REAL arr  RWAMNT  reference water amount      kiloMoles/cm^2
 C    REAL arr  SECANG  secant of path angle        none
 
@@ -80,6 +86,8 @@ C    REAL arr  FPRED7  fixed predictors set7       various
 C    REAL arr  HNOMLT  HNO3 multiplier             none
 C    REAL arr  MPRED3  methane predictors set3     various
 C    REAL arr  N2OMLT  N2O multiplier              none
+C    REAL arr  NH3MLT  NH3 multiplier              none
+C    REAL arr  HDOMLT  HDO multiplier              none
 C    REAL arr  OPRED1  ozone predictors set1       various
 C    REAL arr  OPRED2  ozone predictors set2       various
 C    REAL arr  OPRED4  ozone predictors set4       various
@@ -340,20 +348,22 @@ C                               perturbation multiplier calcs; add
 C                               LCO2PM to allow CO2 ppmv profile
 C 14 May 2008 Scott Hannon   Add no prof CO2MLT calc; add CO2TOP and
 C                               CO2PPM to call; add CO2TOP calc
+C 10 May 2018 C Hepplewhite  Add NH3
+C  1 Feb 2019 C Hepplewhite  Add HDO
 
 !END====================================================================
 
 C      =================================================================
        SUBROUTINE CALPAR ( LBOT,
      $    RTEMP,RFAMNT,RWAMNT,ROAMNT,RCAMNT,RMAMNT,RSAMNT,RHAMNT,RNAMNT,
-     $    PTEMP,PFAMNT,PWAMNT,POAMNT,PCAMNT,PMAMNT,PSAMNT,PHAMNT,PNAMNT,
-     $     PRES,SECANG,  ALAT,    FX, DZREF,
-     $     LCO2,  LN2O,  LSO2, LHNO3,LCO2PM,CO2PPM,CO2TOP,
-     $   FIXMUL,CONPRD,
+     $    RAAMNT,PTEMP,PFAMNT,PWAMNT,POAMNT,PCAMNT,PMAMNT,PSAMNT,PHAMNT,
+     $    PNAMNT,PAAMNT,PRES,SECANG,  ALAT,    FX, DZREF,
+     $     LCO2,  LN2O,  LSO2, LNH3,  LHDO, LHNO3,LCO2PM,CO2PPM,CO2TOP,
+     $   FIXMUL,CONPRD,DPRED, 
      $   FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
      $   WPRED1,WPRED2,WPRED3,WPRED4,WPRED5,WPRED6,WPRED7,
      $   OPRED1,OPRED2,       OPRED4,OPRED5,OPRED6,OPRED7,
-     $   MPRED3,CPRED4,TRCPRD,CO2MLT,SO2MLT,HNOMLT,N2OMLT )
+     $   MPRED3,CPRED4,TRCPRD,CO2MLT,SO2MLT,HNOMLT,N2OMLT,NH3MLT,HDOMLT)
 C      =================================================================
 
 
@@ -389,6 +399,7 @@ C      Input
        REAL RSAMNT(MAXLAY)
        REAL RHAMNT(MAXLAY)
        REAL RNAMNT(MAXLAY)
+       REAL RAAMNT(MAXLAY)
        REAL  PTEMP(MAXLAY)
        REAL PFAMNT(MAXLAY)
        REAL PWAMNT(MAXLAY)
@@ -398,6 +409,7 @@ C      Input
        REAL PSAMNT(MAXLAY)
        REAL PHAMNT(MAXLAY)
        REAL PNAMNT(MAXLAY)
+       REAL PAAMNT(MAXLAY)
        REAL   PRES(MAXLAY)
        REAL SECANG(MAXLAY)
        REAL   ALAT
@@ -406,6 +418,8 @@ C      Input
        LOGICAL LCO2
        LOGICAL LN2O
        LOGICAL LSO2
+       LOGICAL LNH3
+       LOGICAL LHDO
        LOGICAL LHNO3
        LOGICAL LCO2PM
        REAL CO2PPM
@@ -434,6 +448,7 @@ C      Output
        REAL OPRED5(  N5O3,MAXLAY)
        REAL OPRED6(  N6O3,MAXLAY)
        REAL OPRED7(  N7O3,MAXLAY)
+       REAL  DPRED(  NHDO,MAXLAY)
        REAL MPRED3( N3CH4,MAXLAY)
        REAL CPRED4(  N4CO,MAXLAY)
        REAL TRCPRD(NTRACE,MAXLAY)
@@ -441,6 +456,8 @@ C      Output
        REAL SO2MLT(MAXLAY)
        REAL HNOMLT(MAXLAY)
        REAL N2OMLT(MAXLAY)
+       REAL NH3MLT(MAXLAY)
+       REAL HDOMLT(MAXLAY)
 
 
 C-----------------------------------------------------------------------
@@ -483,6 +500,11 @@ C-----------------------------------------------------------------------
        REAL WJUNKS
        REAL WJUNKZ
        REAL WJUNK4
+       REAL DJUNKA
+       REAL DJUNKR
+       REAL DJUNKS
+       REAL DJUNKZ
+       REAL DJUNK4
        REAL OJUNKA
        REAL OJUNKR
        REAL OJUNKZ
@@ -543,6 +565,7 @@ C      Initialize the sum terms to zero
        TMZ=0.0E+0
        CO2TOP=0.0E+0
 C
+       if (DEBUG) write(6,'(A,X,L3,X,ES11.3)') 'calpar: LCO2PM,CO2PPM ',LCO2PM,CO2PPM
 C      --------------------
 C      Loop over the layers
 C      --------------------
@@ -611,6 +634,9 @@ C         Methane terms
           MZREF=MZREF + PDP*RMAMNT(L)
           MZ=MZ + PDP*PMAMNT(L)
           AZ_M=MZ/MZREF
+C
+C         HDO terms
+C         use water terms - but see below
 C
 C         ----------------------
 C         Load up the predictors
@@ -860,6 +886,29 @@ C         ---------------
           CONPRD(6,L)=CONPRD(1,L)/TJUNKS
           CONPRD(7,L)=WJUNKA
 C
+C         ---------------
+C         HDO
+C         ---------------
+        if (DEBUG) then
+          IF(L .EQ. 96) write(6,'(A,X,I4,X,F6.2)') 'calpar: L,HDOFCT ',L,HDOFCT
+        endif
+          DJUNKA=SECANG(L)*A_W      ! *(1 - HDOFCT)
+          DJUNKR=SQRT( DJUNKA )
+          DJUNKS=DJUNKA*DJUNKA
+          DJUNKZ=DJUNKA*A_W/AZ_W    ! *(1 - HDOFCT)
+          DJUNK4=SQRT( DJUNKR )
+C
+          DPRED( 1,L)=DJUNKA
+C          DPRED( 2,L)=DJUNKR
+C          DPRED( 3,L)=DJUNKZ
+          DPRED( 2,L)=DJUNKA*DT
+          DPRED( 3,L)=DJUNKS
+          DPRED( 4,L)=DJUNKR*DT
+          DPRED( 5,L)=DJUNK4
+          DPRED( 6,L)=DJUNKZ/DJUNKR
+C          DPRED( 9,L)=DJUNKS*DJUNKA
+          DPRED(7,L)=A_W                   ! *(1 - HDOFCT)
+          DPRED(8,L)=DJUNKA*DT*ABS( DT )
 C
 C         ---------------
 C         Carbon monoxide for FCOW = set4
@@ -909,7 +958,8 @@ C               Ignore changes in CO2 of less than ~0.03%
           IF (L .LE. NTEBOT) THEN
              CO2TOP=CO2TOP + CO2STD*(1.0 + CO2MLT(L)*3.0E-2)
           ENDIF
-
+          if (DEBUG) write(6,'(a,X,I4,3(X,ES11.3E3))') 
+     $     'calpar: L,CO2MLT(L) ',L,PFAMNT(L),RFAMNT(L),CO2MLT(L)
 C
           IF (LN2O) THEN
 C            N2O mult=-1 when prof amount = 0.75 * ref amount
@@ -931,6 +981,16 @@ C            Ignore changes in SO2 of less than ~10%
              SO2MLT(L)=0.0
           ENDIF
 C
+          IF (LNH3) THEN
+C            NH3 mult=1 when prof amount = 100 * ref amount
+             NH3MLT(L)=1.0101E-2*( PAAMNT(L) - FIXMUL(L)*RAAMNT(L) )/
+     $          RAAMNT(L)
+C            Ignore changes in NH3 of less than ~10%
+             IF (ABS(NH3MLT(L)) .LT. 1E-4) NH3MLT(L)=0.0
+          ELSE
+             NH3MLT(L)=0.0
+          ENDIF
+C
           IF (LHNO3) THEN
 C            HNO3 mult=1 when prof amount = 2 * ref amount
              HNOMLT(L)=( PHAMNT(L) - FIXMUL(L)*RHAMNT(L) )/
@@ -941,10 +1001,21 @@ C            Ignore changes in HNO3 less than ~1%
              HNOMLT(L)=0.0
           ENDIF
 C
+          IF (LHDO) THEN
+C            HDO mult=1 when no depletion/enhancement of HDO
+             HDOMLT(L)=( 1 - HDOFCT )
+C            Ignore changes in HDO of less than ~1%
+C             IF (ABS(HDOMLT(L)) .LT. 1E-5) HDOMLT(L)=0.0
+          ELSE
+             HDOMLT(L)=0.0
+          ENDIF
+C
 ccc this block for testing
 c      N2OMLT(L)=0.0          
 c      SO2MLT(L)=0.0
+c      NH3MLT(L)=0.0
 c      HNOMLT(L)=0.0
+C      HDOMLT(L)=0.0
 ccc
 C
        ENDDO

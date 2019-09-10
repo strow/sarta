@@ -47,23 +47,30 @@ C    none
 
 
 !ROUTINES CALLED:
-C    CALOWP : calc OPTRAN water predictors 
-C    CALPAR : calculate a profile's predictors
-C    CALRAD : calc radiance
-C    CALT1  : calc effective layer trans for set1 (FWO)
-C    CALT2  : calc effective layer trans for set2 (FOW)
-C    CALT3  : calc effective layer trans for set3 (FMW)
-C    CALT4  : calc effective layer trans for set4 (FCOW)
-C    CALT5  : calc effective layer trans for set5 (FWO bfsw)
-C    CALT6  : calc effective layer trans for set6 (FWO mfmw)
-C    CALT7  : calc effective layer trans for set7 (FWO mfbw)
-C    FAKETZ : calc a "fake" (rough approx) surface-to-space trans
-C    RDCOEF : read the fast transmittance coefficients
-C    RDPROF : read profile data
-C    RDSUN  : read the solar radiance datafile
-C    SUNPAR : calc a profile's predictors for sets4-7 (sun channels)
-C    CALNTE : calc radiance contribution for non-LTE
-
+C    CALOWP  : calc OPTRAN water predictors 
+C    CALPAR  : calculate a profile's predictors
+C    CCPREP  : prepare lookup table for given cp-size.
+C    BKPREP  : check cloud layer
+C    GETMIE  : determine which scattering lookup table to use
+C    GETCLD  : get basic cloud parameters
+C    CALRAD0 : calc radiance
+C    CALRAD1 : calc radiance
+C    CALT1   : calc effective layer trans for set1 (FWO)
+C    CALT2   : calc effective layer trans for set2 (FOW)
+C    CALT3   : calc effective layer trans for set3 (FMW)
+C    CALT4   : calc effective layer trans for set4 (FCOW)
+C    CALT5   : calc effective layer trans for set5 (FWO bfsw)
+C    CALT6   : calc effective layer trans for set6 (FWO mfmw)
+C    CALT7   : calc effective layer trans for set7 (FWO mfbw)
+C    FAKETZ  : calc a "fake" (rough approx) surface-to-space trans
+C    RDCOEF  : read the fast transmittance coefficients
+C    RDPROF  : read profile data
+C    RDSUN   : read the solar radiance datafile
+C    SUNPAR  : calc a profile's predictors for sets4-7 (sun channels)
+C    CALNTE  : calc radiance contribution for non-LTE
+C    OPNRTP  : open the RTP file
+C    RDRTP   : read the RTP file
+C    SETEMS  : sets surface parameters
 
 !FILES ACCESSED:
 C    incFTC.f : include file of parameter statements accessed during
@@ -154,6 +161,7 @@ C                               add LCO2,LN2O,LSO2,LHNO3 switches
 C 24 Mar 2008 Scott Hannon   Add COSDAZ
 C 26 Nov 2008 Scott Hannon   Update for rtpV2101
 C 01 Dec 2008 Scott Hannon   Add CSTMP1/2
+C    Jul 2019 C Hepplewhite  Add NH3 and align with sarta clear updates
 
 !END====================================================================
 
@@ -195,8 +203,8 @@ C
        INTEGER   IOUN         ! I/O unit number
 C
 C      for RDINFO
-       CHARACTER*80 FIN       ! input RTP filename
-       CHARACTER*80 FOUT      ! output RTP filename
+       CHARACTER*120 FIN       ! input RTP filename
+       CHARACTER*120 FOUT      ! output RTP filename
        LOGICAL  LRHOT         ! force refl therm rho=(1-emis)/pi?
        INTEGER NWANTP         ! number of wanted profiles (-1=all)
        INTEGER  LISTP(MAXPRO) ! list of wanted profiles
@@ -222,6 +230,7 @@ C      for OPNRTP
        INTEGER ISO2           ! index of SO2 in gamnt
        INTEGER IHNO3          ! index of HNO3 in gamnt
        INTEGER IN2O           ! index of N2O in gamnt
+       INTEGER INH3           ! index of NH3 in gamnt
        INTEGER IOPCI          ! input RTP unit
        INTEGER IOPCO          ! output RTP unit
        LOGICAL LCO2PM         ! CO2 profile in ppmv?
@@ -263,10 +272,14 @@ C      for RDCOEF             ! Info for selected channels only
        REAL COFCO2(  NCO2,MAXLAY,MXCHNC) ! coefs for CO2 pert
        INTEGER INDSO2(MXCHAN)            ! chan indices for SO2 pert
        REAL COFSO2(  NSO2,MAXLAY,MXCHNS) ! coefs for SO2 pert
+       INTEGER INDHDO(MXCHAN)            ! chan indices for HDO pert
+       REAL COFHDO(  NHDO,MAXLAY,MXCHND) ! coefs for HDO pert
        INTEGER INDHNO(MXCHAN)            ! chan indices for HNO3 pert
        REAL COFHNO( NHNO3,MAXLAY,MXCHNH) ! coefs for HNO3 pert
        INTEGER INDN2O(MXCHAN)            ! chan indices for N2O pert
        REAL COFN2O(  NN2O,MAXLAY,MXCHNN) ! coefs for N2O pert
+       INTEGER INDNH3(MXCHAN)            ! chan indices for NH3 pert
+       REAL COFNH3(  NNH3,MAXLAY,MXCHNA) ! coefs for NH3 pert
        INTEGER INDH2O(MXCHAN)            ! chan indices for OPTRAN H2O
        REAL   WAZOP(MXOWLY)              ! OPTRAN water l-to-s amounts
        REAL  WAVGOP(NOWAVG,MXOWLY)       ! OPTRAN raw predictor averages
@@ -298,6 +311,7 @@ C      for RDPROF; reference profile
        REAL RSAMNT(MAXLAY) ! ref prof layer sulfer dioxide (SO2) amount
        REAL RHAMNT(MAXLAY) ! ref prof layer nitric acid (HNO3) amount
        REAL RNAMNT(MAXLAY) ! ref prof layer nitrous oxide (N2O) amount
+       REAL RAAMNT(MAXLAY) ! ref prof layer ammonia (NH3) amount
 C
 C      for RDRTP; profile to calculate
        INTEGER NLAY        ! number of layers in profile
@@ -313,6 +327,7 @@ C      for RDRTP; profile to calculate
        REAL  SAMNT(MAXLAY) ! prof layer SO2 amount
        REAL  HAMNT(MAXLAY) ! prof layer HNO3 amount
        REAL  NAMNT(MAXLAY) ! prof layer N2O amount
+       REAL  AAMNT(MAXLAY) ! prof layer NH3 amount
 C
 C      for surface
        INTEGER   LBOT             ! bottom layer index number
@@ -331,6 +346,8 @@ C      for CALPAR
        LOGICAL   LN2O             ! N2O profile switch
        LOGICAL   LSO2             ! SO2 profile switch
        LOGICAL  LHNO3             ! HNO3 profile switch
+       LOGICAL   LNH3             ! NH3 profile switch
+       LOGICAL   LHDO             ! HDO profile switch
        REAL SECANG(MAXLAY)        ! local path angle secant
        REAL FIXMUL(MAXLAY)        ! "fixed" amount multiplier (~1)
        REAL CONPRD( N1CON,MAXLAY) ! water continuum predictors
@@ -348,6 +365,7 @@ C      for CALPAR
        REAL WPRED5( N5H2O,MAXLAY) ! set5 water predictors
        REAL WPRED6( N6H2O,MAXLAY) ! set6 water predictors
        REAL WPRED7( N7H2O,MAXLAY) ! set7 water predictors
+       REAL  DPRED(  NHDO,MAXLAY) ! HDO perturbation predictors
        REAL OPRED1(  N1O3,MAXLAY) ! set1 ozone predictors
        REAL OPRED2(  N2O3,MAXLAY) ! set2 ozone predictors
        REAL OPRED4(  N4O3,MAXLAY) ! set4 ozone predictors
@@ -361,6 +379,8 @@ C      for CALPAR
        REAL SO2MLT(MAXLAY)        ! SO2 perturbation multiplier
        REAL HNOMLT(MAXLAY)        ! HNO3 perturbation multiplier
        REAL N2OMLT(MAXLAY)        ! N2O perturbation multiplier
+       REAL NH3MLT(MAXLAY)        ! NH3 perturbation multiplier
+       REAL HDOMLT(MAXLAY)        ! HDO perturbation multiplier
        REAL CO2TOP                ! top layers CO2 mixing ratio
 C
 C      for CALOWP
@@ -376,6 +396,8 @@ C      for CALT
        REAL    TAU(MAXLAY,MXCHAN) ! chan layer effective optical depth
        REAL   TAUZ(MAXLAY,MXCHAN) ! chan surface-to-space trans
        REAL   WAOP(MXOWLY)        ! OPTRAN abs coef scaling factor
+       REAL    XZ                 ! Optical depth multiplier for TAUZ
+       LOGICAL  LTAU              ! calc all layer transmittances?
 C
 C      for SETEMS
        REAL   EMIS(MXCHAN) ! chan surface emissivity
@@ -388,7 +410,7 @@ C      for SETEMS
        REAL CRHOS2(MXCHAN) ! chan solar reflectivity cloud2
        REAL CRHOT2(MXCHAN) ! chan thermal reflectivity cloud2
 C
-C      for CALRAD
+C      for CALRAD(0,1)
        REAL SUNFAC         ! sun solid angles times cosine at surface
        REAL RPLNCK(MAXLAY) ! layer Planck
        REAL RSURFE         ! surface emission
@@ -406,7 +428,6 @@ C      For clear/cloudy radiances
 C
 C      for RDSUN
        REAL   HSUN(MXCHAN) ! sun radiance (direct from sun)
-C
 C      Other variables for the sun
        REAL SUNANG         ! solar zenith angle (at 0 altitude)
        REAL COSDAZ         ! cosine(solazi - satazi) {COS Delta AZimuth}
@@ -551,17 +572,20 @@ C      -----------------------------
 C      Read in the reference profile
 C      -----------------------------
        CALL RDPROF(IOUN, FNPREF, RPNAM, RALT, RDZ, RPRES, RTEMP,
-     $    RFAMNT, RWAMNT, ROAMNT, RCAMNT, RMAMNT, RSAMNT,RHAMNT,RNAMNT)
+     $    RFAMNT, RWAMNT, ROAMNT, RCAMNT, RMAMNT, RSAMNT,
+     $    RHAMNT, RNAMNT, RAAMNT)
+
+       print*, 'sarta_cloudy: completed rdprof'
 
 C      ---------------------
 C      Get command-line info
 C      ---------------------
        CALL RDINFO(FIN, FOUT, LRHOT, NWANTP, LISTP)
 ccc
-cc      print *, 'sergio nwantp=', NWANTP
-cc      print *, 'sergio listp=', (LISTP(I),I=1,NWANTP)
-cc      print *, 'sergio FIN = ',FIN
-cc      print *, 'sergio FOUT = ',FOUT
+      print *, 'sergio nwantp=', NWANTP
+      print *, 'sergio listp=', (LISTP(I),I=1,NWANTP)
+      print *, 'sergio FIN = ',FIN
+      print *, 'sergio FOUT = ',FOUT
 ccc
 
 C      -------------------------
@@ -574,8 +598,10 @@ C      Open & check input RTP file
 C      ---------------------------
        CALL OPNRTP(FIN, VCLOUD, LRHOT, PTYPE, NCHAN, FCHAN, LSTCHN,
      $    INDCHN, IH2O, IO3, ICO, ICH4, ICO2, ISO2, IHNO3, IN2O,
-     $    IOPCI, HEAD, HATT, PATT, LCO2PM)
+     $    INH3, IOPCI, HEAD, HATT, PATT, LCO2PM)
 
+       print*, 'sarta_cloudy: completed opnrtp'
+ccc
 C      ------------------------
 C      Read cloud lookup tables
 C      ------------------------
@@ -590,7 +616,8 @@ C      ------------------------
      $ CLIST1, CLIST2, CLIST3, CLIST4, CLIST5, CLIST6, CLIST7,
      $  COEF1,  COEF2,  COEF3,  COEF4,  COEF5,  COEF6,  COEF7,
      $   FREQ, LABOVE,  COEFF, INDCO2, COFCO2, INDSO2, COFSO2,
-     $ INDHNO, COFHNO, INDN2O, COFN2O,
+     $ INDHNO, COFHNO, INDN2O, COFN2O, INDNH3, COFNH3, 
+     $ INDHDO, COFHDO,
      $ INDH2O,  WAZOP, WAVGOP, COFH2O, FX, NCHNTE, CLISTN, COEFN)
 C
 C      Get and apply multipler tuning to coefficients {note: ignores HNO3}
@@ -733,12 +760,20 @@ C      SO2 profile switch
        ELSE
           LSO2=.TRUE.
        ENDIF
+C      NH3 profile switch
+       IF (INH3 .LT. 1) THEN
+          LNH3=.FALSE.
+       ELSE
+          LNH3=.TRUE.
+       ENDIF
 C      HNO3 profile switch
        IF (IHNO3 .LT. 1) THEN
           LHNO3=.FALSE.
        ELSE
           LHNO3=.TRUE.
        ENDIF
+C      HDO switch (default .TRUE. from water)
+       LHDO=.FALSE.
 C
 C
        IF (PTYPE .EQ. AIRSLAY) THEN
@@ -844,13 +879,14 @@ C      -----------------------------------
 C
        CALL CALPAR (LBOT,
      $    RTEMP,RFAMNT,RWAMNT,ROAMNT,RCAMNT,RMAMNT,RSAMNT,RHAMNT,RNAMNT,
-     $     TEMP, FAMNT, WAMNT, OAMNT, CAMNT, MAMNT, SAMNT, HAMNT, NAMNT,
-     $    RPRES,SECANG,   LAT,    FX,   RDZ,
-     $     LCO2,  LN2O,  LSO2, LHNO3,LCO2PM,CO2PPM,CO2TOP,FIXMUL,CONPRD,
+     $    RAAMNT, TEMP, FAMNT, WAMNT, OAMNT, CAMNT, MAMNT, SAMNT, HAMNT, 
+     $    NAMNT, AAMNT, RPRES,SECANG,   LAT,    FX,   RDZ,
+     $     LCO2,  LN2O,  LSO2, LNH3, LHDO, LHNO3,LCO2PM,CO2PPM,CO2TOP,
+     $   FIXMUL,CONPRD, DPRED,
      $   FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
      $   WPRED1,WPRED2,WPRED3,WPRED4,WPRED5,WPRED6,WPRED7,
      $   OPRED1,OPRED2,       OPRED4,OPRED5,OPRED6,OPRED7,
-     $   MPRED3,CPRED4,TRCPRD,CO2MLT,SO2MLT,HNOMLT,N2OMLT )
+     $   MPRED3,CPRED4,TRCPRD,CO2MLT,SO2MLT,HNOMLT,N2OMLT,NH3MLT,HDOMLT)
 
 C      -----------------------------------
 C      Calculate the OPTRAN H2O predictors
@@ -864,22 +900,25 @@ C      ----------------------------------
 C      Calculate TAU for set 1 thru 7
 C
        CALL XCALT1( INDCHN,  LBOT,   NCHN1, CLIST1,  COEF1,
-     $     FIXMUL, CONPRD, FPRED1, WPRED1, OPRED1, TRCPRD,
+     $     FIXMUL, CONPRD, FPRED1, WPRED1, DPRED, OPRED1, TRCPRD,
      $     INDCO2, COFCO2, CO2MLT, INDSO2, COFSO2, SO2MLT,
      $     INDHNO, COFHNO, HNOMLT, INDN2O, COFN2O, N2OMLT,
+     $     INDNH3, COFNH3, NH3MLT, INDHDO, COFHDO, HDOMLT,
      $     INDH2O, H2OPRD, COFH2O, LOPMIN, LOPMAX, LOPLOW,
      $     LOPUSE,   WAOP,   DAOP, WAANG,     TAU,   TAUZ)
 C
        CALL XCALT2( INDCHN, LBOT,   NCHN2, CLIST2,  COEF2,
-     $    FIXMUL, CONPRD, FPRED2, OPRED2, WPRED2, TRCPRD,
+     $    FIXMUL, CONPRD, FPRED2, OPRED2, WPRED2, DPRED, TRCPRD,
      $    INDCO2, COFCO2, CO2MLT, INDSO2, COFSO2, SO2MLT,
-     $    INDHNO, COFHNO, HNOMLT, INDN2O, COFN2O, N2OMLT, TAU, TAUZ)
+     $    INDHNO, COFHNO, HNOMLT, INDN2O, COFN2O, N2OMLT, 
+     $    INDNH3, COFNH3, NH3MLT, INDHDO, COFHDO, HDOMLT,TAU, TAUZ)
 C
        CALL XCALT3( INDCHN,   LBOT,  NCHN3, CLIST3,  COEF3,
-     $     FIXMUL, CONPRD, FPRED3, MPRED3, WPRED3, TRCPRD,
+     $     FIXMUL, CONPRD, FPRED3, MPRED3, WPRED3, DPRED, TRCPRD,
      $     INDSO2, COFSO2, SO2MLT, INDHNO, COFHNO, HNOMLT,
-     $     INDN2O, COFN2O, N2OMLT,
-     $     INDH2O, H2OPRD, COFH2O, LOPMIN, LOPMAX, LOPLOW, LOPUSE,
+     $     INDN2O, COFN2O, N2OMLT, INDNH3, COFNH3, NH3MLT,
+     $     INDHDO, COFHDO, HDOMLT, INDH2O, H2OPRD, COFH2O, 
+     $     LOPMIN, LOPMAX, LOPLOW, LOPUSE,
      $       WAOP,   DAOP,  WAANG,    TAU,   TAUZ)
 C
        CALL XCALT4(INDCHN,   LBOT,  NCHN4, CLIST4,
@@ -893,9 +932,9 @@ C
      $       TAU,   TAUZ )
 C
        CALL XCALT6(INDCHN,   LBOT,  NCHN6, CLIST6,
-     $     COEF6, FIXMUL, CONPRD, FPRED6, WPRED6, OPRED6, TRCPRD,
+     $     COEF6, FIXMUL, CONPRD, FPRED6, WPRED6, OPRED6, DPRED, TRCPRD,
      $    INDCO2, COFCO2, CO2MLT, INDSO2, COFSO2, SO2MLT,
-     $    INDN2O, COFN2O, N2OMLT,    TAU,   TAUZ )
+     $    INDN2O, COFN2O, N2OMLT, INDHDO, COFHDO, HDOMLT,  TAU,  TAUZ )
 C
        CALL XCALT7(INDCHN,   LBOT,  NCHN7, CLIST7,
      $     COEF7, FIXMUL, CONPRD, FPRED7, WPRED7, OPRED7,
@@ -941,9 +980,9 @@ C
      $       TAUZSN, TAUZSN )
 C
           CALL XCALT6(INDCHN,   LBOT,  NCHN6, CLIST6,
-     $        COEF6, FIXMUL, CONPRD, FPRED6, WPRED6, OPRED6,
+     $        COEF6, FIXMUL, CONPRD, FPRED6, WPRED6, OPRED6, DPRED,
      $       TRCPRD, INDCO2, COFCO2, CO2MLT, INDSO2, COFSO2, SO2MLT,
-     $       INDN2O, COFN2O, N2OMLT, TAUZSN, TAUZSN )
+     $       INDN2O, COFN2O, N2OMLT, INDHDO, COFHDO, HDOMLT, TAUZSN, TAUZSN )
 C
           CALL XCALT7(INDCHN,   LBOT,  NCHN7, CLIST7,
      $        COEF7, FIXMUL, CONPRD, FPRED7, WPRED7, OPRED7,
@@ -959,6 +998,15 @@ C
              ENDDO
           ENDIF
 C
+       ELSE
+C         No sun; set the sun surface-to-space trans to zero
+          SUNCOS=0.0
+          DO I=1,NCHAN
+            DO L=1,LBOT
+              TAUZSN(L,I)=0.0
+            ENDDO
+          ENDDO
+
        ENDIF
 C
 
@@ -971,8 +1019,8 @@ C      Get basic cloud parameters from input RTP
      $    XCEMI1, XCRHO1, CSTMP1,
      $    LBLAC2, CTYPE2, CFRAC2, CPSIZ2, CPRTO2, CPRBO2, CNGWA2,
      $    XCEMI2, XCRHO2, CSTMP2, CFRA12, FCLEAR, CFRA1X, CFRA2X )
-c       print *,'sergio getcld ',IPROF,CTYPE1, CFRAC1, CPSIZ1, CPRTO1,
-c     $                          CPRBO1, CNGWA1,CFRA1X     
+C       print *,'sergio getcld ',IPROF,CTYPE1, CFRAC1, CPSIZ1, CPRTO1,
+C     $                          CPRBO1, CNGWA1,CFRA1X     
 
 C      ---------------------------------------------------
 C      Set the emissivity & reflectivity for every channel
@@ -1168,14 +1216,14 @@ C         Total the clear & various cloudy radiances
      $       RADC12*CFRA12
 
 ccc this block for testing
-c       IF (I .EQ. 1291) THEN
+       IF (I .EQ. 1291) THEN
 c         print *,'chan1291 : iPROF,rad0,radc1,radc2,radc12,FINAL=',
 c     $      IPROF,RAD0,RADC1,RADC2,RADC12,RAD(I)
-c         print *,'chan1291 : IPROF,rad0,FCLEAR,CFRA1X,CFRA2X,CFRA12=',
-c     $      IPROF,RAD0,FCLEAR,CFRA1X,CFRA2X,CFRA12
+C         print *,'chan1291 : IPROF,rad0,FCLEAR,CFRA1X,CFRA2X,CFRA12=',
+C     $      IPROF,RAD0,FCLEAR,CFRA1X,CFRA2X,CFRA12
 c         PRINT *,'CLOUD1 emis,temp = ',CEMIS1(I),TCTOP1
 c         PRINT *,'CLOUD2 emis,temp = ',CEMIS2(I),TCTOP2
-c       endif
+       endif
 ccc
 
        ENDDO ! channels
@@ -1204,7 +1252,7 @@ C      ----------------------
 C      End loop over profiles
 C      ----------------------
        IPROF=IPROF + 1  ! increment profile counter
-c       print *, 'sergio iprof=', IPROF
+C       print *, 'sergio iprof=', IPROF
        GOTO 10
 C
 

@@ -21,10 +21,11 @@ C    fast transmittance coefficients.
 
 !CALL PROTOCOL:
 C    CALT2 ( INDCHN, NLAY, NCHN2, CLIST2, COEF2, FIXMUL,
-C       CONPD2, FPRED2, OPRED2, WPRED2, TRCPRD,
+C       CONPD2, FPRED2, OPRED2, WPRED2, DPRED,  TRCPRD,
 C       INDCO2, COFCO2, CO2MLT, INDSO2, SOFCO2, SO2MLT,
-C       INDHNO, COFHNO, HNOMLT, INDN2O, COFN2O, N2OMLT, TAU, TAUZ )
-
+C       INDHNO, COFHNO, HNOMLT, INDN2O, COFN2O, N2OMLT,
+C       INDNH3, COFNH3, NH3MLT, INDHDO, COFHDO, HDOMLT,
+C       TAU, TAUZ )
 
 !INPUT PARAMETERS:
 C    type      name    purpose                     units
@@ -39,6 +40,7 @@ C    REAL arr  CONPD2  set2 H2O continuum preds    various
 C    REAL arr  FPRED2  set2 fixed gases preds      various
 C    REAL arr  OPRED2  set2 ozone predictors       various
 C    REAL arr  WPRED2  set2 water predictors       various
+C    REAL arr  DPRED   HDO predictors              various
 C    REAL arr  TRCPRD  Trace gas pert predictors   various
 C    INT arr   INDCO2  CO2 pert chan indices       none
 C    REAL arr  COFCO2  CO2 pert coefs              various
@@ -52,7 +54,12 @@ C    REAL arr  HNOMLT  HNO3 pert multiplier        none
 C    INT arr   INDN2O  N2O pert chan indices       none
 C    REAL arr  COFN2O  N2O pert coefs              various
 C    REAL arr  N2OMLT  N2O pert multiplier         none
-
+C    INT arr   INDNH3  NH3 pert chan indices       none
+C    REAL arr  COFNH3  NH3 pert coefs              various
+C    REAL arr  NH3MLT  NH3 pert multiplier         none
+C    INT arr   INDHDO  HDO pert chan indices       none
+C    REAL arr  COFHDO  HDO pert coefs              various
+C    REAL arr  HDOMLT  HDO pert multiplier         none
 
 !OUTPUT PARAMETERS:
 C    type      name    purpose                     units
@@ -148,15 +155,17 @@ C    22 Dec 2006 Scott Hannon   Change TAUZ from trans to optical depth
 C                               and from (1 x n) to (m x n) array;
 C                               delete func QIKEXP & argument BLMULT.
 C    14 Sep 2010 Scott Hannon   Add 5th CO2 coef
-
+C    10 May 2018 C Hepplewhite  Add NH3
+C    1  Feb 2019 C Hepplewhite  Add HDO
 
 !END====================================================================
 
 C      =================================================================
        SUBROUTINE XCALT2 ( INDCHN, NLAY, NCHN2, CLIST2, COEF2,
-     $    FIXMUL, CONPD2, FPRED2, OPRED2, WPRED2, TRCPRD,
+     $    FIXMUL, CONPD2, FPRED2, OPRED2, WPRED2, DPRED, TRCPRD,
      $    INDCO2, COFCO2, CO2MLT, INDSO2, COFSO2, SO2MLT,
-     $    INDHNO, COFHNO, HNOMLT, INDN2O, COFN2O, N2OMLT, TAU, TAUZ )
+     $    INDHNO, COFHNO, HNOMLT, INDN2O, COFN2O, N2OMLT,
+     $    INDNH3, COFNH3, NH3MLT, INDHDO, COFHDO, HDOMLT, TAU, TAUZ )
 
 C      =================================================================
 
@@ -192,6 +201,7 @@ C      Input
        REAL FPRED2( N2FIX,MAXLAY)
        REAL OPRED2(  N2O3,MAXLAY)
        REAL WPRED2( N2H2O,MAXLAY)
+       REAL DPRED(   NHDO,MAXLAY)
        REAL TRCPRD(NTRACE,MAXLAY)
        INTEGER INDCO2(MXCHAN)
        REAL COFCO2(  NCO2,MAXLAY,MXCHNC)
@@ -205,6 +215,12 @@ C      Input
        INTEGER INDN2O(MXCHAN)
        REAL COFN2O(  NN2O,MAXLAY,MXCHNN)
        REAL N2OMLT(MAXLAY)
+       INTEGER INDNH3(MXCHAN)
+       REAL COFNH3(  NNH3,MAXLAY,MXCHNA)
+       REAL NH3MLT(MAXLAY)
+       INTEGER INDHDO(MXCHAN)
+       REAL COFHDO(  NHDO,MAXLAY,MXCHND)
+       REAL HDOMLT(MAXLAY)
 C
 C      Output
        REAL    TAU(MAXLAY,MXCHAN)
@@ -219,13 +235,18 @@ C-----------------------------------------------------------------------
        INTEGER  IHNO3
        INTEGER   ILAY
        INTEGER   IN2O
+       INTEGER   INH3
        INTEGER   ISO2
+       INTEGER   IHDO
        INTEGER      J
        REAL     DK
        REAL  DKCO2
        REAL DKHNO3
        REAL  DKN2O
+       REAL  DKNH3
        REAL  DKSO2
+       REAL  DKHDO
+       REAL   KHDO
        REAL   KCON
        REAL   KFIX
        REAL KLAYER
@@ -235,8 +256,9 @@ C-----------------------------------------------------------------------
        LOGICAL   LCO2
        LOGICAL  LHNO3
        LOGICAL   LN2O
+       LOGICAL   LNH3
        LOGICAL   LSO2
-
+       LOGICAL   LHDO
 
 C-----------------------------------------------------------------------
 C      SAVE STATEMENTS
@@ -288,6 +310,22 @@ C         Determine whether or not to do variable N2O
              LN2O=.TRUE.
           ELSE
              LN2O=.FALSE.
+          ENDIF
+C
+C         Determine whether or not to do variable NH3
+          INH3=INDNH3( CLIST2(I) )
+          IF (INH3 .GT. 0) THEN
+             LNH3=.TRUE.
+          ELSE
+             LNH3=.FALSE.
+          ENDIF
+C
+C         Determine whether or not to do variable HDO calc
+          IHDO=INDHDO( CLIST2(I) )
+          IF (IHDO .GT. 0) THEN
+             LHDO=.TRUE.
+          ELSE
+             LHDO=.FALSE.
           ENDIF
 C
 C         Initialize the layer-to-space optical depth
@@ -457,7 +495,20 @@ C            ----------------------------
                 DKN2O=0.0
              ENDIF
 C
-
+C            ----------------------------
+C            Calc change in total optical
+C            depth due to variable NH3
+C            ----------------------------
+             IF (LNH3 .AND. NH3MLT(ILAY) .NE. 0) THEN
+                DKNH3=( COFNH3(1,ILAY,INH3)*TRCPRD(1,ILAY) ) +
+     $                ( COFNH3(2,ILAY,INH3)*TRCPRD(2,ILAY) ) +
+     $                ( COFNH3(3,ILAY,INH3)*TRCPRD(3,ILAY) ) +
+     $                ( COFNH3(4,ILAY,INH3)*TRCPRD(4,ILAY) )
+                DKNH3=DKNH3*NH3MLT(ILAY)
+             ELSE
+                DKNH3=0.0
+             ENDIF
+C
 C            ------------------------------------------
 C            Calc total optical depth and transmittance
 C            ------------------------------------------
@@ -468,9 +519,12 @@ c      DKCO2=0.0
 c      DKSO2=0.0
 c      DKHNO3=0.0
 c      DKN2O=0.0
+C       DKNH3=0.0
+C       DKHDO=0.0
+       KHDO=0.0
 ccc
 C            Limit -DK so it can never totally totally cancel KFIX
-             DK = DKCO2 + DKSO2 + DKHNO3 + DKN2O
+             DK = DKCO2 + DKSO2 + DKHNO3 + DKN2O + DKNH3
              IF (-DK .GE. KFIX) THEN
                 DK = -0.999*KFIX
              ENDIF

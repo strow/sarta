@@ -18,7 +18,7 @@ OBJS = rdprof.o  vaconv.o  calpar.o  qikexp.o  hg3.o  setems_pclsam.o  getbot.o 
 HDFLIB = -L/asl/code/external/hdf/hdf4/lib -ldf \
        -L/asl/code/external/jpeg -ljpeg       \
        -L/asl/code/external/zlib -lz     \
-       -L/asl/code/external/szip/lib -lsz
+       -L/asl/code/external/szip/lib
 
 # ------------------------------------------------------------------------
 # RTP LIB and INCLUDE
@@ -40,8 +40,9 @@ RTPINC = -I/asl/code/rtp/include
 # -64 : 64-bit objects (libraries must match)
 # -us : puts trailing underscore
 F77 = ifort
-#FLIB = 
-OPT = -O -convert big_endian -extend-source 132
+FLIB = 
+OPT = -O0 -convert big_endian -extend-source 132 -check all -g -cpp -traceback -fp-stack-check -warn interface
+#OPT = -O -convert big_endian -extend-source 132
 
 # gfortran
 # ------------------------------------------------------------------------

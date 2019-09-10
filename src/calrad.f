@@ -287,8 +287,8 @@ C            Calc the upward radiance thru and from this layer
      $          ( RPLNCK(L)*(1.0E+0 - TAU(L,I)) )
 
 C            Calc the downward radiance from this layer
-C            TDOWNF=TDOWNN*TAU(L,I)
-             TDOWNF=TDOWNN*TAU(L,I)**SECFAC
+             TDOWNF=TDOWNN*TAU(L,I)
+C$$$             TDOWNF=TDOWNN*TAU(L,I)**SECFAC
              RDOWN = RDOWN + ( RPLNCK(L)*(TDOWNN - TDOWNF) )
              TDOWNN=TDOWNF
 
@@ -311,19 +311,19 @@ C         ----------------------------------
 C         Calc the reflected downwelling
 C         thermal rad reaching the satellite
 C         ----------------------------------
-c$$$          F=1.0
-c$$$          IF (TAUZ(I) .GT. 0.0005) THEN
-c$$$             F=   COEFF(1,I) +
-c$$$     $          ( COEFF(2,I)/SEC ) +
-c$$$     $          ( COEFF(3,I)*TAUZ(I) ) +
-c$$$     $          ( COEFF(4,I)*TAUZ(I)*TAUZ(I) ) +
-c$$$     $          ( COEFF(5,I)*TAUZ(I)/SEC ) +
-c$$$     $          ( COEFF(6,I)*TAUZ(I)/RDOWN )
-c$$$C            Truncate F at limits as needed
-c$$$             F = MAX( MIN(F,2.09), 0.696 )
-c$$$          ENDIF
-C     RTHERM=RHOTHR(I)*PI*RDOWN*F*TAUZ(I)
-          RTHERM=RHOTHR(I)*PI*RDOWN*TAUZ(I)
+          F=1.0
+          IF (TAUZ(I) .GT. 0.0005) THEN
+             F=   COEFF(1,I) +
+     $          ( COEFF(2,I)/SEC ) +
+     $          ( COEFF(3,I)*TAUZ(I) ) +
+     $          ( COEFF(4,I)*TAUZ(I)*TAUZ(I) ) +
+     $          ( COEFF(5,I)*TAUZ(I)/SEC ) +
+     $          ( COEFF(6,I)*TAUZ(I)/RDOWN )
+C            Truncate F at limits as needed
+             F = MAX( MIN(F,2.09), 0.696 )
+          ENDIF
+          RTHERM=RHOTHR(I)*PI*RDOWN*F*TAUZ(I)
+C$$$          RTHERM=RHOTHR(I)*PI*RDOWN*TAUZ(I)
 C
 C         --------------------------------------------------
 C         Add on the reflected solar and downwelling thermal

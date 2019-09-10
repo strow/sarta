@@ -5,7 +5,7 @@ C    University of Maryland Baltimore County [UMBC]
 C
 C    AIRS
 C
-C    CALT3 (for set3 = FMW) version with trace gases (no CO2)
+C    CALT3 (for set3 = FMW) version with NH3, HDO
 C
 !F77====================================================================
 
@@ -21,9 +21,11 @@ C    fast transmittance coefficients.
 
 !CALL PROTOCOL:
 C    CALT3 ( INDCHN, NLAY, BLMULT, NCHN3, CLIST3, COEF3,
-C       FIXMUL, CONPD3, FPRED3, MPRED3, WPRED3, TRCPRD,
+C       FIXMUL, CONPD3, FPRED3, MPRED3, WPRED3, DPRED. TRCPRD,
 C       INDSO2, COFSO2, SO2MLT, INDHNO, COFHNO, HNOMLT,
-C       INDN2O, COFN2O, N2OMLT, INDH2O, H2OPRD, COFH2O, LOPMIN, LOPMAX,
+C       INDN2O, COFN2O, N2OMLT, INDNH3, COFNH3, NH3MLT,
+C       INDHDO, COFHDO, HDOMLT,
+C       INDH2O, H2OPRD, COFH2O, LOPMIN, LOPMAX,
 C       LOPLOW, LOPUSE, WAOP, DAOP, WAANG, TAU, TAUZ)
 
 
@@ -41,6 +43,7 @@ C    REAL arr  CONPD3  set3 H2O continuum preds    various
 C    REAL arr  FPRED3  set3 fixed gases preds      various
 C    REAL arr  MPRED3  set3 methane predictors     various
 C    REAL arr  WPRED3  set3 water predictors       various
+C    REAL arr  DPRED   HDO predictors              various
 C    REAL arr  TRCPRD  trace gas pert predictors   various
 C    INT arr   INDSO2  SO2 pert chan indices       none
 C    REAL arr  COFSO2  SO2 pert coefs              various
@@ -51,6 +54,12 @@ C    REAL arr  HNOMLT  HNO3 pert multiplier        none
 C    INT arr   INDN2O  N2O pert chan indices       none
 C    REAL arr  COFN2O  N2O pert coefs              various
 C    REAL arr  N2OMLT  N2O pert multiplier         none
+C    INT arr   INDNH3  NH3 pert chan indices       none
+C    REAL arr  COFNH3  NH3 pert coefs              various
+C    REAL arr  NH3MLT  NH3 pert multiplier         none
+C    INT arr   INDHDO  HDO pert chan indices       none
+C    REAL arr  COFHDO  HDO pert coefs              various
+C    REAL arr  HDOMLT  HDO pert multiplier         none
 C    INT arr   INDH2O  OPTRAN H2O chan indices     none
 C    REAL arr  H2OPRD  OPTRAN H2O predictors       various
 C    REAL arr  COFH2O  OPTRAN H2O coefs            various
@@ -158,15 +167,17 @@ C    11 Aug 2000 Scott Hannon   Change from 4 to 5 term H2O continuum
 C    12 Sep 2002 Scott Hannon   Add predictors 6 & 7 to H2O con
 C    25 Apr 2003 Scott Hannon   Add HNO3 based on SO2 code
 C    28 Jun 2005 Scott Hannon   "trace" version for SO2,HNO3,N2O
-
+C    10 May 2018 C Hepplewhite  Add NH3
+C    1  Feb 2019 C Hepplewhite  Add HDO
 
 !END====================================================================
 
 C      =================================================================
        SUBROUTINE CALT3 ( INDCHN, NLAY, BLMULT, NCHN3, CLIST3, COEF3,
-     $    FIXMUL, CONPD3, FPRED3, MPRED3, WPRED3, TRCPRD,
+     $    FIXMUL, CONPD3, FPRED3, MPRED3, WPRED3, DPRED, TRCPRD,
      $    INDSO2, COFSO2, SO2MLT, INDHNO, COFHNO, HNOMLT,
-     $    INDN2O, COFN2O, N2OMLT, INDH2O, H2OPRD, COFH2O,
+     $    INDN2O, COFN2O, N2OMLT, INDNH3, COFNH3, NH3MLT,
+     $    INDHDO, COFHDO, HDOMLT, INDH2O, H2OPRD, COFH2O,
      $    LOPMIN, LOPMAX, LOPLOW, LOPUSE, WAOP, DAOP, WAANG, TAU, TAUZ)
 C      =================================================================
 
@@ -203,6 +214,7 @@ C      Input
        REAL FPRED3( N3FIX,MAXLAY)
        REAL MPRED3( N3CH4,MAXLAY)
        REAL WPRED3( N3H2O,MAXLAY) 
+       REAL DPRED(   NHDO,MAXLAY)
        REAL TRCPRD(NTRACE,MAXLAY)
        INTEGER INDSO2(MXCHAN)
        REAL COFSO2(  NSO2,MAXLAY,MXCHNS)
@@ -213,6 +225,12 @@ C      Input
        INTEGER INDN2O(MXCHAN)
        REAL COFN2O(  NN2O,MAXLAY,MXCHNN)
        REAL N2OMLT(MAXLAY)
+       INTEGER INDNH3(MXCHAN)
+       REAL COFNH3(  NNH3,MAXLAY,MXCHNA)
+       REAL NH3MLT(MAXLAY)
+       INTEGER INDHDO(MXCHAN)
+       REAL COFHDO(  NHDO,MAXLAY,MXCHND)
+       REAL HDOMLT(MAXLAY)
        INTEGER INDH2O(MXCHAN)
        REAL H2OPRD(  NH2O,MXOWLY)
        REAL COFH2O(  NH2O,MXOWLY,MXCHNW)
@@ -235,13 +253,18 @@ C-----------------------------------------------------------------------
        INTEGER      I
        INTEGER  IHNO3
        INTEGER   IN2O
+       INTEGER   INH3
        INTEGER   ILAY
        INTEGER   ISO2
+       INTEGER   IHDO
        INTEGER      J
        REAL     DK
        REAL DKHNO3
        REAL  DKN2O
+       REAL  DKNH3
        REAL  DKSO2
+       REAL  DKHDO
+       REAL   KHDO
        REAL   KCON
        REAL   KFIX
        REAL   KMET
@@ -249,9 +272,11 @@ C-----------------------------------------------------------------------
        REAL  KZFMW
        REAL KLAYER
        LOGICAL   LH2O
-       LOGICAL  LHNO3
+       LOGICAL   LHNO3
        LOGICAL   LN2O
+       LOGICAL   LNH3
        LOGICAL   LSO2
+       LOGICAL   LHDO
 C
 C      for function QIKEXP
        REAL QIKEXP
@@ -304,6 +329,22 @@ C         Determine whether or not to do variable N2O
              LN2O=.TRUE.
           ELSE
              LN2O=.FALSE.
+          ENDIF
+C
+C         Determine whether or not to do variable NH3
+          INH3=INDNH3( CLIST3(I) )
+          IF (INH3 .GT. 0) THEN
+             LNH3=.TRUE.
+          ELSE
+             LNH3=.FALSE.
+          ENDIF
+C
+C         Determine whether or not to do variable HDO calc
+          IHDO=INDHDO( CLIST3(I) )
+          IF (IHDO .GT. 0) THEN
+             LHDO=.TRUE.
+          ELSE
+             LHDO=.FALSE.
           ENDIF
 C
 C         -------------------------
@@ -410,6 +451,28 @@ C
 C            Update KZFMW
              KZFMW=KZFMW + KFIX + KMET + KW(ILAY)
 C
+C            --------------------------
+C            Compute the HDO abs coef
+C            --------------------------
+             IF (LHDO) THEN
+                KHDO=( COFHDO(1,ILAY,IHDO)*DPRED( 1,ILAY) ) +
+     $               ( COFHDO(2,ILAY,IHDO)*DPRED( 2,ILAY) ) +
+     $               ( COFHDO(3,ILAY,IHDO)*DPRED( 3,ILAY) ) +
+     $               ( COFHDO(4,ILAY,IHDO)*DPRED( 4,ILAY) ) +
+     $               ( COFHDO(5,ILAY,IHDO)*DPRED( 5,ILAY) ) +
+     $         	     ( COFHDO(6,ILAY,IHDO)*DPRED( 6,ILAY) ) +
+     $               ( COFHDO(7,ILAY,IHDO)*DPRED( 7,ILAY) ) +
+     $               ( COFHDO(8,ILAY,IHDO)*DPRED( 8,ILAY) )
+C     $               ( COFHDO(9,ILAY,IHDO)*DPRED( 9,ILAY) ) +
+C     $               ( COFHDO(10,ILAY,IHDO)*DPRED(10,ILAY) ) +
+C     $               ( COFHDO(11,ILAY,IHDO)*DPRED(11,ILAY) )
+C
+C                IF (KHDO .LT. 0.0E+0) KHDO=0.0E+0
+                KHDO=KHDO*HDOMLT(ILAY)
+             ELSE
+                KHDO=0.0
+             ENDIF
+C
 C            ----------------------------------
 C            Calc the total layer transmittance
 C            ----------------------------------
@@ -468,20 +531,52 @@ C            ----------------------------
                 DKN2O=0.0
              ENDIF
 C
+C            ----------------------------
+C            Calc change in total optical
+C            depth due to variable NH3
+C            ----------------------------
+             IF (LNH3 .AND. NH3MLT(ILAY) .NE. 0) THEN
+                DKNH3=( COFNH3(1,ILAY,INH3)*TRCPRD(1,ILAY) ) +
+     $                ( COFNH3(2,ILAY,INH3)*TRCPRD(2,ILAY) ) +
+     $                ( COFNH3(3,ILAY,INH3)*TRCPRD(3,ILAY) ) +
+     $                ( COFNH3(4,ILAY,INH3)*TRCPRD(4,ILAY) )
+                DKNH3=DKNH3*NH3MLT(ILAY)
+             ELSE
+                DKNH3=0.0
+             ENDIF
+C
+C            ----------------------------
+C            Calc change in total optical
+C            depth due to variable HDO
+C            ----------------------------
+C             IF (LHDO .AND. HDOMLT(ILAY) .NE. 0) THEN
+C                DKHDO=( COFHDO(1,ILAY,IHDO)*TRCPRD(1,ILAY) ) +
+C     $                ( COFHDO(2,ILAY,IHDO)*TRCPRD(2,ILAY) ) +
+C     $                ( COFHDO(3,ILAY,IHDO)*TRCPRD(3,ILAY) ) +
+C     $                ( COFHDO(4,ILAY,IHDO)*TRCPRD(4,ILAY) )
+C                DKHDO=DKHDO*HDOMLT(ILAY)
+C             ELSE
+C                DKHDO=0.0
+C             ENDIF
+C
+
 C            Calc the total layer effective optical depth
 ccc
 c this block for testing
-c      DKSO2=0.0
-c      DKHNO3=0.0
-c      DKN2O=0.0
+C       DKSO2=0.0
+C       DKHNO3=0.0
+C       DKN2O=0.0
+C       DKNH3=0.0
+C       DKHDO=0.0
+      KHDO=0.0
 ccc
 C            Limit -DK so it can never totally totally cancel KFIX
-             DK = DKSO2 + DKHNO3 + DKN2O
+             DK = DKSO2 + DKHNO3 + DKN2O + DKNH3
              IF (-DK .GE. KFIX) THEN
                 DK = -0.999*KFIX
              ENDIF
 
-             KLAYER = KCON + KFIX + KMET + KW(ILAY) + DK
+             KLAYER = KCON + KFIX + KMET + KW(ILAY) + KHDO + DK
 C
 C            Adjust the optical depth of the bottom layer
              IF (ILAY .EQ. NLAY) KLAYER=BLMULT*KLAYER

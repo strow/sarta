@@ -34,7 +34,8 @@ RTPINC = -I/asl/code/rtp/include
 # ------------------------------------------------------------------------
 F77 = ifort
 FLIB = 
-OPT = -O -convert big_endian -extend-source 132
+OPT = -O0 -convert big_endian -extend-source 132 -check all -g -cpp -traceback -fp-stack-check -warn interface
+#OPT = -O -convert big_endian -extend-source 132
 
 # gfortran
 # ------------------------------------------------------------------------
