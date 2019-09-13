@@ -466,55 +466,55 @@ C      ---------
        CHARACTER*80 FNSUN  ! solar data
 Cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
        PARAMETER(FNCOF1=
-     $ '/asl/data/sarta_coef/Data_AIRS_apr08/Coef/'
+     $ '/asl/data/sarta_database/Data_AIRS_apr08/Coef/'
      $ // 'set1_XCSNAMEX.dat')
        PARAMETER(FNCOF2=
-     $ '/asl/data/sarta_coef/Data_AIRS_apr08/Coef/'
+     $ '/asl/data/sarta_database/Data_AIRS_apr08/Coef/'
      $ // 'set2_XCSNAMEX.dat')
        PARAMETER(FNCOF3=
-     $ '/asl/data/sarta_coef/Data_AIRS_apr08/Coef/'
+     $ '/asl/data/sarta_database/Data_AIRS_apr08/Coef/'
      $ // 'set3_XCSNAMEX.dat')
        PARAMETER(FNCOF4=
-     $ '/asl/data/sarta_coef/Data_AIRS_apr08/Coef/'
+     $ '/asl/data/sarta_database/Data_AIRS_apr08/Coef/'
      $ // 'set4_XCSNAMEX.dat')
        PARAMETER(FNCOF5=
-     $ '/asl/data/sarta_coef/Data_AIRS_apr08/Coef/'
+     $ '/asl/data/sarta_database/Data_AIRS_apr08/Coef/'
      $ // 'set5_XCSNAMEX.dat')
        PARAMETER(FNCOF6=
-     $ '/asl/data/sarta_coef/Data_AIRS_apr08/Coef/'
+     $ '/asl/data/sarta_database/Data_AIRS_apr08/Coef/'
      $ // 'set6_XCSNAMEX.dat')
        PARAMETER(FNCOF7=
-     $ '/asl/data/sarta_coef/Data_AIRS_apr08/Coef/'
+     $ '/asl/data/sarta_database/Data_AIRS_apr08/Coef/'
      $ // 'set7_XCSNAMEX.dat')
        PARAMETER(FNCO2 =
-     $ '/asl/data/sarta_coef/Data_AIRS_apr08/Coef/'
+     $ '/asl/data/sarta_database/Data_AIRS_apr08/Coef/'
      $ // 'CO2_5term_XCSNAMEX.dat')
        PARAMETER(FNSO2 =
-     $ '/asl/data/sarta_coef/Data_AIRS_apr08/Coef/'
+     $ '/asl/data/sarta_database/Data_AIRS_apr08/Coef/'
      $ // 'SO2_XCSNAMEX.dat')
        PARAMETER(FNHNO3 =
-     $ '/asl/data/sarta_coef/Data_AIRS_apr08/Coef/'
+     $ '/asl/data/sarta_database/Data_AIRS_apr08/Coef/'
      $ // 'HNO3_XCSNAMEX.dat')
        PARAMETER(FNN2O =
-     $ '/asl/data/sarta_coef/Data_AIRS_apr08/Coef/'
+     $ '/asl/data/sarta_database/Data_AIRS_apr08/Coef/'
      $ // 'N2O_XCSNAMEX.dat')
        PARAMETER(FNOPTR=
-     $ '/asl/data/sarta_coef/Data_AIRS_apr08/Coef/'
+     $ '/asl/data/sarta_database/Data_AIRS_apr08/Coef/'
      $ // 'optran_XCSNAMEX.dat')
        PARAMETER(FNTHER=
-     $ '/asl/data/sarta_coef/Data_AIRS_apr08/Coef/'
+     $ '/asl/data/sarta_database/Data_AIRS_apr08/Coef/'
      $ // 'therm_XCSNAMEX.dat')
        PARAMETER(FNCOFN=
-     $ '/asl/data/sarta_coef/Data_AIRS_apr08/Coef/'
+     $ '/asl/data/sarta_database/Data_AIRS_apr08/Coef/'
      $ // 'nonLTE7_XCSNAMEX.dat')
        PARAMETER(FNFX  =
-     $ '/asl/data/sarta_coef/Data_AIRS_apr08/Coef/'
+     $ '/asl/data/sarta_database/Data_AIRS_apr08/Coef/'
      $ // 'fx.txt')
        PARAMETER(FNPREF=
-     $ '/asl/data/sarta_coef/Data_AIRS_apr08/Coef/'
+     $ '/asl/data/sarta_database/Data_AIRS_apr08/Coef/'
      $ // 'profref_trace385')
        PARAMETER(FNSUN =
-     $ '/asl/data/sarta_coef/Data_AIRS_apr08/Solar/'
+     $ '/asl/data/sarta_database/Data_AIRS_apr08/Solar/'
      $ // 'solar_XCSNAMEX.txt')
 C
 C
@@ -523,7 +523,7 @@ C Tuning filename
        CHARACTER*80 FNTMLT ! tuning multiplier filename
 C
        PARAMETER(FNTMLT=
-     $ '/asl/data/sarta_coef/Data_AIRS_apr08/Coef/'
+     $ '/asl/data/sarta_database/Data_AIRS_apr08/Coef/'
      $ // 'apr2016_tunmlt_wcon_nte.txt')
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC

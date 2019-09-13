@@ -125,7 +125,7 @@ iasi_jun19:
 	rm -f *.o incFTC.f
 	ln -s incFTC_iasi_jun19.f incFTC.f
 	make -f make_sarta
-	mv a.out ../bin/iasi_jun19_rbld
+	mv a.out ../bin/iasi_jun19
 
 #----------------------------------------------------------------------------------------
 # File management

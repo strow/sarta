@@ -439,42 +439,42 @@ C      ---------
 C
 C
        PARAMETER(FNCOF1=
-     $ '/asl/data/sarta_coef/Data_CrIS_apr09/Coef/set1g4.dat')
+     $ '/asl/data/sarta_database/Data_CrIS_apr09/Coef/set1g4.dat')
        PARAMETER(FNCOF2=
-     $ '/asl/data/sarta_coef/Data_CrIS_apr09/Coef/set2g4.dat')
+     $ '/asl/data/sarta_database/Data_CrIS_apr09/Coef/set2g4.dat')
        PARAMETER(FNCOF3=
-     $ '/asl/data/sarta_coef/Data_CrIS_apr09/Coef/set3g4.dat')
+     $ '/asl/data/sarta_database/Data_CrIS_apr09/Coef/set3g4.dat')
        PARAMETER(FNCOF4=
-     $ '/asl/data/sarta_coef/Data_CrIS_apr09/Coef/set4g4.dat')
+     $ '/asl/data/sarta_database/Data_CrIS_apr09/Coef/set4g4.dat')
        PARAMETER(FNCOF5=
-     $ '/asl/data/sarta_coef/Data_CrIS_apr09/Coef/set5.dat')
+     $ '/asl/data/sarta_database/Data_CrIS_apr09/Coef/set5.dat')
        PARAMETER(FNCOF6=
-     $ '/asl/data/sarta_coef/Data_CrIS_apr09/Coef/set6.dat')
+     $ '/asl/data/sarta_database/Data_CrIS_apr09/Coef/set6.dat')
        PARAMETER(FNCOF7=
-     $ '/asl/data/sarta_coef/Data_CrIS_apr09/Coef/set7g4.dat')
+     $ '/asl/data/sarta_database/Data_CrIS_apr09/Coef/set7g4.dat')
        PARAMETER(FNOPTR=
-     $ '/asl/data/sarta_coef/Data_CrIS_apr09/Coef/optrang4.dat')
+     $ '/asl/data/sarta_database/Data_CrIS_apr09/Coef/optrang4.dat')
 C
        PARAMETER(FNCO2 =
-     $ '/asl/data/sarta_coef/Data_CrIS_apr09/Coef/co2g4.dat')
+     $ '/asl/data/sarta_database/Data_CrIS_apr09/Coef/co2g4.dat')
        PARAMETER(FNSO2 =
-     $ '/asl/data/sarta_coef/Data_CrIS_apr09/Coef/so2g4.dat')
+     $ '/asl/data/sarta_database/Data_CrIS_apr09/Coef/so2g4.dat')
        PARAMETER(FNHNO3 =
-     $ '/asl/data/sarta_coef/Data_CrIS_apr09/Coef/hno3.dat')
+     $ '/asl/data/sarta_database/Data_CrIS_apr09/Coef/hno3.dat')
        PARAMETER(FNN2O =
-     $ '/asl/data/sarta_coef/Data_CrIS_apr09/Coef/n2og4.dat')
+     $ '/asl/data/sarta_database/Data_CrIS_apr09/Coef/n2og4.dat')
 C
        PARAMETER(FNFX  =
-     $ '/asl/data/sarta_coef/Data_CrIS_apr09/Coef/fx.txt')
+     $ '/asl/data/sarta_database/Data_CrIS_apr09/Coef/fx.txt')
        PARAMETER(FNPREF=
-     $ '/asl/data/sarta_coef/Data_CrIS_apr09/Coef/profref_trace385')
+     $ '/asl/data/sarta_database/Data_CrIS_apr09/Coef/profref_trace385')
        PARAMETER(FNSUN =
-     $ '/asl/data/sarta_coef/Data_CrIS_apr09/Solar/solardatag4.txt')
+     $ '/asl/data/sarta_database/Data_CrIS_apr09/Solar/solardatag4.txt')
 C
        PARAMETER(FNTHER=
-     $ '/asl/data/sarta_coef/Data_CrIS_apr09/Coef/thermg4.dat')
+     $ '/asl/data/sarta_database/Data_CrIS_apr09/Coef/thermg4.dat')
        PARAMETER(FNCOFN=
-     $ '/asl/data/sarta_coef/Data_CrIS_apr09/Coef/nte.dat')
+     $ '/asl/data/sarta_database/Data_CrIS_apr09/Coef/nte.dat')
 C
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
@@ -482,7 +482,7 @@ C Tuning filename
        CHARACTER*80 FNTMLT ! tuning multiplier filename
 C
        PARAMETER(FNTMLT=
-     $ '/asl/data/sarta_coef/Data_CrIS_apr09/Coef/'
+     $ '/asl/data/sarta_database/Data_CrIS_apr09/Coef/'
      $ // 'tunmltg4_wcon_nte.txt')
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC

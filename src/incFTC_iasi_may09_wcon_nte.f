@@ -445,42 +445,42 @@ C      ---------
 C
 C
        PARAMETER(FNCOF1=
-     $ '/asl/data/sarta_coef/Data_IASI_may09/Coef/set1.dat')
+     $ '/asl/data/sarta_database/Data_IASI_may09/Coef/set1.dat')
        PARAMETER(FNCOF2=
-     $ '/asl/data/sarta_coef/Data_IASI_may09/Coef/set2.dat')
+     $ '/asl/data/sarta_database/Data_IASI_may09/Coef/set2.dat')
        PARAMETER(FNCOF3=
-     $ '/asl/data/sarta_coef/Data_IASI_may09/Coef/set3.dat')
+     $ '/asl/data/sarta_database/Data_IASI_may09/Coef/set3.dat')
        PARAMETER(FNCOF4=
-     $ '/asl/data/sarta_coef/Data_IASI_may09/Coef/set4.dat')
+     $ '/asl/data/sarta_database/Data_IASI_may09/Coef/set4.dat')
        PARAMETER(FNCOF5=
-     $ '/asl/data/sarta_coef/Data_IASI_may09/Coef/set5.dat')
+     $ '/asl/data/sarta_database/Data_IASI_may09/Coef/set5.dat')
        PARAMETER(FNCOF6=
-     $ '/asl/data/sarta_coef/Data_IASI_may09/Coef/set6.dat')
+     $ '/asl/data/sarta_database/Data_IASI_may09/Coef/set6.dat')
        PARAMETER(FNCOF7=
-     $ '/asl/data/sarta_coef/Data_IASI_may09/Coef/set7.dat')
+     $ '/asl/data/sarta_database/Data_IASI_may09/Coef/set7.dat')
 C
        PARAMETER(FNOPTR=
-     $ '/asl/data/sarta_coef/Data_IASI_may09/Coef/optran.dat')
+     $ '/asl/data/sarta_database/Data_IASI_may09/Coef/optran.dat')
 C
        PARAMETER(FNCO2 =
-     $ '/asl/data/sarta_coef/Data_IASI_may09/Coef/co2.dat')
+     $ '/asl/data/sarta_database/Data_IASI_may09/Coef/co2.dat')
        PARAMETER(FNSO2 =
-     $ '/asl/data/sarta_coef/Data_IASI_may09/Coef/so2.dat')
+     $ '/asl/data/sarta_database/Data_IASI_may09/Coef/so2.dat')
        PARAMETER(FNHNO3 =
-     $ '/asl/data/sarta_coef/Data_IASI_may09/Coef/hno3.dat')
+     $ '/asl/data/sarta_database/Data_IASI_may09/Coef/hno3.dat')
        PARAMETER(FNN2O =
-     $ '/asl/data/sarta_coef/Data_IASI_may09/Coef/n2o.dat')
+     $ '/asl/data/sarta_database/Data_IASI_may09/Coef/n2o.dat')
 C
        PARAMETER(FNTHER=
-     $ '/asl/data/sarta_coef/Data_IASI_may09/Coef/therm.dat')
+     $ '/asl/data/sarta_database/Data_IASI_may09/Coef/therm.dat')
        PARAMETER(FNCOFN=
-     $ '/asl/data/sarta_coef/Data_IASI_may09/Coef/nte_7term.dat')
+     $ '/asl/data/sarta_database/Data_IASI_may09/Coef/nte_7term.dat')
        PARAMETER(FNFX  =
-     $ '/asl/data/sarta_coef/Data_IASI_may09/Coef/fx.txt')
+     $ '/asl/data/sarta_database/Data_IASI_may09/Coef/fx.txt')
        PARAMETER(FNPREF=
-     $ '/asl/data/sarta_coef/Data_IASI_may09/Coef/profref_trace385')
+     $ '/asl/data/sarta_database/Data_IASI_may09/Coef/profref_trace385')
        PARAMETER(FNSUN =
-     $ '/asl/data/sarta_coef/Data_IASI_may09/Solar/solardata.txt')
+     $ '/asl/data/sarta_database/Data_IASI_may09/Solar/solardata.txt')
 
 C
 C
@@ -489,7 +489,7 @@ C Tuning filename
        CHARACTER*80 FNTMLT ! tuning multiplier filename
 C
        PARAMETER(FNTMLT=
-     $ '/asl/data/sarta_coef/Data_IASI_may09/Coef/'
+     $ '/asl/data/sarta_database/Data_IASI_may09/Coef/'
      $ // 'tunmlt_wcon_nte.txt')
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC

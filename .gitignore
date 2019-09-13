@@ -35,9 +35,15 @@ a.out
 *.zip
 *.bz2
 
+# Fortran debug and diag files
+*.mod
+*.f90
+
 # Symbolic links: should be recreated with each build
 src/incFTC.f
 incFTC.f
+src/fnmie.f
+fnmie.f
 
 # Miss
 newtest*

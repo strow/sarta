@@ -167,13 +167,15 @@ C
        ELSE
           LBOT = LBOTX
        ENDIF
+       if (DEBUG) write(6,'(a,X,I6,X,F9.3,X,F9.3)') 'getbot: LBOT, PLEV(LBOT), 
+     $     PSURF ', LBOT,PLEV(LBOT),PSURF
 C
 C      Calc bottom layer multiplier (fractional layer)
        BLMULT = (PSURF - PLEV(LBOT))/(PLEV(LBOT+1) - PLEV(LBOT))
 C
        IF (BLMULT .GT. 1.3) THEN
           WRITE(IOINFO,1010) BLMULT, LBOTX, NLAY
- 1010     FORMAT('WARNING! excessive BLMULT=',F6.3,'; optimal LBOT=',
+ 1010     FORMAT('WARNING! excessive BLMULT=',F9.3,'; optimal LBOT=',
      $    I3,' but layers end at NLAY=',I3)
        ENDIF
 C

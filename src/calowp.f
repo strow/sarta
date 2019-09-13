@@ -206,12 +206,15 @@ C         Temperature above sum
           WTZSUM=WAANG(L)*T(L) + WTZSUM
           TZ(L)=WTZSUM/WAZSUM
 C
+c          write(6,'(A,I3,X,E11.4,X,E11.4)') 'calowp:WAZ(L),WAZSUM : ',L,WAZ(L),WAZSUM
        ENDDO
 C
+       if (DEBUG) print*,'calowp: completed raw predictors'
 C      --------------------------------------------------
 C      Find the max OPTRAN level that is less than WAZ(1)
 C      --------------------------------------------------
        LOPMIN=1
+       if (DEBUG) WRITE(6,'(A, E11.4)') 'calowp: WAZ(1) = ',WAZ(1)
  30    IF (WAZOP(LOPMIN+1) .LT. WAZ(1)) THEN
           LOPMIN=LOPMIN + 1
           GOTO 30
@@ -222,6 +225,7 @@ C      Initialize the upper and lower (pressure) layer index
        LU=2
        LAST=.FALSE.
 C
+       if (DEBUG) print*,'calowp: completed find max optran level'
 C      ----------------------------------------
 C      Loop over the OPTRAN layers (while loop)
 C      ----------------------------------------

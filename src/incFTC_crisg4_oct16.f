@@ -462,6 +462,14 @@ C
        PARAMETER(FNFX='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/fx.txt')
        PARAMETER(FNPREF='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/profref_trace400')
        PARAMETER(FNSUN='/asl/data/sarta_coef/Data_CrIS_oct16/Solar/sol.txt')
+
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C Mie lookup tables; also see "fnmie.f"
+C
+c       INTEGER MXMIEA  ! max # of mie particle sizes
+c       PARAMETER(MXMIEA = 10) ! ice aggregates=8, all others 10
+       INTEGER NMIETY  ! number of mie particle types
+       PARAMETER(NMIETY = 3)
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C Tuning filename

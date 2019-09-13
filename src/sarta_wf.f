@@ -187,8 +187,8 @@ C
        INTEGER   IOUN         ! I/O unit number
 C
 C      for RDINFO
-       CHARACTER*80 FIN       ! input RTP filename
-       CHARACTER*80 FOUT      ! output RTP filename
+       CHARACTER*120 FIN       ! input RTP filename
+       CHARACTER*120 FOUT      ! output RTP filename
        LOGICAL  LRHOT         ! force refl therm rho=(1-emis)/pi?
        INTEGER NWANTP         ! number of wanted profiles (-1=all)
        INTEGER  LISTP(MAXPRO) ! list of wanted profiles
