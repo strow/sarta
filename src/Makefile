@@ -95,16 +95,16 @@ crisg4_oct16:
 # CrIS  (high res) basic coef set[1-7] and wcon.
 crisg4_mar18:
 	rm -f *.o incFTC.f
-	ln -s incFTC_crisHRg4_mar18_basic_optr_co2_so2_nte.f incFTC.f
+	ln -s incFTC_cris_hr_g4_mar18_basic_optr_co2_so2_nte.f incFTC.f
 	make -f make_sarta
-	mv a.out ../bin/crisg4_mar18_basic_so2
+	mv a.out ../bin/crisg4_mar18_basic_so2_x
 
-# CrIS (high Res) with var NH3
-crisg4_may18_nh3:
+# CrIS (high Res) with var HDO
+crisg4_may18_hdo:
 	rm -f *.o incFTC.f
-	ln -s incFTC_crisHRg4_may18_optr_co2_so2_nh3_nte.f incFTC.f
-	make -f make_sarta_nh3
-	mv a.out ../bin/crisg4_may18_nh3
+	ln -s incFTC_cris_hr_g4_may18_tra_hdo.f incFTC.f
+	make -f make_sarta
+	mv a.out ../bin/crisg4_may18_hdo_d6
 
 ######  -------  IASI  -----------
 # IASI basic 7-set w/continuum

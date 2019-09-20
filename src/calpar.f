@@ -892,23 +892,36 @@ C         ---------------
         if (DEBUG) then
           IF(L .EQ. 96) write(6,'(A,X,I4,X,F6.2)') 'calpar: L,HDOFCT ',L,HDOFCT
         endif
-          DJUNKA=SECANG(L)*A_W      ! *(1 - HDOFCT)
+          DJUNKA=SECANG(L)*A_W*(1 - HDOFCT)      ! *(1 - HDOFCT)
           DJUNKR=SQRT( DJUNKA )
           DJUNKS=DJUNKA*DJUNKA
-          DJUNKZ=DJUNKA*A_W/AZ_W    ! *(1 - HDOFCT)
+          DJUNKZ=DJUNKA*A_W/AZ_W                 ! *(1 - HDOFCT)
           DJUNK4=SQRT( DJUNKR )
 C
           DPRED( 1,L)=DJUNKA
-C          DPRED( 2,L)=DJUNKR
-C          DPRED( 3,L)=DJUNKZ
-          DPRED( 2,L)=DJUNKA*DT
-          DPRED( 3,L)=DJUNKS
-          DPRED( 4,L)=DJUNKR*DT
-          DPRED( 5,L)=DJUNK4
-          DPRED( 6,L)=DJUNKZ/DJUNKR
-C          DPRED( 9,L)=DJUNKS*DJUNKA
-          DPRED(7,L)=A_W                   ! *(1 - HDOFCT)
-          DPRED(8,L)=DJUNKA*DT*ABS( DT )
+          DPRED( 2,L)=DJUNKR
+          DPRED( 3,L)=DJUNKZ
+          DPRED( 4,L)=DJUNKA*DT
+          DPRED( 5,L)=DJUNKS
+          DPRED( 6,L)=DJUNKR*DT
+          DPRED( 7,L)=DJUNK4
+          DPRED( 8,L)=DJUNKZ/DJUNKR
+          DPRED( 9,L)=DJUNKS*DJUNKA
+          DPRED(10,L)=A_W
+          DPRED(11,L)=DJUNKA*DT*ABS( DT )
+C
+
+C          DPRED( 1,L)=DJUNKA
+Ccc          DPRED( 2,L)=DJUNKR
+Ccc          DPRED( 3,L)=DJUNKZ
+C          DPRED( 2,L)=DJUNKA*DT
+C          DPRED( 3,L)=DJUNKS
+C          DPRED( 4,L)=DJUNKR*DT
+C          DPRED( 5,L)=DJUNK4
+C          DPRED( 6,L)=DJUNKZ/DJUNKR
+Ccc          DPRED( 9,L)=DJUNKS*DJUNKA
+C          DPRED(7,L)=A_W                   ! *(1 - HDOFCT)
+C          DPRED(8,L)=DJUNKA*DT*ABS( DT )
 C
 C         ---------------
 C         Carbon monoxide for FCOW = set4
