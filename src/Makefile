@@ -90,7 +90,7 @@ crisg4_oct16:
 	rm -f *.o incFTC.f
 	ln -s incFTC_crisg4_oct16.f incFTC.f
 	make -f make_sarta
-	mv a.out ../bin/crisg4_oct16
+	mv a.out ../bin/crisg4_oct16_nov19
 
 # CrIS  (high res) basic coef set[1-7] and wcon.
 crisg4_mar18:
@@ -105,6 +105,13 @@ crisg4_may18_hdo:
 	ln -s incFTC_cris_hr_g4_may18_tra_hdo.f incFTC.f
 	make -f make_sarta
 	mv a.out ../bin/crisg4_may18_hdo_d6
+
+# CrIS FSR v2.01 (prod2019 dec2018)
+cris_hrg4_p2019_dec18:
+	rm -f *.o incFTC.f
+	ln -s incFTC_cris_hrg4_p2019_dec2018.f incFTC.f
+	make -f make_sarta
+	mv a.out ../bin/cris_hrg4_p2019dec18
 
 ######  -------  IASI  -----------
 # IASI basic 7-set w/continuum
@@ -125,7 +132,7 @@ iasi_jun19:
 	rm -f *.o incFTC.f
 	ln -s incFTC_iasi_jun19.f incFTC.f
 	make -f make_sarta
-	mv a.out ../bin/iasi_jun19
+	mv a.out ../bin/iasi_jun19_co2nte400
 
 #----------------------------------------------------------------------------------------
 # File management

@@ -553,9 +553,9 @@ C
 C
        ENDIF  
 
-       IF(.NOT. CFCO2) THEN
-         write(6,*) 'rdcoef:not.CFCO2 since CFCO2 is FALSE'
-       ENDIF
+C       IF(.NOT. CFCO2) THEN
+C         write(6,*) 'rdcoef:not.CFCO2 since CFCO2 is FALSE'
+C       ENDIF
 
 C      ---------------------
 C      Read SO2 pertub coefs - placeholder while no coef file

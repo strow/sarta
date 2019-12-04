@@ -167,8 +167,8 @@ C
        CHARACTER*40 VSCOEF  ! SARTA coefficient version
        CHARACTER*40 VTUNNG  ! optical depth tuning version
 C      version template    '#.## YYYY-MM-DD <--------comment------->'
-       PARAMETER( VSARTA = '1.08 2010-09-14' )
-       PARAMETER( VSCOEF = 'AIRS L1C 2645 draft 14-sep-2018')
+       PARAMETER( VSARTA = '2.01 2019-05-14' )
+       PARAMETER( VSCOEF = 'AIRS L1C Dec-2018')
        PARAMETER( VTUNNG = 'none' )
 
 C      *********

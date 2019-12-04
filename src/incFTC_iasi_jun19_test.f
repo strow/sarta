@@ -172,8 +172,8 @@ C
        CHARACTER*40 VSCOEF  ! SARTA coefficient version
        CHARACTER*60 VTUNNG  ! optical depth tuning version
 C      version template    '#.## YYYY-MM-DD <------comment--------->'
-       PARAMETER( VSARTA = '1.08 2010-09-14' )
-       PARAMETER( VSCOEF = 'IASI 2019-06-16 con1 gauss 2cm')
+       PARAMETER( VSARTA = '2.01 2019-06-14' )
+       PARAMETER( VSCOEF = 'IASI Dec-2019 con1 gauss 2cm')
        PARAMETER( VTUNNG = 'none' )
 
 C      *********

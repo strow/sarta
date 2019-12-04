@@ -91,7 +91,15 @@ C    none
 C Date        Programmer     Comments
 C ----------- -------------- -------------------------------------------
 C 02 Nov 2004 Scott Hannon   Created for CrIS 0.8 cm OPD all bands
-
+C 05 Feb 2007 Scott Hannon   Add XSALT
+C 16 Mar 2007 Scott Hannon   Add non-LTE params MXCHNN, NNCOEF, FNCOFN
+C 02 May 2007 Scott Hannon   Updated for SARTA V1.07
+C 14 May 2008 Scott Hannon   Updated for v1.08; add CO2NTE and NTEBOT
+C                            and increase NNCOEF from 6 to 7
+C 12 May 2009 Scott Hannon   Add VTUNNG string; delete VCLOUD
+C 14 Sep 2018 C Hepplewhite  Updated IASI fast model
+C 1  Mar 2019 C Hepplewhite  Added HDO
+C 1  Dec 2019 C Hepplewhite  v2.01 compatibility with IASI and AIRS_L1C
 
 !END====================================================================
 C
@@ -155,13 +163,31 @@ C      a change to the minor version number.
 C      See the "Doc/last_update.txt" file for a description of the
 C      changes associated with every change of VSARTA.
 C
+       LOGICAL DEBUG
+       PARAMETER(DEBUG = .FALSE.)
+C
+       LOGICAL CFCO2
+       LOGICAL CFHNO3
+       LOGICAL CFN2O
+       LOGICAL CFNH3
+       LOGICAL CFSO2
+       LOGICAL CFHDO
+       LOGICAL CFTHER
+       PARAMETER(CFCO2  = .FALSE.)
+       PARAMETER(CFHNO3 = .FALSE.)
+       PARAMETER(CFN2O  = .FALSE.)
+       PARAMETER(CFNH3  = .FALSE.)
+       PARAMETER(CFSO2  = .FALSE.)
+       PARAMETER(CFHDO  = .FALSE.)
+       PARAMETER(CFTHER = .FALSE.)
+C
        CHARACTER*40 VSARTA  ! SARTA source code version
        CHARACTER*40 VSCOEF  ! SARTA coefficient version
        CHARACTER*60 VTUNNG  ! optical depth tuning version
 C       CHARACTER*40 VCLOUD  ! cloud version
 C      version template    '#.## YY-MM-DD <--------comment--------->'
-       PARAMETER( VSARTA = '1.05 04-10-06' )
-       PARAMETER( VSCOEF = '04-11-02 CrIS 0.8 cm OPD all bands' )
+       PARAMETER( VSARTA = '2.01 2018-10-01' )
+       PARAMETER( VSCOEF = 'Dec-2018 CrIS 0.8 cm OPD all bands' )
        PARAMETER( VTUNNG = 'none' )
 C       PARAMETER( VCLOUD = 'no clouds' )
 
@@ -191,6 +217,13 @@ C
        REAL CO2STD ! standard CO2 PPMV mixing ratio (385)
        PARAMETER( CO2STD = 400.0 )
 C
+       REAL HDOSTD ! standard HDO depletion abundance (3.1069E-5)
+       PARAMETER( HDOSTD = 0.00031069 )
+C
+       REAL HDOFCT ! vary proportion of HDO in H2O from std depletion
+C                  ! (-1: 100% enhancement, 0:std HDO or zero depletion,
+C                  1: 100% depleted))
+       PARAMETER( HDOFCT = 0.00 )
 C
        REAL  XSALT ! expected nominal satellite altitude (km)
        PARAMETER( XSALT = 841.0 )
@@ -393,6 +426,26 @@ C      ----------------------
        INTEGER   NN2O ! number of N2O coefficients (placeholder 1)
        PARAMETER(MXCHNN = 433)   ! was 289
        PARAMETER(  NN2O = 7)     ! was 7
+
+C      -----------------
+C      For variable NH3
+C      -----------------
+       INTEGER MXCHNA ! max # of channels with NH3 pert coefs (2075)
+       INTEGER   NNH3 ! number of NH3 coefficients (4)
+       PARAMETER(MXCHNA = 1)        ! placeholder when not using this set
+C       PARAMETER( NNH3 = 1)         ! placeholder when not using this set
+C       PARAMETER(MXCHNA = 1422)
+       PARAMETER(  NNH3 = 4)
+
+C      -----------------
+C      For variable HDO
+C      -----------------
+       INTEGER MXCHND ! max # of channels with HDO pert coefs (2075)
+       INTEGER   NHDO ! number of HDO coefficients (4)
+       PARAMETER(MXCHND = 1)        ! placeholder when not using this set
+C       PARAMETER( NHDO = 1)         ! placeholder when not using this set
+C       PARAMETER(MXCHND = 1843)
+       PARAMETER(  NHDO = 11)
 C
 C      ----------------------
 C      For non-LTE - placeholder while no coef file
@@ -439,6 +492,8 @@ C      ---------
        CHARACTER*80 FNN2O  ! coef N2O
        CHARACTER*80 FNSO2  ! coef SO2
        CHARACTER*80 FNHNO3 ! coef HNO3
+       CHARACTER*80 FNNH3  ! coef NH3
+       CHARACTER*80 FNHDO  ! coef HDO
        CHARACTER*80 FNTHER ! coef therm
        CHARACTER*80 FNFX   ! coef fx
        CHARACTER*80 FNPREF ! ref prof
@@ -457,10 +512,12 @@ C
        PARAMETER(FNN2O='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/n2o.dat')
        PARAMETER(FNSO2='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/so2.dat')
        PARAMETER(FNHNO3='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/hno3.dat')
+       PARAMETER(FNNH3='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/nh3.dat')
+       PARAMETER(FNHDO='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/hdo.dat')
        PARAMETER(FNTHER='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/therm.dat')
        PARAMETER(FNCOFN='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/nte_7term.dat')
        PARAMETER(FNFX='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/fx.txt')
-       PARAMETER(FNPREF='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/profref_trace400')
+       PARAMETER(FNPREF='/asl/data/sarta_coef/Data_CrIS_oct16/Coef/refprof_400_tra')
        PARAMETER(FNSUN='/asl/data/sarta_coef/Data_CrIS_oct16/Solar/sol.txt')
 
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
