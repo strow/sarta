@@ -481,32 +481,33 @@ C
 C      ----------
 C      Read set 7
 C      ----------
-       OPEN(UNIT=IOUN,FILE=FNCOF7,FORM='UNFORMATTED',STATUS='OLD',
-     $    IOSTAT=IERR)
-       IF (IERR .NE. 0) THEN
-          WRITE(6,1020) IERR, FNCOF7
-          STOP
-       ENDIF
+C       OPEN(UNIT=IOUN,FILE=FNCOF7,FORM='UNFORMATTED',STATUS='OLD',
+C     $    IOSTAT=IERR)
+C       IF (IERR .NE. 0) THEN
+C          WRITE(6,1020) IERR, FNCOF7
+C          STOP
+C       ENDIF
 C
-       J=1
-       DO I=1,MXCHN7
+C       J=1
+C       DO I=1,MXCHN7
 C         Read data for this frequency/channel
-          READ(IOUN) ICHAN, FRQCHN, ((COEF7(IC,IL,J),IC=1,N7COEF),
-     $       IL=1,MAXLAY)
+C          READ(IOUN) ICHAN, FRQCHN, ((COEF7(IC,IL,J),IC=1,N7COEF),
+C     $       IL=1,MAXLAY)
 C
-          SETCHN(ICHAN)=7
+C          SETCHN(ICHAN)=7
 C
 C         Keep the data if the current channel is on the list
-          IF (INDCHN(ICHAN) .NE. 0) THEN
-             CLIST7(J)=ICHAN
-             FREQ( INDCHN(ICHAN) )=FRQCHN
-             J=J + 1
-          ENDIF
-       ENDDO
-       NCHN7=J - 1
+C          IF (INDCHN(ICHAN) .NE. 0) THEN
+C             CLIST7(J)=ICHAN
+C             FREQ( INDCHN(ICHAN) )=FRQCHN
+C             J=J + 1
+C          ENDIF
+C       ENDDO
+C       NCHN7=J - 1
 C
-       CLOSE(IOUN)
+C       CLOSE(IOUN)
 C
+       NCHN7=0
 C
 C      WRITE(6,'(A)') 'Completed rdcoef to set 7'
 C      ---------------------------
@@ -606,7 +607,6 @@ C      Read HNO3 perturb coefs - placeholder while no coef file
 C      ---------------------
        IF (CFHNO3) THEN
        write(6,"('rdcoef:CFHNO3=TRUE, read coeff file')")
-       ELSEIF (CFHNO3) THEN
        OPEN(UNIT=IOUN,FILE=FNHNO3,FORM='UNFORMATTED',STATUS='OLD',
      $    IOSTAT=IERR)
        IF (IERR .NE. 0) THEN
@@ -797,6 +797,7 @@ C
 C      ---------------------
 C      Read OPTRAN H2O coefs - placeholder to disable coefficients
 C      ---------------------
+       IF (CFOPTR) THEN
        OPEN(UNIT=IOUN,FILE=FNOPTR,FORM='UNFORMATTED',STATUS='OLD',
      $    IOSTAT=IERR)
        IF (IERR .NE. 0) THEN
@@ -828,17 +829,21 @@ C             write(6,'(a,X,I4,X,I6)') 'rdcoef:J, INDH2O(ICHAN)', J,INDH2O(ICHAN
 C
        CLOSE(IOUN)
 C
-C      these loops for zeroing out optran coefficients
-C       J=1
-C       DO I=1,MXCHNW
-C         DO IC=1,NH2O
-C           DO IL=1,MXOWLY
-C             COFH2O(IC,IL,J) = 0.0
-C           ENDDO
-C         ENDDO
-C       ENDDO
+       ELSE
+       write(6,*) 'rdcoef:CFOPTR=FALSE null coeffs'
 C
-C      write(6,*) 'rdcoef: completed optran'
+C      these loops for zeroing out optran coefficients
+       J=1
+       DO I=1,MXCHNW
+         DO IC=1,NH2O
+           DO IL=1,MXOWLY
+             COFH2O(IC,IL,J) = 0.0
+           ENDDO
+         ENDDO
+       ENDDO
+C
+       write(6,*) 'rdcoef: completed optran'
+       ENDIF
 C      -----------------------------------------------
 C      Read the downward thermal F factor coefficients
 C      -----------------------------------------------
@@ -851,7 +856,7 @@ C      -----------------------------------------------
           STOP
        ENDIF
 C
-       DO I=1,MXCHAN     ! was 2219 for thermal_matched.dat
+       DO I=1,MXCHAN
 C         Read data for this frequency/channel
 ccc changed 18 May 2005
 ccc          READ(IOUN) ICHAN, FRQCHN, LACHAN, (FCHAN(IC),IC=1,NFCOEF)
@@ -913,6 +918,9 @@ C
 C      ------------
 C      Read non-LTE
 C      ------------
+       IF (COFNTE) THEN
+       write(6,*) 'rdcoef:COFNTE=TRUE read coef file'
+
        OPEN(UNIT=IOUN,FILE=FNCOFN,FORM='UNFORMATTED',STATUS='OLD',
      $    IOSTAT=IERR)
        IF (IERR .NE. 0) THEN
@@ -934,14 +942,18 @@ C         Keep the data if the current channel is on the list
        NCHNTE=J - 1
 C
        CLOSE(IOUN)
+C
+       ELSE
+       write(6,*) 'rdcoef:COFNTE=FALSE, null coeffs'
 C placeholder set to zero
-C       DO I=1,MXCNTE
-C          DO IC=1,NNCOEF
-C             COEFN(IC,I)=0.0
-C          ENDDO
-C       ENDDO
+       DO I=1,MXCNTE
+          DO IC=1,NNCOEF
+             COEFN(IC,I)=0.0
+          ENDDO
+       ENDDO
+       ENDIF
 C      ---------------------------------------------
-C      write(6,*) 'rdcoef: read all coefficients'
+      write(6,*) 'rdcoef: read all coefficients'
 C      ---------------------------------------------
 C      Make sure all channels on the list were found
 C      ---------------------------------------------

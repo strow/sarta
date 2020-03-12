@@ -783,11 +783,13 @@ C
 C      -----------------------------------
 C      Calculate the OPTRAN H2O predictors
 C      -----------------------------------
+       IF (CFOPTR) THEN
        CALL CALOWP ( LBOT, WAMNT, RPRES, TEMP, SECANG, WAZOP, WAVGOP,
      $    WAANG, LOPMIN, LOPMAX, LOPUSE, H2OPRD, LOPLOW, DAOP )
 C
        if (DEBUG) write(6,'(A)') 'sarta: completed CALOWP'
        if (DEBUG) write(6,'(A,X,I6,X,I6)') 'sarta: LOPLOW(1,LBOT): ', LOPLOW(1),LOPLOW(LBOT)
+       ENDIF
 C      ----------------------------------
 C      Calculate the layer transmittances
 C      ----------------------------------

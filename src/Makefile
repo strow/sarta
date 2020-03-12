@@ -134,6 +134,14 @@ iasi_jun19:
 	make -f make_sarta
 	mv a.out ../bin/iasi_jun19_co2nte400
 
+# --------------------- CHIRP -------------------
+# CHIRP Bare bones
+chirp_feb20:
+	rm -f *.o incFTC.f
+	ln -s incFTC_chirp_base_tra_thrm_nte.f incFTC.f
+	make -f make_sarta
+	mv a.out ../bin/chirp_feb20_base_tra_thrm_nte
+
 #----------------------------------------------------------------------------------------
 # File management
 #----------------------------------------------------------------------------------------
