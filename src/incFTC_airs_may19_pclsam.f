@@ -163,6 +163,25 @@ C
        LOGICAL DEBUG
        PARAMETER(DEBUG = .FALSE.)
 C
+       LOGICAL CFCO2
+       LOGICAL CFHNO3
+       LOGICAL CFN2O
+       LOGICAL CFNH3
+       LOGICAL CFSO2
+       LOGICAL CFHDO
+       LOGICAL CFOPTR
+       LOGICAL CFTHER
+       LOGICAL COFNTE
+       PARAMETER(CFCO2  = .TRUE.)
+       PARAMETER(CFHNO3 = .TRUE.)
+       PARAMETER(CFN2O  = .TRUE.)
+       PARAMETER(CFNH3  = .TRUE.)
+       PARAMETER(CFSO2  = .TRUE.)
+       PARAMETER(CFHDO  = .FALSE.)
+       PARAMETER(CFOPTR = .TRUE.)
+       PARAMETER(COFNTE = .TRUE.)
+       PARAMETER(CFTHER = .TRUE.)
+C
        CHARACTER*40 VSARTA  ! SARTA source code version
        CHARACTER*40 VSCOEF  ! SARTA coefficient version
        CHARACTER*40 VTUNNG  ! optical depth tuning version
@@ -461,6 +480,7 @@ C      ---------
        CHARACTER*80 FNSO2  ! coef SO2
        CHARACTER*80 FNHNO3 ! coef HNO3
        CHARACTER*80 FNNH3  ! coef NH3
+       CHARACTER*80 FNHDO  ! coef HDO
        CHARACTER*80 FNN2O  ! coef N2O
        CHARACTER*80 FNOPTR ! coef optran
        CHARACTER*80 FNTHER ! coef therm
@@ -497,6 +517,8 @@ C
      $ '/asl/data/sarta_database/Data_AIRS_may19/Coef/n2o.dat')
        PARAMETER(FNNH3 =
      $ '/asl/data/sarta_database/Data_AIRS_may19/Coef/nh3.dat')
+       PARAMETER(FNHDO =
+     $ '/asl/data/sarta_database/Data_AIRS_may19/Coef/hdo.dat')
 C
        PARAMETER(FNFX  =
      $ '/asl/data/sarta_database/Data_AIRS_may19/Coef/fx.txt')

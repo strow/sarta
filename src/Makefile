@@ -33,7 +33,7 @@ airs_cloudy_may19:
 	ln -s incFTC_airs_may19_pclsam.f incFTC.f
 	ln -s fnmie_iceGHMbaum_waterdrop_desertdust.f fnmie.f
 	make -f make_sarta_pclsam
-	mv a.out ../bin/airs_l1c_2834_cloudy_may19_rbld
+	mv a.out ../bin/airs_l1c_2834_cloudy_may19_prod_v2
 
 #----------------------------------------------------------------------------------------
 # Builds clear
@@ -55,15 +55,15 @@ apr08_m140_pge_v6_tunmlt:
 # AIRS L1C
 airs_may19:
 	rm -f *.o incFTC.f
-	ln -s incFTC_airs_may19.f incFTC.f
+	ln -s incFTC_airs_may19_prod_tra.f incFTC.f
 	make -f make_sarta
-	mv a.out ../bin/airs_l1c_2834_may19
+	mv a.out ../bin/airs_l1c_2834_may19_prod_v2
 
 airs_basic:
 	rm -f *.o incFTC.f
-	ln -s incFTC_airs_prod2019_dec2018_basic_optr_co2.f  incFTC.f
+	ln -s incFTC_airs_prod2019_dec2018_basic_debug.f  incFTC.f
 	make -f make_sarta
-	mv a.out ../bin/airs_2834_mar19_basic_optr_co2
+	mv a.out ../bin/airs_2834_mar19_basic_optr_co2_debug
 
 airs_thrm:
 	rm -f *.o incFTC.f
@@ -132,7 +132,7 @@ iasi_jun19:
 	rm -f *.o incFTC.f
 	ln -s incFTC_iasi_jun19.f incFTC.f
 	make -f make_sarta
-	mv a.out ../bin/iasi_jun19_co2nte400
+	mv a.out ../bin/iasi_jun19_thrm
 
 # --------------------- CHIRP -------------------
 # CHIRP Bare bones

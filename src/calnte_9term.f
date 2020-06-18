@@ -201,7 +201,7 @@ C
 C         Adjust RAD for the non-LTE contribution
           RAD(J) = RAD(J) + DRAD/1000.0 ! convert DRAD to Watts
 C
-C       write(6,'(A,X,I3,X,E11.3)') 'calnte: I, XCO2 ',I,(COEFN(7,I)*(CO2TOP - CO2NTE) + 1.0)
+       write(6,'(A,X,I3,X,E11.3)') 'calnte: I, XCO2 ',I,(COEFN(7,I)*(CO2TOP - CO2NTE) + 1.0)
 C
        ENDDO
 C      End loops on channel number (frequency)

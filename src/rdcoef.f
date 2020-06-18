@@ -481,33 +481,33 @@ C
 C      ----------
 C      Read set 7
 C      ----------
-C       OPEN(UNIT=IOUN,FILE=FNCOF7,FORM='UNFORMATTED',STATUS='OLD',
-C     $    IOSTAT=IERR)
-C       IF (IERR .NE. 0) THEN
-C          WRITE(6,1020) IERR, FNCOF7
-C          STOP
-C       ENDIF
+       OPEN(UNIT=IOUN,FILE=FNCOF7,FORM='UNFORMATTED',STATUS='OLD',
+     $    IOSTAT=IERR)
+       IF (IERR .NE. 0) THEN
+          WRITE(6,1020) IERR, FNCOF7
+          STOP
+       ENDIF
 C
-C       J=1
-C       DO I=1,MXCHN7
+       J=1
+       DO I=1,MXCHN7
 C         Read data for this frequency/channel
-C          READ(IOUN) ICHAN, FRQCHN, ((COEF7(IC,IL,J),IC=1,N7COEF),
-C     $       IL=1,MAXLAY)
+          READ(IOUN) ICHAN, FRQCHN, ((COEF7(IC,IL,J),IC=1,N7COEF),
+     $       IL=1,MAXLAY)
 C
-C          SETCHN(ICHAN)=7
+          SETCHN(ICHAN)=7
 C
 C         Keep the data if the current channel is on the list
-C          IF (INDCHN(ICHAN) .NE. 0) THEN
-C             CLIST7(J)=ICHAN
-C             FREQ( INDCHN(ICHAN) )=FRQCHN
-C             J=J + 1
-C          ENDIF
-C       ENDDO
-C       NCHN7=J - 1
+          IF (INDCHN(ICHAN) .NE. 0) THEN
+             CLIST7(J)=ICHAN
+             FREQ( INDCHN(ICHAN) )=FRQCHN
+             J=J + 1
+          ENDIF
+       ENDDO
+       NCHN7=J - 1
 C
-C       CLOSE(IOUN)
+       CLOSE(IOUN)
 C
-       NCHN7=0
+C       NCHN7=0
 C
 C      WRITE(6,'(A)') 'Completed rdcoef to set 7'
 C      ---------------------------
@@ -968,17 +968,18 @@ C      ----------------------------
 C      Show summary of channel sets
 C      ----------------------------
 ccc
-c$$$       WRITE(6,1060) 1, NCHN1
-c$$$ 1060  FORMAT('Number of channels for set',I3,' = ',I5)
-c$$$       WRITE(6,1060) 2, NCHN2
-c$$$       WRITE(6,1060) 3, NCHN3
-c$$$       WRITE(6,1060) 4, NCHN4
-c$$$       WRITE(6,1060) 5, NCHN5
-c$$$       WRITE(6,1060) 6, NCHN6
-c$$$       WRITE(6,1060) 7, NCHN7
-c$$$       WRITE(6,1060) 11,NCHNNH3
-C       WRITE(6,1060) 162,NCHNHDO
-ccc
+       IF (DEBUG) THEN
+         WRITE(6,1060) 1, NCHN1
+ 1060    FORMAT('Number of channels for set',I3,' = ',I5)
+         WRITE(6,1060) 2, NCHN2
+         WRITE(6,1060) 3, NCHN3
+         WRITE(6,1060) 4, NCHN4
+         WRITE(6,1060) 5, NCHN5
+         WRITE(6,1060) 6, NCHN6
+         WRITE(6,1060) 7, NCHN7
+         WRITE(6,1060) 11,NCHNNH3
+C         WRITE(6,1060) 162,NCHNHDO
+       ENDIF
 C
        RETURN
        END

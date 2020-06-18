@@ -3,7 +3,7 @@ C=======================================================================
 C
 C    University of Maryland Baltimore County [UMBC]
 C
-C    IASI
+C    AIRS 2834 with LLS L1C channel centers
 C
 C    incFTC
 C
@@ -73,10 +73,10 @@ C    none
 
 
 !DESCRIPTION:
-C    Sepember 2008 version of the 100 layer IASI fast model
-C    code by L.L.Strow/S.Hannon/H.Motteler.  This IASI model
+C    May 2019 version of the 100 layer AIRS fast model
+C    code by L.L.Strow/S.Hannon/Hepplewhite.  This AIRS model
 C    uses the same algorithm and source code (except for this
-C    include file) as our AIRS fast model.
+C    include file) as our other fast models.
 C
 C    Parameter statements for the FTC routines.
 
@@ -92,16 +92,11 @@ C    none
 !ROUTINE HISTORY:
 C Date        Programmer     Comments
 C ----------- -------------- -------------------------------------------
-C 25 Sep 2003 Scott Hannon   Created for IASI (based on AIRS)
-C 20 Apr 2006 Scott Hannon   Updated for SARTA V1.05
-C 05 Feb 2007 Scott Hannon   Add XSALT
-C 16 Mar 2007 Scott Hannon   Add non-LTE params MXCHNN, NNCOEF, FNCOFN
-C 02 May 2007 Scott Hannon   Updated for SARTA V1.07
-C 14 May 2008 Scott Hannon   Updated for v1.08; add CO2NTE and NTEBOT
-C                            and increase NNCOEF from 6 to 7
+C 27 Apr 2009 Scott Hannon   Created for CrIS April 2009 fast model
 C 12 May 2009 Scott Hannon   Add VTUNNG string; delete VCLOUD
-C 14 Sep 2018 C Hepplewhite  Updated IASI fast model
-C 1  Mar 2019 C Hepplewhite  Added HDO
+C 14 Sep 2018 C Hepplewhite  Created AIRS L1C fast model
+C 1  Mar 2019 C Hepplewhite  Added HDO (not used this version)
+C 21 Jun 2019 C Hepplewhite  Updated reflected thermal.
 
 !END====================================================================
 C
@@ -177,22 +172,22 @@ C
        LOGICAL CFOPTR
        LOGICAL CFTHER
        LOGICAL COFNTE
-       PARAMETER(CFCO2  = .FALSE.)
-       PARAMETER(CFHNO3 = .FALSE.)
-       PARAMETER(CFN2O  = .FALSE.)
-       PARAMETER(CFNH3  = .FALSE.)
-       PARAMETER(CFSO2  = .FALSE.)
+       PARAMETER(CFCO2  = .TRUE.)
+       PARAMETER(CFHNO3 = .TRUE.)
+       PARAMETER(CFN2O  = .TRUE.)
+       PARAMETER(CFNH3  = .TRUE.)
+       PARAMETER(CFSO2  = .TRUE.)
        PARAMETER(CFHDO  = .FALSE.)
-       PARAMETER(CFOPTR = .FALSE.)
-       PARAMETER(COFNTE = .FALSE.)
+       PARAMETER(CFOPTR = .TRUE.)
+       PARAMETER(COFNTE = .TRUE.)
        PARAMETER(CFTHER = .TRUE.)
 C
        CHARACTER*40 VSARTA  ! SARTA source code version
        CHARACTER*40 VSCOEF  ! SARTA coefficient version
-       CHARACTER*60 VTUNNG  ! optical depth tuning version
-C      version template    '#.## YYYY-MM-DD <------comment--------->'
-       PARAMETER( VSARTA = '2.01 2019-06-14' )
-       PARAMETER( VSCOEF = 'IASI Dec-2018 con1 gauss 2cm')
+       CHARACTER*40 VTUNNG  ! optical depth tuning version
+C      version template    '#.## YYYY-MM-DD <--------comment------->'
+       PARAMETER( VSARTA = '2.02 2020-04-11' )
+       PARAMETER( VSCOEF = 'AIRS L1C Dec-2018')
        PARAMETER( VTUNNG = 'none' )
 
 C      *********
@@ -225,19 +220,18 @@ C
        PARAMETER( HDOSTD = 0.00031069 )
 C
        REAL HDOFCT ! vary proportion of HDO in H2O from std depletion
-C                  ! (-1: 100% enhancement, 0:std HDO or zero depletion,
-C                  1: 100% depleted))
+C                  ! (-1: 100% enhancement, 0:std HDO or zero depletion,  1: 100% depleted))
        PARAMETER( HDOFCT = 0.00 )
 C
        REAL  XSALT ! expected nominal satellite altitude (km)
-       PARAMETER( XSALT = 815.0 )
+       PARAMETER( XSALT = 705.0 )
 C
 C      -----------------------------------
 C      Channels and layers other variables
 C      -----------------------------------
        INTEGER MAXLAY ! # of layers (100)
        INTEGER   NSET ! # of coefficient data sets (7)
-       INTEGER MXCHAN ! max total # of channels (8861)
+       INTEGER MXCHAN ! max total # of channels (2834)
        INTEGER NFCOEF ! # of downwelling thermal "F" factor coefs 
        INTEGER MXEMIS ! max # of input emis/rho data points
        INTEGER MAXPRO ! max # of user specified profiles
@@ -245,7 +239,7 @@ C      -----------------------------------
        INTEGER MXMIEA ! max # of mie particle sizes (cloud code only)
        PARAMETER(MAXLAY = 100)
        PARAMETER(  NSET = 7)
-       PARAMETER(MXCHAN = 8461)
+       PARAMETER(MXCHAN = 2834)
        PARAMETER(NFCOEF = 6)
        PARAMETER(MXEMIS = 100)
        PARAMETER(MAXPRO = 25)
@@ -260,13 +254,13 @@ C      --------------
 C      For set1 = FWO
 C      -------------
 C      Used in part by modules: 12, 11, 10, 9, 8, 7, 6, 5, 3, 4b, 4a
-       INTEGER MXCHN1 ! max # of channels for set1 = FWO (3750)
-       INTEGER  N1CON ! # of water con predictors/coefs for set1 (7)
+       INTEGER MXCHN1 ! max # of channels for set1 = FWO (1461)
+       INTEGER  N1CON ! # of water con predictors/coefs for set1 (5)
        INTEGER  N1FIX ! # of "fixed" predictors/coefs for set1 (8)
-       INTEGER  N1H2O ! # of water predictors/coefs for set1 (11)
+       INTEGER  N1H2O ! # of water predictors/coefs for set1 (13)
        INTEGER   N1O3 ! # of ozone predictors/coefs for set1 (5)
        INTEGER N1COEF ! total # of coefs for set1
-       PARAMETER(MXCHN1 = 3750)
+       PARAMETER(MXCHN1 = 1461)
        PARAMETER( N1CON = 7)
        PARAMETER( N1FIX = 8)
        PARAMETER( N1H2O = 11)
@@ -278,13 +272,13 @@ C      --------------
 C      For set2 = FOW
 C      --------------
 C      Used in part by modules: 6, 5
-       INTEGER MXCHN2 ! max # of channels for set2 = FOW  (678)
-       INTEGER  N2CON ! # of water con predictors/coefs for set2 (7)
+       INTEGER MXCHN2 ! max # of channels for set2 = FOW  (477)
+       INTEGER  N2CON ! # of water con predictors/coefs for set2 (5)
        INTEGER  N2FIX ! # of "fixed" predictors/coefs for set2 (8)
        INTEGER   N2O3 ! # of ozone predictors/coefs for set2 (10)
        INTEGER  N2H2O ! # of water predictors/coefs for set2 (11)
        INTEGER N2COEF ! total # of coefs for set2
-       PARAMETER(MXCHN2 = 678)
+       PARAMETER(MXCHN2 = 325)
        PARAMETER( N2CON = 7)
        PARAMETER( N2FIX = 8)
        PARAMETER(  N2O3 = 10)
@@ -296,13 +290,13 @@ C      --------------
 C      For set3 = FMW
 C      --------------
 C      Used in part by modules: 4d, 4c, 3
-       INTEGER MXCHN3 ! max # of channels for set3 = FMW  (1514)
-       INTEGER  N3CON ! # of water con predictors/coefs for set3 (7)
+       INTEGER MXCHN3 ! max # of channels for set3 = FMW  (401)
+       INTEGER  N3CON ! # of water con predictors/coefs for set3 (5)
        INTEGER  N3FIX ! # of "fixed" predictors/coefs for set3 (8)
        INTEGER  N3CH4 ! # of methane predictors/coefs for set3 (9)
-       INTEGER  N3H2O ! # of water predictors/coefs for set3 (11)
+       INTEGER  N3H2O ! # of water predictors/coefs for set3 (13)
        INTEGER N3COEF ! total # of coefs for set3
-       PARAMETER(MXCHN3 = 1514)
+       PARAMETER(MXCHN3 = 396)
        PARAMETER( N3CON = 7)
        PARAMETER( N3FIX = 8)
        PARAMETER( N3CH4 = 9)
@@ -314,14 +308,14 @@ C      ---------------
 C      For set4 = sun FCOW
 C      ---------------
 C      Used in part by modules: 2b
-       INTEGER MXCHN4 ! max # of channels for set4 = FCOW (299)
-       INTEGER  N4CON ! # of water con predictors/coefs for set4 (7)
+       INTEGER MXCHN4 ! max # of channels for set4 = FCOW (67)
+       INTEGER  N4CON ! # of water con predictors/coefs for set4 (5)
        INTEGER  N4FIX ! # of "fixed" predictors/coefs for set4 (11)
        INTEGER   N4CO ! # of CO predictors/coefs for set4 (11)
        INTEGER   N4O3 ! # of ozone predictors/coefs for set4 (3)
        INTEGER  N4H2O ! # of water predictors/coefs for set4 (13)
        INTEGER N4COEF ! total # of coefs for set4
-       PARAMETER(MXCHN4 = 299)
+       PARAMETER(MXCHN4 = 85)
        PARAMETER( N4CON = 7)
        PARAMETER( N4FIX = 11)
        PARAMETER(  N4CO = 11)
@@ -334,13 +328,13 @@ C      -----------------------
 C      For set5 = sun BFSW
 C      -----------------------
 C      Used in part by modules: 2b, 1b
-       INTEGER MXCHN5 ! max # of channels for set5 = BFSW (789)
-       INTEGER  N5CON ! # of water con predictors/coefs for set5 (7)
+       INTEGER MXCHN5 ! max # of channels for set5 = BFSW (163)
+       INTEGER  N5CON ! # of water con predictors/coefs for set5 (5)
        INTEGER  N5FIX ! # of "fixed" predictors/coefs for set5 (11)
        INTEGER  N5H2O ! # of water predictors/coefs for set5 (3)
        INTEGER   N5O3 ! # of ozone predictors/coefs for set5 (1)
        INTEGER N5COEF ! total # of coefs for set5
-       PARAMETER(MXCHN5 = 789)
+       PARAMETER(MXCHN5 = 210)
        PARAMETER( N5CON = 7)
        PARAMETER( N5FIX = 11)
        PARAMETER( N5H2O = 3)
@@ -352,13 +346,13 @@ C      -----------------------
 C      For set6 = sun MFMW
 C      -----------------------
 C      Used in part by modules: 1b, 2a
-       INTEGER MXCHN6 ! max # of channels for set6 = MFMW (957)
-       INTEGER  N6CON ! # of water con predictors/coefs for set6 (7)
+       INTEGER MXCHN6 ! max # of channels for set6 = MFMW (179)
+       INTEGER  N6CON ! # of water con predictors/coefs for set6 (5)
        INTEGER  N6FIX ! # of "fixed" predictors/coefs for set6 (8)
        INTEGER  N6H2O ! # of water predictors/coefs for set6 (7)
        INTEGER   N6O3 ! # of ozone predictors/coefs for set6 (1)
        INTEGER N6COEF ! total # of coefs for set6
-       PARAMETER(MXCHN6 = 957)
+       PARAMETER(MXCHN6 = 217)
        PARAMETER( N6CON = 7 )
        PARAMETER( N6FIX = 8 )
        PARAMETER( N6H2O = 7 )
@@ -370,13 +364,13 @@ C      -----------------------
 C      For set7 = sun MFBW
 C      -----------------------
 C      Used in part by modules: 2a, 1a
-       INTEGER MXCHN7 ! max # of channels for set7 = MFBW (474)
-       INTEGER  N7CON ! # of water con predictors/coefs for set7 (7)
+       INTEGER MXCHN7 ! max # of channels for set7 = MFBW (74)
+       INTEGER  N7CON ! # of water con predictors/coefs for set7 (5)
        INTEGER  N7FIX ! # of "fixed" predictors/coefs for set7 (8)
        INTEGER  N7H2O ! # of water predictors/coefs for set7 (13)
        INTEGER   N7O3 ! # of ozone predictors/coefs for set7 (1)
        INTEGER N7COEF ! total # of coefs for set7
-       PARAMETER(MXCHN7 = 474)
+       PARAMETER(MXCHN7 = 140)
        PARAMETER( N7CON = 7)
        PARAMETER( N7FIX = 8)
        PARAMETER( N7H2O = 13)
@@ -395,60 +389,55 @@ C      ----------------
 C      For variable CO2
 C      ----------------
 C      Used in part by modules: 12, 11, 10, 9, 7, 6, 5, 2b, 1b, 2a
-       INTEGER MXCHNC ! max # of channels with CO2 pert coefs (2863)
+       INTEGER MXCHNC ! max # of channels with CO2 pert coefs (1632)
        INTEGER NCO2   ! number of CO2 pert predictors/coefs (5)
-       PARAMETER(MXCHNC = 2863)
+       PARAMETER(MXCHNC = 1632)
        PARAMETER(  NCO2 = 5)
 C
 C
 C      ----------------
 C      For variable SO2
 C      ----------------
-       INTEGER MXCHNS ! max # of channels with SO2 pert coefs (1419)
-       INTEGER   NSO2 ! number of SO2 coefficients (4)
-       PARAMETER(MXCHNS = 1419)
+       INTEGER MXCHNS ! max # of channels with SO2 pert coefs (602)
+       INTEGER   NSO2 ! number of SO2 coefficients
+       PARAMETER(MXCHNS = 602)
        PARAMETER(  NSO2 = 4)
 C
 C
 C      -----------------
 C      For variable HNO3
 C      -----------------
-       INTEGER MXCHNH ! max # of channels with HNO3 pert coefs (921)
-       INTEGER  NHNO3 ! number of HNO3 coefficients (4)
-       PARAMETER(MXCHNH = 921)
+       INTEGER MXCHNH ! max # of channels with HNO3 pert coefs (383)
+       INTEGER  NHNO3 ! number of HNO3 coefficients
+       PARAMETER(MXCHNH = 383)
        PARAMETER( NHNO3 = 4)
 C
 C
 C      -----------------
 C      For variable N2O
 C      -----------------
-       INTEGER MXCHNN ! max # of channels with N2O pert coefs (2075)
-       INTEGER   NN2O ! number of N2O coefficients (7)
-       PARAMETER(MXCHNN = 2075)
+       INTEGER MXCHNN ! max # of channels with N2O pert coefs (173)
+       INTEGER   NN2O ! number of N2O coefficients
+       PARAMETER(MXCHNN = 586)
        PARAMETER(  NN2O = 7)
-C
 C
 C      -----------------
 C      For variable NH3
 C      -----------------
        INTEGER MXCHNA ! max # of channels with NH3 pert coefs (2075)
        INTEGER   NNH3 ! number of NH3 coefficients (4)
-C       PARAMETER(MXCHNA = 1)        ! placeholder when not using this
-C       set
-C       PARAMETER( NNH3 = 1)         ! placeholder when not using this
-C       set
+C       PARAMETER(MXCHNA = 1)        ! placeholder when not using this set
+C       PARAMETER( NNH3 = 1)         ! placeholder when not using this set
        PARAMETER(MXCHNA = 1422)
        PARAMETER(  NNH3 = 4)
 C
 C      -----------------
-C      For variable HDO
+C      For variable HDO (not used this version)
 C      -----------------
        INTEGER MXCHND ! max # of channels with HDO pert coefs (2075)
        INTEGER   NHDO ! number of HDO coefficients (4)
-C       PARAMETER(MXCHND = 1)        ! placeholder when not using this
-C       set
-C       PARAMETER( NHDO = 1)         ! placeholder when not using this
-C       set
+C       PARAMETER(MXCHND = 1)        ! placeholder when not using this set
+C       PARAMETER( NHDO = 1)         ! placeholder when not using this set
        PARAMETER(MXCHND = 1843)
        PARAMETER(  NHDO = 11)
 C
@@ -456,11 +445,11 @@ C      ----------------------
 C      For OPTRAN water coefs
 C      ----------------------
 C      Used in part by modules:
-       INTEGER MXCHNW ! max # of channelss with OPTRAN H2O coefs (2559)
+       INTEGER MXCHNW ! max # of channelss with OPTRAN H2O coefs (481)
        INTEGER MXOWLY ! number of OPTRAN water layers (300)
        INTEGER NOWAVG ! # of OPTRAN water average profile values (4)
        INTEGER NH2O   ! number of OPTRAN H2O predictors/coefs (9)
-       PARAMETER(MXCHNW = 2559)
+       PARAMETER(MXCHNW = 754)
        PARAMETER(MXOWLY = 300)
        PARAMETER(NOWAVG = 4)
        PARAMETER(  NH2O = 9)
@@ -468,11 +457,11 @@ C
 C      -----------
 C      For non-LTE
 C      -----------
-       INTEGER MXCNTE ! max # of channels for non-LTE (687)
+       INTEGER MXCNTE ! max # of channels for non-LTE (70)
        INTEGER NNCOEF ! # of coefs for non-LTE (7)
        INTEGER NTEBOT ! bottom layer for CO2TOP calc
        REAL CO2NTE ! ref CO2 mixing ratio for non-LTE coefs (ppmv)
-       PARAMETER(MXCNTE = 664)
+       PARAMETER(MXCNTE = 200)
        PARAMETER(NNCOEF = 7)
        PARAMETER(NTEBOT = 10)
        PARAMETER(CO2NTE = 400.0)
@@ -491,8 +480,8 @@ C      ---------
        CHARACTER*80 FNSO2  ! coef SO2
        CHARACTER*80 FNHNO3 ! coef HNO3
        CHARACTER*80 FNNH3  ! coef NH3
-       CHARACTER*80 FNN2O  ! coef N2O
        CHARACTER*80 FNHDO  ! coef HDO
+       CHARACTER*80 FNN2O  ! coef N2O
        CHARACTER*80 FNOPTR ! coef optran
        CHARACTER*80 FNTHER ! coef therm
        CHARACTER*80 FNFX   ! coef fx
@@ -502,46 +491,44 @@ C      ---------
 C
 C
        PARAMETER(FNCOF1=
-     $ '/asl/data/sarta_coef/Data_IASI_jun19/Coef/set1.dat')
+     $ '/asl/data/sarta_coef/Data_AIRS_may19/Coef/set1.dat')
        PARAMETER(FNCOF2=
-     $ '/asl/data/sarta_coef/Data_IASI_jun19/Coef/set2.dat')
+     $ '/asl/data/sarta_coef/Data_AIRS_may19/Coef/set2.dat')
        PARAMETER(FNCOF3=
-     $ '/asl/data/sarta_coef/Data_IASI_jun19/Coef/set3.dat')
+     $ '/asl/data/sarta_coef/Data_AIRS_may19/Coef/set3.dat')
        PARAMETER(FNCOF4=
-     $ '/asl/data/sarta_coef/Data_IASI_jun19/Coef/set4.dat')
+     $ '/asl/data/sarta_coef/Data_AIRS_may19/Coef/set4.dat')
        PARAMETER(FNCOF5=
-     $ '/asl/data/sarta_coef/Data_IASI_jun19/Coef/set5.dat')
+     $ '/asl/data/sarta_coef/Data_AIRS_may19/Coef/set5.dat')
        PARAMETER(FNCOF6=
-     $ '/asl/data/sarta_coef/Data_IASI_jun19/Coef/set6.dat')
+     $ '/asl/data/sarta_coef/Data_AIRS_may19/Coef/set6.dat')
        PARAMETER(FNCOF7=
-     $ '/asl/data/sarta_coef/Data_IASI_jun19/Coef/set7.dat')
-C
+     $ '/asl/data/sarta_coef/Data_AIRS_may19/Coef/set7.dat')
        PARAMETER(FNOPTR=
-     $ '/asl/data/sarta_coef/Data_IASI_jun19/Coef/optran.dat')
+     $ '/asl/data/sarta_coef/Data_AIRS_may19/Coef/optran.dat')
+C
        PARAMETER(FNCO2 =
-     $ '/asl/data/sarta_coef/Data_IASI_jun19/Coef/co2.dat')
+     $ '/asl/data/sarta_coef/Data_AIRS_may19/Coef/co2.dat')
        PARAMETER(FNSO2 =
-     $ '/asl/data/sarta_coef/Data_IASI_jun19/Coef/so2.dat')
+     $ '/asl/data/sarta_coef/Data_AIRS_may19/Coef/so2.dat')
        PARAMETER(FNHNO3 =
-     $ '/asl/data/sarta_coef/Data_IASI_jun19/Coef/hno3.dat')
+     $ '/asl/data/sarta_coef/Data_AIRS_may19/Coef/hno3.dat')
        PARAMETER(FNN2O =
-     $ '/asl/data/sarta_coef/Data_IASI_jun19/Coef/n2o.dat')
+     $ '/asl/data/sarta_coef/Data_AIRS_may19/Coef/n2o.dat')
        PARAMETER(FNNH3 =
-     $ '/asl/data/sarta_coef/Data_IASI_jun19/Coef/nh3.dat')
-       PARAMETER(FNHDO =
-     $ '/asl/data/sarta_coef/Data_IASI_jun19/Coef/hdo.dat')
-       PARAMETER(FNTHER=
-     $ '/home/chepplew/data/sarta/prod_2020/iasi/feb2020/fitc/r49/thermFactor_iasi.dat')
-       PARAMETER(FNCOFN=
-     $ '/asl/data/sarta_coef/Data_IASI_jun19/Coef/nte_7term.dat')
+     $ '/asl/data/sarta_coef/Data_AIRS_may19/Coef/nh3.dat')
+C
        PARAMETER(FNFX  =
-     $ '/asl/data/sarta_coef/Data_IASI_jun19/Coef/fx.txt')
+     $ '/asl/data/sarta_coef/Data_AIRS_may19/Coef/fx.txt')
        PARAMETER(FNPREF=
-     $ '/asl/data/sarta_coef/Data_IASI_jun19/Coef/refprof_nh3')
-CCCC    profref_trace400')
+     $ '/asl/data/sarta_coef/Data_AIRS_may19/Coef/refprof_trace400')
        PARAMETER(FNSUN =
-     $ '/asl/data/sarta_coef/Data_IASI_jun19/Solar/solardata.txt')
-
+     $ '/asl/data/sarta_coef/Data_AIRS_may19/Solar/sol.txt')
+C
+       PARAMETER(FNTHER=
+     $ '/asl/data/sarta_coef/Data_AIRS_may19/Coef/therm.dat')
+       PARAMETER(FNCOFN=
+     $ '/asl/data/sarta_coef/Data_AIRS_may19/Coef/nte_7term.dat')
 C
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
@@ -549,7 +536,7 @@ C Tuning filename
        CHARACTER*80 FNTMLT ! tuning multiplier filename
 C
        PARAMETER(FNTMLT=
-     $ '/asl/data/sarta_coef/Data_IASI_jun19/Coef/tunmlt_ones.txt')
+     $ '/asl/data/sarta_coef/Data_AIRS_may19/Coef/tunmlt.txt')
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C
@@ -572,5 +559,10 @@ C      Note: GUCIN must be 1 or 2.  All gases in the input RTP
 C      must be of this type.
        PARAMETER( GUCIN = 1 ) ! GUC number for:  molecules/cm^2
 c       PARAMETER( GUCIN = 2 ) ! GUC number for:  kilomoles/cm^2
+
+c
+c rtpV201 compatibility
+       CHARACTER*40 VCLOUD
+       PARAMETER( VCLOUD = 'no clouds' )
 
 C      End of include file

@@ -171,6 +171,8 @@ C
 C      ---------------------------------
 C      Loop over the OPTRAN water levels
 C      ---------------------------------
+       IF (DEBUG)  write(6,'(A,I4, X, I4)') 'calokw: LOPMIN, LOPMAX ', 
+     $      LOPMIN, LOPMAX
 C      Only do calc for OPTRAN levels that are needed
        DO LOP=LOPMIN,LOPMAX
           IF (LOPUSE(LOP)) THEN
@@ -196,11 +198,15 @@ C      Loop over the AIRS layers
 C      -------------------------
        DO L=1,LBOT
 C
+CCC       catch bug: KWOP(0)
+C$$$          IF (LOPLOW(L) .GT. 0.0E+0) THEN
+          
 C         Interpolate abs coef and convert to optical depth
           KW(L)=( DAOP(L)*( KWOP(LOPLOW(L) + 1) -
      $       KWOP(LOPLOW(L)) ) + KWOP(LOPLOW(L)) )*WAANG(L)
           IF (KW(L) .LT. 0.0E+0) KW(L)=0.0E+0
 C
+C$$$       ENDIF
        ENDDO
 C
        RETURN

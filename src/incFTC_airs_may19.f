@@ -163,6 +163,25 @@ C
        LOGICAL DEBUG
        PARAMETER(DEBUG = .FALSE.)
 C
+       LOGICAL CFCO2
+       LOGICAL CFHNO3
+       LOGICAL CFN2O
+       LOGICAL CFNH3
+       LOGICAL CFSO2
+       LOGICAL CFHDO
+       LOGICAL CFOPTR
+       LOGICAL CFTHER
+       LOGICAL COFNTE
+       PARAMETER(CFCO2  = .FALSE.)
+       PARAMETER(CFHNO3 = .FALSE.)
+       PARAMETER(CFN2O  = .FALSE.)
+       PARAMETER(CFNH3  = .FALSE.)
+       PARAMETER(CFSO2  = .FALSE.)
+       PARAMETER(CFHDO  = .FALSE.)
+       PARAMETER(CFOPTR = .FALSE.)
+       PARAMETER(COFNTE = .FALSE.)
+       PARAMETER(CFTHER = .FALSE.)
+C
        CHARACTER*40 VSARTA  ! SARTA source code version
        CHARACTER*40 VSCOEF  ! SARTA coefficient version
        CHARACTER*40 VTUNNG  ! optical depth tuning version
@@ -420,7 +439,7 @@ C      -----------------
 C       PARAMETER(MXCHND = 1)        ! placeholder when not using this set
 C       PARAMETER( NHDO = 1)         ! placeholder when not using this set
        PARAMETER(MXCHND = 1843)
-       PARAMETER(  NHDO = 8)
+       PARAMETER(  NHDO = 11)
 C
 C      ----------------------
 C      For OPTRAN water coefs
@@ -461,6 +480,7 @@ C      ---------
        CHARACTER*80 FNSO2  ! coef SO2
        CHARACTER*80 FNHNO3 ! coef HNO3
        CHARACTER*80 FNNH3  ! coef NH3
+       CHARACTER*80 FNHDO  ! coef HDO
        CHARACTER*80 FNN2O  ! coef N2O
        CHARACTER*80 FNOPTR ! coef optran
        CHARACTER*80 FNTHER ! coef therm
