@@ -53,6 +53,14 @@ apr08_m140_pge_v6_tunmlt:
 	mv a.out ../bin/apr08_m140_pge_v6_tunmlt
 
 # AIRS L1C
+# this for testing new build with jpl tuning
+airs_may19_jpl_tunmlt:
+	rm -f *.o incFTC.f
+	ln -s incFTC_airs_may19_jpl_tunmlt.f incFTC.f
+	make -f make_sarta
+	mv a.out ../bin/airs_l1c_2834_may19_jpl_tunmlt
+
+# this one for production testing
 airs_may19:
 	rm -f *.o incFTC.f
 	ln -s incFTC_airs_may19_prod_tra.f incFTC.f
@@ -132,7 +140,7 @@ iasi_jun19:
 	rm -f *.o incFTC.f
 	ln -s incFTC_iasi_jun19.f incFTC.f
 	make -f make_sarta
-	mv a.out ../bin/iasi_jun19_thrm
+	mv a.out ../bin/iasi_jun19
 
 # --------------------- CHIRP -------------------
 # CHIRP Bare bones

@@ -171,8 +171,8 @@ C
 C      ---------------------------------
 C      Loop over the OPTRAN water levels
 C      ---------------------------------
-       IF (DEBUG)  write(6,'(A,I4, X, I4)') 'calokw: LOPMIN, LOPMAX ', 
-     $      LOPMIN, LOPMAX
+C$$$       IF (DEBUG)  write(6,'(A,I4, X, I4)') 'calokw: LOPMIN, LOPMAX ', 
+C$$$     $      LOPMIN, LOPMAX
 C      Only do calc for OPTRAN levels that are needed
        DO LOP=LOPMIN,LOPMAX
           IF (LOPUSE(LOP)) THEN

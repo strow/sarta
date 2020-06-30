@@ -971,8 +971,8 @@ C               Ignore changes in CO2 of less than ~0.03%
           IF (L .LE. NTEBOT) THEN
              CO2TOP=CO2TOP + CO2STD*(1.0 + CO2MLT(L)*3.0E-2)
           ENDIF
-          if (DEBUG) write(6,'(a,X,I4,3(X,ES11.3E3))') 
-     $     'calpar: L,CO2MLT(L) ',L,PFAMNT(L),RFAMNT(L),CO2MLT(L)
+C$$$          if (DEBUG) write(6,'(a,X,I4,3(X,ES11.3E3))') 
+C$$$     $     'calpar: L,CO2MLT(L) ',L,PFAMNT(L),RFAMNT(L),CO2MLT(L)
 C
           IF (LN2O) THEN
 C            N2O mult=-1 when prof amount = 0.75 * ref amount

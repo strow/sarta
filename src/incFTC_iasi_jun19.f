@@ -166,7 +166,7 @@ C      See the "Doc/last_update.txt" file for a description of the
 C      changes associated with every change of VSARTA.
 C
        LOGICAL DEBUG
-       PARAMETER(DEBUG = .TRUE.)
+       PARAMETER(DEBUG = .FALSE.)
 C
        LOGICAL CFCO2
        LOGICAL CFHNO3
@@ -177,14 +177,14 @@ C
        LOGICAL CFOPTR
        LOGICAL CFTHER
        LOGICAL COFNTE
-       PARAMETER(CFCO2  = .FALSE.)
-       PARAMETER(CFHNO3 = .FALSE.)
-       PARAMETER(CFN2O  = .FALSE.)
-       PARAMETER(CFNH3  = .FALSE.)
-       PARAMETER(CFSO2  = .FALSE.)
+       PARAMETER(CFCO2  = .TRUE.)
+       PARAMETER(CFHNO3 = .TRUE.)
+       PARAMETER(CFN2O  = .TRUE.)
+       PARAMETER(CFNH3  = .TRUE.)
+       PARAMETER(CFSO2  = .TRUE.)
        PARAMETER(CFHDO  = .FALSE.)
-       PARAMETER(CFOPTR = .FALSE.)
-       PARAMETER(COFNTE = .FALSE.)
+       PARAMETER(CFOPTR = .TRUE.)
+       PARAMETER(COFNTE = .TRUE.)
        PARAMETER(CFTHER = .TRUE.)
 C
        CHARACTER*40 VSARTA  ! SARTA source code version
@@ -395,9 +395,9 @@ C      ----------------
 C      For variable CO2
 C      ----------------
 C      Used in part by modules: 12, 11, 10, 9, 7, 6, 5, 2b, 1b, 2a
-       INTEGER MXCHNC ! max # of channels with CO2 pert coefs (2863)
+       INTEGER MXCHNC ! max # of channels with CO2 pert coefs (3827)
        INTEGER NCO2   ! number of CO2 pert predictors/coefs (5)
-       PARAMETER(MXCHNC = 2863)
+       PARAMETER(MXCHNC = 3827)
        PARAMETER(  NCO2 = 5)
 C
 C
