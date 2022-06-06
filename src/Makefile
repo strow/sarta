@@ -14,10 +14,17 @@
 # CrisHiRes
 crisg4_hires_dec17_icebaumGHM_waterdrop_desertdust:
 	rm -f *.o incFTC.f fnmie.f
-	ln -s incFTC_crisg4_oct16.f incFTC.f
-	ln -s fnmie_iceGHMbaum_waterdrop_desertdust_cris_hires.f fnmie.f
+	ln -s incFTC_crisg4_oct16_new.f incFTC.f
+	ln -s fnmie_iceGHMbaum_waterdrop_desertdust_cris_hires_new.f fnmie.f
 	make -f make_sarta_pclsam
-	mv a.out /home/sergio/MATLABCODE/CRIS_HiRes/BinV201/crisg4_hires_dec17_iceGHMbaum_waterdrop_desertdust_slabclo
+	mv a.out ../bin/crisg4_hires_dec17_iceGHMbaum_wdrop_ddust_sc_hg3_new
+
+crisg4_hires_dec17_icebaumGHM_waterdrop_biosmoke:
+	rm -f *.o incFTC.f fnmie.f
+	ln -s incFTC_crisg4_oct16_new.f incFTC.f
+	ln -s fnmie_iceGHMbaum_waterdrop_desertdust_cris_hires_new.f fnmie.f
+	make -f make_sarta_pclsam
+	mv a.out ../bin/cris_fsr_dec17_iceGHMbaum_wdrop_biosmoke
 
 # AIRS
 m140_icebaumGHM_waterdrop_desertdust:
@@ -33,7 +40,15 @@ airs_cloudy_may19:
 	ln -s incFTC_airs_may19_pclsam.f incFTC.f
 	ln -s fnmie_iceGHMbaum_waterdrop_desertdust.f fnmie.f
 	make -f make_sarta_pclsam
-	mv a.out ../bin/airs_l1c_2834_cloudy_may19_prod_v2
+	mv a.out ../bin/airs_l1c_2834_cloudy_may19_prod_debug
+
+# AIRS for L1C May 2019 w/tuning
+airs_cloudy_may19_tun:
+	rm -f *.o incFTC.f fnmie.f
+	ln -s incFTC_airs_may19_pclsam_tun_fix.f incFTC.f
+	ln -s fnmie_iceGHMbaum_waterdrop_desertdust.f fnmie.f
+	make -f make_sarta_pclsam
+	mv a.out ../bin/airs_l1c_2834_cloudy_may19_tun_fix_v1
 
 #----------------------------------------------------------------------------------------
 # Builds clear
@@ -60,6 +75,14 @@ airs_may19_jpl_tunmlt:
 	make -f make_sarta
 	mv a.out ../bin/airs_l1c_2834_may19_jpl_tunmlt
 
+#  build with ASL tuning
+airs_may19_asl_tunmlt:
+	rm -f *.o incFTC.f
+	ln -s incFTC_airs_may19_asl_tun_wlin.f incFTC.f
+	make -f make_sarta
+	mv a.out ../bin/airs_l1c_2834_may19_tun_wlin_0524a
+
+# -------------------------------------------------------- #
 # this one for production testing
 airs_may19:
 	rm -f *.o incFTC.f
@@ -67,6 +90,13 @@ airs_may19:
 	make -f make_sarta
 	mv a.out ../bin/airs_l1c_2834_may19_prod_v2
 
+airs_may19_tune:
+	rm -f *.o incFTC.f
+	ln -s incFTC_airs_may19_prod_tune.f incFTC.f
+	make -f make_sarta
+	mv a.out ../bin/airs_l1c_2834_may19_prod_tune
+
+# test and dev versions
 airs_basic:
 	rm -f *.o incFTC.f
 	ln -s incFTC_airs_prod2019_dec2018_basic_debug.f  incFTC.f
@@ -86,19 +116,27 @@ airs_rd:
 	mv a.out ../bin/airs_2834_mar19_rdown
 
 #  ------------  CrIS   ------------ #######
-# CrIS standard resolution
+# CrIS (low res) standard resolution
 crisg4_nov09_wcon_nte:
 	rm -f *.o incFTC.f
-	ln -s incFTC_crisg4_nov09_wcon_nte.f incFTC.f
+	ln -s incFTC_crisg4_nov09_wcon_nte_new.f incFTC.f
 	make -f make_sarta
-#	mv a.out ../bin/cris
+	mv a.out ../bin/crisg4_nov09_wcon_nte_new
 
+# CrIS (low res) standard resolution
+cris_lrg4_p2021_dev:
+	rm -f *.o incFTC.f
+	ln -s incFTC_cris_lrg4_p2021_may21_dev.f incFTC.f
+	make -f make_sarta
+	mv a.out ../bin/cris_lrg4_p2021_dev
+
+# 
 # CrIS extended resolution (high res)
 crisg4_oct16:
 	rm -f *.o incFTC.f
-	ln -s incFTC_crisg4_oct16.f incFTC.f
+	ln -s incFTC_crisg4_oct16_new.f incFTC.f
 	make -f make_sarta
-	mv a.out ../bin/crisg4_oct16_nov19
+	mv a.out ../bin/crisg4_oct16_aug20
 
 # CrIS  (high res) basic coef set[1-7] and wcon.
 crisg4_mar18:
@@ -117,11 +155,18 @@ crisg4_may18_hdo:
 # CrIS FSR v2.01 (prod2019 dec2018)
 cris_hrg4_p2019_dec18:
 	rm -f *.o incFTC.f
-	ln -s incFTC_cris_hrg4_p2019_dec2018.f incFTC.f
+	ln -s incFTC_cris_hrg4_p2019_dec2018_prod.f incFTC.f
 	make -f make_sarta
-	mv a.out ../bin/cris_hrg4_p2019dec18
+	mv a.out ../bin/cris_hrg4_p2019dec18_set3
 
 ######  -------  IASI  -----------
+# Legacy
+iasi_may09:
+	rm -f *.o incFTC.f
+	ln -s incFTC_iasi_may09_wcon_nte_new.f incFTC.f
+	make -f make_sarta
+	mv a.out ../bin/sarta_iasi_may09_wcon_nte_new
+
 # IASI basic 7-set w/continuum
 iasi_mar2019:
 	rm -f *.o incFTC.f
@@ -138,9 +183,9 @@ iasi_jun19_test:
 # IASI w/trace gases and updated refl thermal (HDO not computed)
 iasi_jun19:
 	rm -f *.o incFTC.f
-	ln -s incFTC_iasi_jun19.f incFTC.f
+	ln -s incFTC_iasi_jun19_xnte.f incFTC.f
 	make -f make_sarta
-	mv a.out ../bin/iasi_jun19
+	mv a.out ../bin/iasi_jun19_xnte
 
 # --------------------- CHIRP -------------------
 # CHIRP Bare bones

@@ -3,7 +3,7 @@ C=======================================================================
 C
 C    University of Maryland Baltimore Country (UMBC)
 C
-C    AIRS
+C    CRIS HiRes
 C
 C    FNMIE
 C
@@ -174,35 +174,35 @@ C                 <------------cloud string------------->
        CLDSTR(1)='201=ice_general habit 2013-07-25 Baum'
        MIETYP(1)=201
        FNMIEA(1)=
-     $ '/asl/rta/sarta_database/Data_mie_apr08/ice_baumGHM_abs.dat'
+     $ '/asl/data/sarta_coef/Data_CrIS_oct16/Mie/ice_baumGHM_abs_cris_hires_g4.dat'
        FNMIEE(1)=
-     $ '/asl/rta/sarta_database/Data_mie_apr08/ice_baumGHM_ext.dat'
+     $ '/asl/data/sarta_coef/Data_CrIS_oct16/Mie/ice_baumGHM_ext_cris_hires_g4.dat'
        FNMIEG(1)=
-     $ '/asl/rta/sarta_database/Data_mie_apr08/ice_baumGHM_asy.dat'
+     $ '/asl/data/sarta_coef/Data_CrIS_oct16/Mie/ice_baumGHM_asy_cris_hires_g4.dat'
 C
 
 C      mie particles #2: water drop
 C                 <------------cloud string------------->
-       CLDSTR(2)='101=waterdrop 2008-06-13'
+       CLDSTR(2)='101=waterdrop modis params 2008-06-13'
        MIETYP(2)=101
        FNMIEA(2)=
-     $ '/asl/rta/sarta_database/Data_mie_apr08/waterdrop_abs.dat'
+     $ '/asl/data/sarta_coef/Data_CrIS_oct16/Mie/water_modisVEFF_abs_cris_hires_g4.dat'
        FNMIEE(2)=
-     $ '/asl/rta/sarta_database/Data_mie_apr08/waterdrop_ext.dat'
+     $ '/asl/data/sarta_coef/Data_CrIS_oct16/Mie/water_modisVEFF_ext_cris_hires_g4.dat'
        FNMIEG(2)=
-     $ '/asl/rta/sarta_database/Data_mie_apr08/waterdrop_asy.dat'
+     $ '/asl/data/sarta_coef/Data_CrIS_oct16/Mie/water_modisVEFF_asy_cris_hires_g4.dat'
 C
 
 C      mie particles #3: desert dust
 C                 <------------cloud string------------->
-       CLDSTR(3)='301=desertdust 2008-06-13'
+       CLDSTR(3)='301=volz 20??-06-13'
        MIETYP(3)=301
        FNMIEA(3)=
-     $ '/asl/rta/sarta_database/Data_mie_apr08/desertdust_abs.dat'
+     $ '/asl/data/sarta_coef/Data_CrIS_oct16/Mie/volz_1_0507_log2_abs_cris_hires_g4.dat'
        FNMIEE(3)=
-     $ '/asl/rta/sarta_database/Data_mie_apr08/desertdust_ext.dat'
+     $ '/asl/data/sarta_coef/Data_CrIS_oct16/Mie/volz_1_0507_log2_ext_cris_hires_g4.dat'
        FNMIEG(3)=
-     $ '/asl/rta/sarta_database/Data_mie_apr08/desertdust_asy.dat'
+     $ '/asl/data/sarta_coef/Data_CrIS_oct16/Mie/volz_1_0507_log2_asy_cris_hires_g4.dat'
 C
 
 C      Assign VCLOUD string

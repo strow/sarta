@@ -404,8 +404,9 @@ C            ---------------------------
 C
              IF (KCON .LT. 0.0E+0) THEN
                 KCON=0.0E+0
-             ELSEIF (KCON .GT. 1.0E+1) THEN
-                KCON=1.0E+1
+             ELSEIF (KCON .GT. 0.1E+0 .AND. ILAY .EQ. 1) THEN
+c%%%%%%%%                KCON=1.0E+1
+               KCON=1.0E-10
              ENDIF
 C
 
@@ -425,8 +426,9 @@ C
 C
              IF (KFIX .LT. 0.0E+0) THEN
                 KFIX=0.0E+0
-             ELSEIF (KFIX .GT. 1.0E+1) THEN
-                KFIX=1.0E+1
+             ELSEIF (KFIX .GT. 0.1E+0 .AND. ILAY .EQ. 1) THEN
+c%%%%                KFIX=1.0E+1
+                KFIX=1.0E-10
              ENDIF
 C
 
@@ -484,8 +486,9 @@ C            --------------------------
 C
              IF (KOZO .LT. 0.0E+0) THEN
                 KOZO=0.0E+0
-             ELSEIF (KOZO .GT. 1.0E+1) THEN
-                KOZO=1.0E+1
+             ELSEIF (KOZO .GT. 0.1E+0 .AND. ILAY .EQ. 1) THEN
+c%%%%%                KOZO=1.0E+1
+                KOZO=1.0E-10
              ENDIF
 C
 C            Update KZFW
@@ -611,6 +614,7 @@ C            Calc layer-to-space optical depth
              KZ=KZ + KLAYER
              TAUZ(ILAY,J)=KZ
 C
+C             print*, 'calt1_od: ', J,ILAY,KLAYER,TAUZ(ILAY,J),KFIX
           ENDDO
 C         End loop on levels
 C

@@ -15,15 +15,15 @@ OBJS = rdprof.o  vaconv.o  calpar.o  qikexp.o  hg3.o  setems_pclsam.o  getbot.o 
 # ------------------------------------------------------------------------
 # HDF LIBS
 # ------------------------------------------------------------------------
-HDFLIB = -L/asl/code/external/hdf/hdf4/lib -ldf \
-	 -L/asl/code/external/jpeg -ljpeg       \
-	 -L/asl/code/external/zlib -lz         
+HDFLIB = -L/asl/packages/external/hdf/hdf4/lib -ldf \
+	 -L/asl/packages/external/jpeg -ljpeg       \
+	 -L/asl/packages/external/zlib -lz         
 
 # ------------------------------------------------------------------------
 # RTP LIB and INCLUDE
 # ------------------------------------------------------------------------
-RTPLIB = -L/asl/code/rtp/lib -lrtp
-RTPINC = -I/asl/code/rtp/include
+RTPLIB = -L/asl/packages/rtp/lib -lrtp
+RTPINC = -I/asl/packages/rtp/include
 
 # ------------------------------------------------------------------------
 # Compilers

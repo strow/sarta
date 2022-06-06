@@ -97,6 +97,7 @@ C 12 May 2009 Scott Hannon   Add VTUNNG string; delete VCLOUD
 C 14 Sep 2018 C Hepplewhite  Created AIRS L1C fast model
 C 1  Mar 2019 C Hepplewhite  Added HDO (not used this version)
 C 21 Jun 2019 C Hepplewhite  Updated reflected thermal.
+C 27 Jul 2020 C Hepplewhite  New paths for database files.
 
 !END====================================================================
 C
@@ -491,46 +492,46 @@ C      ---------
 C
 C
        PARAMETER(FNCOF1=
-     $ '/asl/data/sarta_database/Data_AIRS_may19/Coef/set1.dat')
+     $ '/asl/rta/sarta_database/Data_AIRS_may19/Coef/set1.dat')
        PARAMETER(FNCOF2=
-     $ '/asl/data/sarta_database/Data_AIRS_may19/Coef/set2.dat')
+     $ '/asl/rta/sarta_database/Data_AIRS_may19/Coef/set2.dat')
        PARAMETER(FNCOF3=
-     $ '/asl/data/sarta_database/Data_AIRS_may19/Coef/set3.dat')
+     $ '/asl/rta/sarta_database/Data_AIRS_may19/Coef/set3.dat')
        PARAMETER(FNCOF4=
-     $ '/asl/data/sarta_database/Data_AIRS_may19/Coef/set4.dat')
+     $ '/asl/rta/sarta_database/Data_AIRS_may19/Coef/set4.dat')
        PARAMETER(FNCOF5=
-     $ '/asl/data/sarta_database/Data_AIRS_may19/Coef/set5.dat')
+     $ '/asl/rta/sarta_database/Data_AIRS_may19/Coef/set5.dat')
        PARAMETER(FNCOF6=
-     $ '/asl/data/sarta_database/Data_AIRS_may19/Coef/set6.dat')
+     $ '/asl/rta/sarta_database/Data_AIRS_may19/Coef/set6.dat')
        PARAMETER(FNCOF7=
-     $ '/asl/data/sarta_database/Data_AIRS_may19/Coef/set7.dat')
+     $ '/asl/rta/sarta_database/Data_AIRS_may19/Coef/set7.dat')
        PARAMETER(FNOPTR=
-     $ '/asl/data/sarta_database/Data_AIRS_may19/Coef/optran.dat')
+     $ '/asl/rta/sarta_database/Data_AIRS_may19/Coef/optran.dat')
 C
        PARAMETER(FNCO2 =
-     $ '/asl/data/sarta_database/Data_AIRS_may19/Coef/co2.dat')
+     $ '/asl/rta/sarta_database/Data_AIRS_may19/Coef/co2.dat')
        PARAMETER(FNSO2 =
-     $ '/asl/data/sarta_database/Data_AIRS_may19/Coef/so2.dat')
+     $ '/asl/rta/sarta_database/Data_AIRS_may19/Coef/so2.dat')
        PARAMETER(FNHNO3 =
-     $ '/asl/data/sarta_database/Data_AIRS_may19/Coef/hno3.dat')
+     $ '/asl/rta/sarta_database/Data_AIRS_may19/Coef/hno3.dat')
        PARAMETER(FNN2O =
-     $ '/asl/data/sarta_database/Data_AIRS_may19/Coef/n2o.dat')
+     $ '/asl/rta/sarta_database/Data_AIRS_may19/Coef/n2o.dat')
        PARAMETER(FNNH3 =
-     $ '/asl/data/sarta_database/Data_AIRS_may19/Coef/nh3.dat')
+     $ '/asl/rta/sarta_database/Data_AIRS_may19/Coef/nh3.dat')
        PARAMETER(FNHDO =
-     $ '/asl/data/sarta_database/Data_AIRS_may19/Coef/hdo.dat')
+     $ '/asl/rta/sarta_database/Data_AIRS_may19/Coef/hdo.dat')
 C
        PARAMETER(FNFX  =
-     $ '/asl/data/sarta_database/Data_AIRS_may19/Coef/fx.txt')
+     $ '/asl/rta/sarta_database/Data_AIRS_may19/Coef/fx.txt')
        PARAMETER(FNPREF=
-     $ '/asl/data/sarta_database/Data_AIRS_may19/Coef/refprof_trace400')
+     $ '/asl/rta/sarta_database/Data_AIRS_may19/Coef/refprof_trace400')
        PARAMETER(FNSUN =
-     $ '/asl/data/sarta_database/Data_AIRS_may19/Solar/sol.txt')
+     $ '/asl/rta/sarta_database/Data_AIRS_may19/Solar/sol.txt')
 C
        PARAMETER(FNTHER=
-     $ '/asl/data/sarta_database/Data_AIRS_may19/Coef/therm.dat')
+     $ '/asl/rta/sarta_database/Data_AIRS_may19/Coef/therm.dat')
        PARAMETER(FNCOFN=
-     $ '/asl/data/sarta_database/Data_AIRS_may19/Coef/nte_7term.dat')
+     $ '/asl/rta/sarta_database/Data_AIRS_may19/Coef/nte_7term.dat')
 C
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
@@ -538,7 +539,7 @@ C Tuning filename
        CHARACTER*80 FNTMLT ! tuning multiplier filename
 C
        PARAMETER(FNTMLT=
-     $ '/asl/data/sarta_database/Data_AIRS_may19/Coef/tunmlt.txt')
+     $ '/asl/rta/sarta_database/Data_AIRS_may19/Coef/tunmlt.txt')
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C

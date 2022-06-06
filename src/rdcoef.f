@@ -514,7 +514,7 @@ C      ---------------------------
 C      Read CO2 perturbation coefs - placeholder set to zero
 C      ---------------------------
        IF (CFCO2) THEN
-       write(6,"('rdcoef:CDCO2=TRUE, read coeff file')")
+       IF (DEBUG) write(6,"('rdcoef:CDCO2=TRUE, read coeff file')")
        OPEN(UNIT=IOUN,FILE=FNCO2,FORM='UNFORMATTED',STATUS='OLD',
      $    IOSTAT=IERR)
        IF (IERR .NE. 0) THEN
@@ -538,7 +538,7 @@ C
        CLOSE(IOUN)
 C
        ELSE
-       write(6,"('rdcoef:CFCO2=FALSE, null coeffs')")
+       IF (DEBUG) write(6,"('rdcoef:CFCO2=FALSE, null coeffs')")
        J=1
        DO I=1,MXCHNC
           DO IC=1,NCO2
@@ -562,7 +562,7 @@ C      ---------------------
 C      Read SO2 pertub coefs - placeholder while no coef file
 C      ---------------------
        IF (CFSO2) THEN
-       write(6,"('rdcoef:CFSO2=TRUE, read coeff file')")
+       IF (DEBUG) write(6,"('rdcoef:CFSO2=TRUE, read coeff file')")
        OPEN(UNIT=IOUN,FILE=FNSO2,FORM='UNFORMATTED',STATUS='OLD',
      $    IOSTAT=IERR)
        IF (IERR .NE. 0) THEN
@@ -586,7 +586,7 @@ C
        CLOSE(IOUN)
 
        ELSE
-       write(6,"('rdcoef:CFSO2=FALSE, null coeffs')")
+       IF (DEBUG) write(6,"('rdcoef:CFSO2=FALSE, null coeffs')")
        J=1
        DO I=1,MXCHNS
           DO IC=1,NSO2
@@ -606,7 +606,7 @@ C      ---------------------
 C      Read HNO3 perturb coefs - placeholder while no coef file
 C      ---------------------
        IF (CFHNO3) THEN
-       write(6,"('rdcoef:CFHNO3=TRUE, read coeff file')")
+       IF (DEBUG) write(6,"('rdcoef:CFHNO3=TRUE, read coeff file')")
        OPEN(UNIT=IOUN,FILE=FNHNO3,FORM='UNFORMATTED',STATUS='OLD',
      $    IOSTAT=IERR)
        IF (IERR .NE. 0) THEN
@@ -631,7 +631,7 @@ C
 C
 C      ***** no coeff file:
        ELSE
-       write(6,"('rdcoef:CFHNO3=FALSE, null coeffs')")
+       IF (DEBUG) write(6,"('rdcoef:CFHNO3=FALSE, null coeffs')")
        J=1
        DO I=1,MXCHNH
           DO IC=1,NHNO3
@@ -652,7 +652,7 @@ C      ---------------------
 C      Read N2O perturb coefs - placeholder while no coef file.
 C      ---------------------
        IF (CFN2O) THEN
-       write(6,*) 'rdcoef:CFN2O=TRUE, read file'
+       IF (DEBUG) write(6,*) 'rdcoef:CFN2O=TRUE, read file'
        OPEN(UNIT=IOUN,FILE=FNN2O,FORM='UNFORMATTED',STATUS='OLD',
      $    IOSTAT=IERR)
        IF (IERR .NE. 0) THEN
@@ -675,7 +675,7 @@ C         Keep the data if the current channel is on the list
 
 C - these lines used as placeholder when no ceofficients are available.
        ELSE
-       write(6,*) 'rdcoef:CFN2O=FALSE null coeffs'
+       IF (DEBUG) write(6,*) 'rdcoef:CFN2O=FALSE null coeffs'
        J=1
        DO I=1,MXCHNN
           DO IC=1,NN2O
@@ -696,7 +696,7 @@ C      ---------------------------
 C      Read NH3 perturbation coefs
 C      ---------------------------
        IF (CFNH3) THEN
-       write(6,*) 'rdcoef:CFNH3=TRUE, read coeff file'
+       IF (DEBUG) write(6,*) 'rdcoef:CFNH3=TRUE, read coeff file'
        OPEN(UNIT=IOUN,FILE=FNNH3,FORM='UNFORMATTED',STATUS='OLD',
      $    IOSTAT=IERR)
        IF (IERR .NE. 0) THEN
@@ -722,7 +722,7 @@ C
        CLOSE(IOUN)
 C
        ELSE
-       write(6,*) 'rdcoef:CFNH3=FALSE, null coeffs'
+       IF (DEBUG) write(6,*) 'rdcoef:CFNH3=FALSE, null coeffs'
 C - these lines used as placeholder when no ceofficients are available.
        J=1
        DO I=1,MXCHNA
@@ -744,7 +744,7 @@ C      ---------------------------
 C      Read HDO perturbation coefs
 C      ---------------------------
        IF (CFHDO) THEN
-       write(6,*) 'rdcoef:CFHDO=TRUE, read coef file'
+       IF (DEBUG) write(6,*) 'rdcoef:CFHDO=TRUE, read coef file'
        OPEN(UNIT=IOUN,FILE=FNHDO,FORM='UNFORMATTED',STATUS='OLD',
      $    IOSTAT=IERR)
        IF (IERR .NE. 0) THEN
@@ -770,13 +770,11 @@ C             write(6,'(A,X,I4,X,I4,X,I5)') 'rdcoef: I,J,INDCHN(ICHAN)= ', I,J,I
 C       write(6,'(A,X,I4)') 'rdcoef: INDCHN(125)= ',INDCHN(125)
 C
        CLOSE(IOUN)
-       IF (DEBUG) THEN
-          WRITE(6,"('rdcoef:completed read HDO coeffs')")
-       ENDIF
+       IF (DEBUG)  WRITE(6,"('rdcoef:completed read HDO coeffs')")
 C
 
        ELSE
-       write(6,*) 'rdcoef:CFHDO=FALSE null coeffs'
+       IF (DEBUG) write(6,*) 'rdcoef:CFHDO=FALSE null coeffs'
 C - these lines used as placeholder when no ceofficients are available.
        J=1
        DO I=1,MXCHND
@@ -830,7 +828,7 @@ C
        CLOSE(IOUN)
 C
        ELSE
-       write(6,*) 'rdcoef:CFOPTR=FALSE null coeffs'
+       IF (DEBUG) write(6,*) 'rdcoef:CFOPTR=FALSE null coeffs'
 C
 C      these loops for zeroing out optran coefficients
        J=1
@@ -842,13 +840,13 @@ C      these loops for zeroing out optran coefficients
          ENDDO
        ENDDO
 C
-       write(6,*) 'rdcoef: completed optran'
+       IF (DEBUG) write(6,*) 'rdcoef: completed optran'
        ENDIF
 C      -----------------------------------------------
 C      Read the downward thermal F factor coefficients
 C      -----------------------------------------------
        IF (CFTHER) THEN
-       write(6,*) 'rdcoef:CFTHER=TRUE read coef file'
+       IF (DEBUG) write(6,*) 'rdcoef:CFTHER=TRUE read coef file'
        OPEN(UNIT=IOUN,FILE=FNTHER,FORM='UNFORMATTED',STATUS='OLD',
      $    IOSTAT=IERR)
        IF (IERR .NE. 0) THEN
@@ -874,7 +872,7 @@ C
        CLOSE(IOUN)
 C
        ELSE
-       write(6,*) 'rdcoef:CFTHER=FALSE, null coeffs'
+       IF (DEBUG) write(6,*) 'rdcoef:CFTHER=FALSE, null coeffs'
 C set to zero - to be used when no coeff file available 
        DO I=1,MXCHAN
           DO IC=1,NFCOEF
@@ -887,6 +885,7 @@ C
 C      -------
 C      Read FX
 C      -------
+       IF (DEBUG) write(6,*) 'rdcoef:FX, reading FX'
        OPEN(UNIT=IOUN,FILE=FNFX,FORM='FORMATTED',STATUS='OLD',
      $    IOSTAT=IERR)
        IF (IERR .NE. 0) THEN
@@ -919,7 +918,7 @@ C      ------------
 C      Read non-LTE
 C      ------------
        IF (COFNTE) THEN
-       write(6,*) 'rdcoef:COFNTE=TRUE read coef file'
+       IF (DEBUG) write(6,*) 'rdcoef:COFNTE=TRUE read coef file'
 
        OPEN(UNIT=IOUN,FILE=FNCOFN,FORM='UNFORMATTED',STATUS='OLD',
      $    IOSTAT=IERR)
@@ -944,7 +943,7 @@ C
        CLOSE(IOUN)
 C
        ELSE
-       write(6,*) 'rdcoef:COFNTE=FALSE, null coeffs'
+       IF (DEBUG) write(6,*) 'rdcoef:COFNTE=FALSE, null coeffs'
 C placeholder set to zero
        DO I=1,MXCNTE
           DO IC=1,NNCOEF
@@ -953,7 +952,7 @@ C placeholder set to zero
        ENDDO
        ENDIF
 C      ---------------------------------------------
-      write(6,*) 'rdcoef: read all coefficients'
+       IF (DEBUG) write(6,*) 'rdcoef: read all coefficients'
 C      ---------------------------------------------
 C      Make sure all channels on the list were found
 C      ---------------------------------------------

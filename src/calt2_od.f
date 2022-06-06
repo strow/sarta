@@ -349,8 +349,9 @@ C            ---------------------------
 C
              IF (KCON .LT. 0.0+0) THEN
                 KCON=0.0E+0
-             ELSEIF (KCON .GT. 1.0E+1) THEN
-                KCON=1.0E+1
+             ELSEIF (KCON .GT. 0.6E+0 .AND. ILAY .EQ. 1) THEN
+c%%%%%                KCON=1.0E+1
+                KCON=1.0E-10
              ENDIF
 C
 
@@ -370,8 +371,9 @@ C
 C
              IF (KFIX .LT. 0.0E+0) THEN
                 KFIX=0.0E+0
-             ELSEIF (KFIX .GT. 1.0E+1) THEN
-                KFIX=1.0E+1
+             ELSEIF (KFIX .GT. 0.6E+0 .AND. ILAY .EQ. 1) THEN
+c%%%%                KFIX=1.0E+1
+                KFIX=1.0E-10
              ENDIF
 C
 
@@ -391,8 +393,9 @@ C            --------------------------
 C
              IF (KOZO .LT. 0.0E+0) THEN
                 KOZO=0.0E+0
-             ELSEIF (KOZO .GT. 1.0E+1) THEN
-                KOZO=1.0E+1
+             ELSEIF (KOZO .GT. 1.0E+0) THEN
+c%%%%%%                KOZO=1.0E+1
+                KOZO=1.0E-10
              ENDIF
 C
 
@@ -413,8 +416,9 @@ C            --------------------------
 C
              IF (KWAT .LT. 0.0E+0) THEN
                 KWAT=0.0E+0
-             ELSEIF( KWAT .GT. 1.0E+1) THEN
-                KWAT=1.0E+1
+             ELSEIF( KWAT .GT. 1.0E+0) THEN
+c%%%%%%%%                KWAT=1.0E+1
+                KWAT=1.0E-10
              ENDIF
 C
 

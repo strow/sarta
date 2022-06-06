@@ -199,14 +199,14 @@ C      -------------------------
        DO L=1,LBOT
 C
 CCC       catch bug: KWOP(0)
-C$$$          IF (LOPLOW(L) .GT. 0.0E+0) THEN
+          IF (LOPLOW(L) .GT. 0.0E+0) THEN
           
 C         Interpolate abs coef and convert to optical depth
           KW(L)=( DAOP(L)*( KWOP(LOPLOW(L) + 1) -
      $       KWOP(LOPLOW(L)) ) + KWOP(LOPLOW(L)) )*WAANG(L)
           IF (KW(L) .LT. 0.0E+0) KW(L)=0.0E+0
 C
-C$$$       ENDIF
+       ENDIF
        ENDDO
 C
        RETURN

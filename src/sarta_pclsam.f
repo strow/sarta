@@ -575,17 +575,20 @@ C      -----------------------------
      $    RFAMNT, RWAMNT, ROAMNT, RCAMNT, RMAMNT, RSAMNT,
      $    RHAMNT, RNAMNT, RAAMNT)
 
-       print*, 'sarta_cloudy: completed rdprof'
-
+       if (DEBUG) then
+          print*, 'sarta_cloudy: completed rdprof'
+       endif
 C      ---------------------
 C      Get command-line info
 C      ---------------------
        CALL RDINFO(FIN, FOUT, LRHOT, NWANTP, LISTP)
 ccc
-      print *, 'sergio nwantp=', NWANTP
-      print *, 'sergio listp=', (LISTP(I),I=1,NWANTP)
-      print *, 'sergio FIN = ',FIN
-      print *, 'sergio FOUT = ',FOUT
+       if (DEBUG) then
+         print *, 'nwantp=', NWANTP
+         print *, 'listp=', (LISTP(I),I=1,NWANTP)
+         print *, 'FIN = ',FIN
+         print *, 'FOUT = ',FOUT
+       endif
 ccc
 
 C      -------------------------
@@ -600,7 +603,7 @@ C      ---------------------------
      $    INDCHN, IH2O, IO3, ICO, ICH4, ICO2, ISO2, IHNO3, IN2O,
      $    INH3, IOPCI, HEAD, HATT, PATT, LCO2PM)
 
-       print*, 'sarta_cloudy: completed opnrtp'
+C       print*, 'sarta_cloudy: completed opnrtp'
 ccc
 C      ------------------------
 C      Read cloud lookup tables
@@ -672,7 +675,7 @@ C      ------------------------
        ISTAT=rtpopen(FOUT, MODE, HEAD, HATT, PATT, IOPCO)
 
 ccc
-c       print *, 'read open status = ', ISTAT
+       if (DEBUG)  print *, 'read open status = ', ISTAT
 ccc
 
 C      -----------------------------------------------
@@ -1019,9 +1022,10 @@ C      Get basic cloud parameters from input RTP
      $    XCEMI1, XCRHO1, CSTMP1,
      $    LBLAC2, CTYPE2, CFRAC2, CPSIZ2, CPRTO2, CPRBO2, CNGWA2,
      $    XCEMI2, XCRHO2, CSTMP2, CFRA12, FCLEAR, CFRA1X, CFRA2X )
-C       print *,'sergio getcld ',IPROF,CTYPE1, CFRAC1, CPSIZ1, CPRTO1,
-C     $                          CPRBO1, CNGWA1,CFRA1X     
-
+       if (DEBUG) then
+         print *,'getcld ',IPROF,CTYPE1, CFRAC1, CPSIZ1, CPRTO1,
+     $                          CPRBO1, CNGWA1,CFRA1X     
+       endif
 C      ---------------------------------------------------
 C      Set the emissivity & reflectivity for every channel
 C      ---------------------------------------------------

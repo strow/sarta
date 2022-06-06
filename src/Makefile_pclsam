@@ -1,0 +1,28 @@
+# Makefile for SARTA.  Most of the work is done by make_sarta.
+
+#
+# Makefile for SARTA v1.08.  Most of the work is either by
+# make_sarta_pclsam (sarta_cloudy)
+# or by
+# make_sarta (sarta clear only)
+#
+
+#----------------------------------------------------------------------------------------
+# Builds cloudy
+#----------------------------------------------------------------------------------------
+
+# AIRS for L1C May 2019
+airs_cloudy_may19:
+	rm -f *.o incFTC.f fnmie.f
+	ln -s incFTC_airs_may19_pclsam.f incFTC.f
+	ln -s fnmie_iceGHMbaum_waterdrop_desertdust.f fnmie.f
+	make -f make_sarta_pclsam
+	mv a.out ../bin/airs_l1c_2834_cloudy_may19_prod
+
+#----------------------------------------------------------------------------------------
+# File management
+#----------------------------------------------------------------------------------------
+
+clean:
+	rm -f *.o
+	rm -f *_genmod.f90 *_genmod.mod

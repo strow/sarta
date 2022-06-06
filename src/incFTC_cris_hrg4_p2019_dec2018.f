@@ -97,6 +97,7 @@ C 12 May 2009 Scott Hannon   Add VTUNNG string; delete VCLOUD
 C 14 Sep 2018 C Hepplewhite  Updated IASI fast model
 C 1  Mar 2019 C Hepplewhite  Added HDO
 C 1  Jul 2019 C Hepplewhite  Added minor gas logicals
+C    Mar 2021 C Hepplewhite  Added nh3, and other minor gases.
 
 !END====================================================================
 C
@@ -170,20 +171,24 @@ C
        LOGICAL CFSO2
        LOGICAL CFHDO
        LOGICAL CFTHER
-       PARAMETER(CFCO2  = .FALSE.)
-       PARAMETER(CFHNO3 = .FALSE.)
-       PARAMETER(CFN2O  = .FALSE.)
-       PARAMETER(CFNH3  = .FALSE.)
-       PARAMETER(CFSO2  = .FALSE.)
+       LOGICAL CFOPTR
+       LOGICAL COFNTE
+       PARAMETER(CFCO2  = .TRUE.)
+       PARAMETER(CFHNO3 = .TRUE.)
+       PARAMETER(CFN2O  = .TRUE.)
+       PARAMETER(CFNH3  = .TRUE.)
+       PARAMETER(CFSO2  = .TRUE.)
        PARAMETER(CFHDO  = .FALSE.)
-       PARAMETER(CFTHER = .FALSE.)
+       PARAMETER(CFOPTR = .TRUE.)
+       PARAMETER(CFTHER = .TRUE.)
+       PARAMETER(COFNTE = .TRUE.)
 C
        CHARACTER*40 VSARTA  ! SARTA source code version
        CHARACTER*40 VSCOEF  ! SARTA coefficient version
        CHARACTER*40 VTUNNG  ! optical depth tuning version
 C      version template    '#.## YYYY-MM-DD <--------comment------->'
-       PARAMETER( VSARTA = '2.XX prod-2019' )
-       PARAMETER( VSCOEF = 'CrIS g4 0.8/0.8/0.8cm Hamming dec-2018')
+       PARAMETER( VSARTA = '2.02 2021-03-23. prod_2019' )
+       PARAMETER( VSCOEF = 'CrIS g4 0.8/0.8/0.8cm Hamming Dec 2018')
        PARAMETER( VTUNNG = 'none' )
 
 C      *********
@@ -210,7 +215,7 @@ C      Current values (CODATA98 from NIST); agrees w/JPL Dec2000
        PARAMETER(  C2 = 1.4387752)
 C
        REAL CO2STD ! standard CO2 PPMV mixing ratio (385)
-       PARAMETER( CO2STD = 385.0 )
+       PARAMETER( CO2STD = 400.0 )
 C
        REAL HDOSTD ! standard HDO depletion abundance (3.1069E-5)
        PARAMETER( HDOSTD = 0.00031069 )
@@ -397,7 +402,7 @@ C      For variable SO2
 C      ----------------
        INTEGER MXCHNS ! max # of channels with SO2 pert coefs (was 212)
        INTEGER   NSO2 ! number of SO2 coefficients
-       PARAMETER(MXCHNS = 1)    ! placeholder
+       PARAMETER(MXCHNS = 396)    ! placeholder
        PARAMETER(  NSO2 = 4)
 C
 C
@@ -406,7 +411,7 @@ C      For variable HNO3
 C      -----------------
        INTEGER MXCHNH ! max # of channels with HNO3 pert coefs (was 253)
        INTEGER  NHNO3 ! number of HNO3 coefficients
-       PARAMETER(MXCHNH = 1)    ! placeholder
+       PARAMETER(MXCHNH = 374)    ! placeholder
        PARAMETER( NHNO3 = 4)
 C
 C
@@ -415,7 +420,7 @@ C      For variable N2O
 C      -----------------
        INTEGER MXCHNN ! max # of channels with N2O pert coefs (was 181)
        INTEGER   NN2O ! number of N2O coefficients
-       PARAMETER(MXCHNN = 461)
+       PARAMETER(MXCHNN = 544)
        PARAMETER(  NN2O = 7)
 C
 C      -----------------
@@ -423,9 +428,9 @@ C      For variable NH3
 C      -----------------
        INTEGER MXCHNA ! max # of channels with NH3 pert coefs (2075)
        INTEGER   NNH3 ! number of NH3 coefficients (4)
-       PARAMETER(MXCHNA = 1)        ! placeholder when not using this set
+C       PARAMETER(MXCHNA = 1)        ! placeholder when not using this set
 C       PARAMETER( NNH3 = 1)         ! placeholder when not using this set
-C       PARAMETER(MXCHNA = 1422)
+       PARAMETER(MXCHNA = 605)
        PARAMETER(  NNH3 = 4)
 C
 C      -----------------
@@ -455,14 +460,14 @@ C
 C      -----------
 C      For non-LTE
 C      -----------
-       INTEGER MXCNTE ! max # of channels for non-LTE (70)
+       INTEGER MXCNTE ! max # of channels for non-LTE (264)
        INTEGER NNCOEF ! # of coefs for non-LTE (7)
        INTEGER NTEBOT ! bottom layer for CO2TOP calc
        REAL CO2NTE ! ref CO2 mixing ratio for non-LTE coefs (ppmv)
-       PARAMETER(MXCNTE = 1)        ! placeholder
+       PARAMETER(MXCNTE = 264)        ! placeholder
        PARAMETER(NNCOEF = 7)
        PARAMETER(NTEBOT = 10)
-       PARAMETER(CO2NTE = 370.0)
+       PARAMETER(CO2NTE = 400.0)
 C
 C      ---------
 C      Filenames
@@ -508,11 +513,13 @@ C
        PARAMETER(FNCO2 =
      $ '/home/chepplew/data/sarta/prod_2019/cris_hr/dec2018/dbase/Coef/co2.dat')
        PARAMETER(FNSO2 =
-     $ '/home/chepplew/data/sarta/prod_2019/cris_hr/dec2018/dbase/Coef/so2.dat')
+     $ '/home/chepplew/data/sarta/prod_2021/cris_hr/dec2018/dbase/Coef/so2.dat')
        PARAMETER(FNHNO3 =
-     $ '/home/chepplew/data/sarta/prod_2019/cris_hr/dec2018/dbase/Coef/hno3.dat')
+     $ '/home/chepplew/data/sarta/prod_2021/cris_hr/dec2018/dbase/Coef/hno3.dat')
        PARAMETER(FNN2O =
-     $ '/home/chepplew/data/sarta/prod_2019/cris_hr/dec2018/dbase/Coef/n2o.dat')
+     $ '/home/chepplew/data/sarta/prod_2021/cris_hr/dec2018/dbase/Coef/n2o.dat')
+       PARAMETER(FNNH3 =
+     $ '/home/chepplew/data/sarta/prod_2021/cris_hr/dec2018/dbase/Coef/nh3.dat')
 C
        PARAMETER(FNFX  =
      $ '/home/chepplew/data/sarta/prod_2019/cris_hr/dec2018/dbase/Coef/fx.txt')
@@ -522,9 +529,9 @@ C
      $ '/home/chepplew/data/sarta/prod_2019/cris_hr/dec2018/dbase/Solar/sol.txt')
 C
        PARAMETER(FNTHER =
-     $ '/home/chepplew/data/sarta/prod_2019/cris_hr/dec2018/dbase/Coef/therm.dat')
+     $ '/home/chepplew/data/sarta/prod_2021/cris_hr/dec2018/dbase/Coef/therm.dat')
        PARAMETER(FNCOFN =
-     $ '/home/chepplew/data/sarta/prod_2019/cris_hr/dec2018/dbase/Coef/nte_7term.dat')
+     $ '/home/chepplew/data/sarta/prod_2021/cris_hr/dec2018/dbase/Coef/nte_7term.dat')
 C
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC

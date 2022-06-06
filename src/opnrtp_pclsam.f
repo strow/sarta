@@ -346,7 +346,7 @@ C         Check gas units
              IF (HEAD%gunit(I) .NE. GUCIN) THEN
                 IF (I .EQ. ICO2 .AND. HEAD%gunit(I) .EQ. 10) THEN
                    LCO2PM=.TRUE.
-      print *, 'CO2 profile in ppmv'
+C      print *, 'CO2 profile in ppmv'
                 ELSE
                    WRITE(IOERR,1020) GUCIN, I, HEAD%gunit(I)
  1020              FORMAT('ERROR! Wrong gas units code number. ',

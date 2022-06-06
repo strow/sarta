@@ -177,15 +177,15 @@ C
        LOGICAL CFOPTR
        LOGICAL CFTHER
        LOGICAL COFNTE
-       PARAMETER(CFCO2  = .TRUE.)
-       PARAMETER(CFHNO3 = .TRUE.)
-       PARAMETER(CFN2O  = .TRUE.)
-       PARAMETER(CFNH3  = .TRUE.)
-       PARAMETER(CFSO2  = .TRUE.)
+       PARAMETER(CFCO2  = .FALSE.)
+       PARAMETER(CFHNO3 = .FALSE.)
+       PARAMETER(CFN2O  = .FALSE.)
+       PARAMETER(CFNH3  = .FALSE.)
+       PARAMETER(CFSO2  = .FALSE.)
        PARAMETER(CFHDO  = .FALSE.)
-       PARAMETER(CFOPTR = .TRUE.)
-       PARAMETER(COFNTE = .TRUE.)
-       PARAMETER(CFTHER = .TRUE.)
+       PARAMETER(CFOPTR = .FALSE.)
+       PARAMETER(COFNTE = .FALSE.)
+       PARAMETER(CFTHER = .FALSE.)
 C
        CHARACTER*40 VSARTA  ! SARTA source code version
        CHARACTER*40 VSCOEF  ! SARTA coefficient version
@@ -230,7 +230,7 @@ C                  1: 100% depleted))
        PARAMETER( HDOFCT = 0.00 )
 C
        REAL  XSALT ! expected nominal satellite altitude (km)
-       PARAMETER( XSALT = 815.0 )
+       PARAMETER( XSALT = 817.0 )
 C
 C      -----------------------------------
 C      Channels and layers other variables
@@ -472,7 +472,7 @@ C      -----------
        INTEGER NNCOEF ! # of coefs for non-LTE (7)
        INTEGER NTEBOT ! bottom layer for CO2TOP calc
        REAL CO2NTE ! ref CO2 mixing ratio for non-LTE coefs (ppmv)
-       PARAMETER(MXCNTE = 664)
+       PARAMETER(MXCNTE = 684)  !  # 664
        PARAMETER(NNCOEF = 7)
        PARAMETER(NTEBOT = 10)
        PARAMETER(CO2NTE = 400.0)
@@ -533,7 +533,8 @@ C
        PARAMETER(FNTHER=
      $ '/home/chepplew/data/sarta/prod_2020/iasi/feb2020/fitc/r49/thermFactor_iasi.dat')
        PARAMETER(FNCOFN=
-     $ '/asl/data/sarta_coef/Data_IASI_jun19/Coef/nte_7term.dat')
+     $ '/home/chepplew/data/sarta/prod_2021/iasi/apr2021/dbase/Coef/nte_7term.dat')
+CCCC     $ '/asl/data/sarta_coef/Data_IASI_jun19/Coef/nte_7term.dat')
        PARAMETER(FNFX  =
      $ '/asl/data/sarta_coef/Data_IASI_jun19/Coef/fx.txt')
        PARAMETER(FNPREF=
