@@ -1,0 +1,74 @@
+#
+# Makefile make_sarta for SARTA
+#
+
+# ------------------------------------------------------------------------
+# Object files
+# ------------------------------------------------------------------------
+OBJS = rdcoef_swch4.o  \
+       rdprof.o  calpar_swch4.o calt1.o calt2.o calt3.o \
+       opnrtp.o  rdrtp.o  qikexp.o  setems.o  getbot.o vaconv.o \
+       calt4.o   calt5_swch4.o   calt6_swch4.o   calt7_swch4.o \
+       faketz.o  sunpar.o  calrad.o  rdsun.o   saconv.o  calowp.o  calokw.o \
+       util.o    wrtrtp.o  mean_t.o  rdinfo.o  cbplev.o \
+       tunmlt.o  calnte_x.o  sarta_swch4.o
+
+
+# ------------------------------------------------------------------------
+# UMBC HDF LIBS
+# ------------------------------------------------------------------------
+HDFLIB = -L/asl/packages/external/hdf/hdf4/lib -ldf -ljpeg -lz \
+         -L/usr/lib64/libsz.so.2 -lsz
+
+# ------------------------------------------------------------------------
+# RTP LIB and INCLUDE
+# ------------------------------------------------------------------------
+RTPLIB = -L/asl/packages/rtp/lib -lrtp
+RTPINC = -I/asl/packages/rtp/include
+
+# ------------------------------------------------------------------------
+# Compilers
+# ------------------------------------------------------------------------
+
+# INTEL ifort F77
+# ------------------------------------------------------------------------
+F77 = ifort
+FLIB = 
+# to help debug:
+##OPT = -O0 -convert big_endian -extend-source 132 -check all -g -cpp -traceback -fp-stack-check -warn interface
+# regular build for running
+OPT = -O2 -convert big_endian -extend-source 132 
+
+# gfortran
+# ------------------------------------------------------------------------
+#F77 = gfortran
+#OPT = -fdec-structure -fconvert=swap
+#OPT = -fconvert=swap
+
+# ------------
+# JPL Linux absoft: 
+#    -s    static allocation
+#    -N26  read big-endian binary files (needed for coefficient files)
+#OPT = -s -O1 -N26
+# Absoft requires the U77 library
+#FLIB = -lU77
+#F77 = /opt/absoft11.5/bin/f90
+
+# Portland Group F77:
+# ------------------------------------------------------------------------
+#    -byteswapio  read big-endian binary files (needed for coefficient files)
+#    -C           array bounds checking
+#    -g           include symbol table info
+#    -O           moderate optimization
+#OPT = -O -byteswapio
+#F77 = pgf77
+
+# ------------------------------------------------------------------------
+# Build
+# ------------------------------------------------------------------------
+sarta:	$(OBJS)
+	$(F77) $(OBJS) $(RTPLIB) $(HDFLIB) $(FLIB)
+
+# Compile source to object files
+.f.o:
+	$(F77) -c $(OPT) $(RTPINC) $*.f
