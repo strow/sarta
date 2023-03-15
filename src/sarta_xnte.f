@@ -148,6 +148,7 @@ C 10 May 2018 C Hepplewhite  Add NH3
 C 1  Feb 2019 C Hepplewhite  Add HDO
 C                            Nulls HDO computations
 C                            Includes correction factor for Optran WAOP
+C    Jun 2022 C Hepplewhite  Added extended nonLTE calc > 90-deg twilight.
 !END====================================================================
 
 C      =================================================================
@@ -395,6 +396,9 @@ C      Other variables for the sun
        REAL DISTES         ! distance of Earth from the sun
        REAL TAUZSN(MXCHAN) ! chan eff sun angle surface-to-space trans
        LOGICAL DOSUN       ! do sun calc?
+       REAL XUNANG         ! modified solar zenith for extended nonLTE.
+       REAL XCOS1          ! cosine of mod. solzen passed to CALNTE
+       REAL XZALAY         ! modified solar zenith in other layer
 C
 C      for satellite viewing angle
        REAL    SATANG      ! input satellite scan angle (degrees)
@@ -737,11 +741,16 @@ ccccccccccccc
 C
 C      Calc total sun angle secant
        DOSUN=.FALSE.
+CCC       XUNANG = SUNANG*90/120
+CCC       IF (XUNANG .GE. 0.0 .AND. XUNANG .LT. 89.9) DOSUN=.TRUE.
        IF (SUNANG .GE. 0.0 .AND. SUNANG .LT. 89.9) DOSUN=.TRUE.
        IF (DOSUN) THEN
           SUNCOS=COS(CONV*SUNANG)
+CCC          XUNCOS=COS(CONV*XUNANG)
           SZALAY=SACONV(SUNANG,ALT(1))
+CCC          XZALAY=SACONV(XUNANG,ALT(1))
           SCOS1=COS(SZALAY)
+CCC          XCOS1=COS(XZALAY)
           RJUNK2=SECANG(LBOT) + 1.0/SUNCOS ! Total secant
 C
 C         Calc non-unity fudge factor if total secant > 9
@@ -925,14 +934,21 @@ C
 C      -----------------
 C      Calculate non-LTE
 C      -----------------
-       IF (DOSUN) THEN
-          CALL CALNTE ( INDCHN, TEMP, SUNCOS, SCOS1, SECANG(1),
-     $       NCHNTE, CLISTN, COEFN, CO2TOP, RAD )
-       ENDIF
+C$$$       IF (DOSUN) THEN
+          IF (IPROF .LT. 20) THEN
+            write(6,"('sarta: IPROF SUNANG ALT(1) SZALAY',
+     $   I6,X,F8.3,X,F11.3,X,F11.3)") IPROF,SUNANG,ALT(1),SZALAY
+          ENDIF
+C$$$          CALL CALNTE ( INDCHN, TEMP, SUNCOS, SCOS1, SECANG(1),
+          CALL CALNTE ( INDCHN, TEMP, SECANG(1),
+     $       NCHNTE, CLISTN, COEFN, CO2TOP, RAD, SUNANG, ALT(1) )
+C$$$       ENDIF
 C
+ccc
 c      do I=1,NCHAN
 c      print *, BT(I), RAD(I)
 c      enddo
+ccc
        if (DEBUG) print*, 'sarta: completed CALNTE'
 
 C      -------------------

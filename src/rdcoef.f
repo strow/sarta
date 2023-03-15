@@ -290,7 +290,7 @@ C         Trace gases
           INDHNO(I)=0
           INDN2O(I)=0
           INDNH3(I)=0
-	  INDHDO(I)=0
+          INDHDO(I)=0
 C         OPTRAN water
           INDH2O(I)=0
        ENDDO

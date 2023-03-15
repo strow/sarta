@@ -54,7 +54,7 @@ airs_cloudy_may19_tun:
 # Builds clear
 #----------------------------------------------------------------------------------------
 
-########## AIRS ################
+# AIRS L1B versions (old) #
 apr08_m140_wcon_nte_2016tuning:
 	rm -f *.o incFTC.f
 	sed 's/XCSNAMEX/m140/g' incFTC_airs_apr08_template_m130_m140_m150_wcon_nte.f > incFTC.f
@@ -66,8 +66,9 @@ apr08_m140_pge_v6_tunmlt:
 	sed 's/XCSNAMEX/m140/g' incFTC_airs_apr08_template_m130_m140_m150_pge_v6_tunmlt.f > incFTC.f
 	make -f make_sarta
 	mv a.out ../bin/apr08_m140_pge_v6_tunmlt
-
-# AIRS L1C
+# ------------------------------------------------
+# AIRS L1C Versions
+# -----------------------------------------------
 # this for testing new build with jpl tuning
 airs_may19_jpl_tunmlt:
 	rm -f *.o incFTC.f
@@ -96,7 +97,13 @@ airs_may19_tune:
 	make -f make_sarta
 	mv a.out ../bin/airs_l1c_2834_may19_prod_tune
 
-# test and dev versions
+airs_jul22_dev:
+	rm -f *.o incFTC.f
+	ln -s incFTC_airs_l1c_p2022jul22_dev.f incFTC.f
+	make -f make_sarta
+	mv a.out ../bin/airs_l1c_2834_p2022jul22_dev
+
+# AIRS test and development versions
 airs_basic:
 	rm -f *.o incFTC.f
 	ln -s incFTC_airs_prod2019_dec2018_basic_debug.f  incFTC.f
@@ -115,23 +122,31 @@ airs_rd:
 	make -f make_sarta
 	mv a.out ../bin/airs_2834_mar19_rdown
 
-#  ------------  CrIS   ------------ #######
-# CrIS (low res) standard resolution
+airs_jul22_xnte:
+	rm -f *.o incFTC.f
+	ln -s incFTC_airs_l1c_p2022jul2022_xnte_dev.f incFTC.f
+	make -f make_sarta_xnte
+	mv a.out ../bin/airs_l1c_2834_p2022jul22_xnte_dev
+
+# ----------------------------------------------------
+#       CrIS  (NSR & FSR)
+#  ---------------------------------------------------
+# CrIS (low res) NSR
 crisg4_nov09_wcon_nte:
 	rm -f *.o incFTC.f
 	ln -s incFTC_crisg4_nov09_wcon_nte_new.f incFTC.f
 	make -f make_sarta
 	mv a.out ../bin/crisg4_nov09_wcon_nte_new
 
-# CrIS (low res) standard resolution
 cris_lrg4_p2021_dev:
 	rm -f *.o incFTC.f
 	ln -s incFTC_cris_lrg4_p2021_may21_dev.f incFTC.f
 	make -f make_sarta
 	mv a.out ../bin/cris_lrg4_p2021_dev
 
-# 
-# CrIS extended resolution (high res)
+#  --------------------------------------
+#   CrIS FSR (high res)
+# ---------------------------------------
 crisg4_oct16:
 	rm -f *.o incFTC.f
 	ln -s incFTC_crisg4_oct16_new.f incFTC.f
@@ -155,11 +170,23 @@ crisg4_may18_hdo:
 # CrIS FSR v2.01 (prod2019 dec2018)
 cris_hrg4_p2019_dec18:
 	rm -f *.o incFTC.f
-	ln -s incFTC_cris_hrg4_p2019_dec2018_prod.f incFTC.f
+#	ln -s incFTC_cris_hrg4_p2019_dec2018_prod.f incFTC.f
+	ln -s incFTC_cris_hrg4_p2019_dec2018_dev.f incFTC.f
 	make -f make_sarta
-	mv a.out ../bin/cris_hrg4_p2019dec18_set3
+#	mv a.out ../bin/cris_hrg4_p2019dec18_set3
+	mv a.out ../bin/cris_hrg4_p2019dec18_dev
 
-######  -------  IASI  -----------
+# CrIS FSR v2.02 (prod2022 jul2022)
+cris_hrg4_p2022_jul22:
+	rm -f *.o incFTC.f
+#	ln -s incFTC_cris_hrg4_p2022jul22_prod.f incFTC.f
+	ln -s incFTC_cris_hrg4_p2022jul22_dev.f incFTC.f
+	make -f make_sarta
+	mv a.out ../bin/cris_hrg4_p2022jul22_dev
+
+# ----------------------------------------------
+#             IASI
+#  ---------------------------------------------  
 # Legacy
 iasi_may09:
 	rm -f *.o incFTC.f
@@ -187,6 +214,41 @@ iasi_jun19:
 	make -f make_sarta
 	mv a.out ../bin/iasi_jun19_xnte
 
+# IASI with s/w CH4
+iasi_jun19_swch4:
+	rm -f *.o incFTC.f
+	ln -s incFTC_iasi_jun19_swch4.f incFTC.f
+	make -f make_sarta_swch4
+	mv a.out ../bin/iasi_jun19_swch4
+
+# IASI with HDO
+iasi_jun19_hdo:
+	rm -f *.o incFTC.f
+	ln -s incFTC_iasi_jun19_swch4_8hdo.f incFTC.f
+	make -f make_sarta_swch4
+	mv a.out ../bin/iasi_jun19_swch4_hdo
+
+# IASI with extended nonLTE
+iasi_jun19_xnte:
+	rm -f *.o incFTC.f
+	ln -s incFTC_iasi_jun19_xnte.f incFTC.f
+	make -f make_sarta_xnte
+	mv a.out ../bin/iasi_jun19_xnte
+
+# IASI prod_2022 jul22 development version
+iasi_p2022jul22_dev:
+	rm -f *.o incFTC.f
+	ln -s incFTC_iasi_p2022jul22_dev.f incFTC.f
+	make -f make_sarta
+	mv a.out ../bin/iasi_p2022jul22_dev
+
+# IASI prod_2022 jul22 extended nonLTE development version
+iasi_jul22_dev_xnte:
+	rm -f *.o incFTC.f
+	ln -s incFTC_iasi_jul22_xnte_dev.f incFTC.f
+	make -f make_sarta_xnte
+	mv a.out ../bin/iasi_jul22_dev_xnte
+
 # --------------------- CHIRP -------------------
 # CHIRP Bare bones
 chirp_feb20:
@@ -194,6 +256,13 @@ chirp_feb20:
 	ln -s incFTC_chirp_base_tra_thrm_nte.f incFTC.f
 	make -f make_sarta
 	mv a.out ../bin/chirp_feb20_base_tra_thrm_nte
+
+# CHIRP prod_2022, build: jul2022
+chirp_jul22_dev:
+	rm -f *.o incFTC.f
+	ln -s incFTC_chirp_p2022jul22_dev.f incFTC.f
+	make -f make_sarta
+	mv a.out ../bin/chirp_p2022jul22_dev
 
 #----------------------------------------------------------------------------------------
 # File management

@@ -501,10 +501,8 @@ C-----------------------------------------------------------------------
        REAL WJUNKZ
        REAL WJUNK4
        REAL DJUNKA
-       REAL DJUNKR
-       REAL DJUNKS
-       REAL DJUNKZ
-       REAL DJUNK4
+       REAL DJUNKB
+       REAL DJUNKC
        REAL OJUNKA
        REAL OJUNKR
        REAL OJUNKZ
@@ -893,20 +891,18 @@ C         ---------------
           IF(L .EQ. 96) write(6,'(A,X,I4,X,F6.2)') 'calpar: L,HDOFCT ',L,HDOFCT
         endif
           DJUNKA=SECANG(L)*A_W*(1 - HDOFCT)      ! *(1 - HDOFCT)
-          DJUNKR=SQRT( DJUNKA )
-          DJUNKS=DJUNKA*DJUNKA
-          DJUNKZ=DJUNKA*A_W/AZ_W                 ! *(1 - HDOFCT)
-          DJUNK4=SQRT( DJUNKR )
+          DJUNKB=SQRT( DJUNKA )
+          DJUNKC=A_W/AZ_W
 C
           DPRED( 1,L)=DJUNKA
-          DPRED( 2,L)=DJUNKR
-          DPRED( 3,L)=DJUNKZ
+          DPRED( 2,L)=DJUNKB
+          DPRED( 3,L)=DJUNKA*DJUNKC
           DPRED( 4,L)=DJUNKA*DT
-          DPRED( 5,L)=DJUNKS
-          DPRED( 6,L)=DJUNKR*DT
-          DPRED( 7,L)=DJUNK4
-          DPRED( 8,L)=DJUNKZ/DJUNKR
-          DPRED( 9,L)=DJUNKS*DJUNKA
+          DPRED( 5,L)=DJUNKA*DJUNKA
+          DPRED( 6,L)=DJUNKB*DT
+          DPRED( 7,L)=SQRT( DJUNKB )
+          DPRED( 8,L)=DJUNKB*DJUNKC
+          DPRED( 9,L)=DJUNKA*DJUNKA*DJUNKA
           DPRED(10,L)=A_W
           DPRED(11,L)=DJUNKA*DT*ABS( DT )
 C

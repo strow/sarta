@@ -6,7 +6,7 @@ C
 C    AIRS
 C
 C    CALNTE (for Non-local Thermodynamic Equilibrium)
-C
+C            extended solar angle range.
 !F77====================================================================
 
 
@@ -28,6 +28,7 @@ C    type      name    purpose                     units
 C    --------  ------  --------------------------  ---------------------
 C    INT arr   INDCHN  channel indices             none
 C    REAL arr  TEMP    temperature profile         Kelvin
+C    REAL      SZALAY  solzen at layer1            degrees
 C    REAL      SUNCOS  solzen cosine at surface    none
 C    REAL      SCOS1   solzen cosine at layer1     none
 C    REAL      VSEC1   satzen secant at layer1     none
@@ -100,13 +101,14 @@ C 13 Oct 2005 Scott Hannon   MXCHNN renamed MXCNTE to avoid conflict
 C                               with MXCHNN used with N2O
 C 14 May 2008 Scott Hannon   Add CO2 adjustment using 7th coef; pass in
 C                               CO2TOP
-C    Jun 2022 C Hepplewhite  9+1 term Matricardi 10.1029/2018JD028657
-C
+C    Jun 2022 C Hepplewhite  Add extended range byond solzen>90 twilight.
 !END====================================================================
 
 C      =================================================================
-       SUBROUTINE CALNTE ( INDCHN, TEMP, SUNCOS, SCOS1, VSEC1,
-     $    NCHNTE, CLISTN, COEFN, CO2TOP, RAD )
+       SUBROUTINE CALNTE ( INDCHN, TEMP, VSEC1,
+     $    NCHNTE, CLISTN, COEFN, CO2TOP, RAD, SUNANG, XALT )
+C$$$       SUBROUTINE CALNTE ( INDCHN, TEMP, SUNCOS, SCOS1, VSEC1,
+C$$$         SUNCOS, SCOS1, VSEC1,
 C      =================================================================
 
 C-----------------------------------------------------------------------
@@ -125,6 +127,8 @@ C-----------------------------------------------------------------------
 C      EXTERNAL FUNCTIONS
 C-----------------------------------------------------------------------
 C      QIKEXP
+C       REAL VACONV
+       REAL SACONV
 
 
 C-----------------------------------------------------------------------
@@ -133,9 +137,12 @@ C-----------------------------------------------------------------------
 C      Input
        INTEGER INDCHN(MXCHAN)
        REAL   TEMP(MAXLAY)
+       REAL SUNANG ! solar zenith angle from prof.solzen.
+       REAL SZALAY ! solar zenith angle at layer1.
        REAL SUNCOS ! solar zenith angle cosine at surface
        REAL  SCOS1 ! solar zenith angle cosine at layer1
        REAL  VSEC1 ! satellite view zenith angle secant at layer1
+       REAL  XALT
        INTEGER NCHNTE
        INTEGER CLISTN(MXCNTE)
        REAL  COEFN(NNCOEF,MXCNTE)
@@ -157,13 +164,12 @@ C-----------------------------------------------------------------------
        REAL  PRED4
        REAL  PRED5
        REAL  PRED6
-       REAL  PRED7
-       REAL  PRED8
-       REAL  PRED9
-       REAL  THIG1
-       REAL  THIG2
-
-
+       REAL  THIGH
+       REAL XZALAY ! solar zenith angle at layer1.
+       REAL XUNCOS ! solar zenith angle cosine at surface
+       REAL  XCOS1 ! solar zenith angle cosine at layer1
+       REAL  CONV  ! degrees to radians
+       CONV=1.7453292E-02
 C-----------------------------------------------------------------------
 C      SAVE STATEMENTS
 C-----------------------------------------------------------------------
@@ -176,19 +182,29 @@ C                    EXECUTABLE CODE
 C***********************************************************************
 C***********************************************************************
 C
+
+C      Recalculate SZALAY, SUNCOS, SCOS1 independent of sarta.f local
+C      from SUNANG. Local vars prefix with X...
+       XZALAY = SACONV(SUNANG,XALT)
+       XUNCOS = COS(CONV*SUNANG)
+       XCOS1 = COS(XZALAY)
+C       write(6,"('calxnte: SUNANG,XALT,SZALAY',F6.2,X,F11.3,X,F11.3 )") 
+C     $  SUNANG,XALT,XZALAY
 C      Calculate the channel independent non-LTE predictors
-       THIG1 = (TEMP(1) + TEMP(2) + TEMP(3) + TEMP(4) + TEMP(5))/5.0
-       THIG2 = (TEMP(6) + TEMP(8) + TEMP(10) + TEMP(12) + TEMP(14))/5.0
+       THIGH = (TEMP(1) + TEMP(2) + TEMP(3) + TEMP(4) + TEMP(5))/5.0
        PRED1 = 1.0
-       PRED2 = SCOS1
-       PRED3 = SQRT(SCOS1)
-       PRED4 = SCOS1*VSEC1
-       PRED5 = (SCOS1*VSEC1)**2
-       PRED6 = SCOS1*THIG1
-       PRED7 = SCOS1*THIG2
-       PRED8 = VSEC1*THIG1
-       PRED9 = VSEC1*THIG2
+       PRED2 = XCOS1
+       PRED3 = XCOS1*XCOS1
+       PRED4 = XCOS1*VSEC1
+       PRED5 = XCOS1*THIGH
+       PRED6 = XUNCOS
 C
+CCC       PRED2 = SCOS1
+CCC       PRED3 = SCOS1*SCOS1
+CCC       PRED4 = SCOS1*VSEC1
+CCC       PRED5 = SCOS1*THIGH
+CCC       PRED6 = SUNCOS
+
 C      ---------------------------
 C      Loop on channel (frequency)
 C      ---------------------------
@@ -197,24 +213,29 @@ C
 C         Index for RAD
           J=INDCHN( CLISTN(I) )
 C
-          DRAD=( COEFN(1,I)*PRED1 ) +
-     $         ( COEFN(2,I)*PRED2 ) +
-     $         ( COEFN(3,I)*PRED3 ) +
-     $         ( COEFN(4,I)*PRED4 ) +
-     $         ( COEFN(5,I)*PRED5 ) +
-     $         ( COEFN(6,I)*PRED6 ) +
-     $         ( COEFN(7,I)*PRED7 ) +
-     $         ( COEFN(8,I)*PRED8 ) +
-     $         ( COEFN(9,I)*PRED9 )
+          IF(SUNANG .LE. 90) THEN
+            DRAD=( COEFN(1,I)*PRED1 ) +
+     $           ( COEFN(2,I)*PRED2 ) +
+     $           ( COEFN(3,I)*PRED3 ) +
+     $           ( COEFN(4,I)*PRED4 ) +
+     $           ( COEFN(5,I)*PRED5 ) +
+     $           ( COEFN(6,I)*PRED6 )
+          ELSEIF(SUNANG .GT. 90) THEN
+            DRAD=( COEFN(8,I)*PRED1 ) +
+     $           ( COEFN(9,I)*PRED2 ) +
+     $           ( COEFN(10,I)*PRED3 ) +
+     $           ( COEFN(11,I)*PRED4 ) +
+     $           ( COEFN(12,I)*PRED5 ) +
+     $           ( COEFN(13,I)*PRED6 )
+          ENDIF
 C
 C         Adjust DRAD for CO2 mixing ratio
-          DRAD=DRAD*(COEFN(10,I)*(CO2TOP - CO2NTE) + 1.0)
+          DRAD=DRAD*(COEFN(7,I)*(CO2TOP - CO2NTE) + 1.0)
 C
 C         Adjust RAD for the non-LTE contribution
           RAD(J) = RAD(J) + DRAD/1000.0 ! convert DRAD to Watts
 C
-CC       write(6,'(A,X,I3,X,E11.3)') 'calnte: I, XCO2 ',I,
-CC     $      (COEFN(7,I)*(CO2TOP - CO2NTE) + 1.0)
+C       write(6,'(A,X,I3,X,E11.3)') 'calnte: I, XCO2 ',I,(COEFN(7,I)*(CO2TOP - CO2NTE) + 1.0)
 C
        ENDDO
 C      End loops on channel number (frequency)

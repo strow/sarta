@@ -28,6 +28,7 @@ C    type      name    purpose                     units
 C    --------  ------  --------------------------  ---------------------
 C    INT arr   INDCHN  channel indices             none
 C    REAL arr  TEMP    temperature profile         Kelvin
+C    REAL      SZALAY  Solar Senith Angle          deg
 C    REAL      SUNCOS  solzen cosine at surface    none
 C    REAL      SCOS1   solzen cosine at layer1     none
 C    REAL      VSEC1   satzen secant at layer1     none
@@ -105,7 +106,7 @@ C
 !END====================================================================
 
 C      =================================================================
-       SUBROUTINE CALNTE ( INDCHN, TEMP, SUNCOS, SCOS1, VSEC1,
+       SUBROUTINE CALNTE ( INDCHN, TEMP, SZALAY, SUNCOS, SCOS1, VSEC1,
      $    NCHNTE, CLISTN, COEFN, CO2TOP, RAD )
 C      =================================================================
 
@@ -134,6 +135,7 @@ C      Input
        INTEGER INDCHN(MXCHAN)
        REAL   TEMP(MAXLAY)
        REAL SUNCOS ! solar zenith angle cosine at surface
+       REAL SZALAY ! solar zenith angle TOA
        REAL  SCOS1 ! solar zenith angle cosine at layer1
        REAL  VSEC1 ! satellite view zenith angle secant at layer1
        INTEGER NCHNTE
@@ -197,19 +199,32 @@ C
 C         Index for RAD
           J=INDCHN( CLISTN(I) )
 C
-          DRAD=( COEFN(1,I)*PRED1 ) +
-     $         ( COEFN(2,I)*PRED2 ) +
-     $         ( COEFN(3,I)*PRED3 ) +
-     $         ( COEFN(4,I)*PRED4 ) +
-     $         ( COEFN(5,I)*PRED5 ) +
-     $         ( COEFN(6,I)*PRED6 ) +
-     $         ( COEFN(7,I)*PRED7 ) +
-     $         ( COEFN(8,I)*PRED8 ) +
-     $         ( COEFN(9,I)*PRED9 )
+          IF(SZALAY .GE. 90) THEN
+            DRAD=( COEFN(1,I)*PRED1 ) +
+     $           ( COEFN(2,I)*PRED2 ) +
+     $           ( COEFN(3,I)*PRED3 ) +
+     $           ( COEFN(4,I)*PRED4 ) +
+     $           ( COEFN(5,I)*PRED5 ) +
+     $           ( COEFN(6,I)*PRED6 ) +
+     $           ( COEFN(7,I)*PRED7 ) +
+     $           ( COEFN(8,I)*PRED8 ) +
+     $           ( COEFN(9,I)*PRED9 )
+C
+          ELSEIF(SZALAY .LT. 90) THEN
+            DRAD=( COEFN(1,I)*PRED1 ) +
+     $           ( COEFN(2,I)*PRED2 ) +
+     $           ( COEFN(3,I)*PRED3 ) +
+     $           ( COEFN(4,I)*PRED4 ) +
+     $           ( COEFN(5,I)*PRED5 ) +
+     $           ( COEFN(6,I)*PRED6 ) +
+     $           ( COEFN(7,I)*PRED7 ) +
+     $           ( COEFN(8,I)*PRED8 ) +
+     $           ( COEFN(9,I)*PRED9 )
+          ENDIF
 C
 C         Adjust DRAD for CO2 mixing ratio
           DRAD=DRAD*(COEFN(10,I)*(CO2TOP - CO2NTE) + 1.0)
-C
+
 C         Adjust RAD for the non-LTE contribution
           RAD(J) = RAD(J) + DRAD/1000.0 ! convert DRAD to Watts
 C

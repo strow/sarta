@@ -198,6 +198,8 @@ C
 C         Adjust DRAD for CO2 mixing ratio
           DRAD=DRAD*(COEFN(7,I)*(CO2TOP - CO2NTE) + 1.0)
 C
+CCCCCC          DRAD=0.0
+C
 C         Adjust RAD for the non-LTE contribution
           RAD(J) = RAD(J) + DRAD/1000.0 ! convert DRAD to Watts
 C
