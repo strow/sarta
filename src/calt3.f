@@ -460,7 +460,7 @@ C            --------------------------
      $               ( COFHDO(3,ILAY,IHDO)*DPRED( 3,ILAY) ) +
      $               ( COFHDO(4,ILAY,IHDO)*DPRED( 4,ILAY) ) +
      $               ( COFHDO(5,ILAY,IHDO)*DPRED( 5,ILAY) ) +
-     $         	     ( COFHDO(6,ILAY,IHDO)*DPRED( 6,ILAY) ) +
+     $               ( COFHDO(6,ILAY,IHDO)*DPRED( 6,ILAY) ) +
      $               ( COFHDO(7,ILAY,IHDO)*DPRED( 7,ILAY) ) +
      $               ( COFHDO(8,ILAY,IHDO)*DPRED( 8,ILAY) ) +
      $               ( COFHDO(9,ILAY,IHDO)*DPRED( 9,ILAY) ) +
@@ -568,6 +568,7 @@ C       DKHNO3=0.0
 C       DKN2O=0.0
 C       DKNH3=0.0
 C       DKHDO=0.0
+C       KHDO=0.0
       IF (.NOT. CFHDO) KHDO=0.0
 ccc
 C            Limit -DK so it can never totally totally cancel KFIX

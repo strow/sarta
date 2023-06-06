@@ -409,6 +409,7 @@ C
 C      for RDRTP
        INTEGER  IPROF      ! profile loop counter
        LOGICAL  LWANT      ! do you want this profile?
+       REAL HDODPL         ! HDO depletion from prof.udef(20,:)
 
 C      used locally only
        INTEGER      I      ! loop counter
@@ -487,7 +488,7 @@ C      ---------------------------
      $    IH2O, IO3, ICO, ICH4, ICO2, ISO2, IHNO3, IN2O, INH3,
      $    IOPCI, HEAD, HATT, PATT, LCO2PM)
 C
-       if (DEBUG) print*, 'sarta: completed call opnrtp'
+       if (DEBUG) print*, 'sarta: completed call opnrtp fin'
 C      ------------------------
 C      Read the coef data files
 C      ------------------------
@@ -557,7 +558,7 @@ C      ------------------------
        MODE='c'
        ISTAT=rtpopen(FOUT, MODE, HEAD, HATT, PATT, IOPCO)
 ccc
-       if (DEBUG) print *, 'sarta: rtpopen status = ', ISTAT
+       if (DEBUG) print *, 'sarta: rtpopen status fout = ', ISTAT
 ccc
 C
 
@@ -601,13 +602,15 @@ C
 C      --------------
 C      Read input RTP
 C      --------------
+       if (DEBUG) print *, 'sarta: call rdrtp'
        CALL RDRTP( LWANT, IPROF, IOPCI,
      $    IH2O, IO3, ICO, ICH4, ICO2, ISO2, IHNO3, IN2O, INH3, 
      $    PTYPE, RALT, LCO2PM,
      $    NLAY, NEMIS, LAT, LON, SATANG, SATZEN, SALT, SUNANG,
-     $    PSURF, TSURF, CO2PPM, FEMIS, XEMIS, XRHO,
+     $    PSURF, TSURF, CO2PPM, HDODPL, FEMIS, XEMIS, XRHO,
      $    TEMP, WAMNT, OAMNT, CAMNT, MAMNT, FAMNT, SAMNT, HAMNT, NAMNT,
      $    AAMNT, ALT, PROF, ISTAT )
+       if (DEBUG) print *, 'sarta: returned from rdrtp'
 C
        IF (ISTAT .EQ. -1) GOTO 9999  ! reached End Of File
 C
@@ -780,13 +783,13 @@ C
        CALL CALPAR (LBOT,
      $    RTEMP,RFAMNT, RWAMNT,ROAMNT,RCAMNT,RMAMNT,RSAMNT,RHAMNT,RNAMNT,
      $    RAAMNT, TEMP,  FAMNT, WAMNT, OAMNT, CAMNT, MAMNT, SAMNT, HAMNT, 
-     $     NAMNT, AAMNT, RPRES,SECANG,   LAT,    FX,   RDZ,
+     $     NAMNT, AAMNT, RPRES,SECANG, HDODPL,  LAT,    FX,   RDZ,
      $   LCO2, LN2O, LSO2,LNH3,LHDO, LHNO3,LCO2PM, CO2PPM,CO2TOP,
      $   FIXMUL,CONPRD,DPRED,
      $   FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
      $   WPRED1,WPRED2,WPRED3,WPRED4,WPRED5,WPRED6,WPRED7,
      $   OPRED1,OPRED2,       OPRED4,OPRED5,OPRED6,OPRED7,
-     $   MPRED3,CPRED4,TRCPRD,CO2MLT,SO2MLT,HNOMLT,N2OMLT,NH3MLT,HDOMLT )
+     $   MPRED3,CPRED4,TRCPRD,CO2MLT,SO2MLT,HNOMLT,N2OMLT,NH3MLT )
 C
        if (DEBUG) write(6,'(A)') 'sarta: completed CALPAR'
 C      -----------------------------------

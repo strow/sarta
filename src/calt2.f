@@ -564,6 +564,7 @@ C       DKHNO3=0.0
 C       DKN2O=0.0
 C       DKNH3=0.0
 C       DKHDO=0.0
+C       KHDO=0.0
        IF (.NOT. CFHDO) KHDO=0.0
 ccc
 C            Limit -DK so it can never totally totally cancel KFIX

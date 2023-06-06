@@ -440,7 +440,7 @@ C      -----------------
 C       PARAMETER(MXCHND = 1)        ! placeholder when not using this set
 C       PARAMETER( NHDO = 1)         ! placeholder when not using this set
        PARAMETER(MXCHND = 590)
-       PARAMETER(  NHDO = 11)
+       PARAMETER(  NHDO = 11)         ! 8 or 11
 C
 C      ----------------------
 C      For OPTRAN water coefs

@@ -225,7 +225,7 @@ C      -------------------
        STATUS=rtpopen(FIN, MODE, HEAD, HATT, PATT, IOPCI)
 
 ccc
-c       print *, 'read open status = ', STATUS
+       if(DEBUG) print *, 'opnrtp: read open status = ', STATUS
 ccc
 
 C      -------------------------
@@ -537,5 +537,6 @@ cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 C
 
 C
+       if(DEBUG) print*,'opnrtp: returning from opnrtp'
        RETURN
        END

@@ -376,7 +376,10 @@ C            --------------------------
      $               ( COFHDO(5,ILAY,IHDO)*DPRED( 5,ILAY) ) +
      $               ( COFHDO(6,ILAY,IHDO)*DPRED( 6,ILAY) ) +
      $               ( COFHDO(7,ILAY,IHDO)*DPRED( 7,ILAY) ) +
-     $               ( COFHDO(8,ILAY,IHDO)*DPRED( 8,ILAY) ) 
+     $               ( COFHDO(8,ILAY,IHDO)*DPRED( 8,ILAY) ) +
+     $               ( COFHDO(9,ILAY,IHDO)*DPRED( 9,ILAY) ) +
+     $               ( COFHDO(10,ILAY,IHDO)*DPRED(10,ILAY) ) +
+     $               ( COFHDO(11,ILAY,IHDO)*DPRED(11,ILAY) )
 C     $               ( COFHDO(2,ILAY,IHDO)*DPRED( 2,ILAY) ) +
 C     $               ( COFHDO(3,ILAY,IHDO)*DPRED( 3,ILAY) ) +
 C     $               ( COFHDO(4,ILAY,IHDO)*DPRED( 4,ILAY) ) +
@@ -461,6 +464,7 @@ c this block for testing
 C      DKCO2=0.0
 C      DKN2O=0.0
 C      DKHDO=0.0
+C      KHDO=0.0
       IF (.NOT. CFHDO) KHDO=0.0
 ccc
 C            Limit -DK so it can never totally totally cancel KFIX
@@ -470,7 +474,7 @@ C            Limit -DK so it can never totally totally cancel KFIX
              ENDIF
 
 C            Calc total layer optical depth
-             KLAYER=KCON + KFIX + KWAT + KOZO + KHDO + DK
+             KLAYER=KCON + KFIX + KWAT + KOZO - KHDO + DK
 C
 C            Adjust the optical depth of the bottom layer
              IF (ILAY .EQ. NLAY) KLAYER=BLMULT*KLAYER

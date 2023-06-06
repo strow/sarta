@@ -77,6 +77,7 @@ C    REAL arr  AAMNT   layer NH3 amount            */cm^2
 C    REAL arr  ALT     layer average altitude      meters
 C    STRUCT    PROF    RTP profile structure       various
 C    INTEGER   ISTAT   I/O status                  none
+C    REAL      HDODPL  HDO depletion as per.mil    o/oo
 C note: units "*/cm^2" can be either kilomoles/cm^2 or molecules/cm^2
 
 
@@ -116,22 +117,24 @@ C    none
 
 !ROUTINE HISTORY:
 C    Date     Programmer        Comments
-C------------ ----------------- ----------------------------------------
-C 14 Feb 2001 Scott Hannon      created based on klayers version
-C 13 Sep 2001 Scott Hannon      Added checks of PSURF & TSURF
-C 31 Oct 2002 Scott Hannon      Add output vars SATZEN and ZSAT
-C 20 Dec 2004 Scott Hannon      Add PTYPE to call; fix error in NLAY
-C                                  when PTYPE=AIRSLAY; add error trap
-C                                  for LAT
-C 18 May 2005 Scott Hannon      Add HNO3 based on SO2 code
-C 23 Jun 2005 Scott Hannon      "trace" version for CO2,SO2,HNO3,N2O
-C 23 Jan 2008 Scott Hannon      Add LCO2PM to allow CO2 profile in ppmv;
-C                                  fix bug in CO2PPM check
-C 24 Oct 2008 Scott Hannon      Update for RTP v2.01; emis & rho now
-C                                  use the same freq points; set RHO
-C                                  to (1-e)/pi if input < 0
+C------------ --------------- ----------------------------------------
+C 14 Feb 2001 Scott Hannon    created based on klayers version
+C 13 Sep 2001 Scott Hannon    Added checks of PSURF & TSURF
+C 31 Oct 2002 Scott Hannon    Add output vars SATZEN and ZSAT
+C 20 Dec 2004 Scott Hannon    Add PTYPE to call; fix error in NLAY
+C                                when PTYPE=AIRSLAY; add error trap
+C                                for LAT
+C 18 May 2005 Scott Hannon    Add HNO3 based on SO2 code
+C 23 Jun 2005 Scott Hannon    "trace" version for CO2,SO2,HNO3,N2O
+C 23 Jan 2008 Scott Hannon    Add LCO2PM to allow CO2 profile in ppmv;
+C                                fix bug in CO2PPM check
+C 24 Oct 2008 Scott Hannon    Update for RTP v2.01; emis & rho now
+C                                use the same freq points; set RHO
+C                                to (1-e)/pi if input < 0
 C
-C 10 May 2018 C Hepplewhite     Add NH3
+C 10 May 2018 C Hepplewhite   Add NH3
+C 22 Mar 2023 C Hepplewhite   Add HDODPL from PROF%udef for HDO
+C                             depletion
 
 !END====================================================================
 
@@ -139,10 +142,10 @@ C      =================================================================
        SUBROUTINE RDRTP(LWANT, IPROF, IOPCI,
      $    IH2O, IO3, ICO, ICH4, ICO2, ISO2, IHNO3, IN2O, INH3,
      $    PTYPE, RALT, LCO2PM,
-     $    NLAY, NEMIS, LAT, LON, SATANG, SATZEN, ZSAT, SUNANG,
-     $    PSURF, TSURF, CO2PPM, FEMIS, EMIS, RHO,
-     $    TEMP, WAMNT, OAMNT, CAMNT, MAMNT, FAMNT, SAMNT, HAMNT, NAMNT,
-     $    AAMNT, ALT, PROF, ISTAT )
+     $    NLAY,  NEMIS, LAT,    LON,    SATANG, SATZEN, ZSAT, SUNANG,
+     $    PSURF, TSURF, CO2PPM, HDODPL, FEMIS,  EMIS,   RHO,
+     $    TEMP,  WAMNT, OAMNT,  CAMNT,  MAMNT,  FAMNT,  SAMNT, HAMNT, 
+     $    NAMNT, AAMNT, ALT, PROF, ISTAT )
 C      =================================================================
 
 
@@ -197,6 +200,7 @@ C      Output parameters:
        REAL  PSURF
        REAL  TSURF
        REAL CO2PPM
+       REAL HDODPL 
        REAL  FEMIS(MXEMIS)
        REAL   EMIS(MXEMIS)
        REAL    RHO(MXEMIS)
@@ -234,6 +238,7 @@ C-----------------------------------------------------------------------
        REAL ZSURF       ! surface altitude (read but ignored for now)
        REAL RJUNK1      ! generic junk/work
        REAL RJUNK2      ! generic junk/work
+C       REAL UDEF(MAXUDEF)        ! PROF%udef entry 20 for HDODPL
 
 C-----------------------------------------------------------------------
 C      SAVE STATEMENTS
@@ -246,10 +251,12 @@ C***********************************************************************
 C      EXECUTABLE CODE begins below
 C***********************************************************************
 C***********************************************************************
+       IF(DEBUG) write(6,"('rdrtp: start of execution' I6)"),IOPCI
 C      ------------------------
 C      Read the current profile
 C      ------------------------
        ISTAT=rtpread(IOPCI, PROF)
+       IF(DEBUG) write(6,"('rdrtp:ISTAT= ',I6)"),ISTAT
 C
        IF (ISTAT .EQ. -1) GOTO 9999  ! reached end of file
 C
@@ -369,6 +376,11 @@ C      Emissivity (range 0 to 1) and Reflectance (range 0 to 1/pi)
              RHO(I)=PROF%rho(I)
           ENDIF
        ENDDO
+C
+C      HDO Depletion from UDEF(20,:)
+C       UDEF=PROF%udef
+       HDODPL=PROF%udef(20)
+       IF(DEBUG) write(6,"('rdrtp:HDODPL= ',F8.1)"),HDODPL
 C
 C      ----------------------------------
 C      Get layer temperature & gas amount

@@ -23,7 +23,7 @@ C    dependent variables for a profile.
 C    CALPAR (LBOT, RTEMP,RFAMNT,RWAMNT,ROAMNT,RCAMNT,RMAMNT,RSAMNT,
 C  $    RHAMNT,RNAMNT,RAAMNT, PTEMP,PFAMNT,PWAMNT,POAMNT,PCAMNT,
 C  $    PMAMNT,PSAMNT,PHAMNT,PNAMNT,PAAMNT,
-C  $     PRES,  SECANG, ALAT,  FX,   DZREF,
+C  $     PRES,  SECANG, HDODPL, ALAT,  FX,   DZREF,
 C  $     LCO2,  LN2O,  LSO2,  LNH3, LHDO, LHNO3,LCO2PM,FIXMUL,CONPRD,
 C  $     FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
 C  $     WPRED1,WPRED2,WPRED3,WPRED4,WPRED5,WPRED6,WPRED7,
@@ -223,6 +223,13 @@ C      10) (W*a)^5/4    11) (W*a)^2*W/Wz   12) W^2*a
 C      13) (W*a)^7/4
 C
 C    ---------------------------
+C    HDO Predictors dH=(1-HDODPL) depletion (still in development)
+C       1) W*a*dH        2) sqrt(W*a*dH)    3)
+C       4)               5)                 6)
+C       7)               8)                 9)
+C      10)              11)
+C
+C    ---------------------------
 C    Ozone predictors
 C
 C    OPRED1: FWO (5 terms):
@@ -350,6 +357,7 @@ C 14 May 2008 Scott Hannon   Add no prof CO2MLT calc; add CO2TOP and
 C                               CO2PPM to call; add CO2TOP calc
 C 10 May 2018 C Hepplewhite  Add NH3
 C  1 Feb 2019 C Hepplewhite  Add HDO
+C 22 Mar 2023 C Hepplewhite  Add HDODPL parameter from rdrtp.
 
 !END====================================================================
 
@@ -357,13 +365,13 @@ C      =================================================================
        SUBROUTINE CALPAR ( LBOT,
      $    RTEMP,RFAMNT,RWAMNT,ROAMNT,RCAMNT,RMAMNT,RSAMNT,RHAMNT,RNAMNT,
      $    RAAMNT,PTEMP,PFAMNT,PWAMNT,POAMNT,PCAMNT,PMAMNT,PSAMNT,PHAMNT,
-     $    PNAMNT,PAAMNT,PRES,SECANG,  ALAT,    FX, DZREF,
+     $    PNAMNT,PAAMNT,PRES,SECANG,HDODPL,   ALAT,    FX, DZREF,
      $     LCO2,  LN2O,  LSO2, LNH3,  LHDO, LHNO3,LCO2PM,CO2PPM,CO2TOP,
      $   FIXMUL,CONPRD,DPRED, 
      $   FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
      $   WPRED1,WPRED2,WPRED3,WPRED4,WPRED5,WPRED6,WPRED7,
      $   OPRED1,OPRED2,       OPRED4,OPRED5,OPRED6,OPRED7,
-     $   MPRED3,CPRED4,TRCPRD,CO2MLT,SO2MLT,HNOMLT,N2OMLT,NH3MLT,HDOMLT)
+     $   MPRED3,CPRED4,TRCPRD,CO2MLT,SO2MLT,HNOMLT,N2OMLT,NH3MLT)
 C      =================================================================
 
 
@@ -423,6 +431,7 @@ C      Input
        LOGICAL LHNO3
        LOGICAL LCO2PM
        REAL CO2PPM
+       REAL HDODPL
 C
 C      Output
        REAL CO2TOP
@@ -503,6 +512,10 @@ C-----------------------------------------------------------------------
        REAL DJUNKA
        REAL DJUNKB
        REAL DJUNKC
+       REAL DJUNKR
+       REAL DJUNKS
+       REAL DJUNKZ
+       REAL DJUNK4
        REAL OJUNKA
        REAL OJUNKR
        REAL OJUNKZ
@@ -888,12 +901,16 @@ C         ---------------
 C         HDO
 C         ---------------
         if (DEBUG) then
-          IF(L .EQ. 96) write(6,'(A,X,I4,X,F6.2)') 'calpar: L,HDOFCT ',L,HDOFCT
+          IF(L .EQ. 92) write(6,'(A,X,I4,X,E11.3)') 'calpar: L,HDODPL ',L,HDODPL
         endif
-          DJUNKA=SECANG(L)*A_W*(1 - HDOFCT)      ! *(1 - HDOFCT)
+          DJUNKA=SECANG(L)*A_W      ! was *(1 - HDODPL)
           DJUNKB=SQRT( DJUNKA )
           DJUNKC=A_W/AZ_W
+          DJUNKS=DJUNKA*DJUNKA
+          DJUNKZ=DJUNKA*A_W/AZ_W                 ! *(1 - HDOFCT)
+          DJUNK4=SQRT( DJUNKB )
 C
+C Use these for the 11-term set
           DPRED( 1,L)=DJUNKA
           DPRED( 2,L)=DJUNKB
           DPRED( 3,L)=DJUNKA*DJUNKC
@@ -906,18 +923,15 @@ C
           DPRED(10,L)=A_W
           DPRED(11,L)=DJUNKA*DT*ABS( DT )
 C
-
+C Use these for reduced 8-term set
 C          DPRED( 1,L)=DJUNKA
-Ccc          DPRED( 2,L)=DJUNKR
-Ccc          DPRED( 3,L)=DJUNKZ
 C          DPRED( 2,L)=DJUNKA*DT
 C          DPRED( 3,L)=DJUNKS
-C          DPRED( 4,L)=DJUNKR*DT
+C          DPRED( 4,L)=DJUNKB*DT
 C          DPRED( 5,L)=DJUNK4
-C          DPRED( 6,L)=DJUNKZ/DJUNKR
-Ccc          DPRED( 9,L)=DJUNKS*DJUNKA
-C          DPRED(7,L)=A_W                   ! *(1 - HDOFCT)
-C          DPRED(8,L)=DJUNKA*DT*ABS( DT )
+C          DPRED( 6,L)=DJUNKZ/DJUNKB
+C          DPRED( 7,L)=A_W
+C          DPRED( 8,L)=DJUNKA*DT*ABS( DT )
 C
 C         ---------------
 C         Carbon monoxide for FCOW = set4
@@ -1011,8 +1025,8 @@ C            Ignore changes in HNO3 less than ~1%
           ENDIF
 C
           IF (LHDO) THEN
-C            HDO mult=1 when no depletion/enhancement of HDO
-             HDOMLT(L)=( 1 - HDOFCT )
+C            HDO=0 no depletion/enhancement -600: 600per.mil depleted
+             HDOMLT(L)=HDODPL/1000   !
 C            Ignore changes in HDO of less than ~1%
 C             IF (ABS(HDOMLT(L)) .LT. 1E-5) HDOMLT(L)=0.0
           ELSE
@@ -1020,11 +1034,11 @@ C             IF (ABS(HDOMLT(L)) .LT. 1E-5) HDOMLT(L)=0.0
           ENDIF
 C
 ccc this block for testing
-c      N2OMLT(L)=0.0          
-c      SO2MLT(L)=0.0
-c      NH3MLT(L)=0.0
-c      HNOMLT(L)=0.0
-C      HDOMLT(L)=0.0
+c         N2OMLT(L)=0.0          
+c         SO2MLT(L)=0.0
+c         NH3MLT(L)=0.0
+c         HNOMLT(L)=0.0
+C         HDOMLT(L)=0.0
 ccc
 C
        ENDDO

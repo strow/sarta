@@ -101,7 +101,7 @@ airs_jul22_dev:
 	rm -f *.o incFTC.f
 	ln -s incFTC_airs_l1c_p2022jul22_dev.f incFTC.f
 	make -f make_sarta
-	mv a.out ../bin/airs_l1c_2834_p2022jul22_dev
+	mv a.out ../bin/airs_l1c_2834_p2022jul22_v2
 
 # AIRS test and development versions
 airs_basic:
@@ -126,7 +126,7 @@ airs_jul22_xnte:
 	rm -f *.o incFTC.f
 	ln -s incFTC_airs_l1c_p2022jul2022_xnte_dev.f incFTC.f
 	make -f make_sarta_xnte
-	mv a.out ../bin/airs_l1c_2834_p2022jul22_xnte_dev
+	mv a.out ../bin/airs_l1c_2834_p2022jul22_xnte_v02
 
 # ----------------------------------------------------
 #       CrIS  (NSR & FSR)
@@ -226,7 +226,7 @@ iasi_jun19_hdo:
 	rm -f *.o incFTC.f
 	ln -s incFTC_iasi_jun19_swch4_8hdo.f incFTC.f
 	make -f make_sarta_swch4
-	mv a.out ../bin/iasi_jun19_swch4_hdo
+	mv a.out ../bin/iasi_jun19_swch4_hdo_dev
 
 # IASI with extended nonLTE
 iasi_jun19_xnte:
@@ -235,19 +235,19 @@ iasi_jun19_xnte:
 	make -f make_sarta_xnte
 	mv a.out ../bin/iasi_jun19_xnte
 
-# IASI prod_2022 jul22 development version
-iasi_p2022jul22_dev:
+# IASI prod_2022 jul22/mar23 development version
+iasi_p2022mar23_dev:
 	rm -f *.o incFTC.f
 	ln -s incFTC_iasi_p2022jul22_dev.f incFTC.f
-	make -f make_sarta
-	mv a.out ../bin/iasi_p2022jul22_dev
+	make -f make_sarta_swch4
+	mv a.out ../bin/iasi_p2022mar23_test
 
 # IASI prod_2022 jul22 extended nonLTE development version
 iasi_jul22_dev_xnte:
 	rm -f *.o incFTC.f
-	ln -s incFTC_iasi_jul22_xnte_dev.f incFTC.f
+	ln -s incFTC_iasi_p2022jul22_xnte_dev.f incFTC.f
 	make -f make_sarta_xnte
-	mv a.out ../bin/iasi_jul22_dev_xnte
+	mv a.out ../bin/iasi_p2022jul22_dev_xnte_test
 
 # --------------------- CHIRP -------------------
 # CHIRP Bare bones

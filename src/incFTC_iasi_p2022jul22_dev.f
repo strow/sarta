@@ -181,16 +181,18 @@ C
        LOGICAL CFHDO
        LOGICAL CFOPTR
        LOGICAL CFTHER
-       LOGICAL COFNTE
+       LOGICAL CFNTE
+       LOGICAL CFCH4
        PARAMETER(CFCO2  = .TRUE.)
        PARAMETER(CFHNO3 = .TRUE.)
        PARAMETER(CFN2O  = .TRUE.)
        PARAMETER(CFNH3  = .TRUE.)
        PARAMETER(CFSO2  = .TRUE.)
-       PARAMETER(CFHDO  = .FALSE.)
+       PARAMETER(CFHDO  = .TRUE.)
        PARAMETER(CFOPTR = .TRUE.)
-       PARAMETER(COFNTE = .TRUE.)
+       PARAMETER(CFNTE  = .TRUE.)
        PARAMETER(CFTHER = .TRUE.)
+       PARAMETER(CFCH4  = .TRUE.)
 C
        CHARACTER*40 VSARTA  ! SARTA source code version
        CHARACTER*40 VSCOEF  ! SARTA coefficient version
@@ -231,7 +233,7 @@ C
 C
        REAL HDOFCT ! vary proportion of HDO in H2O from std depletion
 C                  ! (-1: 100% enhancement, 0:std HDO or zero depletion,
-C                  1: 100% depleted))
+C                  1: 100% depleted [per.mil]))
        PARAMETER( HDOFCT = 0.00 )
 C
        REAL  XSALT ! expected nominal satellite altitude (km)
@@ -454,8 +456,20 @@ C       PARAMETER(MXCHND = 1)        ! placeholder when not using this
 C       set
 C       PARAMETER( NHDO = 1)         ! placeholder when not using this
 C       set
-       PARAMETER(MXCHND = 1843)
+       PARAMETER(MXCHND = 1538)
        PARAMETER(  NHDO = 11)
+C
+C      -------------------
+C      For variable SW CH4
+C      -------------------
+       INTEGER MXCHNM ! max # of channels with CH4 pert coefs (#)
+       INTEGER   NCH4 ! number of CH4 coefficients (7)
+C       PARAMETER(MXCHNM = 1)        ! placeholder when not using this
+C       set
+C       PARAMETER( NCH4 = 1)         ! placeholder when not using this
+C       set
+       PARAMETER(MXCHNM = 855)
+       PARAMETER(  NCH4 = 7)
 C
 C      ----------------------
 C      For OPTRAN water coefs
@@ -498,6 +512,7 @@ C      ---------
        CHARACTER*80 FNNH3  ! coef NH3
        CHARACTER*80 FNN2O  ! coef N2O
        CHARACTER*80 FNHDO  ! coef HDO
+       CHARACTER*80 FNCH4  ! coef s/w CH4
        CHARACTER*80 FNOPTR ! coef optran
        CHARACTER*80 FNTHER ! coef therm
        CHARACTER*80 FNFX   ! coef fx
@@ -536,8 +551,10 @@ C     $ '/asl/data/sarta_database/Data_IASI_may09/Coef/co2.dat')
        PARAMETER(FNNH3 =
      $ '/home/chepplew/data/sarta/prod_2022/iasi/jul2022/dbase/Coef/nh3.dat')
        PARAMETER(FNHDO =
-     $ '/asl/data/sarta_coef/Data_IASI_jun19/Coef/hdo.dat')
-C     $ '/home/chepplew/data/sarta/prod_2022/iasi/jul2022/dbase/Coef/hdo.dat')
+C     $ '/asl/data/sarta_coef/Data_IASI_jun19/Coef/hdo.dat')
+     $ '/home/chepplew/data/sarta/prod_2022/iasi/mar2023/dbase/Coef/hdo.dat')
+       PARAMETER(FNCH4 =
+     $ '/asl/data/sarta_database/Data_IASI_may09/Coef/swch4.dat')
        PARAMETER(FNTHER=
      $ '/home/chepplew/data/sarta/prod_2020/iasi/feb2020/fitc/r49/thermFactor_iasi.dat')
        PARAMETER(FNCOFN=
