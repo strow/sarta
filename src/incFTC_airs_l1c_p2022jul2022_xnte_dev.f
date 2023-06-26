@@ -162,7 +162,7 @@ C      See the "Doc/last_update.txt" file for a description of the
 C      changes associated with every change of VSARTA.
 C
        LOGICAL DEBUG
-       PARAMETER(DEBUG = .TRUE.)
+       PARAMETER(DEBUG = .FALSE.)
 C
        LOGICAL CFCO2
        LOGICAL CFHNO3
@@ -180,7 +180,7 @@ C
        PARAMETER(CFSO2  = .TRUE.)
        PARAMETER(CFHDO  = .FALSE.)
        PARAMETER(CFOPTR = .TRUE.)
-       PARAMETER(COFNTE = .TRUE.)
+       PARAMETER(COFNTE = .FALSE.)
        PARAMETER(CFTHER = .TRUE.)
 C
        CHARACTER*40 VSARTA  ! SARTA source code version
@@ -549,6 +549,8 @@ C
      $ '/home/chepplew/data/sarta/prod_2022/airs_l1c/jul2022/dbase/Coef/therm.dat')
        PARAMETER(FNCOFN=
      $ '/home/chepplew/data/sarta/prod_2022/airs_l1c/jul2022/dbase/Coef/xnte.dat')
+C     $ '/home/chepplew/data/sarta/prod_2022/airs_l1c/apr2021/dbase/Coef/xnte_v02.dat')
+C     $ '/home/chepplew/data/sarta/prod_2022/airs_l1c/apr2021/dbase/Coef/xnte_v02b.dat')
 C     $ '/asl/data/sarta_coef/Data_AIRS_may19/Coef/nte_7term.dat')
 C
 C

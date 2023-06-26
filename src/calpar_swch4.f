@@ -19,19 +19,18 @@ C    CALPAR
 C    Calculate the fast transmittance code temperature/amount/angle
 C    dependent variables for a profile.
 
-
 !CALL PROTOCOL:
-C    CALPAR (LBOT, RTEMP,RFAMNT,RWAMNT,ROAMNT,RCAMNT,RMAMNT,RSAMNT,
-C  $    RHAMNT,RNAMNT,RAAMNT, PTEMP,PFAMNT,PWAMNT,POAMNT,PCAMNT,
-C  $    PMAMNT,PSAMNT,PHAMNT,PNAMNT,PAAMNT,
-C  $     PRES,  SECANG, ALAT,  FX,   DZREF,
-C  $     LCO2,  LN2O,  LSO2,  LNH3, LHDO, LHNO3,LCO2PM,FIXMUL,CONPRD,
-C  $     FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
-C  $     WPRED1,WPRED2,WPRED3,WPRED4,WPRED5,WPRED6,WPRED7,
-C  $     OPRED1,OPRED2,       OPRED4,OPRED5,OPRED6,OPRED7,
-C  $     MPRED3,CPRED4,TRCPRD,
-C  $     CO2MLT,SO2MLT,HNOMLT,N2OMLT,NH3MLT,HDOMLT )
-
+C       SUBROUTINE CALPAR ( LBOT,
+C     $    RTEMP,RFAMNT,RWAMNT,ROAMNT,RCAMNT,RMAMNT,RSAMNT,RHAMNT,RNAMNT,
+C     $    RAAMNT,PTEMP,PFAMNT,PWAMNT,POAMNT,PCAMNT,PMAMNT,PSAMNT,PHAMNT,
+C     $    PNAMNT,PAAMNT,PRES,SECANG,  ALAT,    FX, DZREF,
+C     $     LCO2,  LN2O,  LSO2, LNH3,  LHDO, LHNO3, LCO2PM, LCH4,
+C     $   CO2PPM, CO2TOP, FIXMUL,CONPRD,DPRED,HDODPL,
+C     $   FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
+C     $   WPRED1,WPRED2,WPRED3,WPRED4,WPRED5,WPRED6,WPRED7,
+C     $   OPRED1,OPRED2,       OPRED4,OPRED5,OPRED6,OPRED7,
+C     $   MPRED3,CPRED4,TRCPRD,CO2MLT,SO2MLT,HNOMLT,N2OMLT,NH3MLT,HDOMLT,
+C     $   CH4MLT)
 
 !INPUT PARAMETERS:
 C    type      name    purpose                     units
@@ -69,7 +68,7 @@ C    REAL arr  RSAMNT  reference SO2 amount        kiloMoles/cm^2
 C    REAL arr  RAAMNT  ref ammonia (NH3) amount    kiloMoles/cm^2
 C    REAL arr  RWAMNT  reference water amount      kiloMoles/cm^2
 C    REAL arr  SECANG  secant of path angle        none
-
+C    REAL      HDODPL  HDO depletion               per.mil
 
 !OUTPUT PARAMETERS:
 C    type      name    purpose                     units
@@ -360,7 +359,7 @@ C      =================================================================
      $    RAAMNT,PTEMP,PFAMNT,PWAMNT,POAMNT,PCAMNT,PMAMNT,PSAMNT,PHAMNT,
      $    PNAMNT,PAAMNT,PRES,SECANG,  ALAT,    FX, DZREF,
      $     LCO2,  LN2O,  LSO2, LNH3,  LHDO, LHNO3, LCO2PM, LCH4,
-     $   CO2PPM, CO2TOP, FIXMUL,CONPRD,DPRED, 
+     $   CO2PPM, CO2TOP, FIXMUL,CONPRD,DPRED,HDODPL,
      $   FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
      $   WPRED1,WPRED2,WPRED3,WPRED4,WPRED5,WPRED6,WPRED7,
      $   OPRED1,OPRED2,       OPRED4,OPRED5,OPRED6,OPRED7,
@@ -426,6 +425,7 @@ C      Input
        LOGICAL LCO2PM
        LOGICAL LCH4
        REAL CO2PPM
+       REAL HDODPL
 C
 C      Output
        REAL CO2TOP
@@ -505,6 +505,8 @@ C-----------------------------------------------------------------------
        REAL WJUNKZ
        REAL WJUNK4
        REAL DJUNKA
+       REAL DJUNKC
+       REAL DJUNKD
        REAL DJUNKR
        REAL DJUNKS
        REAL DJUNKZ
@@ -894,34 +896,41 @@ C         ---------------
 C         HDO
 C         ---------------
         if (DEBUG) then
-          IF(L .EQ. 96) write(6,'(A,X,I4,X,F6.2)') 'calpar: L,HDOFCT ',L,HDOFCT
+          IF(L .EQ. 96) write(6,'(A,X,I4,X,F8.1)') 'calpar: L,HDODPL ',L,HDODPL
         endif
-          DJUNKA=SECANG(L)*A_W*(1 - HDOFCT)      ! *(1 - HDOFCT)
+          DJUNKA=SECANG(L)*A_W                   ! *(1 - HDOFCT)
+          DJUNKC=A_W/WZ                          ! lwzr/lwzz
           DJUNKR=SQRT( DJUNKA )
           DJUNKS=DJUNKA*DJUNKA
           DJUNKZ=DJUNKA*A_W/AZ_W                 ! *(1 - HDOFCT)
           DJUNK4=SQRT( DJUNKR )
+          DJUNKD=SECANG(L)*AZ_M
 C 8-term
-          DPRED( 1,L)=DJUNKA
-          DPRED( 2,L)=DJUNKR
-          DPRED( 3,L)=DJUNKZ
-          DPRED( 4,L)=DJUNKA*DT
-          DPRED( 5,L)=DJUNK4
-          DPRED( 6,L)=DJUNKZ/DJUNKR
-          DPRED( 7,L)=A_W
-          DPRED( 8,L)=DJUNKA*DT*ABS( DT )
-C 11-term
 C          DPRED( 1,L)=DJUNKA
 C          DPRED( 2,L)=DJUNKR
 C          DPRED( 3,L)=DJUNKZ
 C          DPRED( 4,L)=DJUNKA*DT
-C          DPRED( 5,L)=DJUNKS
-C          DPRED( 6,L)=DJUNKR*DT
-C          DPRED( 7,L)=DJUNK4
-C          DPRED( 8,L)=DJUNKZ/DJUNKR
-C          DPRED( 9,L)=DJUNKS*DJUNKA
-C          DPRED(10,L)=A_W
-C          DPRED(11,L)=DJUNKA*DT*ABS( DT )
+C          DPRED( 5,L)=DJUNK4
+C          DPRED( 6,L)=DJUNKZ/DJUNKR
+C          DPRED( 7,L)=A_W
+C          DPRED( 8,L)=DJUNKA*DT*ABS( DT )
+C 11-term
+          DPRED( 1,L)=DJUNKA
+          DPRED( 2,L)=DJUNKR
+          DPRED( 3,L)=DJUNKZ
+          DPRED( 4,L)=DJUNKA*DT
+          DPRED( 5,L)=DJUNKS
+          DPRED( 6,L)=DJUNKR*DT
+          DPRED( 7,L)=DJUNK4
+          DPRED( 8,L)=DJUNKZ/DJUNKR
+          DPRED( 9,L)=DJUNKS*DJUNKA
+          DPRED(10,L)=A_W
+          DPRED(11,L)=DJUNKA*DT*ABS( DT )
+C overwrite these for WPRED3 (FMW) 11-term
+          DPRED( 8,L)=DJUNKA*DJUNKA*DJUNKA;          ! (W*a)^3
+          DPRED( 9,L)=A_W;                           ! W
+          DPRED(10,L)=SQRT(DJUNKA)*DJUNKC;           ! sqrt(W*a)*W/W_z
+          DPRED(11,L)=SQRT(DJUNKA)*DJUNKD;           ! sqrt(W*a)*Mz*a
 C
 C
 C         ---------------
@@ -1027,8 +1036,9 @@ C            Ignore changes in HNO3 less than ~1%
           ENDIF
 C
           IF (LHDO) THEN
-C            HDO mult=1 when no depletion/enhancement of HDO
-             HDOMLT(L)=( 1 - HDOFCT )
+C            mult=0 no depletion/enhancement of HDO, -600per.mil
+C            depletion
+             HDOMLT(L)= HDODPL/1000.0
 C            Ignore changes in HDO of less than ~1%
 C             IF (ABS(HDOMLT(L)) .LT. 1E-5) HDOMLT(L)=0.0
           ELSE

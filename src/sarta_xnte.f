@@ -602,7 +602,6 @@ C
 C      --------------
 C      Read input RTP
 C      --------------
-       if (DEBUG) print *, 'sarta: call rdrtp'
        CALL RDRTP( LWANT, IPROF, IOPCI,
      $    IH2O, IO3, ICO, ICH4, ICO2, ISO2, IHNO3, IN2O, INH3, 
      $    PTYPE, RALT, LCO2PM,
@@ -610,7 +609,6 @@ C      --------------
      $    PSURF, TSURF, CO2PPM, HDODPL, FEMIS, XEMIS, XRHO,
      $    TEMP, WAMNT, OAMNT, CAMNT, MAMNT, FAMNT, SAMNT, HAMNT, NAMNT,
      $    AAMNT, ALT, PROF, ISTAT )
-       if (DEBUG) print *, 'sarta: returned from rdrtp'
 C
        IF (ISTAT .EQ. -1) GOTO 9999  ! reached End Of File
 C
@@ -789,7 +787,7 @@ C
      $   FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
      $   WPRED1,WPRED2,WPRED3,WPRED4,WPRED5,WPRED6,WPRED7,
      $   OPRED1,OPRED2,       OPRED4,OPRED5,OPRED6,OPRED7,
-     $   MPRED3,CPRED4,TRCPRD,CO2MLT,SO2MLT,HNOMLT,N2OMLT,NH3MLT )
+     $   MPRED3,CPRED4,TRCPRD,CO2MLT,SO2MLT,HNOMLT,N2OMLT,NH3MLT,HDOMLT)
 C
        if (DEBUG) write(6,'(A)') 'sarta: completed CALPAR'
 C      -----------------------------------
@@ -938,9 +936,9 @@ C      -----------------
 C      Calculate non-LTE
 C      -----------------
 C$$$       IF (DOSUN) THEN
-          IF (IPROF .LT. 20) THEN
-            write(6,"('sarta: IPROF SUNANG ALT(1) SZALAY',
-     $   I6,X,F8.3,X,F11.3,X,F11.3)") IPROF,SUNANG,ALT(1),SZALAY
+          IF (IPROF .EQ. 20) THEN
+            write(6,"('sarta: IPROF SUNANG ALT(1) SECANG(1)',
+     $   I6,X,F8.3,X,F11.3,X,F11.3)") IPROF,SUNANG,ALT(1),SECANG(1)
           ENDIF
 C$$$          CALL CALNTE ( INDCHN, TEMP, SUNCOS, SCOS1, SECANG(1),
           CALL CALNTE ( INDCHN, TEMP, SECANG(1),
@@ -975,5 +973,6 @@ C      -------------------
  9999  ISTAT=rtpclose(IOPCI)
        ISTAT=rtpclose(IOPCO)
 C
+       if(DEBUG) print*, 'sarta: end of program reached successfully'
        STOP
        END

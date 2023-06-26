@@ -185,6 +185,8 @@ C
 
 C      Recalculate SZALAY, SUNCOS, SCOS1 independent of sarta.f local
 C      from SUNANG. Local vars prefix with X...
+C      For accuracy, cap sunang to 120-deg when larger than this
+       IF(SUNANG .GT. 120) SUNANG = 120.0
        XZALAY = SACONV(SUNANG,XALT)
        XUNCOS = COS(CONV*SUNANG)
        XCOS1 = COS(XZALAY)

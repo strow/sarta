@@ -101,7 +101,7 @@ airs_jul22_dev:
 	rm -f *.o incFTC.f
 	ln -s incFTC_airs_l1c_p2022jul22_dev.f incFTC.f
 	make -f make_sarta
-	mv a.out ../bin/airs_l1c_2834_p2022jul22_v2
+	mv a.out ../bin/airs_l1c_2834_p2022jul22_v3
 
 # AIRS test and development versions
 airs_basic:
@@ -126,6 +126,12 @@ airs_jul22_xnte:
 	rm -f *.o incFTC.f
 	ln -s incFTC_airs_l1c_p2022jul2022_xnte_dev.f incFTC.f
 	make -f make_sarta_xnte
+	mv a.out ../bin/airs_l1c_2834_p2022jul22_xnte
+
+airs_jul22_xnte_v02:
+	rm -f *.o incFTC.f
+	ln -s incFTC_airs_l1c_p2022jul2022_xnte_v02.f incFTC.f
+	make -f make_sarta_xnte_v02
 	mv a.out ../bin/airs_l1c_2834_p2022jul22_xnte_v02
 
 # ----------------------------------------------------

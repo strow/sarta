@@ -363,6 +363,7 @@ C      for CALPAR
        REAL HDOMLT(MAXLAY)        ! HDO perturbation multiplier
        REAL CH4MLT(MAXLAY)        ! CH4 perturbation multiplier
        REAL CO2TOP                ! top layers CO2 mixing ratio 
+       REAL HDODPL                ! HDO Depletion per.mil
 C
 C      for CALOWP
        REAL  WAANG(MAXLAY)
@@ -606,10 +607,10 @@ C      --------------
        CALL RDRTP( LWANT, IPROF, IOPCI,
      $    IH2O, IO3, ICO, ICH4, ICO2, ISO2, IHNO3, IN2O, INH3, 
      $    PTYPE, RALT, LCO2PM,
-     $    NLAY, NEMIS, LAT, LON, SATANG, SATZEN, SALT, SUNANG,
-     $    PSURF, TSURF, CO2PPM, FEMIS, XEMIS, XRHO,
-     $    TEMP, WAMNT, OAMNT, CAMNT, MAMNT, FAMNT, SAMNT, HAMNT, NAMNT,
-     $    AAMNT, ALT, PROF, ISTAT )
+     $    NLAY,  NEMIS, LAT,    LON,    SATANG, SATZEN, SALT, SUNANG,
+     $    PSURF, TSURF, CO2PPM, HDODPL, FEMIS,  XEMIS,  XRHO,
+     $    TEMP,  WAMNT, OAMNT,  CAMNT,  MAMNT,  FAMNT,  SAMNT, HAMNT,
+     $    NAMNT, AAMNT, ALT,    PROF,   ISTAT )
 C
        IF (ISTAT .EQ. -1) GOTO 9999  ! reached End Of File
 C
@@ -784,7 +785,7 @@ C
      $    RAAMNT, TEMP,  FAMNT, WAMNT, OAMNT, CAMNT, MAMNT, SAMNT, HAMNT, 
      $     NAMNT, AAMNT, RPRES,SECANG,   LAT,    FX,   RDZ,
      $   LCO2, LN2O, LSO2,LNH3,LHDO, LHNO3, LCO2PM, LCH4,
-     $   CO2PPM,CO2TOP,FIXMUL,CONPRD,DPRED,
+     $   CO2PPM,CO2TOP,FIXMUL,CONPRD,DPRED,HDODPL,
      $   FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
      $   WPRED1,WPRED2,WPRED3,WPRED4,WPRED5,WPRED6,WPRED7,
      $   OPRED1,OPRED2,       OPRED4,OPRED5,OPRED6,OPRED7,

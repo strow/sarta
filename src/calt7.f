@@ -474,7 +474,7 @@ C            Limit -DK so it can never totally totally cancel KFIX
              ENDIF
 
 C            Calc total layer optical depth
-             KLAYER=KCON + KFIX + KWAT + KOZO - KHDO + DK
+             KLAYER=KCON + KFIX + KWAT + KOZO + KHDO + DK
 C
 C            Adjust the optical depth of the bottom layer
              IF (ILAY .EQ. NLAY) KLAYER=BLMULT*KLAYER

@@ -11,7 +11,7 @@ OBJS = rdcoef_swch4.o  \
        calt4.o   calt5_swch4.o   calt6_swch4.o   calt7_swch4.o \
        faketz.o  sunpar.o  calrad.o  rdsun.o   saconv.o  calowp.o  calokw.o \
        util.o    wrtrtp.o  mean_t.o  rdinfo.o  cbplev.o \
-       tunmlt.o  calnte_x.o  sarta_swch4.o
+       tunmlt.o  calnte.o  sarta_swch4.o
 
 
 # ------------------------------------------------------------------------

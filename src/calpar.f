@@ -371,7 +371,7 @@ C      =================================================================
      $   FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
      $   WPRED1,WPRED2,WPRED3,WPRED4,WPRED5,WPRED6,WPRED7,
      $   OPRED1,OPRED2,       OPRED4,OPRED5,OPRED6,OPRED7,
-     $   MPRED3,CPRED4,TRCPRD,CO2MLT,SO2MLT,HNOMLT,N2OMLT,NH3MLT)
+     $   MPRED3,CPRED4,TRCPRD,CO2MLT,SO2MLT,HNOMLT,N2OMLT,NH3MLT,HDOMLT)
 C      =================================================================
 
 
@@ -1025,8 +1025,8 @@ C            Ignore changes in HNO3 less than ~1%
           ENDIF
 C
           IF (LHDO) THEN
-C            HDO=0 no depletion/enhancement -600: 600per.mil depleted
-             HDOMLT(L)=HDODPL/1000   !
+C            HDO mult=1 when no depletion otherwise eg -600per.mil depleted
+             HDOMLT(L)=HDODPL/1000.0
 C            Ignore changes in HDO of less than ~1%
 C             IF (ABS(HDOMLT(L)) .LT. 1E-5) HDOMLT(L)=0.0
           ELSE
