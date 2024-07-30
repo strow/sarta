@@ -180,7 +180,7 @@ C
        PARAMETER(CFSO2  = .TRUE.)
        PARAMETER(CFHDO  = .FALSE.)
        PARAMETER(CFOPTR = .TRUE.)
-       PARAMETER(COFNTE = .FALSE.)
+       PARAMETER(COFNTE = .TRUE.)
        PARAMETER(CFTHER = .TRUE.)
 C
        CHARACTER*40 VSARTA  ! SARTA source code version

@@ -405,6 +405,7 @@ C
 C      for RDRTP
        INTEGER  IPROF      ! profile loop counter
        LOGICAL  LWANT      ! do you want this profile?
+       REAL     HDODPL     ! HDO depletion from prof.udef(20,:)
 
 C      used locally only
        INTEGER      I      ! loop counter
@@ -601,7 +602,7 @@ C      --------------
      $    IH2O, IO3, ICO, ICH4, ICO2, ISO2, IHNO3, IN2O, INH3, 
      $    PTYPE, RALT, LCO2PM,
      $    NLAY, NEMIS, LAT, LON, SATANG, SATZEN, SALT, SUNANG,
-     $    PSURF, TSURF, CO2PPM, FEMIS, XEMIS, XRHO,
+     $    PSURF, TSURF, CO2PPM, HDODPL, FEMIS, XEMIS, XRHO,
      $    TEMP, WAMNT, OAMNT, CAMNT, MAMNT, FAMNT, SAMNT, HAMNT, NAMNT,
      $    AAMNT, ALT, PROF, ISTAT )
 C
@@ -771,7 +772,7 @@ C
        CALL CALPAR (LBOT,
      $    RTEMP,RFAMNT, RWAMNT,ROAMNT,RCAMNT,RMAMNT,RSAMNT,RHAMNT,RNAMNT,
      $    RAAMNT, TEMP,  FAMNT, WAMNT, OAMNT, CAMNT, MAMNT, SAMNT, HAMNT, 
-     $     NAMNT, AAMNT, RPRES,SECANG,   LAT,    FX,   RDZ,
+     $     NAMNT, AAMNT, RPRES,SECANG, HDODPL,  LAT,    FX,   RDZ,
      $   LCO2, LN2O, LSO2,LNH3,LHDO, LHNO3,LCO2PM, CO2PPM,CO2TOP,
      $   FIXMUL,CONPRD,DPRED,
      $   FPRED1,FPRED2,FPRED3,FPRED4,FPRED5,FPRED6,FPRED7,
@@ -956,5 +957,6 @@ C      -------------------
  9999  ISTAT=rtpclose(IOPCI)
        ISTAT=rtpclose(IOPCO)
 C
+       if(DEBUG) print*, 'sarta: end of program reached successfully'
        STOP
        END

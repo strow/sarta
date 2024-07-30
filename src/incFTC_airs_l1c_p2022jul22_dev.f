@@ -162,7 +162,7 @@ C      See the "Doc/last_update.txt" file for a description of the
 C      changes associated with every change of VSARTA.
 C
        LOGICAL DEBUG
-       PARAMETER(DEBUG = .TRUE.)
+       PARAMETER(DEBUG = .FALSE.)
 C
        LOGICAL CFCO2
        LOGICAL CFHNO3
@@ -178,7 +178,7 @@ C
        PARAMETER(CFN2O  = .TRUE.)
        PARAMETER(CFNH3  = .TRUE.)
        PARAMETER(CFSO2  = .TRUE.)
-       PARAMETER(CFHDO  = .FALSE.)
+       PARAMETER(CFHDO  = .TRUE.)
        PARAMETER(CFOPTR = .TRUE.)
        PARAMETER(COFNTE = .FALSE.)
        PARAMETER(CFTHER = .TRUE.)

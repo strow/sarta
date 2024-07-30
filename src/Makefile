@@ -101,7 +101,7 @@ airs_jul22_dev:
 	rm -f *.o incFTC.f
 	ln -s incFTC_airs_l1c_p2022jul22_dev.f incFTC.f
 	make -f make_sarta
-	mv a.out ../bin/airs_l1c_2834_p2022jul22_v3
+	mv a.out ../bin/airs_l1c_2834_p2022jul22_v4
 
 # AIRS test and development versions
 airs_basic:
@@ -188,7 +188,14 @@ cris_hrg4_p2022_jul22:
 #	ln -s incFTC_cris_hrg4_p2022jul22_prod.f incFTC.f
 	ln -s incFTC_cris_hrg4_p2022jul22_dev.f incFTC.f
 	make -f make_sarta
-	mv a.out ../bin/cris_hrg4_p2022jul22_dev
+	mv a.out ../bin/cris_hrg4_p2022jul22_dev2
+
+# CrIS FSR v2.02 (prod2022 jul2022)
+cris_hrg4_p2022_jul22_xnte:
+	rm -f *.o incFTC.f
+	ln -s incFTC_cris_hrg4_p2022jul22_xnte.f incFTC.f
+	make -f make_sarta_xnte
+	mv a.out ../bin/cris_hrg4_p2022jul22_xnte_dev
 
 # ----------------------------------------------
 #             IASI
@@ -269,6 +276,13 @@ chirp_jul22_dev:
 	ln -s incFTC_chirp_p2022jul22_dev.f incFTC.f
 	make -f make_sarta
 	mv a.out ../bin/chirp_p2022jul22_dev
+
+# CHIRP prod_2022, build: jul2022 xnte
+chirp_p2022jul22_xnte:
+	rm -f *.o incFTC.f
+	ln -s incFTC_chirp_p2022jul22_xnte_dev.f incFTC.f
+	make -f make_sarta_xnte
+	mv a.out ../bin/chirp_p2022jul22_xnte_dev
 
 #----------------------------------------------------------------------------------------
 # File management

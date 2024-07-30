@@ -251,12 +251,10 @@ C***********************************************************************
 C      EXECUTABLE CODE begins below
 C***********************************************************************
 C***********************************************************************
-       IF(DEBUG) write(6,"('rdrtp: start of execution' I6)"),IOPCI
 C      ------------------------
 C      Read the current profile
 C      ------------------------
        ISTAT=rtpread(IOPCI, PROF)
-       IF(DEBUG) write(6,"('rdrtp:ISTAT= ',I6)"),ISTAT
 C
        IF (ISTAT .EQ. -1) GOTO 9999  ! reached end of file
 C
@@ -380,7 +378,7 @@ C
 C      HDO Depletion from UDEF(20,:)
 C       UDEF=PROF%udef
        HDODPL=PROF%udef(20)
-       IF(DEBUG) write(6,"('rdrtp:HDODPL= ',F8.1)"),HDODPL
+C       IF(DEBUG) write(6,"('rdrtp:HDODPL= ',F8.1)"),HDODPL
 C
 C      ----------------------------------
 C      Get layer temperature & gas amount
