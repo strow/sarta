@@ -1,0 +1,55 @@
+* chirp_build_p2022bjul22
+
+Build report for latest CHIRP clear sky SARTA
+
+report status data: July 2024
+
+Production:   2022
+Build:        july 2022
+Spectroscopy: HITRAN 2020
+Version:      2.20    Regression (reg) 
+Configuration Notes:  
+1.            fast coefficients entirely based on standard regression
+              method.
+2.            w/HDO requires valid prof.udef(20,:) per mil depletion              
+
+Source Code:  Fortran 90 (note 1)
+
+* Build:
+  Goto: git release: <TBD hash>
+  In: src_f90/
+      $> make chirp_reg && make clean
+  Binary In: bin/chirp_reg
+
+* Validation
+** 1: mean bias of TOA BT compared to kCARTA.
+      Input layers profile data using the Hannon 49 training set, original
+      rtp data: ~sergio/MATLABCODE/REGR_PROFILES_SARTA/RUN_KCARTA/ ...
+           'REGR49_400ppm_H2016_Dec2018_AIRS2834/regr49_1013_400ppm.op.rtp'
+      is reproduced in this repo/test/regr49_1013_400ppm.op.rtp 
+      with prof.udef(20,:) set to zero for use with HDO calcs.
+
+      (ref: /home/chepplew/data/sarta/prod_2022/generic/
+            various sets with ranges of view/solar angles, surface emissivity
+            and perturbed gas profiles)
+
+      code for performing different sets of comparisions can be found:
+            /home/chepplew/projects/sarta/matlabcode/compare_kc_sar_r49_generic.m
+         and compare_kc_sar_r49_generic_perturb.m, compared_kc_sar_hdo.m,
+             compare_kc_sar_r49_nlte.m
+
+
+
+
+
+
+
+
+
+
+* Notes:
+** 1. Source code is compatible to Fortran 90 standards, with legacy
+  F77 standards (backward compatible) - just need more time to complete the
+  reformatting.
+  RTP V201 and dependent libraries also updated to Fortran 90. ref Makefile
+  Pending build to RTP v211.

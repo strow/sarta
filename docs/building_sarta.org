@@ -1,0 +1,248 @@
+* Building SARTA
+
+** Contents:
+- purpose and scope
+- Top Level Overview
+- The Training Data
+- The Layer-to-Space Optical Depths
+- The Fast Coefficients
+  - sets 1-7
+  - water continuum
+  - nonLTE, reflected thermal, other minor gases
+  - channel ordering for CrIS.
+- Build SARTA
+  - build clear-sky SARTA
+  - Build all-sky SARTA
+- Execution and run-time SARTA
+
+
+** Purpose and Scope
+
+These notes provide a recipe of instructions to build SARTA.
+The final result will be an executable program which can be run
+on the command line or wrapped in other code.
+
+SARTA consists of core RTA algorithms designed to compute the
+top-of-atmosphere radiance for pre-specified spectral channels using
+sets of optical-depth coefficients that are derived from 
+line-by-line transmittance calculations.
+
+There is a version of SARTA for clear sky computation and one for 
+scattering atmospheres. THe scattering version is built after the
+clear-sky version is complete.
+
+Currently this library of tools is available for the Aqua AIRS, the 
+NOAA Cris, the Eumetsat IASI and the NOAA CHIRP infrared sensors.
+
+** Top-Level overview
+
+There are four main stages to building the clear-sky SARTA:
+1. From the atmospheric profile training set, and for the prescribed 
+gas breakout collections the kCARTA LBL is used to compute layer-to-space
+(L2S) transmittances convolved to the sensor response functions. In addition,
+for the purpose of functional validation, kCARTA LBL is used to compute
+top-of-atmosphere (TOA) radiance using various atmospheric profiles.
+
+2. From the convolved L2S transmittances the fast coefficients are computed
+for the given sensor. Fast coefficients are derived for groups of channels
+according to which gas breakouts are defined. The gas breakouts for any given 
+sensor channel frequency is determined by the strength of the absorption lines
+ of the respective gases. Across the total spectral bands 640 to 2700 cm-1
+(approx) there are seven groups of breakouts. The breakouts cover H2O, CO2,
+O3, CH4 and CO. Strong water line absorption is supplemented by the inclusion of
+the optran algorithm. (ref ?). The remaining minor gases are computed with their
+own dedicated routines.
+
+3. The SARTA include-module is updated to reference the new coefficient tables,
+then the new executable is built.
+
+4. SARTA TOA BTs are compared against kCARTA values and used to verify that
+the regression fits are adequate. Further validation is then performed (not
+described here).
+
+
+Building the all-sky, scattering version includes the previous steps 1 to 4
+followed by inclusion of scattering tables and the two-slab slgorithms.
+
+The following sections describe each of these steps in more detail.
+
+** The Training Data.
+
+The training set uses a very well established and highly optimized set of 49
+atmospheric profiles of all the required gases and temperature. The layer-to
+-space (L2S) transmittances are computed using the kCARTA LBL over ranges of
+viewing and solar path angles, which amount to 5586 sets of atmospheric states.
+
+The original LEVELS profiles are in the file:
+/asl/s1/sergio/REGR_PROFILES_SARTA/RUN_KCARTA/REGR49_H2012_June2016/regr49_1100.ip.rtp
+
+A LAYERS file version is:
+/home/sergio/MATLABCODE/REGR_PROFILES_SARTA/RUN_KCARTA/ ...
+     REGR49_400ppm_H2016_Dec2018_AIRS2834/regr49_1013_400ppm.op.rtp
+
+From which, for example, a recent training set for kCARTA is available at:
+/home/sergio/MATLABCODE/REGR_PROFILES_SARTA/RUN_KCARTA/ ...
+  REGR49_400ppm_H2020_July2022_AIRS2834_3CrIS_IASI/regr49_1100_400ppm_unitemiss.op.rtp
+  
+*** The L2S Optical Depths (ODs)
+  KCARTA is used to compute the transittances for the fitted gases:
+  H2O, CO2, O3, N2O, CO, CH4, SO2, NH3, HNO3, HDO.
+  The 4.3 um nonLTE, H2O continuum and the reflected thermal are 
+computed separately.
+
+The pseudo-monochromatic transmittances are convolved to the sensor response
+functions (SRFs) as a part of the kCARTA pipeline and supplied as files for example:
+
+/home/sergio/MATLABCODE/REGR_PROFILES_SARTA/RUN_KCARTA/ ...
+   REGR49_400ppm_H2016_May2021_AIRS2834_3CrIS_IASI/*/*.mat
+
+and for HITRAN 2020:
+/home/sergio/MATLABCODE/REGR_PROFILES_SARTA/RUN_KCARTA/ ...
+    REGR49_400ppm_H2020_July2022_AIRS2834_3CrIS_IASI/*/*.mat
+
+** The Fast Coefficients
+
+First decide on a production run, build date and sensor e.g. prod_2019
+jul2020, iasi. The production run is meant to relate to when the
+kCARTA ODs were computed, the build is the month and year for the 
+SARTA coefficient build. The SARTA include-module is used to record
+version and HITRAN data base.
+
+*** New directories:
+create a new directory to write the intermediate and final coefficient
+ table files, using script with three command line arguments:: 
+  /home/chepplew/gitLib/ftc_dev/scripts/run_create_new_production_directories 
+     production: YYYY,  build date: monYYYY, and <sensor>   
+    e.g. 2024 oct2024 iasi
+which creates a directory tree in:
+ /home/chepplew/data/sarta/prod_YYYY/<sensor>/<build_date>/
+
+> tree ~/data/sarta/prod_2024
+/home/chepplew/data/sarta/prod_2024
+`-- iasi
+    `-- oct2024
+        |-- FCOW
+        |-- FOW
+        |-- FWO
+        |-- FWOsun
+        |-- HDO
+        |-- HNO3
+        |-- N2O
+        |-- NH3
+        |-- SO2
+        |-- dbase
+        |   |-- Coef
+        |   `-- Solar
+        |-- fitc
+        |   `-- r49
+        |-- nonLTE
+        |-- refl_therm
+        `-- wvFMW
+
+*** Fast Coefficient tables
+Computation of the fast coefficient tables utilizes several different libraries
+of scripts and code, as follows:
+
+**** i) sets 1-7 and H2O continuum
+for the complete sensor bandwidth and for H2O (lines), H2O (continuum),
+  CO2, O3, CH4 and CO
+  there are seven sub-bands for each break-out group of gases. The code is in
+Fortran located: /home/chepplew/gitLib/ftc_dev/src_fitftc with shell scripts
+in /home/chepplew/gitLib/ftc_dev/scripts.
+
+There are five steps involved for the 7 breakouts as follows:
+ a) configuring the scripts, paths (ftc_dev/outd is a symlink to
+   /home/chepplew/data/sarta/prod_YYYY/<sensor>/<build>/fitc) and executables 
+    (see gitLib/ftc_dev/src_fitftc/Makefile).
+ b) regression for the abosprtion lines for all 7 bands
+ c) regression for the H2O continuum
+ d) merge H2O continuum coefficients into the 7 line coefficient tables.
+ e) cut the channel listings in each band according to the break-out listings
+    in gitLib/ftc_dev/chanLists
+
+Details for configuring and running these scripts are documented in:
+github:strow/aslhugo/content/hepplewhite/ftc_dev/
+ ( or https://asl.umbc.edu/hepplewhite/ftc_dev/)
+
+**** ii) Minor gases, nonLTE, Reflected Thermal. 
+For the minor gases: N2O, SO2, NH3, HNO3, HDO, s/w CH4 
+This step requires the L2S OD data to be reformatted into merged data files using
+matlab scripts found in each of the sub-directories, files with names starting with
+merge_ctrans_and_prof_*generic.m
+  each require predefined variables: sensor, band, regression set, run_date,
+  production date, to match the paths to the
+  source and output data files and which are used to load the 
+  L2S OD data files from kCARTA.
+More details are also included in the 
+ github:strow/aslhugo/content/hepplewhite/ftc_dev/
+ (or https://asl.umbc.edu/hepplewhite/ftc_dev/)
+
+All coefficient files end up in the dbase/Coef/ subdirectory which was created
+in the script above.
+
+**** iii) Other dependencies
+These include the solar reference spectrum, the reference atmospheric profiles,
+the tuning parameter file and the fixed gas adjustment profile.
+
+The solar spectrum files can be copied from previous database releases for 
+the respective sensors. If needed new ones can be written using the original
+reference solar spectrum using:
+  =/home/chepplew/projects/sarta/matlabcode/write_solardata_for_sarta.m=
+The original header is available at: 
+  =/asl/s2/hannon/AIRS_prod08/Fit_ftc/Solar/header=
+
+The reference atmospheric profiles file can be copied from the previous
+sarta database, it is the same file for any sensor. It originates from the
+AFGL std. atmosphere with updates to greenhouse gas amounts. If needed a
+new version can be produced using:
+ =/home/chepplew/projects/sarta/matlabcode/make_refprof.m=
+
+The fixed gas adjustment profile can be copied from the previous sarta database,
+it is the same file for any sensor.
+
+3. Building SARTA clear-sky.
+
+The SARTA source code is in: ~gitLib/sarta_f90/src/
+(the original FORTRAN-77 code is in: ~/gitLib/sarta/src/ )
+
+The database and coefficient files are staged in:
+  ~/data/sarta/<prod>/<sensor>/<build>/dbase/
+
+The SARTA include file is edited to update all the paths and
+all specific paramater values required for the sensor that the build is
+to be made. The include file must have a unique name, it is sym-linked
+in the Makefile.
+
+In the sarta/src/ directory the Makefile should be edited to update references. 
+The make_sarta should not need updating unless the library references and compiler
+options need updating.
+
+SARTA compile and build depends upon the RTP libraries (which are dependent upon
+jpeg, zlib, slib, hdf4 libs) since SARTA is designed to input RTP atmospheric
+state vector files.
+
+* Appendix - A
+Other relevant scripts:
+
+=/home/chepplew/projects/sarta/matlabcode/make_refprof.m=
+ create the reference profile used by SARTA.
+
+doall_wrtconvdat_generic.m   a key script in creating the L2S data files from kCARTA
+     and reference profile used by the fast coefficient regression.
+
+rdcoef.m           read and write the coefficient sets to and from fortran binary.
+wrtcoef.m
+
+rd_concoef.m       read and write water continuum coefficients between fortran bin.
+wrt_concoef.m
+
+rdcoef_wrt_netcdf.m  read fortran binary coefficients and create netcdf.
+
+readkc3.m         read unconvolved kCARTA radiance files.
+
+write_tunmlt_ones.m  create a unity template file of tuning multipliers
+
+compare_kc_sar_r49_generic.m,
+compare_kc_sar_r49_generic_perturb.m  and variations of: comapre_kc_sar_r49...
+        used to validate TOA BT computed by SARTA by comparing to kCARTA for
+        the given validation profile set. 

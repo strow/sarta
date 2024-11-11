@@ -1,0 +1,578 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+               "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<title>building<sub>sarta</sub></title>
+<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1"/>
+<meta name="title" content="building<sub>sarta</sub>"/>
+<meta name="generator" content="Org-mode"/>
+<meta name="generated" content="2024-11-11T12:15-0500"/>
+<meta name="author" content="Christopher Hepplewhite"/>
+<meta name="description" content=""/>
+<meta name="keywords" content=""/>
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  html { font-family: Times, serif; font-size: 12pt; }
+  .title  { text-align: center; }
+  .todo   { color: red; }
+  .done   { color: green; }
+  .tag    { background-color: #add8e6; font-weight:normal }
+  .target { }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .right  {margin-left:auto; margin-right:0px;  text-align:right;}
+  .left   {margin-left:0px;  margin-right:auto; text-align:left;}
+  .center {margin-left:auto; margin-right:auto; text-align:center;}
+  p.verse { margin-left: 3% }
+  pre {
+	border: 1pt solid #AEBDCC;
+	background-color: #F3F5F7;
+	padding: 5pt;
+	font-family: courier, monospace;
+        font-size: 90%;
+        overflow:auto;
+  }
+  table { border-collapse: collapse; }
+  td, th { vertical-align: top;  }
+  th.right  { text-align:center;  }
+  th.left   { text-align:center;   }
+  th.center { text-align:center; }
+  td.right  { text-align:right;  }
+  td.left   { text-align:left;   }
+  td.center { text-align:center; }
+  dt { font-weight: bold; }
+  div.figure { padding: 0.5em; }
+  div.figure p { text-align: center; }
+  div.inlinetask {
+    padding:10px;
+    border:2px solid gray;
+    margin:10px;
+    background: #ffffcc;
+  }
+  textarea { overflow-x: auto; }
+  .linenr { font-size:smaller }
+  .code-highlighted {background-color:#ffff00;}
+  .org-info-js_info-navigation { border-style:none; }
+  #org-info-js_console-label { font-size:10px; font-weight:bold;
+                               white-space:nowrap; }
+  .org-info-js_search-highlight {background-color:#ffff00; color:#000000;
+                                 font-weight:bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+
+</head>
+<body>
+
+<div id="preamble">
+
+</div>
+
+<div id="content">
+<h1 class="title">building<sub>sarta</sub></h1>
+
+
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">1 Building SARTA</a>
+<ul>
+<li><a href="#sec-1-1">1.1 Contents:</a></li>
+<li><a href="#sec-1-2">1.2 Purpose and Scope</a></li>
+<li><a href="#sec-1-3">1.3 Top-Level overview</a></li>
+<li><a href="#sec-1-4">1.4 The Training Data.</a>
+<ul>
+<li><a href="#sec-1-4-1">1.4.1 The L2S Optical Depths (ODs)</a></li>
+</ul>
+</li>
+<li><a href="#sec-1-5">1.5 The Fast Coefficients</a>
+<ul>
+<li><a href="#sec-1-5-1">1.5.1 New directories:</a></li>
+<li><a href="#sec-1-5-2">1.5.2 Fast Coefficient tables</a></li>
+</ul>
+</li>
+<li><a href="#sec-1-6">1.6 Building SARTA clear-sky.</a></li>
+</ul>
+</li>
+<li><a href="#sec-2">2 Appendix - A</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> Building SARTA</h2>
+<div class="outline-text-2" id="text-1">
+
+
+
+</div>
+
+<div id="outline-container-1-1" class="outline-3">
+<h3 id="sec-1-1"><span class="section-number-3">1.1</span> Contents:</h3>
+<div class="outline-text-3" id="text-1-1">
+
+<ul>
+<li>purpose and scope
+</li>
+<li>Top Level Overview
+</li>
+<li>The Training Data
+</li>
+<li>The Layer-to-Space Optical Depths
+</li>
+<li>The Fast Coefficients
+<ul>
+<li>sets 1-7
+</li>
+<li>water continuum
+</li>
+<li>nonLTE, reflected thermal, other minor gases
+</li>
+<li>channel ordering for CrIS.
+</li>
+</ul>
+
+</li>
+<li>Build SARTA
+<ul>
+<li>build clear-sky SARTA
+</li>
+<li>Build all-sky SARTA
+</li>
+</ul>
+
+</li>
+<li>Execution and run-time SARTA
+</li>
+</ul>
+
+
+
+</div>
+
+</div>
+
+<div id="outline-container-1-2" class="outline-3">
+<h3 id="sec-1-2"><span class="section-number-3">1.2</span> Purpose and Scope</h3>
+<div class="outline-text-3" id="text-1-2">
+
+
+<p>
+These notes provide a recipe of instructions to build SARTA.
+The final result will be an executable program which can be run
+on the command line or wrapped in other code.
+</p>
+<p>
+SARTA consists of core RTA algorithms designed to compute the
+top-of-atmosphere radiance for pre-specified spectral channels using
+sets of optical-depth coefficients that are derived from 
+line-by-line transmittance calculations.
+</p>
+<p>
+There is a version of SARTA for clear sky computation and one for 
+scattering atmospheres. THe scattering version is built after the
+clear-sky version is complete.
+</p>
+<p>
+Currently this library of tools is available for the Aqua AIRS, the 
+NOAA Cris, the Eumetsat IASI and the NOAA CHIRP infrared sensors.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-1-3" class="outline-3">
+<h3 id="sec-1-3"><span class="section-number-3">1.3</span> Top-Level overview</h3>
+<div class="outline-text-3" id="text-1-3">
+
+
+<p>
+There are four main stages to building the clear-sky SARTA:
+</p><ol>
+<li>From the atmospheric profile training set, and for the prescribed 
+</li>
+</ol>
+
+<p>gas breakout collections the kCARTA LBL is used to compute layer-to-space
+(L2S) transmittances convolved to the sensor response functions. In addition,
+for the purpose of functional validation, kCARTA LBL is used to compute
+top-of-atmosphere (TOA) radiance using various atmospheric profiles.
+</p>
+<ol>
+<li>From the convolved L2S transmittances the fast coefficients are computed
+</li>
+</ol>
+
+<p>for the given sensor. Fast coefficients are derived for groups of channels
+according to which gas breakouts are defined. The gas breakouts for any given 
+sensor channel frequency is determined by the strength of the absorption lines
+ of the respective gases. Across the total spectral bands 640 to 2700 cm-1
+(approx) there are seven groups of breakouts. The breakouts cover H2O, CO2,
+O3, CH4 and CO. Strong water line absorption is supplemented by the inclusion of
+the optran algorithm. (ref ?). The remaining minor gases are computed with their
+own dedicated routines.
+</p>
+<ol>
+<li>The SARTA include-module is updated to reference the new coefficient tables,
+</li>
+</ol>
+
+<p>then the new executable is built.
+</p>
+<ol>
+<li>SARTA TOA BTs are compared against kCARTA values and used to verify that
+</li>
+</ol>
+
+<p>the regression fits are adequate. Further validation is then performed (not
+described here).
+</p>
+
+<p>
+Building the all-sky, scattering version includes the previous steps 1 to 4
+followed by inclusion of scattering tables and the two-slab slgorithms.
+</p>
+<p>
+The following sections describe each of these steps in more detail.
+</p>
+</div>
+
+</div>
+
+<div id="outline-container-1-4" class="outline-3">
+<h3 id="sec-1-4"><span class="section-number-3">1.4</span> The Training Data.</h3>
+<div class="outline-text-3" id="text-1-4">
+
+
+<p>
+The training set uses a very well established and highly optimized set of 49
+atmospheric profiles of all the required gases and temperature. The layer-to
+-space (L2S) transmittances are computed using the kCARTA LBL over ranges of
+viewing and solar path angles, which amount to 5586 sets of atmospheric states.
+</p>
+<p>
+The original LEVELS profiles are in the file:
+/asl/s1/sergio/REGR<sub>PROFILES</sub><sub>SARTA</sub>/RUN<sub>KCARTA</sub>/REGR49<sub>H2012</sub><sub>June2016</sub>/regr49<sub>1100</sub>.ip.rtp
+</p>
+<p>
+A LAYERS file version is:
+<i>home/sergio/MATLABCODE/REGR<sub>PROFILES</sub><sub>SARTA</sub>/RUN<sub>KCARTA</sub></i> &hellip;
+     REGR49<sub>400ppm</sub><sub>H2016</sub><sub>Dec2018</sub><sub>AIRS2834</sub>/regr49<sub>1013</sub><sub>400ppm</sub>.op.rtp
+</p>
+<p>
+From which, for example, a recent training set for kCARTA is available at:
+<i>home/sergio/MATLABCODE/REGR<sub>PROFILES</sub><sub>SARTA</sub>/RUN<sub>KCARTA</sub></i> &hellip;
+  REGR49<sub>400ppm</sub><sub>H2020</sub><sub>July2022</sub><sub>AIRS2834</sub><sub>3CrIS</sub><sub>IASI</sub>/regr49<sub>1100</sub><sub>400ppm</sub><sub>unitemiss</sub>.op.rtp
+</p>
+
+</div>
+
+<div id="outline-container-1-4-1" class="outline-4">
+<h4 id="sec-1-4-1"><span class="section-number-4">1.4.1</span> The L2S Optical Depths (ODs)</h4>
+<div class="outline-text-4" id="text-1-4-1">
+
+<p>  KCARTA is used to compute the transittances for the fitted gases:
+  H2O, CO2, O3, N2O, CO, CH4, SO2, NH3, HNO3, HDO.
+  The 4.3 um nonLTE, H2O continuum and the reflected thermal are 
+computed separately.
+</p>
+<p>
+The pseudo-monochromatic transmittances are convolved to the sensor response
+functions (SRFs) as a part of the kCARTA pipeline and supplied as files for example:
+</p>
+<p>
+<i>home/sergio/MATLABCODE/REGR<sub>PROFILES</sub><sub>SARTA</sub>/RUN<sub>KCARTA</sub></i> &hellip;
+   REGR49<sub>400ppm</sub><sub>H2016</sub><sub>May2021</sub><sub>AIRS2834</sub><sub>3CrIS</sub><sub>IASI</sub>/*/*.mat
+</p>
+<p>
+and for HITRAN 2020:
+<i>home/sergio/MATLABCODE/REGR<sub>PROFILES</sub><sub>SARTA</sub>/RUN<sub>KCARTA</sub></i> &hellip;
+    REGR49<sub>400ppm</sub><sub>H2020</sub><sub>July2022</sub><sub>AIRS2834</sub><sub>3CrIS</sub><sub>IASI</sub>/*/*.mat
+</p>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-1-5" class="outline-3">
+<h3 id="sec-1-5"><span class="section-number-3">1.5</span> The Fast Coefficients</h3>
+<div class="outline-text-3" id="text-1-5">
+
+
+<p>
+First decide on a production run, build date and sensor e.g. prod<sub>2019</sub>
+jul2020, iasi. The production run is meant to relate to when the
+kCARTA ODs were computed, the build is the month and year for the 
+SARTA coefficient build. The SARTA include-module is used to record
+version and HITRAN data base.
+</p>
+
+</div>
+
+<div id="outline-container-1-5-1" class="outline-4">
+<h4 id="sec-1-5-1"><span class="section-number-4">1.5.1</span> New directories:</h4>
+<div class="outline-text-4" id="text-1-5-1">
+
+<p>create a new directory to write the intermediate and final coefficient
+ table files, using script with three command line arguments:: 
+  /home/chepplew/gitLib/ftc<sub>dev</sub>/scripts/run<sub>create</sub><sub>new</sub><sub>production</sub><sub>directories</sub> 
+     production: YYYY,  build date: monYYYY, and &lt;sensor&gt;   
+    e.g. 2024 oct2024 iasi
+which creates a directory tree in:
+ <i>home/chepplew/data/sarta/prod<sub>YYYY</sub>/&lt;sensor&gt;/&lt;build<sub>date&gt</sub>;</i>
+</p>
+<p>
+&gt; tree ~/data/sarta/prod<sub>2024</sub>
+/home/chepplew/data/sarta/prod<sub>2024</sub>
+`&ndash; iasi
+    `&ndash; oct2024
+</p><table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+<colgroup><col class="left" /><col class="left" />
+</colgroup>
+<thead>
+</thead>
+<tbody>
+</tbody>
+<tbody>
+</tbody>
+<tbody>
+</tbody>
+<tbody>
+</tbody>
+<tbody>
+</tbody>
+<tbody>
+</tbody>
+<tbody>
+</tbody>
+<tbody>
+</tbody>
+<tbody>
+<tr><td class="left"></td><td class="left">&ndash; Coef</td></tr>
+<tr><td class="left">`&ndash; Solar</td></tr>
+</tbody>
+<tbody>
+<tr><td class="left">`&ndash; r49</td></tr>
+</tbody>
+</table>
+
+        `&ndash; wvFMW
+
+</div>
+
+</div>
+
+<div id="outline-container-1-5-2" class="outline-4">
+<h4 id="sec-1-5-2"><span class="section-number-4">1.5.2</span> Fast Coefficient tables</h4>
+<div class="outline-text-4" id="text-1-5-2">
+
+<p>Computation of the fast coefficient tables utilizes several different libraries
+of scripts and code, as follows:
+</p>
+<ul>
+<li id="sec-1-5-2-1">i) sets 1-7 and H2O continuum<br/>
+for the complete sensor bandwidth and for H2O (lines), H2O (continuum),
+  CO2, O3, CH4 and CO
+  there are seven sub-bands for each break-out group of gases. The code is in
+Fortran located: /home/chepplew/gitLib/ftc<sub>dev</sub>/src<sub>fitftc</sub> with shell scripts
+in /home/chepplew/gitLib/ftc<sub>dev</sub>/scripts.
+
+<p>
+There are five steps involved for the 7 breakouts as follows:
+ a) configuring the scripts, paths (ftc<sub>dev</sub>/outd is a symlink to
+   /home/chepplew/data/sarta/prod<sub>YYYY</sub>/&lt;sensor&gt;/&lt;build&gt;/fitc) and executables 
+    (see gitLib/ftc<sub>dev</sub>/src<sub>fitftc</sub>/Makefile).
+ b) regression for the abosprtion lines for all 7 bands
+ c) regression for the H2O continuum
+ d) merge H2O continuum coefficients into the 7 line coefficient tables.
+ e) cut the channel listings in each band according to the break-out listings
+    in gitLib/ftc<sub>dev</sub>/chanLists
+</p>
+<p>
+Details for configuring and running these scripts are documented in:
+github:strow/aslhugo/content/hepplewhite/ftc<sub>dev</sub>/
+ ( or <a href="https://asl.umbc.edu/hepplewhite/ftc_dev/">https://asl.umbc.edu/hepplewhite/ftc_dev/</a>)
+</p>
+</li>
+</ul>
+<ul>
+<li id="sec-1-5-2-2">ii) Minor gases, nonLTE, Reflected Thermal.<br/>
+For the minor gases: N2O, SO2, NH3, HNO3, HDO, s/w CH4 
+This step requires the L2S OD data to be reformatted into merged data files using
+matlab scripts found in each of the sub-directories, files with names starting with
+merge<sub>ctrans</sub><sub>and</sub><sub>prof</sub><sub>*</sub>generic.m
+  each require predefined variables: sensor, band, regression set, run<sub>date</sub>,
+  production date, to match the paths to the
+  source and output data files and which are used to load the 
+  L2S OD data files from kCARTA.
+More details are also included in the 
+ github:strow/aslhugo/content/hepplewhite/ftc<sub>dev</sub>/
+ (or <a href="https://asl.umbc.edu/hepplewhite/ftc_dev/">https://asl.umbc.edu/hepplewhite/ftc_dev/</a>)
+
+<p>
+All coefficient files end up in the dbase/Coef/ subdirectory which was created
+in the script above.
+</p>
+</li>
+</ul>
+<ul>
+<li id="sec-1-5-2-3">iii) Other dependencies<br/>
+These include the solar reference spectrum, the reference atmospheric profiles,
+the tuning parameter file and the fixed gas adjustment profile.
+
+<p>
+The solar spectrum files can be copied from previous database releases for 
+the respective sensors. If needed new ones can be written using the original
+reference solar spectrum using:
+  <code>/home/chepplew/projects/sarta/matlabcode/write_solardata_for_sarta.m</code>
+The original header is available at: 
+  <code>/asl/s2/hannon/AIRS_prod08/Fit_ftc/Solar/header</code>
+</p>
+<p>
+The reference atmospheric profiles file can be copied from the previous
+sarta database, it is the same file for any sensor. It originates from the
+AFGL std. atmosphere with updates to greenhouse gas amounts. If needed a
+new version can be produced using:
+ <code>/home/chepplew/projects/sarta/matlabcode/make_refprof.m</code>
+</p>
+<p>
+The fixed gas adjustment profile can be copied from the previous sarta database,
+it is the same file for any sensor.
+</p>
+</li>
+</ul>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-1-6" class="outline-3">
+<h3 id="sec-1-6"><span class="section-number-3">1.6</span> Building SARTA clear-sky.</h3>
+<div class="outline-text-3" id="text-1-6">
+
+
+<p>
+The SARTA source code is in: ~gitLib/sarta<sub>f90</sub>/src/
+(the original FORTRAN-77 code is in: ~/gitLib/sarta/src/ )
+</p>
+<p>
+The database and coefficient files are staged in:
+  ~/data/sarta/&lt;prod&gt;/&lt;sensor&gt;/&lt;build&gt;/dbase/
+</p>
+<p>
+The SARTA include file is edited to update all the paths and
+all specific paramater values required for the sensor that the build is
+to be made. The include file must have a unique name, it is sym-linked
+in the Makefile.
+</p>
+<p>
+In the sarta/src/ directory the Makefile should be edited to update references. 
+The make<sub>sarta</sub> should not need updating unless the library references and compiler
+options need updating.
+</p>
+<p>
+SARTA compile and build depends upon the RTP libraries (which are dependent upon
+jpeg, zlib, slib, hdf4 libs) since SARTA is designed to input RTP atmospheric
+state vector files.
+</p>
+</div>
+</div>
+
+</div>
+
+<div id="outline-container-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> Appendix - A</h2>
+<div class="outline-text-2" id="text-2">
+
+<p>Other relevant scripts:
+</p>
+<p>
+<code>/home/chepplew/projects/sarta/matlabcode/make_refprof.m</code>
+ create the reference profile used by SARTA.
+</p>
+<p>
+doall<sub>wrtconvdat</sub><sub>generic</sub>.m   a key script in creating the L2S data files from kCARTA
+     and reference profile used by the fast coefficient regression.
+</p>
+<p>
+rdcoef.m           read and write the coefficient sets to and from fortran binary.
+wrtcoef.m
+</p>
+<p>
+rd<sub>concoef</sub>.m       read and write water continuum coefficients between fortran bin.
+wrt<sub>concoef</sub>.m
+</p>
+<p>
+rdcoef<sub>wrt</sub><sub>netcdf</sub>.m  read fortran binary coefficients and create netcdf.
+</p>
+<p>
+readkc3.m         read unconvolved kCARTA radiance files.
+</p>
+<p>
+write<sub>tunmlt</sub><sub>ones</sub>.m  create a unity template file of tuning multipliers
+</p>
+<p>
+compare<sub>kc</sub><sub>sar</sub><sub>r49</sub><sub>generic</sub>.m,
+compare<sub>kc</sub><sub>sar</sub><sub>r49</sub><sub>generic</sub><sub>perturb</sub>.m  and variations of: comapre<sub>kc</sub><sub>sar</sub><sub>r49&hellip</sub>;
+        used to validate TOA BT computed by SARTA by comparing to kCARTA for
+        the given validation profile set. 
+</p></div>
+</div>
+</div>
+
+<div id="postamble">
+<p class="date">Date: 2024-11-11T12:15-0500</p>
+<p class="author">Author: Christopher Hepplewhite</p>
+<p class="creator"><a href="http://orgmode.org">Org</a> version 7.9.3f with <a href="http://www.gnu.org/software/emacs/">Emacs</a> version 24</p>
+<a href="http://validator.w3.org/check?uri=referer">Validate XHTML 1.0</a>
+
+</div>
+</body>
+</html>

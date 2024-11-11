@@ -1,0 +1,68 @@
+#
+# Makefile make_sarta for  regression (reg) based SARTA
+#
+
+# HDF and RTP lib, inc
+# Option 1 - Mac Darwin
+# # HDFLIB = -L/Users/chepplew/myLibs/hdf4/lib -ldf -ljpeg -lz \
+# # 	-L/usr/local/lib/ -lsz 
+# # RTPLIB = -L/Users/chepplew/myLibs/rtp/lib -lrtp
+# # RTPINC = -I/Users/chepplew/myLibs/rtp/include
+
+# HDF and RTP lib, inc
+# OS 2 - WSL Linux
+# # HDFLIB = -L/Users/chepplew/myLibs/hdf4/lib -ldf -ljpeg -lz \
+# # 	-L/usr/local/lib/ -lsz 
+# # RTPLIB = -L/Users/chepplew/myLibs/rtp/lib -lrtp
+# # RTPINC = -I/Users/chepplew/myLibs/rtp/include
+
+# HDF and RTP lib, inc
+# option 3 - Linux UMBC/ASL
+HDFLIB = -L/home/chepplew/myLib/hdf-4.2.10/lib -ldf -ljpeg -lz \
+	-L/usr/lib64/libsz.so.2 -lsz 
+RTPLIB = -L/home/chepplew/myLib/rtp/lib -lrtp
+RTPINC = -I/home/chepplew/myLib/rtp/include
+#
+.PHONY: main sarta
+
+# ------------------------------------------------------------------------
+# Object files
+# ------------------------------------------------------------------------
+OBJS =  rdinfo.o rdpref.o opnrtp.o rdcoef_reg.o tunmlt.o rdsun.o rdrtp.o  \
+	getbot.o mean_t.o calpar.o calowp.o calokw.o \
+        calt1.o calt2.o calt3.o calt4.o calt5.o calt6.o calt7.o \
+        sunpar.o faketz.o setems.o calrad.o calxnte.o \
+        wrtrtp.o util.o cbplev.o saconv.o vaconv.o qikexp.o main_reg.o
+MODOBJS = incFTC.o       
+
+OPT = -convert big_endian -extend-source 132 -check all -g -cpp -traceback -fp-stack-check -warn interface
+
+# ------------------------------------------------------------------------
+# gfortran
+# ------------------------------------------------------------------------
+# F77 = gfortran
+# FCFLAGS =  -fdec-structure -fconvert=swap  -fcheck=all -g
+
+F77 = ifort 
+# to help debug:
+## FCFLAGS = -O0 -convert big_endian -extend-source 132 -check all -g -cpp -traceback -fp-stack-check -warn interface -fp-model source
+# operational build
+FCFLAGS = -O2 -convert big_endian -extend-source 132 -fpe0 -fp-model source
+
+# ------------------------------------------------------------------------
+# Build
+# ------------------------------------------------------------------------
+sarta:	$(OBJS)
+	$(F77) $(OBJS) $(RTPLIB) $(HDFLIB) $(FLIB)
+
+# Compile source to object files
+%.o: %.f90
+	$(F77) $(FCFLAGS) $(RTPINC) -c $^
+
+# compile module file (Makefile renames unique to generic name)
+##$(MODOBJS): %.o: %.f90
+##	$(F77) -c -o $@ $(RTPINC) 
+
+##incftc.mod:	incFTC.f90
+##	$(F77) -c incFTC.f90 $(RTPINC)     ##-I/home/chepplew/gitLib/rtp/include
+
