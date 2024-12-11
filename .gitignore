@@ -37,7 +37,6 @@ a.out
 
 # Fortran debug and diag files
 *.mod
-*.f90
 
 # Symbolic links: should be recreated with each build
 src/incFTC.f
