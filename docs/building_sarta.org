@@ -118,7 +118,9 @@ which creates a directory tree in:
  /home/chepplew/data/sarta/prod_YYYY/<sensor>/<build_date>/
 
 > tree ~/data/sarta/prod_2024
-/home/chepplew/data/sarta/prod_2024
+=/home/chepplew/data/sarta/prod_2024=
+#+BEGIN_EXPORT HTML
+<pre><code class="language-matlab">
 `-- iasi
     `-- oct2024
         |-- FCOW
@@ -138,6 +140,8 @@ which creates a directory tree in:
         |-- nonLTE
         |-- refl_therm
         `-- wvFMW
+</code></pre>
+#+END_EXPORT
 
 *** Fast Coefficient tables
 Computation of the fast coefficient tables utilizes several different libraries
@@ -200,7 +204,7 @@ new version can be produced using:
 The fixed gas adjustment profile can be copied from the previous sarta database,
 it is the same file for any sensor.
 
-3. Building SARTA clear-sky.
+** Building SARTA clear-sky.
 
 The SARTA source code is in: ~gitLib/sarta_f90/src/
 (the original FORTRAN-77 code is in: ~/gitLib/sarta/src/ )

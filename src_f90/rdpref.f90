@@ -1,13 +1,10 @@
 !=======================================================================
-!=======================================================================
 !
 !    University of Maryland Baltimore County [UMBC]
-!
 !    AIRS
-!
 !    RDPROF version with SO2, HNO3, N2O, NH3 trace gases
 !
-!F77====================================================================
+!F90====================================================================
 
 
 !ROUTINE NAME:
@@ -154,7 +151,7 @@ IMPLICIT NONE
 !-----------------------------------------------------------------------
 !      Input
 integer, intent (in) :: IPOPN
-character(len=80) ::  PFILE
+character(len=90) ::  PFILE
 !      Output
 character(len=40) :: PNAM
 real(4), dimension(MAXLAY) :: ALT,DZ,PRES

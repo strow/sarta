@@ -1,9 +1,4 @@
 !=======================================================================
- 
-! Code converted using TO_F90_LOOP by Alan Miller
-! Date: 2023-04-04  Time: 16:44:56
- 
-!=======================================================================
 
 !    University of Maryland Baltimore County [UMBC]
 
@@ -11,7 +6,7 @@
 
 !    RDPROF version with SO2, HNO3, N2O, NH3 trace gases
 
-!F77====================================================================
+!F90====================================================================
 
 
 !ROUTINE NAME:
@@ -154,7 +149,7 @@ INCLUDE 'incFTC.f90'
 
 
 INTEGER, INTENT(IN)                      :: IOUN
-CHARACTER (LEN=80), INTENT(IN)           :: PFILE
+CHARACTER (LEN=90), INTENT(IN)           :: PFILE
 CHARACTER (LEN=40), INTENT(OUT)          :: PNAM
 REAL, INTENT(IN OUT)                     :: ALT(MAXLAY)
 REAL, INTENT(IN OUT)                     :: DZ(MAXLAY)

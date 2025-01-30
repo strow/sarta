@@ -486,6 +486,11 @@ call opnrtp(FIN, LRHOT, PTYPE, NCHAN, FCHAN, LSTCHN, INDCHN, &
 
       if (DEBUG) write(6,2010) IPROF
  2010 FORMAT('sarta RDRTP IPROF: ', I5)
+
+! ------------------------------------------------
+! check pressure levels from rtp and refprof match
+! ------------------------------------------------
+
 !
 ! ----------------------------------------
 !   Determine bottom layer, CO2, & angles

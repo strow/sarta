@@ -1,7 +1,9 @@
 !=======================================================================
+
 !    University of Maryland Baltimore County [UMBC]
-!    CrIS FSR 
+!    CrIS FSR using airs-oco2_pbl layering
 !    incFTC
+
 !F90====================================================================
 
 !ROUTINE NAME:
@@ -80,6 +82,7 @@
 !    Mar 2021 C Hepplewhite  Added nh3, and other minor gases.
 
 !END====================================================================
+
 !-----------------------------------------------------------------------
 !      IMPLICIT NONE
 !-----------------------------------------------------------------------
@@ -134,6 +137,8 @@
 !      See the "Doc/last_update.txt" file for a description of the
 !      changes associated with every change of VSARTA.
 
+MODULE incFTC
+
 LOGICAL :: DEBUG
 PARAMETER(DEBUG = .FALSE.)
 
@@ -147,59 +152,65 @@ LOGICAL :: CFTHER
 LOGICAL :: CFOPTR
 LOGICAL :: COFNTE
 PARAMETER(CFCO2  = .TRUE.)
-PARAMETER(CFHNO3 = .TRUE.)
-PARAMETER(CFN2O  = .TRUE.)
-PARAMETER(CFNH3  = .TRUE.)
-PARAMETER(CFSO2  = .TRUE.)
+PARAMETER(CFHNO3 = .FALSE.)
+PARAMETER(CFN2O  = .FALSE.)
+PARAMETER(CFNH3  = .FALSE.)
+PARAMETER(CFSO2  = .FALSE.)
 PARAMETER(CFHDO  = .FALSE.)
 PARAMETER(CFOPTR = .TRUE.)
 PARAMETER(CFTHER = .TRUE.)
-PARAMETER(COFNTE = .TRUE.)
+PARAMETER(COFNTE = .FALSE.)
     
+! ----------------
+! I/O unit numbers
+! ----------------
+!      Note: these units are not explicitly openned by the sarta code,
+!      they should be set to standard I/O units for your compiler
+! IOINFO  ! unit number for non-error info messages (6)
+! IOERR   ! unit number for error messages (2 or 6)
+integer, PARAMETER :: IOINFO = 6 
+integer, PARAMETER :: IOERR = 0 
+!    unit IOUN: used by routines RDCOEF and RDPROF.
+INTEGER,  PARAMETER :: IOUN = 11         ! I/O unit number
+
 CHARACTER (LEN=40) :: VSARTA  ! SARTA source code version
 CHARACTER (LEN=40) :: VSCOEF  ! SARTA coefficient version
 CHARACTER (LEN=40) :: VTUNNG  ! optical depth tuning version
 !      version template    '#.## YYYY-MM-DD <--------comment------->'
-    PARAMETER( VSARTA = '2.02 2021-03-23. prod_2019' )
-    PARAMETER( VSCOEF = 'CrIS g4 0.8/0.8/0.8cm Hamming Dec 2018')
-    PARAMETER( VTUNNG = 'none' )
+PARAMETER( VSARTA = '2.02 2021-03-23. prod_2025' )
+PARAMETER( VSCOEF = 'CrIS g4 PBL 0.8/0.8/0.8cm Hamming Jan 2025')
+PARAMETER( VTUNNG = 'none' )
     
-!      *********
-!      VARIABLES
-!      *********
-!      Note: these should not be changed by the user
-    
-!      ------------------------
-!      Constants and other data
-!      ------------------------
-    REAL :: PI ! pi, circle circumference/diameter (3.1415926)
-    REAL :: RADSUN ! radius of the sun (6.956E+8 m)
-    REAL :: C1 ! radiation constant c1 (1.1911E-8  W/(m2.st.(cm-1)4)
-    REAL :: C2 ! radiation constant c2 (1.4387863 K/cm-1)
-    PARAMETER(    PI = 3.1415926)
-    PARAMETER(RADSUN = 6.956E+8)
-    
+! -------------------------------
+! include variables and constants.
+! --------------------------------
+real, PARAMETER :: pi = 3.1415926535
+real, PARAMETER :: DISTES=1.496E+11  ! distance Earth to Sun
+real, PARAMETER ::  C1 = 1.191042722E-8     ! radiation constant (JPL value?)
+!  C2    Current values (CODATA98 from NIST); agrees w/JPL Dec2000
+real, PARAMETER :: C2 = 1.4387752
+!RADSUN ! radius of the sun (6.956E+8 m)
+real, PARAMETER :: RADSUN = 6.956E+8
+! DEG2RAD = pi/180 = degrees to radians conversion factor (was CONV)
+real, PARAMETER :: DEG2RAD = 1.7453292E-02
+
 !cc    Previously used values; agrees w/JPL pre-Dec2000
 !cc    PARAMETER(    C1 = 1.1910439E-8)  ! JPL value is 1E+3 bigger
 !cc    PARAMETER(    C2 = 1.4387687)
     
-!      Current values (CODATA98 from NIST); agrees w/JPL Dec2000
-    PARAMETER(  C1 = 1.191042722E-8)  ! JPL value is 1E+3 bigger
-    PARAMETER(  C2 = 1.4387752)
+REAL :: CO2STD ! standard CO2 PPMV mixing ratio (385)
+PARAMETER( CO2STD = 400.0 )
     
-    REAL :: CO2STD ! standard CO2 PPMV mixing ratio (385)
-    PARAMETER( CO2STD = 400.0 )
-    
-    REAL :: HDOSTD ! standard HDO depletion abundance (3.1069E-5)
-      PARAMETER( HDOSTD = 0.00031069 )
+REAL :: HDOSTD ! standard HDO depletion abundance (3.1069E-5)
+PARAMETER( HDOSTD = 0.00031069 )
       
-      REAL :: HDOFCT ! vary proportion of HDO in H2O from std depletion
+REAL :: HDOFCT ! vary proportion of HDO in H2O from std depletion
 !                  ! (-1: 100% enhancement, 0:std HDO or zero depletion,
 !                  1: 100% depleted))
-        PARAMETER( HDOFCT = 0.00 )
+PARAMETER( HDOFCT = 0.00 )
         
-        REAL :: XSALT ! expected nominal satellite altitude (km)
-        PARAMETER( XSALT = 825.0 )
+REAL :: XSALT ! expected nominal satellite altitude (km)
+PARAMETER( XSALT = 825.0 )
         
 !      -----------------------------------
 !      Channels and layers other variables
@@ -224,7 +235,6 @@ CHARACTER (LEN=40) :: VTUNNG  ! optical depth tuning version
 !***********************************************************************
 !      Variables for the coefficient sets
 !***********************************************************************
-        
 !      --------------
 !      For set1 = FWO
 !      -------------
@@ -241,7 +251,6 @@ CHARACTER (LEN=40) :: VTUNNG  ! optical depth tuning version
         PARAMETER( N1H2O = 11)
         PARAMETER(  N1O3 = 5)
         PARAMETER(N1COEF = N1CON + N1FIX + N1H2O + N1O3 )
-        
         
 !      --------------
 !      For set2 = FOW
@@ -260,7 +269,6 @@ CHARACTER (LEN=40) :: VTUNNG  ! optical depth tuning version
         PARAMETER( N2H2O = 11)
         PARAMETER(N2COEF = N2CON + N2FIX + N2O3 + N2H2O )
         
-        
 !      --------------
 !      For set3 = FMW
 !      --------------
@@ -277,7 +285,6 @@ CHARACTER (LEN=40) :: VTUNNG  ! optical depth tuning version
         PARAMETER( N3CH4 = 9)
         PARAMETER( N3H2O = 11)
         PARAMETER(N3COEF = N3CON + N3FIX + N3CH4 + N3H2O )
-        
         
 !      ---------------
 !      For set4 = sun FCOW
@@ -298,7 +305,6 @@ CHARACTER (LEN=40) :: VTUNNG  ! optical depth tuning version
         PARAMETER( N4H2O = 13)
         PARAMETER(N4COEF = N4CON + N4FIX + N4CO + N4O3 + N4H2O )
         
-        
 !      -----------------------
 !      For set5 = sun BFSW
 !      -----------------------
@@ -315,7 +321,6 @@ CHARACTER (LEN=40) :: VTUNNG  ! optical depth tuning version
         PARAMETER( N5H2O = 3)
         PARAMETER(  N5O3 = 1)
         PARAMETER(N5COEF = N5CON + N5FIX + N5H2O + N5O3 )
-        
         
 !      -----------------------
 !      For set6 = sun MFMW
@@ -334,7 +339,6 @@ CHARACTER (LEN=40) :: VTUNNG  ! optical depth tuning version
         PARAMETER(  N6O3 = 1 )
         PARAMETER(N6COEF = N6CON + N6FIX + N6H2O + N6O3 )
         
-        
 !      -----------------------
 !      For set7 = sun MFBW
 !      -----------------------
@@ -352,13 +356,11 @@ CHARACTER (LEN=40) :: VTUNNG  ! optical depth tuning version
         PARAMETER(  N7O3 = 1)
         PARAMETER(N7COEF = N7CON + N7FIX + N7H2O + N7O3 )
         
-        
 !      ---------------
 !      For trace gases predictors
 !      ---------------
         INTEGER :: NTRACE ! number of trace gas perturbation predictors (7)
         PARAMETER(NTRACE = 7)
-        
         
 !      ----------------
 !      For variable CO2
@@ -369,7 +371,6 @@ CHARACTER (LEN=40) :: VTUNNG  ! optical depth tuning version
         PARAMETER(MXCHNC = 893)    ! placeholder
         PARAMETER(  NCO2 = 5)
         
-        
 !      ----------------
 !      For variable SO2
 !      ----------------
@@ -378,7 +379,6 @@ CHARACTER (LEN=40) :: VTUNNG  ! optical depth tuning version
         PARAMETER(MXCHNS = 396)    ! placeholder
         PARAMETER(  NSO2 = 4)
         
-        
 !      -----------------
 !      For variable HNO3
 !      -----------------
@@ -386,7 +386,6 @@ CHARACTER (LEN=40) :: VTUNNG  ! optical depth tuning version
         INTEGER :: NHNO3 ! number of HNO3 coefficients
         PARAMETER(MXCHNH = 374)    ! placeholder
         PARAMETER( NHNO3 = 4)
-        
         
 !      -----------------
 !      For variable N2O
@@ -410,136 +409,129 @@ CHARACTER (LEN=40) :: VTUNNG  ! optical depth tuning version
 !      For variable HDO
 !      -----------------
         INTEGER :: MXCHND ! max # of channels with HDO pert coefs (2075)
-          INTEGER :: NHDO ! number of HDO coefficients (4)
-            PARAMETER(MXCHND = 1)        ! placeholder when not using this set
+        INTEGER :: NHDO ! number of HDO coefficients (4)
+        PARAMETER(MXCHND = 1)        ! placeholder when not using this set
 !       PARAMETER( NHDO = 1)         ! placeholder when not using this set
 !       PARAMETER(MXCHND = 1843)
-            PARAMETER(  NHDO = 11)
-              
+        PARAMETER(  NHDO = 11)
               
 !      ----------------------
 !      For OPTRAN water coefs
 !      ----------------------
 !      Used in part by modules:
-              INTEGER :: MXCHNW ! max # of channelss with OPTRAN H2O coefs (873)
-              INTEGER :: MXOWLY ! number of OPTRAN water layers
-              INTEGER :: NOWAVG ! # of OPTRAN water average profile values (4)
-              INTEGER :: NH2O   ! number of OPTRAN H2O predictors/coefs (9)
-              PARAMETER(MXCHNW = 873)
-              PARAMETER(MXOWLY = 300)
-              PARAMETER(NOWAVG = 4)
-              PARAMETER(  NH2O = 9)
+        INTEGER :: MXCHNW ! max # of channelss with OPTRAN H2O coefs (873)
+        INTEGER :: MXOWLY ! number of OPTRAN water layers
+        INTEGER :: NOWAVG ! # of OPTRAN water average profile values (4)
+        INTEGER :: NH2O   ! number of OPTRAN H2O predictors/coefs (9)
+        PARAMETER(MXCHNW = 708)
+        PARAMETER(MXOWLY = 300)
+        PARAMETER(NOWAVG = 4)
+        PARAMETER(  NH2O = 9)
               
 !      -----------
 !      For non-LTE
 !      -----------
-              INTEGER :: MXCNTE ! max # of channels for non-LTE (264)
-              INTEGER :: NNCOEF ! # of coefs for non-LTE (7)
-              INTEGER :: NTEBOT ! bottom layer for CO2TOP calc
-              REAL :: CO2NTE ! ref CO2 mixing ratio for non-LTE coefs (ppmv)
-              PARAMETER(MXCNTE = 264)        ! placeholder
-              PARAMETER(NNCOEF = 7)
-              PARAMETER(NTEBOT = 10)
-              PARAMETER(CO2NTE = 400.0)
+! LXNTE  ! Logical. T: load 14 coefficients for 0-120.deg, F: load 7 for 0-90.deg
+! MXCNTE ! max # of channels for non-LTE (264)
+! NNCOEF ! # of coefs for non-LTE (7)
+! XNCOEF ! # of coefs to read from the database file
+! NTEBOT ! bottom layer for CO2TOP calc
+! CO2NTE ! ref CO2 mixing ratio for non-LTE coefs (ppmv)
+      logical, PARAMETER :: LXNTE = .FALSE.     ! F: 0-90 or T: 0-120.deg solzen
+      integer, PARAMETER :: MXCNTE = 246        ! was 133 placeholder
+      integer, PARAMETER :: NNCOEF = 7          ! Default: 7 but context see: LXNTE
+      integer, PARAMETER :: XNCOEF = 14         ! Default: 2 x NNCOEF -> COEFN(XN,M)
+      integer, PARAMETER :: NTEBOT = 10
+      integer, PARAMETER :: CO2NTE = 400.0
+      !! integer, parameter :: NCHNTE = 277
+      integer, parameter :: NNNNTE = 4          ! first dimension of neural net params
               
 !      ---------
 !      Filenames
 !      ---------
-              CHARACTER (LEN=80) :: FNCOF1 ! coef set1
-              CHARACTER (LEN=80) :: FNCOF2 ! coef set2
-              CHARACTER (LEN=80) :: FNCOF3 ! coef set3
-              CHARACTER (LEN=80) :: FNCOF4 ! coef set4
-              CHARACTER (LEN=80) :: FNCOF5 ! coef set5
-              CHARACTER (LEN=80) :: FNCOF6 ! coef set6
-              CHARACTER (LEN=80) :: FNCOF7 ! coef set7
-              CHARACTER (LEN=80) :: FNCO2  ! coef CO2
-              CHARACTER (LEN=80) :: FNSO2  ! coef SO2
-              CHARACTER (LEN=80) :: FNHNO3 ! coef HNO3
-              CHARACTER (LEN=80) :: FNN2O  ! coef N2O
-              CHARACTER (LEN=80) :: FNNH3  ! coef NH3
-              CHARACTER (LEN=80) :: FNHDO  ! coef HDO
-                CHARACTER (LEN=80) :: FNOPTR ! coef optran
-                CHARACTER (LEN=80) :: FNTHER ! coef therm
-                CHARACTER (LEN=80) :: FNFX   ! coef fx
-                CHARACTER (LEN=80) :: FNPREF ! ref prof
-                CHARACTER (LEN=80) :: FNSUN  ! solar data
-                CHARACTER (LEN=80) :: FNCOFN ! non-LTE
+      CHARACTER (LEN=90) :: FNCOF1 ! coef set1
+      CHARACTER (LEN=90) :: FNCOF2 ! coef set2
+      CHARACTER (LEN=90) :: FNCOF3 ! coef set3
+      CHARACTER (LEN=90) :: FNCOF4 ! coef set4
+      CHARACTER (LEN=90) :: FNCOF5 ! coef set5
+      CHARACTER (LEN=90) :: FNCOF6 ! coef set6
+      CHARACTER (LEN=90) :: FNCOF7 ! coef set7
+      CHARACTER (LEN=90) :: FNCO2  ! coef CO2
+      CHARACTER (LEN=90) :: FNSO2  ! coef SO2
+      CHARACTER (LEN=90) :: FNHNO3 ! coef HNO3
+      CHARACTER (LEN=90) :: FNN2O  ! coef N2O
+      CHARACTER (LEN=90) :: FNNH3  ! coef NH3
+      CHARACTER (LEN=90) :: FNHDO  ! coef HDO
+      CHARACTER (LEN=90) :: FNOPTR ! coef optran
+      CHARACTER (LEN=90) :: FNTHER ! coef therm
+      CHARACTER (LEN=90) :: FNFX   ! coef fx
+      CHARACTER (LEN=90) :: FNPREF ! ref prof
+      CHARACTER (LEN=90) :: FNSUN  ! solar data
+      CHARACTER (LEN=90) :: FNCOFN ! non-LTE
                 
+      PARAMETER(FNCOF1=  &
+          '/home/chepplew/data/sarta/prod_2025/cris_hr_pbl/jan2025a/dbase/Coef/set1.dat')
+      PARAMETER(FNCOF2=  &
+          '/home/chepplew/data/sarta/prod_2025/cris_hr_pbl/jan2025a/dbase/Coef/set2.dat')
+      PARAMETER(FNCOF3=  &
+          '/home/chepplew/data/sarta/prod_2025/cris_hr_pbl/jan2025a/dbase/Coef/set3.dat')
+      PARAMETER(FNCOF4=  &
+          '/home/chepplew/data/sarta/prod_2025/cris_hr_pbl/jan2025a/dbase/Coef/set4.dat')
+      PARAMETER(FNCOF5=  &
+          '/home/chepplew/data/sarta/prod_2025/cris_hr_pbl/jan2025a/dbase/Coef/set5.dat')
+      PARAMETER(FNCOF6=  &
+          '/home/chepplew/data/sarta/prod_2025/cris_hr_pbl/jan2025a/dbase/Coef/set6.dat')
+      PARAMETER(FNCOF7=  &
+          '/home/chepplew/data/sarta/prod_2025/cris_hr_pbl/jan2025a/dbase/Coef/set7.dat')
+      PARAMETER(FNOPTR=  &
+          '/home/chepplew/data/sarta/prod_2025/cris_hr_pbl/jan2025a/dbase/Coef/optran.dat')
+               
+      PARAMETER(FNCO2 =  &
+          '/home/chepplew/data/sarta/prod_2025/cris_hr_pbl/jan2025a/dbase/Coef/co2.dat')
+      PARAMETER(FNSO2 =  &
+          '/home/chepplew/data/sarta/prod_2021/cris_hr/dec2018/dbase/Coef/so2.dat')
+      PARAMETER(FNHNO3 =  &
+          '/home/chepplew/data/sarta/prod_2021/cris_hr/dec2018/dbase/Coef/hno3.dat')
+      PARAMETER(FNN2O =  &
+          '/home/chepplew/data/sarta/prod_2021/cris_hr/dec2018/dbase/Coef/n2o.dat')
+      PARAMETER(FNNH3 =  &
+          '/home/chepplew/data/sarta/prod_2021/cris_hr/dec2018/dbase/Coef/nh3.dat')
                 
-                PARAMETER(FNCOF1=  &
-                    '/home/chepplew/data/sarta/prod_2019/cris_hr/dec2018/dbase/Coef/set1.dat')
-                PARAMETER(FNCOF2=  &
-                    '/home/chepplew/data/sarta/prod_2019/cris_hr/dec2018/dbase/Coef/set2.dat')
-                PARAMETER(FNCOF3=  &
-                    '/home/chepplew/data/sarta/prod_2019/cris_hr/dec2018/dbase/Coef/set3.dat')
-                PARAMETER(FNCOF4=  &
-                    '/home/chepplew/data/sarta/prod_2019/cris_hr/dec2018/dbase/Coef/set4.dat')
-                PARAMETER(FNCOF5=  &
-                    '/home/chepplew/data/sarta/prod_2019/cris_hr/dec2018/dbase/Coef/set5.dat')
-                PARAMETER(FNCOF6=  &
-                    '/home/chepplew/data/sarta/prod_2019/cris_hr/dec2018/dbase/Coef/set6.dat')
-                PARAMETER(FNCOF7=  &
-                    '/home/chepplew/data/sarta/prod_2019/cris_hr/dec2018/dbase/Coef/set7.dat')
-                PARAMETER(FNOPTR=  &
-                    '/home/chepplew/data/sarta/prod_2019/cris_hr/dec2018/dbase/Coef/optran.dat')
-                
-                PARAMETER(FNCO2 =  &
-                    '/home/chepplew/data/sarta/prod_2019/cris_hr/dec2018/dbase/Coef/co2.dat')
-                PARAMETER(FNSO2 =  &
-                    '/home/chepplew/data/sarta/prod_2021/cris_hr/dec2018/dbase/Coef/so2.dat')
-                PARAMETER(FNHNO3 =  &
-                    '/home/chepplew/data/sarta/prod_2021/cris_hr/dec2018/dbase/Coef/hno3.dat')
-                PARAMETER(FNN2O =  &
-                    '/home/chepplew/data/sarta/prod_2021/cris_hr/dec2018/dbase/Coef/n2o.dat')
-                PARAMETER(FNNH3 =  &
-                    '/home/chepplew/data/sarta/prod_2021/cris_hr/dec2018/dbase/Coef/nh3.dat')
-                
-                PARAMETER(FNFX  =  &
-                    '/home/chepplew/data/sarta/prod_2019/cris_hr/dec2018/dbase/Coef/fx.txt')
-                PARAMETER(FNPREF =  &
-                    '/home/chepplew/data/sarta/prod_2019/cris_hr/dec2018/dbase/Coef/refprof_400_tra')
-                PARAMETER(FNSUN =  &
-                    '/home/chepplew/data/sarta/prod_2019/cris_hr/dec2018/dbase/Solar/sol.txt')
-                
-                PARAMETER(FNTHER =  &
-                    '/home/chepplew/data/sarta/prod_2021/cris_hr/dec2018/dbase/Coef/therm.dat')
-                PARAMETER(FNCOFN =  &
-                    '/home/chepplew/data/sarta/prod_2021/cris_hr/dec2018/dbase/Coef/nte_7term.dat')
-                
-                
+      PARAMETER(FNFX  =  &
+          '/home/chepplew/data/sarta/prod_2025/cris_hr_pbl/jan2025a/dbase/Coef/fx_pbl.txt')
+      PARAMETER(FNPREF =  &
+          '/home/chepplew/data/sarta/prod_2025/cris_hr_pbl/jan2025a/dbase/Coef/refprof_400ppm_pbl')
+      PARAMETER(FNSUN =  &
+          '/home/chepplew/data/sarta/prod_2025/cris_hr_pbl/jan2025a/dbase/Solar/sol.txt')
+             
+      PARAMETER(FNTHER =  &
+          '/home/chepplew/data/sarta/prod_2021/cris_hr/dec2018/dbase/Coef/therm.dat')
+      PARAMETER(FNCOFN =  &
+          '/home/chepplew/data/sarta/prod_2021/cris_hr/dec2018/dbase/Coef/nte_7term.dat')
+            
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 ! Tuning filename
-                CHARACTER (LEN=80) :: FNTMLT ! tuning multiplier filename
+      CHARACTER (LEN=90) :: FNTMLT ! tuning multiplier filename
                 
-                PARAMETER(FNTMLT=  &
-                    '/home/chepplew/data/sarta/prod_2019/cris_hr/dec2018/dbase/Coef/'  &
-                    // 'tunmlt_ones.txt')
+      PARAMETER(FNTMLT=  &
+          '/home/chepplew/data/sarta/prod_2025/cris_hr_pbl/jan2025a/dbase/Coef/'  &
+        // 'tunmlt_ones.txt')
                 
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-                
-!      ----------------
-!      I/O unit numbers
-!      ----------------
-!      Note: these units are not explicitly openned by the sarta code,
-!      they should be set to standard I/O units for your compiler
-                INTEGER :: IOINFO  ! unit number for non-error info messages (6)
-                INTEGER :: IOERR   ! unit number for error messages (2 or 6)
-                PARAMETER( IOINFO = 6 )
-                PARAMETER( IOERR = 0 )
-                
                 
 !      -----------------
 !      Allowed input GUC (Gas Units Code number)
 !      -----------------
-                INTEGER :: GUCIN  ! The one & only allowed input GUC number
+      INTEGER :: GUCIN  ! The one & only allowed input GUC number
 !      Note: GUCIN must be 1 or 2.  All gases in the input RTP
 !      must be of this type.
-                PARAMETER( GUCIN = 1 ) ! GUC number for:  molecules/cm^2
+      PARAMETER( GUCIN = 1 ) ! GUC number for:  molecules/cm^2
 !       PARAMETER( GUCIN = 2 ) ! GUC number for:  kilomoles/cm^2
                 
                 
 ! rtpV201 compatibility
-                CHARACTER (LEN=40) :: VCLOUD
-                PARAMETER( VCLOUD = 'no clouds' )
+      CHARACTER (LEN=40) :: VCLOUD
+      PARAMETER( VCLOUD = 'no clouds' )
                 
+end MODULE incFTC
 !      End of include file
