@@ -490,7 +490,7 @@ call opnrtp(FIN, LRHOT, PTYPE, NCHAN, FCHAN, LSTCHN, INDCHN, &
 ! ------------------------------------------------
 ! check pressure levels from rtp and refprof match
 ! ------------------------------------------------
-
+!   CALL CHECK_PLEVS( PROF, NLAY )
 !
 ! ----------------------------------------
 !   Determine bottom layer, CO2, & angles
@@ -808,10 +808,12 @@ call opnrtp(FIN, LRHOT, PTYPE, NCHAN, FCHAN, LSTCHN, INDCHN, &
 ! -------------------------
 !  calculate nonLTE
 ! -------------------------
+! first version call 'calnte.o' for original 90-deg nonLTE
 !        CALL CALNTE ( INDCHN, TEMP, SUNCOS, SCOS1, SECANG(1), &
 !           NCHNTE, CLISTN, COEFN, CO2TOP, RAD )
+! second version call 'calxnte.o' for extended to 120.deg nonLTE
         CALL CALNTE ( INDCHN, TEMP, SECANG(1), NCHNTE, CLISTN, &
-         COEFN, CO2TOP, SUNANG, XALT, RAD )
+         COEFN, CO2TOP, SUNANG, ALT(1), RAD )
  
      endif
 

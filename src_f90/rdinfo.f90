@@ -37,8 +37,8 @@
 !OUTPUT PARAMETERS:
 !    type      name    purpose                     units
 !    --------  ------  --------------------------  ---------------------
-!    CHAR*80   FIN     input filename              none
-!    CHAR*80   FOUT    output filename             none
+!    CHAR*90   FIN     input filename              none
+!    CHAR*90   FOUT    output filename             none
 !    LOGICAL   LRHOT   force RHO for refl thermal? none
 !    INTEGER   NWANTP  Number of desired profiles  none
 !    INT arr   LISTP   List of desired prof nums   none
@@ -148,8 +148,8 @@
 !      none
 !
 !      Output:
-       CHARACTER*80 FIN
-       CHARACTER*80 FOUT
+       CHARACTER*90 FIN
+       CHARACTER*90 FOUT
        LOGICAL  LRHOT
        INTEGER NWANTP
        INTEGER  LISTP(MAXPRO)

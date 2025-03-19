@@ -909,7 +909,11 @@ integer :: I, J, IC, IL, ICHAN, IERR, ICOUNT, LACHAN
        J=1
        DO I=1,MXCNTE
 !         Read data for this frequency/channel
-          READ(IPOPN) ICHAN, FRQCHN, (COEFN(IC,J),IC=1,NNCOEF)
+          IF( .NOT. LXNTE) THEN       ! FALSE => 0-90 range
+             READ(IPOPN) ICHAN, FRQCHN, (COEFN(IC,J),IC=1,NNCOEF)
+          ELSEIF( LXNTE)   THEN      ! TRUE => 0-120 extended range
+             READ(IPOPN) ICHAN, FRQCHN, (COEFN(IC,J),IC=1,XNCOEF)
+          ENDIF
 !
 !         Keep the data if the current channel is on the list
           IF (INDCHN(ICHAN) .NE. 0) THEN

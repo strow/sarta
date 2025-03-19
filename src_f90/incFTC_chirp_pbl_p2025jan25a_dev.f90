@@ -8,35 +8,27 @@
 !
 !F90====================================================================
 
-
 !ROUTINE NAME:
 !    incFTC (include file)
-
 
 !ABSTRACT:
 !    Include file consisting of parameter statements to size various
 !    arrays in the SARTA related routines source code.
 
-
 !CALL PROTOCOL:
 !    none (include file)
-
 
 !INPUT PARAMETERS:
 !    none
 
-
 !OUTPUT PARAMETERS:
 !    none
-
 
 !INPUT/OUTPUT PARAMETERS:
 !    none
 
-
 !RETURN VALUES:
 !    none
-
 
 !PARENT(S):
 !    CALOKW
@@ -58,18 +50,14 @@
 !    SUNPAR
 !    SARTA
 
-
 !ROUTINES CALLED:
 !    none
-
 
 !FILES ACCESSED:
 !    none
 
-
 !COMMON BLOCKS
 !    none
-
 
 !DESCRIPTION:
 !    April 2009 version of the 100 layer CrIS fast model
@@ -79,14 +67,11 @@
 !
 !    Parameter statements for the FTC routines.
 
-
 !ALGORITHM REFERENCES:
 !    none
 
-
 !KNOWN BUGS AND LIMITATIONS:
 !    none
-
 
 !ROUTINE HISTORY:
 ! Date        Programmer     Comments
@@ -98,7 +83,7 @@
 ! 1  Jul 2019 C Hepplewhite  Added minor gas logicals
 !    Mar 2021 C Hepplewhite  Added nh3, and other minor gases.
 !    Jul 2022 C Hepplewhite  prod_2022, build: jul2022 HITRAN: 2020.
-
+!    Jan 2025 C Hepplewhite  prod_2025, build: jan2025, H2020 PBL layering
 !END====================================================================
 !
 !-----------------------------------------------------------------------
@@ -108,36 +93,30 @@
 ! source code will cause some compilers to complain.
 !       IMPLICIT NONE
 
-
 !-----------------------------------------------------------------------
 !      INCLUDE FILES
 !-----------------------------------------------------------------------
 !      none
-
 
 !-----------------------------------------------------------------------
 !      EXTERNAL FUNCTIONS
 !-----------------------------------------------------------------------
 !      none
 
-
 !-----------------------------------------------------------------------
 !      ARGUMENTS
 !-----------------------------------------------------------------------
 !      none
-
 
 !-----------------------------------------------------------------------
 !      LOCAL VARIABLES
 !-----------------------------------------------------------------------
 !      none
 
-
 !-----------------------------------------------------------------------
 !      SAVE STATEMENTS
 !-----------------------------------------------------------------------
 !      none
-
 
 !-----------------------------------------------------------------------
 !      EXECUTABLE CODE
@@ -179,9 +158,9 @@
        PARAMETER(CFCO2  = .TRUE.)
        PARAMETER(CFHNO3 = .TRUE.)
        PARAMETER(CFN2O  = .TRUE.)
-       PARAMETER(CFNH3  = .TRUE.)
-       PARAMETER(CFSO2  = .TRUE.)
-       PARAMETER(CFHDO  = .TRUE.)
+       PARAMETER(CFNH3  = .FALSE.)
+       PARAMETER(CFSO2  = .FALSE.)
+       PARAMETER(CFHDO  = .FALSE.)
        PARAMETER(CFOPTR = .TRUE.)
        PARAMETER(CFTHER = .TRUE.)
        PARAMETER(COFNTE = .TRUE.)
@@ -464,7 +443,8 @@ integer,  PARAMETER :: GUCIN = 1  ! GUC number for:  molecules/cm^2
 ! LXNTE  ! Logical. T: load 14 coefficients for 0-120.deg, F: load 7 for 0-90.deg
 ! MXCNTE ! max # of channels for non-LTE (264)
 ! NNCOEF ! # of coefs for non-LTE (7)
-! XNCOEF ! # of coefs to read from the database file
+! XNCOEF ! # of coefs to read from the database file (=NNCOEF for 0-90. =14 for
+!            0-120 deg
 ! NTEBOT ! bottom layer for CO2TOP calc
 ! CO2NTE ! ref CO2 mixing ratio for non-LTE coefs (ppmv)
 logical, PARAMETER :: LXNTE = .FALSE.     ! F: 0-90 or T: 0-120.deg solzen
@@ -473,60 +453,60 @@ integer, PARAMETER :: NNCOEF = 7          ! Default: 7 but context see: LXNTE
 integer, PARAMETER :: XNCOEF = 14         ! Default: 2 x NNCOEF -> COEFN(XN,M)
 integer, PARAMETER :: NTEBOT = 10
 integer, PARAMETER :: CO2NTE = 400.0
-!! integer, parameter :: NCHNTE = 277
+!!integer, parameter :: NCHNTE = 134
 integer, parameter :: NNNNTE = 4          ! first dimension of neural net params
 !
 ! ----- ---------
 !      Filenames
 ! ---------------
 !
-  character(len=80), PARAMETER :: FNCOF1 = &
-    '/home/chepplew/data/sarta/prod_2022/chirp/jul2022/dbase/Coef/set1.dat'
-  character(len=80), PARAMETER :: FNCOF2 = &
-    '/home/chepplew/data/sarta/prod_2022/chirp/jul2022/dbase/Coef/set2.dat'
-  character(len=80), PARAMETER :: FNCOF3 = &
-    '/home/chepplew/data/sarta/prod_2022/chirp/jul2022/dbase/Coef/set3.dat'
-  character(len=80), PARAMETER :: FNCOF4 = &
-    '/home/chepplew/data/sarta/prod_2022/chirp/jul2022/dbase/Coef/set4.dat'
-  character(len=80), PARAMETER :: FNCOF5 = &
-    '/home/chepplew/data/sarta/prod_2022/chirp/jul2022/dbase/Coef/set5.dat'
-  character(len=80), PARAMETER :: FNCOF6 = &
-    '/home/chepplew/data/sarta/prod_2022/chirp/jul2022/dbase/Coef/set6.dat'
-  character(len=80), PARAMETER :: FNCOF7 = &
-    '/home/chepplew/data/sarta/prod_2022/chirp/jul2022/dbase/Coef/set7.dat'
+  character(len=90), PARAMETER :: FNCOF1 = &
+    '/home/chepplew/data/sarta/prod_2025/chirp_pbl/jan2025a/dbase/Coef/set1.dat'
+  character(len=90), PARAMETER :: FNCOF2 = &
+    '/home/chepplew/data/sarta/prod_2025/chirp_pbl/jan2025a/dbase/Coef/set2.dat'
+  character(len=90), PARAMETER :: FNCOF3 = &
+    '/home/chepplew/data/sarta/prod_2025/chirp_pbl/jan2025a/dbase/Coef/set3.dat'
+  character(len=90), PARAMETER :: FNCOF4 = &
+    '/home/chepplew/data/sarta/prod_2025/chirp_pbl/jan2025a/dbase/Coef/set4.dat'
+  character(len=90), PARAMETER :: FNCOF5 = &
+    '/home/chepplew/data/sarta/prod_2025/chirp_pbl/jan2025a/dbase/Coef/set5.dat'
+  character(len=90), PARAMETER :: FNCOF6 = &
+    '/home/chepplew/data/sarta/prod_2025/chirp_pbl/jan2025a/dbase/Coef/set6.dat'
+  character(len=90), PARAMETER :: FNCOF7 = &
+    '/home/chepplew/data/sarta/prod_2025/chirp_pbl/jan2025a/dbase/Coef/set7.dat'
 !       
-  character(len=80), PARAMETER :: FNOPTR = &
-    '/home/chepplew/data/sarta/prod_2022/chirp/jul2022/dbase/Coef/optran.dat'
-  character(len=80), PARAMETER :: FNCO2 = &
-    '/home/chepplew/data/sarta/prod_2022/chirp/jul2022/dbase/Coef/co2.dat'
-  character(len=80), PARAMETER :: FNSO2 = &
-    '/home/chepplew/data/sarta/prod_2022/chirp/jul2022/dbase/Coef/so2.dat'
-  character(len=80), PARAMETER :: FNHNO3 = &
-    '/home/chepplew/data/sarta/prod_2022/chirp/jul2022/dbase/Coef/hno3.dat'
-  character(len=80), PARAMETER :: FNN2O = &
-    '/home/chepplew/data/sarta/prod_2022/chirp/jul2022/dbase/Coef/n2o.dat'
-  character(len=80), PARAMETER :: FNNH3 = &
-    '/home/chepplew/data/sarta/prod_2022/chirp/jul2022/dbase/Coef/nh3.dat'
-  character(len=80), PARAMETER :: FNHDO = &
-    '/home/chepplew/data/sarta/prod_2022/chirp/jul2022/dbase/Coef/hdo.dat'
-  character(len=80), PARAMETER :: FNCOFN = &
-    '/home/chepplew/data/sarta/prod_2022/chirp/jul2022/dbase/Coef/nte_7term.dat'
-  character(len=80), PARAMETER :: FNTHER = &
-    '/home/chepplew/data/sarta/prod_2022/chirp/jul2022/dbase/Coef/therm.dat'
+  character(len=90), PARAMETER :: FNOPTR = &
+    '/home/chepplew/data/sarta/prod_2025/chirp_pbl/jan2025a/dbase/Coef/optran.dat'
+  character(len=90), PARAMETER :: FNCO2 = &
+    '/home/chepplew/data/sarta/prod_2025/chirp_pbl/jan2025a/dbase/Coef/co2.dat'
+  character(len=90), PARAMETER :: FNSO2 = &
+    '/home/chepplew/data/sarta/prod_2025/chirp_pbl/jan2025a/dbase/Coef/so2.dat'
+  character(len=90), PARAMETER :: FNHNO3 = &
+    '/home/chepplew/data/sarta/prod_2025/chirp_pbl/jan2025a/dbase/Coef/hno3.dat'
+  character(len=90), PARAMETER :: FNN2O = &
+    '/home/chepplew/data/sarta/prod_2025/chirp_pbl/jan2025a/dbase/Coef/n2o.dat'
+  character(len=90), PARAMETER :: FNNH3 = &
+    '/home/chepplew/data/sarta/prod_2025/chirp_pbl/jan2025a/dbase/Coef/nh3.dat'
+  character(len=90), PARAMETER :: FNHDO = &
+    '/home/chepplew/data/sarta/prod_2025/chirp_pbl/jan2025a/dbase/Coef/hdo.dat'
+  character(len=90), PARAMETER :: FNCOFN = &
+    '/home/chepplew/data/sarta/prod_2025/chirp_pbl/jan2025a/dbase/Coef/nte_7term.dat'
+  character(len=90), PARAMETER :: FNTHER = &
+    '/home/chepplew/data/sarta/prod_2025/chirp_pbl/jan2025a/dbase/Coef/refltherm.dat'
 !
-  character(len=80), PARAMETER :: FNFX = &
-    '/home/chepplew/data/sarta/prod_2022/chirp/jul2022/dbase/Coef/fx.txt'
-  character(len=80), PARAMETER :: FNSUN = &
-    '/home/chepplew/data/sarta/prod_2022/chirp/jul2022/dbase/Solar/solardata.txt'
+  character(len=90), PARAMETER :: FNFX = &
+    '/home/chepplew/data/sarta/prod_2025/chirp_pbl/jan2025a/dbase/Coef/fx_pbl.txt'
+  character(len=90), PARAMETER :: FNSUN = &
+    '/home/chepplew/data/sarta/prod_2025/chirp_pbl/jan2025a/dbase/Solar/solardata.txt'
   character(len=90), PARAMETER :: FNPREF = &
-    '/home/chepplew/data/sarta/prod_2022/chirp/jul2022/dbase/refprof_trace400'
+    '/home/chepplew/data/sarta/prod_2025/chirp_pbl/jan2025a/dbase/Coef/refprof_400ppm_pbl'
      
 !
 ! -------------------------------------------
 !  FNTMLT ! tuning multiplier filename
 ! -------------------------------------------
-  character(len=80),PARAMETER :: FNTMLT = &
-     '/home/chepplew/data/sarta/prod_2022/chirp/jul2022/dbase/Coef/tunmlt_ones.txt'
+  character(len=90),PARAMETER :: FNTMLT = &
+     '/home/chepplew/data/sarta/prod_2025/chirp_pbl/jan2025a/dbase/Coef/tunmlt_ones.txt'
 !
 ! rtpV201 compatibility
  character(len=80), PARAMETER :: VCLOUD = 'no clouds' 

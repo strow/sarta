@@ -160,7 +160,7 @@ PARAMETER(CFSO2  = .FALSE.)
 PARAMETER(CFHDO  = .FALSE.)
 PARAMETER(CFOPTR = .TRUE.)
 PARAMETER(CFTHER = .TRUE.)
-PARAMETER(COFNTE = .FALSE.)
+PARAMETER(COFNTE = .TRUE.)
     
 ! ----------------
 ! I/O unit numbers
@@ -433,14 +433,14 @@ PARAMETER( XSALT = 825.0 )
 !      For non-LTE
 !      -----------
 ! LXNTE  ! Logical. T: load 14 coefficients for 0-120.deg, F: load 7 for 0-90.deg
-! MXCNTE ! max # of channels for non-LTE (264)
+! MXCNTE ! max # of channels for non-LTE (264,268,271)
 ! NNCOEF ! # of coefs for non-LTE (7)
 ! XNCOEF ! # of coefs to read from the database file
 ! NTEBOT ! bottom layer for CO2TOP calc
 ! CO2NTE ! ref CO2 mixing ratio for non-LTE coefs (ppmv)
-      logical, PARAMETER :: LXNTE = .FALSE.     ! F: 0-90 or T: 0-120.deg solzen
-      integer, PARAMETER :: MXCNTE = 246        ! was 133 placeholder
-      integer, PARAMETER :: NNCOEF = 7          ! Default: 7 but context see: LXNTE
+      logical, PARAMETER :: LXNTE = .TRUE.     ! F: 0-90 or T: 0-120.deg solzen
+      integer, PARAMETER :: MXCNTE = 272        ! was 133 placeholder
+      integer, PARAMETER :: NNCOEF = 7          ! Default: 7. LXNTE context dep. 
       integer, PARAMETER :: XNCOEF = 14         ! Default: 2 x NNCOEF -> COEFN(XN,M)
       integer, PARAMETER :: NTEBOT = 10
       integer, PARAMETER :: CO2NTE = 400.0
@@ -497,6 +497,8 @@ PARAMETER( XSALT = 825.0 )
           '/home/chepplew/data/sarta/prod_2021/cris_hr/dec2018/dbase/Coef/n2o.dat')
       PARAMETER(FNNH3 =  &
           '/home/chepplew/data/sarta/prod_2021/cris_hr/dec2018/dbase/Coef/nh3.dat')
+      PARAMETER(FNHDO =  &
+          '/home/chepplew/data/sarta/prod_2021/cris_hr/dec2018/dbase/Coef/hdo.dat')
                 
       PARAMETER(FNFX  =  &
           '/home/chepplew/data/sarta/prod_2025/cris_hr/jul2022/dbase/Coef/fx.txt')
@@ -508,7 +510,8 @@ PARAMETER( XSALT = 825.0 )
       PARAMETER(FNTHER =  &
           '/home/chepplew/data/sarta/prod_2025/cris_hr/jul2022/dbase/Coef/therm.dat')
       PARAMETER(FNCOFN =  &
-          '/home/chepplew/data/sarta/prod_2025/cris_hr/jul2022/dbase/Coef/nte_7term.dat')
+          '/home/chepplew/data/sarta/prod_2025/cris_hr/feb2025/dbase/Coef/xnte_2x7term.dat')
+!          '/home/chepplew/data/sarta/prod_2021/cris_hr/dec2018/dbase/Coef/nte_7term.dat')
             
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 ! Tuning filename

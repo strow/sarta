@@ -36,7 +36,7 @@ cris_nn:
 #	mv a.out ../bin/cris_nn_nte
 
 # -----------------------------------------------------------------
-#  1.2 regression only models
+#  1.2 regression only models. std airslay pressure levels
 #  ----------------------------------------------------------------
 
 # AIRS L1C std plevs 
@@ -53,6 +53,7 @@ cris_hr_reg_dev:
 	ln -sf incFTC_cris_hrg4_p2025jul22_dev.f90 incFTC.f90
 	ifort -c incFTC.f90 -I/home/chepplew/myLib/rtp/include
 	make -f make_sarta_reg
+#	mv a.out ../bin/cris_hr_p2025jul22_reg_dev2
 	mv a.out ../bin/cris_hr_p2025jul22_reg_dev
 # ----------------------------------------------------------------
 # CHIRP
@@ -69,14 +70,15 @@ chirp_reg_prod:
 	make -f make_sarta_reg
 	mv a.out ../bin/chirp_reg_prod
 # ===========================================================
-# ===========================================================
+#  1.3 regression only models. airs-oco2 PBL  pressure levels
+#  ----------------------------------------------------------------
 # AIRS PBL (planetary boundary layer version for Bill Irion)
 airs_pbl_dev:
 	rm -f *.o incFTC.f90
 	ln -sf incFTC_airs_pbl_p2025jan25a_dev.f90 incFTC.f90
 	ifort -c incFTC.f90 -I/home/chepplew/myLib/rtp/include
 	make -f make_sarta_reg
-	mv a.out ../bin/airs_pbl_dev
+	mv a.out ../bin/airs_pbl_dev_nooptr
 
 # CrIS FSR PBL (planetary boundary layer version)
 cris_hr_pbl_dev:
@@ -84,7 +86,15 @@ cris_hr_pbl_dev:
 	ln -sf incFTC_cris_hrg4_pbl_p2025jan25a_dev.f90 incFTC.f90
 	ifort -c incFTC.f90 -I/home/chepplew/myLib/rtp/include
 	make -f make_sarta_reg
-	mv a.out ../bin/cris_hr_pbl_dev
+	mv a.out ../bin/cris_hr_pbl_dev_nooptr
+
+# CHIRP PBL (planetary boundary layer version)
+chirp_pbl_dev:
+	rm -f *.o incFTC.f90
+	ln -sf incFTC_chirp_pbl_p2025jan25a_dev.f90 incFTC.f90
+	ifort -c incFTC.f90 -I/home/chepplew/myLib/rtp/include
+	make -f make_sarta_reg
+	mv a.out ../bin/chirp_pbl_p2025jan25a_dev
 
 #------------------------------------------------------------------------------------
 # File management

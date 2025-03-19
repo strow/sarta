@@ -170,6 +170,8 @@ real(4) :: DELPX                     ! 5% of layer thickness in pressure
           WRITE(IOINFO,1010) BLMULT, LBOTX, NLAY
  1010     FORMAT('WARNING! excessive BLMULT=',F9.3,'; optimal LBOT=', &
          I3,' but layers end at NLAY=',I3)
+!!!          print*,'getbot: setting BLMULT=1.2'
+!!!          BLMULT=1.2
        ENDIF
 !
        RETURN

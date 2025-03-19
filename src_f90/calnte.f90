@@ -131,8 +131,8 @@
        INTEGER INDCHN(MXCHAN)
        REAL   TEMP(MAXLAY)
        REAL SUNCOS ! solar zenith angle cosine at surface
-       REAL  SCOS1 ! solar zenith angle cosine at layer1
-       REAL  VSEC1 ! satellite view zenith angle secant at layer1
+       REAL(4) :: SCOS1 ! solar zenith angle cosine at layer1
+       REAL(4) :: VSEC1 ! satellite view zenith angle secant at layer1
        INTEGER NCHNTE
        INTEGER CLISTN(MXCNTE)
        REAL  COEFN(NNCOEF,MXCNTE)
@@ -181,7 +181,8 @@
 !      ---------------------------
 !      Loop on channel (frequency)
 !      ---------------------------
-       DO I=1,NCHNTE
+!       DO I=1,NCHNTE
+       DO I=1,MXCNTE
 !
 !         Index for RAD
           J=INDCHN( CLISTN(I) )
@@ -196,7 +197,7 @@
 !         Adjust DRAD for CO2 mixing ratio
           DRAD=DRAD*(COEFN(7,I)*(CO2TOP - CO2NTE) + 1.0)
 !
-!CCCCC          DRAD=0.0
+!          DRAD=0.0
 !
 !         Adjust RAD for the non-LTE contribution
           RAD(J) = RAD(J) + DRAD/1000.0 ! convert DRAD to Watts
