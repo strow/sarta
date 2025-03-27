@@ -582,10 +582,10 @@ real, dimension(MAXLAY) :: KW
 !      DKN2O=0.0
 !      DKNH3=0.0
 !      DKHDO=0.0
-!      KHDO=0.0
+      KHDO=0.0
       IF (.NOT. CFHDO) KHDO=0.0
 !cc
-!            Limit -DK so it can never totally totally cancel KFIX
+!            Limit -DK so it can never totally cancel KFIX
              DK = DKCO2 + DKSO2 + DKHNO3 + DKN2O + DKNH3
              IF (-DK .GE. KFIX) THEN
                 DK = -0.999*KFIX

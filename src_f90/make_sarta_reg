@@ -45,9 +45,9 @@ OPT = -convert big_endian -extend-source 132 -check all -g -cpp -traceback -fp-s
 
 F77 = ifort 
 # to help debug:
-## FCFLAGS = -O0 -convert big_endian -extend-source 132 -check all -g -cpp -traceback -fp-stack-check -warn interface -fp-model source
+FCFLAGS = -O0 -convert big_endian -extend-source 132 -check all -g -cpp -traceback -fp-stack-check -warn interface -fp-model source
 # operational build
-FCFLAGS = -O2 -convert big_endian -extend-source 132 -fpe0 -fp-model source
+## FCFLAGS = -O2 -convert big_endian -extend-source 132 -fpe0 -fp-model source
 
 # ------------------------------------------------------------------------
 # Build

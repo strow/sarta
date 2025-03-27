@@ -152,14 +152,14 @@ LOGICAL :: CFTHER
 LOGICAL :: CFOPTR
 LOGICAL :: COFNTE
 PARAMETER(CFCO2  = .TRUE.)
-PARAMETER(CFHNO3 = .FALSE.)
-PARAMETER(CFN2O  = .FALSE.)
-PARAMETER(CFNH3  = .FALSE.)
-PARAMETER(CFSO2  = .FALSE.)
-PARAMETER(CFHDO  = .FALSE.)
-PARAMETER(CFOPTR = .FALSE.)
+PARAMETER(CFHNO3 = .TRUE.)
+PARAMETER(CFN2O  = .TRUE.)
+PARAMETER(CFNH3  = .TRUE.)
+PARAMETER(CFSO2  = .TRUE.)
+PARAMETER(CFHDO  = .TRUE.)
+PARAMETER(CFOPTR = .TRUE.)
 PARAMETER(CFTHER = .TRUE.)
-PARAMETER(COFNTE = .FALSE.)
+PARAMETER(COFNTE = .TRUE.)
     
 ! ----------------
 ! I/O unit numbers
@@ -410,10 +410,10 @@ PARAMETER( XSALT = 825.0 )
 !      -----------------
         INTEGER :: MXCHND ! max # of channels with HDO pert coefs (2075)
         INTEGER :: NHDO ! number of HDO coefficients (4)
-        PARAMETER(MXCHND = 1)        ! placeholder when not using this set
+!        PARAMETER(MXCHND = 1)        ! placeholder when not using this set
 !       PARAMETER( NHDO = 1)         ! placeholder when not using this set
-!       PARAMETER(MXCHND = 1843)
-        PARAMETER(  NHDO = 11)
+       PARAMETER(MXCHND = 394)
+       PARAMETER(  NHDO = 11)
               
 !      ----------------------
 !      For OPTRAN water coefs
@@ -437,8 +437,8 @@ PARAMETER( XSALT = 825.0 )
 ! XNCOEF ! # of coefs to read from the database file
 ! NTEBOT ! bottom layer for CO2TOP calc
 ! CO2NTE ! ref CO2 mixing ratio for non-LTE coefs (ppmv)
-      logical, PARAMETER :: LXNTE = .FALSE.     ! F: 0-90 or T: 0-120.deg solzen
-      integer, PARAMETER :: MXCNTE = 246        ! was 133 placeholder
+      logical, PARAMETER :: LXNTE = .TRUE.     ! F: 0-90 or T: 0-120.deg solzen
+      integer, PARAMETER :: MXCNTE = 272        ! was 133 placeholder
       integer, PARAMETER :: NNCOEF = 7          ! Default: 7 but context see: LXNTE
       integer, PARAMETER :: XNCOEF = 14         ! Default: 2 x NNCOEF -> COEFN(XN,M)
       integer, PARAMETER :: NTEBOT = 10
@@ -489,13 +489,15 @@ PARAMETER( XSALT = 825.0 )
       PARAMETER(FNCO2 =  &
           '/home/chepplew/data/sarta/prod_2025/cris_hr_pbl/jan2025a/dbase/Coef/co2.dat')
       PARAMETER(FNSO2 =  &
-          '/home/chepplew/data/sarta/prod_2021/cris_hr/dec2018/dbase/Coef/so2.dat')
+          '/home/chepplew/data/sarta/prod_2025/cris_hr_pbl/jan2025a/dbase/Coef/so2.dat')
       PARAMETER(FNHNO3 =  &
-          '/home/chepplew/data/sarta/prod_2021/cris_hr/dec2018/dbase/Coef/hno3.dat')
+          '/home/chepplew/data/sarta/prod_2025/cris_hr_pbl/jan2025a/dbase/Coef/hno3.dat')
       PARAMETER(FNN2O =  &
-          '/home/chepplew/data/sarta/prod_2021/cris_hr/dec2018/dbase/Coef/n2o.dat')
+          '/home/chepplew/data/sarta/prod_2025/cris_hr_pbl/jan2025a/dbase/Coef/n2o.dat')
       PARAMETER(FNNH3 =  &
-          '/home/chepplew/data/sarta/prod_2021/cris_hr/dec2018/dbase/Coef/nh3.dat')
+          '/home/chepplew/data/sarta/prod_2025/cris_hr_pbl/jan2025a/dbase/Coef/nh3.dat')
+      PARAMETER(FNHDO =  &
+          '/home/chepplew/data/sarta/prod_2025/cris_hr_pbl/jan2025a/dbase/Coef/hdo.dat')
                 
       PARAMETER(FNFX  =  &
           '/home/chepplew/data/sarta/prod_2025/cris_hr_pbl/jan2025a/dbase/Coef/fx_pbl.txt')
@@ -505,9 +507,9 @@ PARAMETER( XSALT = 825.0 )
           '/home/chepplew/data/sarta/prod_2025/cris_hr_pbl/jan2025a/dbase/Solar/sol.txt')
              
       PARAMETER(FNTHER =  &
-          '/home/chepplew/data/sarta/prod_2021/cris_hr/dec2018/dbase/Coef/therm.dat')
+          '/home/chepplew/data/sarta/prod_2025/cris_hr_pbl/jan2025a/dbase/Coef/refl_therm.dat')
       PARAMETER(FNCOFN =  &
-          '/home/chepplew/data/sarta/prod_2021/cris_hr/dec2018/dbase/Coef/nte_7term.dat')
+          '/home/chepplew/data/sarta/prod_2025/cris_hr_pbl/jan2025a/dbase/Coef/xnte_2x7term.dat')
             
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 ! Tuning filename
@@ -530,7 +532,7 @@ PARAMETER( XSALT = 825.0 )
                 
                 
 ! rtpV201 compatibility
-      CHARACTER (LEN=40) :: VCLOUD
+      CHARACTER (LEN=240) :: VCLOUD
       PARAMETER( VCLOUD = 'no clouds' )
                 
 end MODULE incFTC

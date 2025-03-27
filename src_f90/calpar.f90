@@ -993,7 +993,7 @@ logical :: LCO2, LN2O, LSO2, LNH3, LHDO, LHNO3, LCO2PM
 !            HDO mult=1 when no depletion otherwise eg -600per.mil depleted
              HDOMLT(L)=HDODPL/1000.0
 !            Ignore changes in HDO of less than ~1%
-!             IF (ABS(HDOMLT(L)) .LT. 1E-5) HDOMLT(L)=0.0
+             IF (ABS(HDOMLT(L)) .LT. 1E-5) HDOMLT(L)=0.0
           ELSE
              HDOMLT(L)=0.0
           ENDIF

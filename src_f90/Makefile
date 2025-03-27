@@ -78,7 +78,8 @@ airs_pbl_dev:
 	ln -sf incFTC_airs_pbl_p2025jan25a_dev.f90 incFTC.f90
 	ifort -c incFTC.f90 -I/home/chepplew/myLib/rtp/include
 	make -f make_sarta_reg
-	mv a.out ../bin/airs_pbl_dev_nooptr
+#	mv a.out ../bin/airs_pbl_dev_nooptr
+	mv a.out ../bin/airs_pbl_dev_debug
 
 # CrIS FSR PBL (planetary boundary layer version)
 cris_hr_pbl_dev:
@@ -86,7 +87,7 @@ cris_hr_pbl_dev:
 	ln -sf incFTC_cris_hrg4_pbl_p2025jan25a_dev.f90 incFTC.f90
 	ifort -c incFTC.f90 -I/home/chepplew/myLib/rtp/include
 	make -f make_sarta_reg
-	mv a.out ../bin/cris_hr_pbl_dev_nooptr
+	mv a.out ../bin/cris_hr_pbl_dev
 
 # CHIRP PBL (planetary boundary layer version)
 chirp_pbl_dev:
@@ -95,6 +96,28 @@ chirp_pbl_dev:
 	ifort -c incFTC.f90 -I/home/chepplew/myLib/rtp/include
 	make -f make_sarta_reg
 	mv a.out ../bin/chirp_pbl_p2025jan25a_dev
+
+#------------------------------------------------------------------------------------
+# 2.0 ALLSKY SARTA Builds 
+#------------------------------------------------------------------------------------
+# 2.1 AIRSLAY PLEVS
+# -----------------------------------------------------------------------------------
+#
+
+# -----------------------------------------------------------------------------------
+#  PBL (oco2-pbl) PLEVS
+#  ----------------------------------------------------------------------------------
+# CRIS.FSR.PBL ALLSKY
+#
+cris_hr_pbl_allsky:
+	rm -f *.o incFTC.f90 fnmie.f90
+	ln -s incFTC_cris_hrg4_pbl_p2025jan25a_pclsam.f90 incFTC.f90
+	ifort -c incFTC.f90 -I/home/chepplew/myLib/rtp/include
+	ln -s fnmie_iceGHMbaum_waterdrop_desertdust_cris_hires.f90 fnmie.f90
+	make -f make_sarta_reg_pclsam
+#	mv a.out ../bin/cris_hr_pbl_iceGHMbaum_wdrop_ddust_dev
+
+
 
 #------------------------------------------------------------------------------------
 # File management

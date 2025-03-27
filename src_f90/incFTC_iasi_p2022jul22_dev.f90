@@ -15,6 +15,7 @@ MODULE incFTC
 !
 ! Control output to stdout for help debugging
 LOGICAL, PARAMETER :: DEBUG = .FALSE.
+! Control switches to turn on/off minor gas calcs.
 LOGICAL, PARAMETER :: CFCO2 = .TRUE.
 LOGICAL, PARAMETER :: CFHNO3 = .TRUE.
 LOGICAL, PARAMETER :: CFN2O = .TRUE.

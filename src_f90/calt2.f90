@@ -531,7 +531,7 @@ logical :: LCO2, LHNO3, LN2O, LNH3,  LSO2,  LHDO
 !       DKN2O=0.0
 !       DKNH3=0.0
 !       DKHDO=0.0
-!       KHDO=0.0
+       KHDO=0.0
        IF (.NOT. CFHDO) KHDO=0.0
 !cc
 !            Limit -DK so it can never totally totally cancel KFIX

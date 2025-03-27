@@ -253,6 +253,9 @@ include 'rtpdefs.f90'
 !      ------------------------
 !      Read the current profile
 !      ------------------------
+      if (DEBUG) write(6,2010) LWANT,IPROF
+ 2010 FORMAT('in RDRTP: IPROF: ', L2,X,I5)
+!
        ISTAT=rtpread(IOPCI, PROF)
 !
        IF (ISTAT .EQ. -1) GOTO 9999  ! reached end of file
@@ -375,7 +378,6 @@ include 'rtpdefs.f90'
        ENDDO
 !
 !      HDO Depletion from UDEF(20,:)
-!       UDEF=PROF%udef
        HDODPL=PROF%udef(20)
   if(DEBUG) write(6,"('rdrtp:HDODPL= ',F8.1)"),HDODPL
 !

@@ -440,7 +440,7 @@ real(4), dimension(MAXLAY) :: KW
                      ( COFHDO(10,ILAY,IHDO)*DPRED(10,ILAY) ) + &
                      ( COFHDO(11,ILAY,IHDO)*DPRED(11,ILAY) )
 
-                IF (KHDO .LT. 0.0E+0) KHDO=ABS(KHDO)    ! 0.0E+0
+!                IF (KHDO .LT. 0.0E+0) KHDO=ABS(KHDO)    ! 0.0E+0
                 IF (ABS(KHDO) .GT. 0.999) KHDO = 0.999
                 KHDO=KHDO*HDOMLT(ILAY)
              ELSE

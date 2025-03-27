@@ -136,7 +136,7 @@
 MODULE incFTC
 
 LOGICAL :: DEBUG
-PARAMETER(DEBUG = .FALSE.)
+PARAMETER(DEBUG = .TRUE.)
 
 LOGICAL :: CFCO2
 LOGICAL :: CFHNO3
@@ -148,11 +148,11 @@ LOGICAL :: CFOPTR
 LOGICAL :: CFTHER
 LOGICAL :: COFNTE
 PARAMETER(CFCO2  = .TRUE.)
-PARAMETER(CFHNO3 = .FALSE.)
-PARAMETER(CFN2O  = .FALSE.)
-PARAMETER(CFNH3  = .FALSE.)
-PARAMETER(CFSO2  = .FALSE.)
-PARAMETER(CFHDO  = .FALSE.)
+PARAMETER(CFHNO3 = .TRUE.)
+PARAMETER(CFN2O  = .TRUE.)
+PARAMETER(CFNH3  = .TRUE.)
+PARAMETER(CFSO2  = .TRUE.)
+PARAMETER(CFHDO  = .TRUE.)
 PARAMETER(CFOPTR = .TRUE.)
 PARAMETER(COFNTE = .FALSE.)
 PARAMETER(CFTHER = .TRUE.)
@@ -416,7 +416,7 @@ PARAMETER( XSALT = 705.0 )
        INTEGER :: NHDO ! number of HDO coefficients (4)
 !       PARAMETER(MXCHND = 1)        ! placeholder when not using this set
 !       PARAMETER( NHDO = 1)         ! placeholder when not using this set
-       PARAMETER(MXCHND = 1843)
+       PARAMETER(MXCHND = 590)
        PARAMETER(  NHDO = 11)
               
 !      ----------------------
@@ -441,8 +441,8 @@ PARAMETER( XSALT = 705.0 )
 ! XNCOEF ! # of coefs to read from the database file
 ! NTEBOT ! bottom layer for CO2TOP calc
 ! CO2NTE ! ref CO2 mixing ratio for non-LTE coefs (ppmv)
-      logical, PARAMETER :: LXNTE = .FALSE.     ! F: 0-90 or T: 0-120.deg solzen
-      integer, PARAMETER :: MXCNTE = 133        ! was 133 placeholder
+      logical, PARAMETER :: LXNTE = .TRUE.     ! F: 0-90 or T: 0-120.deg solzen
+      integer, PARAMETER :: MXCNTE = 207        ! was 133 placeholder
       integer, PARAMETER :: NNCOEF = 7          ! Default: 7 but context see: LXNTE
       integer, PARAMETER :: XNCOEF = 14         ! Default: 2 x NNCOEF -> COEFN(XN,M)
       integer, PARAMETER :: NTEBOT = 10
@@ -500,6 +500,8 @@ PARAMETER( XSALT = 705.0 )
            '/home/chepplew/data/sarta/prod_2025/airs_pbl/jan2025a/dbase/Coef/n2o.dat')
        PARAMETER(FNNH3 =  &
            '/home/chepplew/data/sarta/prod_2025/airs_pbl/jan2025a/dbase/Coef/nh3.dat')
+       PARAMETER(FNHDO =  &
+           '/home/chepplew/data/sarta/prod_2025/airs_pbl/jan2025a/dbase/Coef/hdo.dat')
                
        PARAMETER(FNFX  =  &
            '/home/chepplew/data/sarta/prod_2025/airs_pbl/jan2025a/dbase/Coef/fx_pbl.txt')
@@ -511,7 +513,7 @@ PARAMETER( XSALT = 705.0 )
        PARAMETER(FNTHER=  &
            '/home/chepplew/data/sarta/prod_2025/airs_pbl/jan2025a/dbase/Coef/refltherm.dat')
        PARAMETER(FNCOFN=  &
-           '/home/chepplew/data/sarta/prod_2025/airs_pbl/jan2025a/dbase/Coef/nte_7term.dat')
+           '/home/chepplew/data/sarta/prod_2025/airs_pbl/jan2025a/dbase/Coef/xnte_2x7term.dat')
                 
                 
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC

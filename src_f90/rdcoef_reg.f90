@@ -959,7 +959,7 @@ integer :: I, J, IC, IL, ICHAN, IERR, ICOUNT, LACHAN
          WRITE(6,1060) 5, NCHN5
          WRITE(6,1060) 6, NCHN6
          WRITE(6,1060) 7, NCHN7
-         WRITE(6,1060) 11,NCHNNH3
+!         WRITE(6,1060) 11,NCHNNH3
 !         WRITE(6,1060) 162,NCHNHDO
        ENDIF
 !

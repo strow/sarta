@@ -176,9 +176,9 @@ real(4) :: THIGH, XZALAY, XUNCOS, XCOS1, NSUNANG
 !       write(6,"('calxnte: SUNANG,XALT,SZALAY',F6.2,X,F11.3,X,F11.3 )") 
 !     $  SUNANG,XALT,XZALAY
 !      Calculate the channel independent non-LTE predictors
-       THIGH = (TEMP(1) + TEMP(2) + TEMP(3) + TEMP(4) + TEMP(5))/5.0  ! airslay
+!       THIGH = (TEMP(1) + TEMP(2) + TEMP(3) + TEMP(4) + TEMP(5))/5.0  ! airslay
 !       THIGH = THIGH/250.0                            !/thb_mean from training 
-!       THIGH = (TEMP(2) + TEMP(3) + TEMP(4))/3.0                      ! PBL 
+       THIGH = (TEMP(2) + TEMP(3) + TEMP(4))/3.0                      ! PBL 
        PRED1 = 1.0
        PRED2 = XCOS1
        PRED3 = XCOS1*XCOS1
