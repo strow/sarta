@@ -1,34 +1,21 @@
 !=======================================================================
- 
-! Code converted using TO_F90_LOOP by Alan Miller
-! Date: 2023-04-04  Time: 16:44:55
- 
-!=======================================================================
-
 !    University of Maryland Baltimore County [UMBC]
-
 !    AIRS
-
 !    CALT6 (set6=FWO sun mfmw) version for trace gases (no HNO3)
-
-!F77====================================================================
-
+!F90====================================================================
 
 !ROUTINE NAME:
 !    CALT6
 
-
 !ABSTRACT:
 !    Calculate the transmittance for set6 using the predictors and the
 !    fast transmittance coefficients.
-
 
 !CALL PROTOCOL:
 !    CALT6( INDCHN, NLAY, NCHN6, CLIST6, COEF6,
 !       FIXMUL, CONPD6, FPRED6, WPRED6, OPRED6, DPRED, TRCPRD,
 !       INDCO2, COFCO2, CO2MLT, INDSO2, COFSO2, SO2MLT,
 !       INDN2O, COFN2O, N2OMLT, INDHDO, COFHDO, HDOMLT, TAU, TAUZ )
-
 
 !INPUT PARAMETERS:
 !    type      name    purpose                     units
@@ -65,31 +52,24 @@
 !    REAL arr  TAU     effective layer opt depth   none
 !    REAL arr  TAUZ    layer-to-space opt depth    none
 
-
 !INPUT/OUTPUT PARAMETERS:
 !    none
-
 
 !RETURN VALUES:
 !    none
 
-
 !PARENT(S):
 !    USEFAST
 
-
 !ROUTINES CALLED:
 !    none
-
 
 !FILES ACCESSED:
 !    incFTC.f : include file of parameter statements accessed during
 !       compilation only.
 
-
 !COMMON BLOCKS
 !    none
-
 
 !DESCRIPTION:
 !    August 2000 version of the 100 layer AIRS Fast Transmittance
@@ -128,14 +108,11 @@
 
 !    ===================================================================
 
-
 !ALGORITHM REFERENCES:
 !    none
 
-
 !KNOWN BUGS AND LIMITATIONS:
 !    none
-
 
 !ROUTINE HISTORY:
 ! Date        Programmer     Comments
@@ -165,11 +142,16 @@
 SUBROUTINE XCALT6 ( INDCHN, NLAY, NCHN6, CLIST6,  &
     COEF6, FIXMUL, CONPD6, FPRED6, WPRED6, OPRED6, DPRED, TRCPRD,  &
     INDCO2, COFCO2, CO2MLT, INDSO2, COFSO2, SO2MLT,  &
-INDN2O, COFN2O, N2OMLT, INDHDO  COFHDO, HDOMLT, TAU, TAUZ)
+    INDN2O, COFN2O, N2OMLT, INDHDO, COFHDO, HDOMLT, TAU, TAUZ)
 !      =================================================================
   
 !-----------------------------------------------------------------------
-!      IMPLICIT NONE
+!      INCLUDE FILES
+!-----------------------------------------------------------------------
+USE incFTC
+      
+!-----------------------------------------------------------------------
+ IMPLICIT NONE
 !-----------------------------------------------------------------------
   
   INTEGER, INTENT(IN)                      :: INDCHN(MXCHAN)
@@ -182,7 +164,7 @@ INDN2O, COFN2O, N2OMLT, INDHDO  COFHDO, HDOMLT, TAU, TAUZ)
   REAL, INTENT(IN)                         :: FPRED6( N6FIX,MAXLAY)
   REAL, INTENT(IN)                         :: WPRED6( N6H2O,MAXLAY)
   REAL, INTENT(IN)                         :: OPRED6(  N6O3,MAXLAY)
-  REAL, INTENT(IN)                         :: DPRED(  NHDO MAXLAY)
+  REAL, INTENT(IN)                         :: DPRED(  NHDO, MAXLAY)
     REAL, INTENT(IN)                         :: TRCPRD(NTRACE,MAXLAY)
     INTEGER, INTENT(IN)                      :: INDCO2(MXCHAN)
     REAL, INTENT(IN)                         :: COFCO2(  NCO2,MAXLAY,MXCHNC)
@@ -193,58 +175,23 @@ INDN2O, COFN2O, N2OMLT, INDHDO  COFHDO, HDOMLT, TAU, TAUZ)
     INTEGER, INTENT(IN)                      :: INDN2O(MXCHAN)
     REAL, INTENT(IN)                         :: COFN2O(  NN2O,MAXLAY,MXCHNN)
     REAL, INTENT(IN)                         :: N2OMLT(MAXLAY)
-    NO TYPE, INTENT(IN OUT)                  :: INDHDO  CO
-      REAL, INTENT(IN)                         :: HDOMLT(MAXLAY)
-      REAL, INTENT(OUT)                        :: TAU(MAXLAY,MXCHAN)
-      REAL, INTENT(OUT)                        :: TAUZ(MAXLAY,MXCHAN)
-      IMPLICIT NONE
-      
-      
-!-----------------------------------------------------------------------
-!      INCLUDE FILES
-!-----------------------------------------------------------------------
-      INCLUDE 'incFTC.f'
-      
+    INTEGER, INTENT(IN OUT)                  :: INDHDO(MXCHAN)
+    REAL                                     :: COFHDO(  NHDO,MAXLAY,MXCHND)
+    REAL, INTENT(IN)                         :: HDOMLT(MAXLAY)
+    REAL, INTENT(OUT)                        :: TAU(MAXLAY,MXCHAN)
+    REAL, INTENT(OUT)                        :: TAUZ(MAXLAY,MXCHAN)
       
 !-----------------------------------------------------------------------
 !      EXTERNAL FUNCTIONS
 !-----------------------------------------------------------------------
 !      none
       
-      
 !-----------------------------------------------------------------------
 !      ARGUMENTS
 !-----------------------------------------------------------------------
 !      Input
       
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      INTEGER :: INDHDO(MXCHAN)
-      REAL :: COFHDO(  NHDO,MAXLAY,MXCHND)
-      
-      
 !      Output
-      
-      
-      
       
 !-----------------------------------------------------------------------
 !      LOCAL VARIABLES
@@ -255,23 +202,23 @@ INDN2O, COFN2O, N2OMLT, INDHDO  COFHDO, HDOMLT, TAU, TAUZ)
       INTEGER :: IN2O
       INTEGER :: ISO2
       INTEGER :: IHDO
-        INTEGER :: J
-        REAL :: DK
-        REAL :: DKCO2
-        REAL :: DKN2O
-        REAL :: DKSO2
-        REAL :: DKHDO
-          REAL :: KHDO
-            REAL :: KCON
-            REAL :: KFIX
-            REAL :: KLAYER
-            REAL :: KOZO
-            REAL :: KWAT
-            REAL :: KZ
-            LOGICAL :: LCO2
-            LOGICAL :: LN2O
-            LOGICAL :: LSO2
-            LOGICAL :: LHDO
+      INTEGER :: J
+      REAL :: DK
+      REAL :: DKCO2
+      REAL :: DKN2O
+      REAL :: DKSO2
+      REAL :: DKHDO
+      REAL :: KHDO
+      REAL :: KCON
+      REAL :: KFIX
+      REAL :: KLAYER
+      REAL :: KOZO
+      REAL :: KWAT
+      REAL :: KZ
+      LOGICAL :: LCO2
+      LOGICAL :: LN2O
+      LOGICAL :: LSO2
+      LOGICAL :: LHDO
               
 !-----------------------------------------------------------------------
 !      SAVE STATEMENTS
@@ -504,11 +451,11 @@ INDN2O, COFN2O, N2OMLT, INDHDO  COFHDO, HDOMLT, TAU, TAUZ)
                     KZ=KZ + KLAYER
                     TAUZ(ILAY,J)=KZ
                     
-                    ENDDO
+                ENDDO
 !         End loop on levels
                       
-                      ENDDO
+              ENDDO
 !      End loops on channel number (frequency)
                         
-                        RETURN
-                      END SUBROUTINE XCALT6
+       RETURN
+       END SUBROUTINE XCALT6

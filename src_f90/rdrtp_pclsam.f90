@@ -1,26 +1,13 @@
-! version for sarta
- 
-! Code converted using TO_F90_LOOP by Alan Miller
-! Date: 2023-04-04  Time: 16:44:56
- 
 !=======================================================================
-!=======================================================================
-
 !              University of Maryland Baltimore County [UMBC]
-
 !              AIRS
-
 !              RDRTP version with trace gases
-
-!F77====================================================================
-
+!F90====================================================================
 
 !ROUTINE NAME: RDRTP
 
-
 !ABSTRACT:
 !    Read a profile from a previously openned RTP file
-
 
 !CALL PROTOCOL:
 !    RDRTP( LWANT, IPROF, IOPCI,
@@ -30,7 +17,6 @@
 !       FEMIS, EMIS, RHO,
 !       TEMP, WAMNT, OAMNT, CAMNT, MAMNT, FAMNT, SAMNT, HAMNT, NAMNT,
 !       ALT, PROF, ISTAT )
-
 
 !INPUT PARAMETERS:
 !    type      name    purpose                     units
@@ -49,7 +35,6 @@
 !    INTEGER   PTYPE   profile type code number    none
 !    REAL arr  RALT    ref prof layer altitudes    meters
 !    LOGICAL   LCO2PM  CO2 profile in ppmv?        none
-
 
 !OUTPUT PARAMETERS:
 !    type      name    purpose                     units
@@ -83,40 +68,30 @@
 !    INTEGER   ISTAT   I/O status                  none
 ! note: units "*/cm^2" can be either kilomoles/cm^2 or molecules/cm^2
 
-
 !INPUT/OUTPUT PARAMETERS: none
-
 
 !RETURN VALUES: none
 
-
 !PARENT(S): KLAYERS
 
-
 !ROUTINES CALLED: none
-
 
 !FILES ACCESSED:
 !    Input RTP file withI/O number IOPCI
 !    unit IOERR: error messages
 !    unit IOINFO: info/warning messages
 
-
 !COMMON BLOCKS: none
-
 
 !DESCRIPTION:
 !    Reads a single profile from a previously openned RTP file.
 !    The routine expects to find the data specified in the header
 !    of the input RTP file.
 
-
 !ALGORITHM REFERENCES: see DESCRIPTION
-
 
 !KNOWN BUGS AND LIMITATIONS:
 !    none
-
 
 !ROUTINE HISTORY:
 !    Date     Programmer        Comments
@@ -139,21 +114,32 @@
 !      =================================================================
 
 SUBROUTINE RDRTP(LWANT, IPROF, IOPCI,  &
-    IH2O, IO3, ICO, ICH4, ICO2, ISO2, IHNO3, IN2O, PTYPE, RALT,  &
+    IH2O, IO3, ICO, ICH4, ICO2, ISO2, IHNO3, IN2O, INH3, PTYPE, RALT,  &
     LCO2PM, NLAY, NEMIS, LAT, LON, SATANG, SATZEN, ZSAT, SUNANG, COSDAZ,  &
-    PSURF, TSURF, CO2PPM, FEMIS, EMIS, RHO,  &
-    TEMP, WAMNT, OAMNT, CAMNT, MAMNT, FAMNT, SAMNT, HAMNT, NAMNT,  &
-    ALT, PROF, ISTAT )
+    PSURF, TSURF, CO2PPM, HDODPL, FEMIS, EMIS, RHO,  &
+    TEMP, WAMNT, OAMNT, CAMNT, MAMNT, FAMNT, SAMNT, HAMNT,  &
+    NAMNT, AAMNT, ALT, PROF, ISTAT )
 !      =================================================================
 
+!-----------------------------------------------------------------------
+!      INCLUDE FILES
+!-----------------------------------------------------------------------
+USE incFTC
 
 !-----------------------------------------------------------------------
-!      IMPLICIT NONE
+ IMPLICIT NONE
 !-----------------------------------------------------------------------
 
-LOGICAL, INTENT(IN OUT)                  :: LWANT
-INTEGER, INTENT(IN OUT)                  :: IPROF
-INTEGER, INTENT(IN OUT)                  :: IOPCI
+INCLUDE 'rtpdefs.f90'
+! ----------------------------------------------------------------------
+
+!-----------------------------------------------------------------------
+!      ARGUMENTS
+!-----------------------------------------------------------------------
+
+LOGICAL, INTENT(IN)                      :: LWANT
+INTEGER, INTENT(IN)                      :: IPROF
+INTEGER, INTENT(IN)                      :: IOPCI
 INTEGER, INTENT(IN)                      :: IH2O
 INTEGER, INTENT(IN)                      :: IO3
 INTEGER, INTENT(IN)                      :: ICO
@@ -162,9 +148,11 @@ INTEGER, INTENT(IN)                      :: ICO2
 INTEGER, INTENT(IN)                      :: ISO2
 INTEGER, INTENT(IN)                      :: IHNO3
 INTEGER, INTENT(IN)                      :: IN2O
+INTEGER, INTENT(IN)                      :: INH3
 INTEGER, INTENT(IN)                      :: PTYPE
 REAL, INTENT(IN)                         :: RALT(MAXLAY)
-LOGICAL, INTENT(IN OUT)                  :: LCO2PM
+LOGICAL, INTENT(IN)                      :: LCO2PM
+!
 INTEGER, INTENT(OUT)                     :: NLAY
 INTEGER, INTENT(OUT)                     :: NEMIS
 REAL, INTENT(OUT)                        :: LAT
@@ -177,6 +165,7 @@ REAL, INTENT(OUT)                        :: COSDAZ
 REAL, INTENT(OUT)                        :: PSURF
 REAL, INTENT(OUT)                        :: TSURF
 REAL, INTENT(OUT)                        :: CO2PPM
+REAL, INTENT(OUT)                        :: HDODPL
 REAL, INTENT(OUT)                        :: FEMIS(MXEMIS)
 REAL, INTENT(OUT)                        :: EMIS(MXEMIS)
 REAL, INTENT(OUT)                        :: RHO(MXEMIS)
@@ -189,76 +178,17 @@ REAL, INTENT(OUT)                        :: FAMNT(MAXLAY)
 REAL, INTENT(OUT)                        :: SAMNT(MAXLAY)
 REAL, INTENT(OUT)                        :: HAMNT(MAXLAY)
 REAL, INTENT(OUT)                        :: NAMNT(MAXLAY)
+REAL, INTENT(OUT)                        :: AAMNT(MAXLAY)
 REAL, INTENT(OUT)                        :: ALT(MAXLAY)
-NO TYPE, INTENT(OUT)                     :: PROF
 INTEGER, INTENT(OUT)                     :: ISTAT
-IMPLICIT NONE
-
-
-!-----------------------------------------------------------------------
-!      INCLUDE FILES
-!-----------------------------------------------------------------------
-INCLUDE 'incFTC.f'
-INCLUDE 'rtpdefs.f'
-
 
 !-----------------------------------------------------------------------
 !      EXTERNAL FUNCTIONS
 !-----------------------------------------------------------------------
 !      none
 
-
-!-----------------------------------------------------------------------
-!      ARGUMENTS
-!-----------------------------------------------------------------------
-!      Input parameters:
-
-
-
-
-
-
-
-
-
-
-
-
-REAL :: ! ref prof layer average altitudes
-
-
-!      Output parameters:
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 !      Profile data structure
 RECORD /RTPPROF/ PROF
-
-
-
 
 !-----------------------------------------------------------------------
 !      LOCAL VARIABLES
@@ -268,6 +198,7 @@ INTEGER :: ICO2X    ! index for reading CO2 in gamnt
 INTEGER :: ISO2X    ! index for reading SO2 in gamnt
 INTEGER :: IHNOX    ! index for reading HNO3 in gamnt
 INTEGER :: IN2OX    ! index for reading N2O in gamnt
+INTEGER :: INH3X    ! index for reading NH3 in gamnt
 INTEGER :: L        ! layer looping
 INTEGER :: LR       ! reversed layer looping
 INTEGER :: NLEV     ! number of levels
@@ -283,7 +214,6 @@ REAL :: CONV        ! degreees to radians conversion factor
 !-----------------------------------------------------------------------
 !      none
 
-
 !***********************************************************************
 !***********************************************************************
 !      EXECUTABLE CODE begins below
@@ -291,134 +221,144 @@ REAL :: CONV        ! degreees to radians conversion factor
 !***********************************************************************
 
 !      CONV = pi/180 = degrees to radians conversion factor
-CONV=1.7453292E-02
+      CONV=1.7453292E-02
 
 !      ------------------------
 !      Read the current profile
 !      ------------------------
-ISTAT=rtpread(IOPCI, PROF)
+      ISTAT=rtpread(IOPCI, PROF)
 
-IF (ISTAT == -1) GO TO 9999  ! reached end of file
+      IF (ISTAT == -1) GO TO 9999  ! reached end of file
 
-IF (.NOT. LWANT) GO TO 9999    ! skip prof if not wanted
+      IF (.NOT. LWANT) GO TO 9999    ! skip prof if not wanted
 
 !      --------------------
 !      Pull out needed data
 !      --------------------
 !      Latitude & longitude
-LAT=PROF%plat
-LON=PROF%plon
+      LAT=PROF%plat
+      LON=PROF%plon
 
 !      Can not correctly compute gravity if LAT is bad
-IF (ABS(LAT) > 90.01) THEN
-  WRITE(IOERR,1005) IPROF, LAT
-  1005     FORMAT('ERROR! input profile PROF(',I4,').plat=',1PE11.4,  &
-      ' is out of range -90 to +90')
-  STOP
-END IF
+       IF (ABS(LAT) > 90.01) THEN
+         WRITE(IOERR,1005) IPROF, LAT
+ 1005     FORMAT('ERROR! input profile PROF(',I4,').plat=',1PE11.4,  &
+            ' is out of range -90 to +90')
+         STOP
+       END IF
 !      Note: LON is not currently used and thus need not be checked
 
 !      Number of levels
-NLEV=PROF%nlevs
-IF (NLEV < 2 .OR. NLEV > MAXLAY+1) THEN
-  WRITE(IOERR,1010) IPROF, NLEV, MAXLAY+1
-  1010     FORMAT('ERROR! input profile PROF(',I4,').nlevs=',I4,  &
-      ' is out of range 2 to ',I3)
-  STOP
-END IF
+       NLEV=PROF%nlevs
+       IF (NLEV < 2 .OR. NLEV > MAXLAY+1) THEN
+         WRITE(IOERR,1010) IPROF, NLEV, MAXLAY+1
+ 1010     FORMAT('ERROR! input profile PROF(',I4,').nlevs=',I4,  &
+            ' is out of range 2 to ',I3)
+         STOP
+       END IF
 
 !      Number of layers
-IF (PTYPE == AIRSLAY) THEN
+       IF (PTYPE == AIRSLAY) THEN
 !         Special case for AIRS pseudo-levels
-  NLAY=NLEV
-ELSE
-  NLAY=NLEV - 1
-END IF
+         NLAY=NLEV
+       ELSE
+         NLAY=NLEV - 1
+       END IF
 
 !      Assign read indices for trace gas CO2
-IF (ICO2 < 1) THEN
-  CO2PPM=PROF%co2ppm
-  IF (CO2PPM < -998) CO2PPM=CO2STD
-  RJUNK1=0.8*CO2STD
-  RJUNK2=1.2*CO2STD
-  IF (CO2PPM < RJUNK1 .OR. CO2PPM > RJUNK2) THEN
-    WRITE(IOERR,1015) IPROF, CO2PPM, RJUNK1, RJUNK2
-    1015        FORMAT('Warning! PROF(',I4,').co2ppm=',1PE10.3,  &
-        ' is outside allowed range ',0PF5.1,' to ',F5.1)
-  END IF
+       IF (ICO2 < 1) THEN
+         CO2PPM=PROF%co2ppm
+         IF (CO2PPM < -998) CO2PPM=CO2STD
+         RJUNK1=0.8*CO2STD
+         RJUNK2=1.2*CO2STD
+         IF (CO2PPM < RJUNK1 .OR. CO2PPM > RJUNK2) THEN
+           WRITE(IOERR,1015) IPROF, CO2PPM, RJUNK1, RJUNK2
+ 1015        FORMAT('Warning! PROF(',I4,').co2ppm=',1PE10.3,  &
+              ' is outside allowed range ',0PF5.1,' to ',F5.1)
+         END IF
 !         Set ICO2X to any valid gas index; data will be read but ignored
-  ICO2X=IH2O
-ELSE
-  CO2PPM=-9999
-  ICO2X=ICO2
-END IF
+         ICO2X=IH2O
+       ELSE
+         CO2PPM=-9999
+         ICO2X=ICO2
+       END IF
 !      Assign read indices for trace gas SO2
-IF (ISO2 < 1) THEN
-  ISO2X=IH2O
-ELSE
-  ISO2X=ISO2
-END IF
+       IF (ISO2 < 1) THEN
+          ISO2X=IH2O
+       ELSE
+          ISO2X=ISO2
+       END IF
 !      Assign read indices for trace gas HNO3
-IF (IHNO3 < 1) THEN
-  IHNOX=IH2O
-ELSE
-  IHNOX=IHNO3
-END IF
+       IF (IHNO3 < 1) THEN
+         IHNOX=IH2O
+       ELSE
+         IHNOX=IHNO3
+       END IF
 !      Assign read indices for trace gas N2O
-IF (IN2O < 1) THEN
-  IN2OX=IH2O
-ELSE
-  IN2OX=IN2O
-END IF
+       IF (IN2O < 1) THEN
+         IN2OX=IH2O
+       ELSE
+         IN2OX=IN2O
+       END IF
+!      Assign read indices for trace gas NH3
+       IF (INH3 .LT. 1) THEN
+          INH3X=IH2O
+       ELSE
+          INH3X=INH3
+       ENDIF
 
 !      Angles
-SUNANG=PROF%solzen
-SATANG=PROF%scanang
-SATZEN=PROF%satzen
+      SUNANG=PROF%solzen
+      SATANG=PROF%scanang
+      SATZEN=PROF%satzen
 
 !      Azimuth angles
-RJUNK1=PROF%satazi
-RJUNK2=PROF%solazi
-IF (RJUNK1 < -180.0) RJUNK1=-180.0
-IF (RJUNK2 < -180.0) RJUNK2=-180.0
-COSDAZ=COS( (RJUNK1-RJUNK2)*CONV )
+      RJUNK1=PROF%satazi
+      RJUNK2=PROF%solazi
+      IF (RJUNK1 < -180.0) RJUNK1=-180.0
+      IF (RJUNK2 < -180.0) RJUNK2=-180.0
+      COSDAZ=COS( (RJUNK1-RJUNK2)*CONV )
 
-!      Satellite altitude above ellipsoid surface (convert m to km)
-ZSAT=PROF%zobs/1000
+!        Satellite altitude above ellipsoid surface (convert m to km)
+      ZSAT=PROF%zobs/1000
 
 !      Surface
-PSURF=PROF%spres
-TSURF=PROF%stemp
-ZSURF=PROF%salti  ! note: ZSURF is currently ignored
-IF (PSURF <= 0) THEN
-  WRITE(IOERR,1017) IPROF
-  1017     FORMAT('ERROR! Prof(',I4,') has no surface pressure')
-  STOP
-END IF
-IF (TSURF <= 0) THEN
-  WRITE(IOERR,1018) IPROF
-  1018     FORMAT('ERROR! Prof(',I4,') has no surface temperature')
-  STOP
-END IF
+       PSURF=PROF%spres
+       TSURF=PROF%stemp
+       ZSURF=PROF%salti  ! note: ZSURF is currently ignored
+       IF (PSURF <= 0) THEN
+         WRITE(IOERR,1017) IPROF
+ 1017     FORMAT('ERROR! Prof(',I4,') has no surface pressure')
+         STOP
+       END IF
+       IF (TSURF <= 0) THEN
+         WRITE(IOERR,1018) IPROF
+ 1018     FORMAT('ERROR! Prof(',I4,') has no surface temperature')
+          STOP
+       END IF
 
 !      Emissivity (range 0 to 1) and reflectance
-NEMIS=PROF%nemis
-IF (NEMIS == 0) THEN
-  WRITE(IOERR,1020) IPROF
-  1020     FORMAT('ERROR! PROF(',I4,') has no emissivity')
-  STOP
-END IF
-DO I=1,NEMIS
+       NEMIS=PROF%nemis
+       IF (NEMIS == 0) THEN
+         WRITE(IOERR,1020) IPROF
+ 1020      FORMAT('ERROR! PROF(',I4,') has no emissivity')
+         STOP
+       END IF
+       DO I=1,NEMIS
 !         WARNING! does not check if emis is ok
-  FEMIS(I)=PROF%efreq(I)
-  EMIS(I)=PROF%emis(I)
-  IF (PROF%rho(I) < 0.0) THEN
-    RHO(I)=(1 - EMIS(I))/PI
-  ELSE
-    RHO(I)=PROF%rho(I)
-  END IF
-  ENDDO
+          FEMIS(I)=PROF%efreq(I)
+          EMIS(I)=PROF%emis(I)
+          IF (PROF%rho(I) < 0.0) THEN
+            RHO(I)=(1 - EMIS(I))/PI
+          ELSE
+            RHO(I)=PROF%rho(I)
+          END IF
+       ENDDO
     
+!      HDO Depletion from UDEF(20,:)
+       HDODPL=PROF%udef(20)
+     if(DEBUG) write(6,"('rdrtp:HDODPL= ',F8.1)"),HDODPL
+!
 !      ----------------------------------
 !      Get layer temperature & gas amount
 !      ----------------------------------
@@ -436,85 +376,86 @@ DO I=1,NEMIS
           SAMNT(L)=PROF%gamnt(L,ISO2X)/6.02214199E+26
           HAMNT(L)=PROF%gamnt(L,IHNOX)/6.02214199E+26
           NAMNT(L)=PROF%gamnt(L,IN2OX)/6.02214199E+26
+          AAMNT(L)=PROF%gamnt(L,INH3X)/6.02214199E+26
           ALT(L)=0.5*( PROF%palts(L) + PROF%palts(L+1) )
+        ENDDO
+        IF (LCO2PM) THEN
+          DO L=1,NLAY
+            FAMNT(L)=PROF%gamnt(L,ICO2X)
           ENDDO
-            IF (LCO2PM) THEN
-              DO L=1,NLAY
-                FAMNT(L)=PROF%gamnt(L,ICO2X)
-                ENDDO
-                END IF
-              ELSE
-!            Prof is in bottom-up order
-                DO L=1,NLAY
-                  LR=1 + NLAY - L  ! reversed layer index
-                  TEMP(L)=PROF%ptemp(LR)
-                  WAMNT(L)=PROF%gamnt(LR,IH2O )/6.02214199E+26
-                  OAMNT(L)=PROF%gamnt(LR,IO3  )/6.02214199E+26
-                  CAMNT(L)=PROF%gamnt(LR,ICO  )/6.02214199E+26
-                  MAMNT(L)=PROF%gamnt(LR,ICH4 )/6.02214199E+26
-                  FAMNT(L)=PROF%gamnt(LR,ICO2X)/6.02214199E+26
-                  SAMNT(L)=PROF%gamnt(LR,ISO2X)/6.02214199E+26
-                  HAMNT(L)=PROF%gamnt(LR,IHNOX)/6.02214199E+26
-                  NAMNT(L)=PROF%gamnt(LR,IN2OX)/6.02214199E+26
-                  ALT(L)=0.5*( PROF%palts(LR) + PROF%palts(LR+1) )
-                  ENDDO
-                    IF (LCO2PM) THEN
-                      DO L=1,NLAY
-                        LR=1 + NLAY - L  ! reversed layer index
-                        FAMNT(L)=PROF%gamnt(LR,ICO2X)
-                        ENDDO
-                        END IF
-                      END IF
+        END IF
+      ELSE
+!       Prof is in bottom-up order
+        DO L=1,NLAY
+          LR=1 + NLAY - L  ! reversed layer index
+          TEMP(L)=PROF%ptemp(LR)
+          WAMNT(L)=PROF%gamnt(LR,IH2O )/6.02214199E+26
+          OAMNT(L)=PROF%gamnt(LR,IO3  )/6.02214199E+26
+          CAMNT(L)=PROF%gamnt(LR,ICO  )/6.02214199E+26
+          MAMNT(L)=PROF%gamnt(LR,ICH4 )/6.02214199E+26
+          FAMNT(L)=PROF%gamnt(LR,ICO2X)/6.02214199E+26
+          SAMNT(L)=PROF%gamnt(LR,ISO2X)/6.02214199E+26
+          HAMNT(L)=PROF%gamnt(LR,IHNOX)/6.02214199E+26
+          NAMNT(L)=PROF%gamnt(LR,IN2OX)/6.02214199E+26
+          AAMNT(L)=PROF%gamnt(LR,INH3X)/6.02214199E+26
+          ALT(L)=0.5*( PROF%palts(LR) + PROF%palts(LR+1) )
+        ENDDO
+        IF (LCO2PM) THEN
+           DO L=1,NLAY
+              LR=1 + NLAY - L  ! reversed layer index
+              FAMNT(L)=PROF%gamnt(LR,ICO2X)
+           ENDDO
+        END IF
+      END IF
                       
-                    ELSE IF (GUCIN == 2) THEN
-!         Input gas units are kilomoles/cm^2
-                      IF (PROF%plevs(1) < PROF%plevs(NLEV)) THEN
-!            Prof is in top-down order
-                        DO L=1,NLAY
-                          TEMP(L)=PROF%ptemp(L)
-                          WAMNT(L)=PROF%gamnt(L,IH2O)
-                          OAMNT(L)=PROF%gamnt(L,IO3)
-                          CAMNT(L)=PROF%gamnt(L,ICO)
-                          MAMNT(L)=PROF%gamnt(L,ICH4)
-                          FAMNT(L)=PROF%gamnt(L,ICO2X)
-                          SAMNT(L)=PROF%gamnt(L,ISO2X)
-                          HAMNT(L)=PROF%gamnt(L,IHNOX)
-                          NAMNT(L)=PROF%gamnt(L,IN2OX)
-                          ALT(L)=0.5*( PROF%palts(L) + PROF%palts(L+1) )
-                          ENDDO
-                          ELSE
-!            Prof is in bottom-up order
-                            DO L=1,NLAY
-                              LR=1 + NLAY - L  ! reversed layer index
-                              TEMP(L)=PROF%ptemp(LR)
-                              WAMNT(L)=PROF%gamnt(LR,IH2O)
-                              OAMNT(L)=PROF%gamnt(LR,IO3)
-                              CAMNT(L)=PROF%gamnt(LR,ICO)
-                              MAMNT(L)=PROF%gamnt(LR,ICH4)
-                              FAMNT(L)=PROF%gamnt(LR,ICO2X)
-                              SAMNT(L)=PROF%gamnt(LR,ISO2X)
-                              HAMNT(L)=PROF%gamnt(LR,IHNOX)
-                              NAMNT(L)=PROF%gamnt(LR,IN2OX)
-                              ALT(L)=0.5*( PROF%palts(LR) + PROF%palts(LR+1) )
-                              ENDDO
-                              END IF
-                            ELSE ! empty else
-                            END IF
-                            
+    ELSE IF (GUCIN == 2) THEN
+!     Input gas units are kilomoles/cm^2
+      IF (PROF%plevs(1) < PROF%plevs(NLEV)) THEN
+!     Prof is in top-down order
+        DO L=1,NLAY
+           TEMP(L)=PROF%ptemp(L)
+           WAMNT(L)=PROF%gamnt(L,IH2O)
+           OAMNT(L)=PROF%gamnt(L,IO3)
+           CAMNT(L)=PROF%gamnt(L,ICO)
+           MAMNT(L)=PROF%gamnt(L,ICH4)
+           FAMNT(L)=PROF%gamnt(L,ICO2X)
+           SAMNT(L)=PROF%gamnt(L,ISO2X)
+           HAMNT(L)=PROF%gamnt(L,IHNOX)
+           NAMNT(L)=PROF%gamnt(L,IN2OX)
+           AAMNT(L)=PROF%gamnt(L,INH3X)
+           ALT(L)=0.5*( PROF%palts(L) + PROF%palts(L+1) )
+        ENDDO
+      ELSE
+!     Prof is in bottom-up order
+        DO L=1,NLAY
+           LR=1 + NLAY - L  ! reversed layer index
+           TEMP(L)=PROF%ptemp(LR)
+           WAMNT(L)=PROF%gamnt(LR,IH2O)
+           OAMNT(L)=PROF%gamnt(LR,IO3)
+           CAMNT(L)=PROF%gamnt(LR,ICO)
+           MAMNT(L)=PROF%gamnt(LR,ICH4)
+           FAMNT(L)=PROF%gamnt(LR,ICO2X)
+           SAMNT(L)=PROF%gamnt(LR,ISO2X)
+           HAMNT(L)=PROF%gamnt(LR,IHNOX)
+           NAMNT(L)=PROF%gamnt(LR,IN2OX)
+           AAMNT(L)=PROF%gamnt(LR,INH3X)
+           ALT(L)=0.5*( PROF%palts(LR) + PROF%palts(LR+1) )
+        ENDDO
+      END IF
+    ELSE ! empty else
+    END IF
                             
 !      -----------------
 !      Default altitudes
 !      -----------------
-                            IF (PROF%palts(1) < -998 .OR. PTYPE == AIRSLAY) THEN
-!         No altitudes, use reference
-                              DO L=1,NLAY
-                                ALT(L)=RALT(L)
-                                ENDDO
-                                END IF
+    IF (PROF%palts(1) < -998 .OR. PTYPE == AIRSLAY) THEN
+!   No altitudes, use reference
+      DO L=1,NLAY
+        ALT(L)=RALT(L)
+      ENDDO
+    END IF
                                 
 ! for now ignore clouds
                                 
-                                
-                                
-                                9999  RETURN
-                              END SUBROUTINE RDRTP
+ 9999  RETURN
+ END SUBROUTINE RDRTP

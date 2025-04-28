@@ -1,29 +1,16 @@
 !=======================================================================
- 
-! Code converted using TO_F90_LOOP by Alan Miller
-! Date: 2023-04-04  Time: 16:44:55
- 
-!=======================================================================
-
 !              University of Maryland Baltimore County [UMBC]
-
 !              AIRS
-
 !              GETMIE
-
-!F77====================================================================
-
+!F90====================================================================
 
 !ROUTINE NAME: GETMIE
-
 
 !ABSTRACT:
 !    Get index of CTYPE in MIETYP
 
-
 !CALL PROTOCOL:
 !    GETMIE(CTYPE, MIETYP, INDMIE, IERR)
-
 
 !INPUT PARAMETERS:
 !    type      name    purpose                     units
@@ -31,32 +18,24 @@
 !    INTEGER   CTYPE   desired code number         none
 !    INT arr   MIETYP  available code numbers      none
 
-
 !OUTPUT PARAMETERS:
 !    type      name    purpose                     units
 !    --------  ------  --------------------------  ---------------------
 !    INTEGER   INDMIE  index of CTYPE in MIETYP    none
 !    INTEGER   IERR    error level                 none
 
-
 !INPUT/OUTPUT PARAMETERS: none
-
 
 !RETURN VALUES: none
 
-
 !PARENT(S): KLAYERS
 
-
 !ROUTINES CALLED: none
-
 
 !FILES ACCESSED:
 !    none
 
-
 !COMMON BLOCKS: none
-
 
 !DESCRIPTION:
 !    If CTYPE >= 100, then this routine finds
@@ -80,13 +59,10 @@
 !       600-699 : sulfate/pollutants
 
 
-
 !ALGORITHM REFERENCES: see DESCRIPTION
-
 
 !KNOWN BUGS AND LIMITATIONS:
 !    none
-
 
 !ROUTINE HISTORY:
 !    Date     Programmer        Comments
@@ -94,7 +70,6 @@
 ! 30 Mar 2006 Scott Hannon      created
 ! 05 Jan 2007 Scott Hannon      Debug. Add LBLACK.
 ! 20 Feb 2007 Scott Hannon      Remove LBLACK
-
 
 !END====================================================================
 
@@ -105,20 +80,18 @@ SUBROUTINE GETMIE(CTYPE, MIETYP, INDMIE, IERR)
 
 
 !-----------------------------------------------------------------------
-!      IMPLICIT NONE
+!      INCLUDE FILES
+!-----------------------------------------------------------------------
+USE incFTC
+
+!-----------------------------------------------------------------------
+ IMPLICIT NONE
 !-----------------------------------------------------------------------
 
 INTEGER, INTENT(IN)                      :: CTYPE
 INTEGER, INTENT(IN)                      :: MIETYP(NMIETY)
 INTEGER, INTENT(OUT)                     :: INDMIE
 INTEGER, INTENT(OUT)                     :: IERR
-IMPLICIT NONE
-
-
-!-----------------------------------------------------------------------
-!      INCLUDE FILES
-!-----------------------------------------------------------------------
-INCLUDE 'incFTC.f'
 
 
 !-----------------------------------------------------------------------
@@ -132,12 +105,9 @@ INCLUDE 'incFTC.f'
 !-----------------------------------------------------------------------
 !      Input parameters:
 
-INTEGER :: ! available mie lookup table code numbers
+!INTEGER :: ! available mie lookup table code numbers
 
 !      Output parameters
-
-
-
 
 !-----------------------------------------------------------------------
 !      LOCAL VARIABLES
@@ -152,7 +122,6 @@ INTEGER :: MCLASS
 !      SAVE STATEMENTS
 !-----------------------------------------------------------------------
 !      none
-
 
 !***********************************************************************
 !***********************************************************************

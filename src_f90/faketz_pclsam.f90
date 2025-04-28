@@ -1,30 +1,17 @@
 !=======================================================================
- 
-! Code converted using TO_F90_LOOP by Alan Miller
-! Date: 2023-04-04  Time: 16:44:55
- 
-!=======================================================================
-
 !    University of Maryland Baltimore County [UMBC]
-
 !    AIRS
-
 !    FAKETZ
-
-!F77====================================================================
-
+!F90====================================================================
 
 !ROUTINE NAME:
 !    FAKETZ
 
-
 !ABSTRACT:
 !    Calculate a "fake" layer-to-space optical depth.
 
-
 !CALL PROTOCOL:
 !    FAKETZ ( NFAKE, INDFAK, LBOT, TAUZ, SEC, SECFAK, TAUZFK )
-
 
 !INPUT PARAMETERS:
 !    type      name    purpose                     units
@@ -36,37 +23,29 @@
 !    REAL arr  SECFAK  angle secant for TAUZFK     none
 !    REAL arr  TAUZ    layer-to-space op depth     none
 
-
 !OUTPUT PARAMETERS:
 !    type      name    purpose                     units
 !    --------  ------  --------------------------  ---------------------
 !    REAL arr  TAUZFK  fake layer-to-space OD      none
 
-
 !INPUT/OUTPUT PARAMETERS:
 !    none
-
 
 !RETURN VALUES:
 !    none
 
-
 !PARENT(S):
 !    USEFAST
 
-
 !ROUTINES CALLED:
 !    none
-
 
 !FILES ACCESSED:
 !    incFTC.f : include file of parameter statements accessed during
 !       compilation only.
 
-
 !COMMON BLOCKS
 !    none
-
 
 !DESCRIPTION:
 !    March 1998 version of the 100 layer AIRS Fast Transmittance
@@ -78,14 +57,11 @@
 !       TAUZFK = TAUZ * SECFAK/SEC
 !    This is a crude approximation of the correct value.
 
-
 !ALGORITHM REFERENCES:
 !    none
 
-
 !KNOWN BUGS AND LIMITATIONS:
 !    This is a crude approximation of the correct value.
-
 
 !ROUTINE HISTORY:
 !    Date        Programmer     Comments
@@ -105,7 +81,12 @@ SUBROUTINE FAKETZ ( NFAKE, INDFAK, LBOT, TAUZ, SEC, SECFAK, TAUZFK )
 !      =================================================================
 
 !-----------------------------------------------------------------------
-!      IMPLICIT NONE
+!      INCLUDE FILES
+!-----------------------------------------------------------------------
+USE incFTC
+
+!-----------------------------------------------------------------------
+ IMPLICIT NONE
 !-----------------------------------------------------------------------
 
 INTEGER, INTENT(IN)                      :: NFAKE
@@ -115,32 +96,15 @@ REAL, INTENT(IN)                         :: TAUZ(MAXLAY,MXCHAN)
 REAL, INTENT(IN)                         :: SEC(MAXLAY)
 REAL, INTENT(IN)                         :: SECFAK(MAXLAY)
 REAL, INTENT(OUT)                        :: TAUZFK(MAXLAY,MXCHAN)
-IMPLICIT NONE
-
-
-!-----------------------------------------------------------------------
-!      INCLUDE FILES
-!-----------------------------------------------------------------------
-INCLUDE 'incFTC.f'
-
 
 !-----------------------------------------------------------------------
 !      EXTERNAL FUNCTIONS
 !-----------------------------------------------------------------------
 !      none
 
-
 !-----------------------------------------------------------------------
 !      ARGUMENTS
 !-----------------------------------------------------------------------
-
-
-
-
-
-
-
-
 
 !-----------------------------------------------------------------------
 !      LOCAL VARIABLES
@@ -150,12 +114,10 @@ INTEGER :: ICHAN
 INTEGER :: L
 REAL :: RATSEC(MAXLAY)
 
-
 !-----------------------------------------------------------------------
 !      SAVE STATEMENTS
 !-----------------------------------------------------------------------
 !      none
-
 
 !***********************************************************************
 !***********************************************************************

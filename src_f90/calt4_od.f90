@@ -1,33 +1,20 @@
 !=======================================================================
- 
-! Code converted using TO_F90_LOOP by Alan Miller
-! Date: 2023-04-04  Time: 16:44:55
- 
-!=======================================================================
-
 !    University of Maryland Baltimore County [UMBC]
-
 !    AIRS
-
 !    CALT4 (for set4 = FCOW) version with trace gases (no SO2 or HNO3)
-
-!F77====================================================================
-
+!F90====================================================================
 
 !ROUTINE NAME:
 !    CALT4
-
 
 !ABSTRACT:
 !    Calculate the transmittance for set4 using the predictors and the
 !    fast transmittance coefficients.
 
-
 !CALL PROTOCOL:
 !    CALT4( INDCHN, NLAY, NCHN4, CLIST4, COEF4,
 !       FIXMUL, CONPD4, FPRED4, CPRED4, OPRED4, WPRED4, TRCPRD, INDCO2,
 !       COFCO2, CO2MLT, INDN2O, COFN2O, N2OMLT, TAU, TAUZ )
-
 
 !INPUT PARAMETERS:
 !    type      name    purpose                     units
@@ -51,38 +38,30 @@
 !    REAL arr  COFN2O  N2O pert coefs              various
 !    REAL arr  N2OMLT  N2O pert multiplier         none
 
-
 !OUTPUT PARAMETERS:
 !    type      name    purpose                     units
 !    --------  ------  --------------------------  ---------------------
 !    REAL arr  TAU     effective layer opt depth   none
 !    REAL arr  TAUZ    layer-to-space opt depth    none
 
-
 !INPUT/OUTPUT PARAMETERS:
 !    none
-
 
 !RETURN VALUES:
 !    none
 
-
 !PARENT(S):
 !    USEFAST
 
-
 !ROUTINES CALLED:
 !    none
-
 
 !FILES ACCESSED:
 !    incFTC.f : include file of parameter statements accessed during
 !       compilation only.
 
-
 !COMMON BLOCKS
 !    none
-
 
 !DESCRIPTION:
 !    August 2000 version of the 100 layer AIRS Fast Transmittance
@@ -125,14 +104,11 @@
 
 !    ===================================================================
 
-
 !ALGORITHM REFERENCES:
 !    none
 
-
 !KNOWN BUGS AND LIMITATIONS:
 !    none
-
 
 !ROUTINE HISTORY:
 ! Date        Programmer     Comments
@@ -164,7 +140,12 @@ SUBROUTINE XCALT4 ( INDCHN, NLAY, NCHN4, CLIST4,  &
 !      =================================================================
 
 !-----------------------------------------------------------------------
-!      IMPLICIT NONE
+!      INCLUDE FILES
+!-----------------------------------------------------------------------
+USE incFTC
+
+!-----------------------------------------------------------------------
+ IMPLICIT NONE
 !-----------------------------------------------------------------------
 
 INTEGER, INTENT(IN)                      :: INDCHN(MXCHAN)
@@ -187,48 +168,18 @@ REAL, INTENT(IN)                         :: COFN2O(  NN2O,MAXLAY,MXCHNN)
 REAL, INTENT(IN)                         :: N2OMLT(MAXLAY)
 REAL, INTENT(OUT)                        :: TAU(MAXLAY,MXCHAN)
 REAL, INTENT(OUT)                        :: TAUZ(MAXLAY,MXCHAN)
-IMPLICIT NONE
-
-
-!-----------------------------------------------------------------------
-!      INCLUDE FILES
-!-----------------------------------------------------------------------
-INCLUDE 'incFTC.f'
-
 
 !-----------------------------------------------------------------------
 !      EXTERNAL FUNCTIONS
 !-----------------------------------------------------------------------
 !      none
 
-
 !-----------------------------------------------------------------------
 !      ARGUMENTS
 !-----------------------------------------------------------------------
 !      Input
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 !      Output
-
-
-
 
 !-----------------------------------------------------------------------
 !      LOCAL VARIABLES

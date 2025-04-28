@@ -35,7 +35,7 @@ OBJS =  rdinfo.o rdpref.o opnrtp.o rdcoef_reg.o tunmlt.o rdsun.o rdrtp.o  \
         wrtrtp.o util.o cbplev.o saconv.o vaconv.o qikexp.o main_reg.o
 MODOBJS = incFTC.o       
 
-OPT = -convert big_endian -extend-source 132 -check all -g -cpp -traceback -fp-stack-check -warn interface
+##OPT = -convert big_endian -extend-source 132 -check all -g -cpp -traceback -fp-stack-check -warn interface
 
 # ------------------------------------------------------------------------
 # gfortran

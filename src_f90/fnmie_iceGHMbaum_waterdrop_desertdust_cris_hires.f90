@@ -1,22 +1,13 @@
 !=======================================================================
- 
-! Code converted using TO_F90_LOOP by Alan Miller
-! Date: 2023-04-04  Time: 16:44:55
- 
-!=======================================================================
 
 !    University of Maryland Baltimore Country (UMBC)
-
 !    CRIS HiRes
-
 !    FNMIE
 
-!F77====================================================================
-
+!F90====================================================================
 
 !ROUTINE NAME:
 !    FNMIE
-
 
 !ABSTRACT:0
 !    Set Mie table filenames; this is a work-around for FORTRAN 77's
@@ -28,14 +19,11 @@
 !    files you wish to use.  The number of entries (NMIETY) must
 !    match the value in the "incFTC.f" include file.
 
-
 !CALL PROTOCOL
 !    FNMIE( VCLOUD, MIETYP, FNMIEA, FNMIEE, FNMIEG )
 
-
 !INPUT PARAMETERS:
 !    none
-
 
 !OUTPUT PARAMETERS:
 !    type      name    purpose                     units
@@ -46,31 +34,24 @@
 !    CHAR arr  FNMIEE  extinction filenames        none
 !    CHAR arr  FNMIEG  "g" asymmetry filenames     none
 
-
 !INPUT/OUTPUT PARAMETERS:
 !    none
-
 
 !RETURN VALUES:
 !    none
 
-
 !PARENT(S):
 !    RDCOEF
 
-
 !ROUTINES CALLED:
 !    none
-
 
 !FILES ACCESSED:
 !    incFTC.f : include file of parameter statements accessed during
 !       compilation only.
 
-
 !COMMON BLOCKS
 !    none
-
 
 !DESCRIPTION:
 !    May 2009 version of the SARTA v1.08 code with PCLSAM Fast
@@ -89,14 +70,11 @@
 !    500 - 599  Smoke/soot
 !    600 - 699  Sulfate/pollutants
 
-
 !ALGORITHM REFERENCES:
 !    none
 
-
 !KNOWN BUGS AND LIMITATIONS:
 !    none
-
 
 !ROUTINE HISTORY:
 ! Date        Programmer     Comments
@@ -105,50 +83,35 @@
 ! 08 Jan 2007 Scott Hannon   Change MIETYP code number values
 ! 12 May 2009 Scott Hannon   Add VCLOUD & CLDSTR
 
-
 !END====================================================================
-
-!      =================================================================
 
 SUBROUTINE FNMIE ( VCLOUD, MIETYP, FNMIEA, FNMIEE, FNMIEG )
 
-!      =================================================================
-
+!-----------------------------------------------------------------------
+!      INCLUDE FILES
+!-----------------------------------------------------------------------
+use incFTC
 
 !-----------------------------------------------------------------------
 !      IMPLICIT NONE
 !-----------------------------------------------------------------------
+IMPLICIT NONE
 
 CHARACTER (LEN=240), INTENT(OUT)         :: VCLOUD
 INTEGER, INTENT(OUT)                     :: MIETYP(NMIETY)
 CHARACTER (LEN=79), INTENT(OUT)          :: FNMIEA(NMIETY)
 CHARACTER (LEN=79), INTENT(OUT)          :: FNMIEE(NMIETY)
 CHARACTER (LEN=79), INTENT(OUT)          :: FNMIEG(NMIETY)
-IMPLICIT NONE
-
-
-!-----------------------------------------------------------------------
-!      INCLUDE FILES
-!-----------------------------------------------------------------------
-INCLUDE 'incFTC.f'
-
 
 !-----------------------------------------------------------------------
 !      EXTERNAL FUNCTIONS
 !-----------------------------------------------------------------------
 !      none
 
-
 !-----------------------------------------------------------------------
 !      ARGUMENTS
 !-----------------------------------------------------------------------
 !      Output
-
-
-
-
-
-
 
 !-----------------------------------------------------------------------
 !      LOCAL VARIABLES
@@ -160,12 +123,10 @@ INTEGER :: LENNB
 INTEGER :: N
 CHARACTER (LEN=40) :: CLDSTR(NMIETY)
 
-
 !-----------------------------------------------------------------------
 !      SAVE STATEMENTS
 !-----------------------------------------------------------------------
 !      none
-
 
 !***********************************************************************
 !***********************************************************************

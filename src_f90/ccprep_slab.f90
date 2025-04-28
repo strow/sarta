@@ -1,33 +1,20 @@
 !=======================================================================
- 
-! Code converted using TO_F90_LOOP by Alan Miller
-! Date: 2023-04-04  Time: 16:44:55
- 
-!=======================================================================
-
 !    University of Maryland Baltimore County [UMBC]
-
 !    AIRS
-
 !    CCPREP
-
-!F77====================================================================
-
+!F90====================================================================
 
 !ROUTINE NAME:
 !    CCPREP
 
-
 !ABSTRACT:
 !    Prepapre lookup table etc for a complex cloud calculation.
-
 
 !CALL PROTOCOL:
 !    CCPREP( NCHAN, LBOT, INDMIE, MIENPS,
 !       CNGWAT, CPSIZE, CPRTOP, CPRBOT, PLEV, TEMP, SECANG, SECSUN,
 !       MIEPS, MIEABS, MIEEXT, MIEASY, LCBOT, LCTOP, CLEARB, CLEART,
 !       TCBOT, TCTOP, MASEC, MSSEC, CFRCL, G_ASYM, NEXTOD, NSCAOD )
-
 
 !INPUT PARAMETERS:
 !    type      name    purpose                     units
@@ -49,7 +36,6 @@
 !    REAL arr  MIEEXT  Mie table extinction data   ?
 !    REAL arr  MIEASY  Mie table asymmetry data    ?
 
-
 !OUTPUT PARAMETERS:
 !    type      name    purpose                     units
 !    --------  ------  --------------------------  ---------------------
@@ -66,44 +52,33 @@
 !    REAL arr NEXTOD   nadir extinction optical depth
 !    REAL arr NSCAOD   nadir scattering optical depth
 
-
 !INPUT/OUTPUT PARAMETERS:
 !    none
-
 
 !RETURN VALUES:
 !    none
 
-
 !PARENT(S):
 !    SARTA
 
-
 !ROUTINES CALLED:
 !    none
-
 
 !FILES ACCESSED:
 !    incFTC.f : include file of parameter statements accessed during
 !       compilation only.
 
-
 !COMMON BLOCKS
 !    none
-
 
 !DESCRIPTION:
 !    Calculates the transmission thru a cloud
 
-
-
 !ALGORITHM REFERENCES:
 !    none
 
-
 !KNOWN BUGS AND LIMITATIONS:
 !    none
-
 
 !ROUTINE HISTORY:
 !    Date        Programmer     Comments
@@ -127,7 +102,12 @@ SUBROUTINE CCPREP( NCHAN, LBOT, INDMIE, MIENPS,  &
 !      =================================================================
 
 !-----------------------------------------------------------------------
-!      IMPLICIT NONE
+!      INCLUDE FILES
+!-----------------------------------------------------------------------
+USE incFTC
+
+!-----------------------------------------------------------------------
+IMPLICIT NONE
 !-----------------------------------------------------------------------
 
 INTEGER, INTENT(IN)                      :: NCHAN
@@ -158,14 +138,6 @@ REAL, INTENT(OUT)                        :: CFRCL(MAXLAY)
 REAL, INTENT(OUT)                        :: G_ASYM(MXCHAN)
 REAL, INTENT(OUT)                        :: NEXTOD(MXCHAN)
 REAL, INTENT(OUT)                        :: NSCAOD(MXCHAN)
-IMPLICIT NONE
-
-
-!-----------------------------------------------------------------------
-!      INCLUDE FILES
-!-----------------------------------------------------------------------
-INCLUDE 'incFTC.f'
-
 
 !-----------------------------------------------------------------------
 !      EXTERNAL FUNCTIONS
@@ -178,35 +150,22 @@ INCLUDE 'incFTC.f'
 !-----------------------------------------------------------------------
 !      Input
 
-
-
-INTEGER :: ! # of particle sizes
-
-
-
-
-REAL :: ! pressure levels
-REAL :: ! temperature
-REAL :: ! secant of view path
-REAL :: ! secant of total sun path
-REAL :: ! particle size
-REAL :: ! scattering absorption
-REAL :: ! scattering extinction
-REAL :: ! scattering asymmetry
+!INTEGER :: ! # of particle sizes
+!REAL :: ! pressure levels
+!REAL :: ! temperature
+!REAL :: ! secant of view path
+!REAL :: ! secant of total sun path
+!REAL :: ! particle size
+!REAL :: ! scattering absorption
+!REAL :: ! scattering extinction
+!REAL :: ! scattering asymmetry
 
 !      Output
 
-
-
-
-
-
-
-
-REAL :: ! fraction of cloud in layer
-REAL :: ! "g" asymmetry
-REAL :: ! nadir extinction optical depth
-REAL :: ! nadir scattering optical depth
+!REAL :: ! fraction of cloud in layer
+!REAL :: ! "g" asymmetry
+!REAL :: ! nadir extinction optical depth
+!REAL :: ! nadir scattering optical depth
 
 
 !-----------------------------------------------------------------------
@@ -228,7 +187,6 @@ REAL :: X            ! generic junk real variable
 !      SAVE STATEMENTS
 !-----------------------------------------------------------------------
 !      none
-
 
 !***********************************************************************
 !***********************************************************************
@@ -283,12 +241,17 @@ DO L=1,LBOT
 !      -----------------------------
 !      Calc cloud bottom temperature
 !      -----------------------------
+    IF(DEBUG) print*,'ccprep_slab: LCBOT, PLEV(LCBOT+1), PAVG/2, CPRBOT: ',& 
+       LCBOT,PLEV(LCBOT+1),PAVG,PAVG2,CPRBOT
     L=LCBOT
     PAVG=(PLEV(L+1) - PLEV(L))/LOG( PLEV(L+1)/PLEV(L) )
     IF (PAVG > CPRBOT .OR. L == LBOT) THEN
-      PAVG2=(PLEV(L) - PLEV(L-1))/LOG( PLEV(L)/PLEV(L-1) )
-      TCBOT=TEMP(L) + LOG(CPRBOT/PAVG)*  &
-          (TEMP(L-1) - TEMP(L))/LOG( PAVG2/PAVG )
+!      PAVG2=(PLEV(L) - PLEV(L-1))/LOG( PLEV(L)/PLEV(L-1) )
+!      TCBOT=TEMP(L) + LOG(CPRBOT/PAVG)*  &
+!          (TEMP(L-1) - TEMP(L))/LOG( PAVG2/PAVG )
+      PAVG2=(PLEV(L+1) - PLEV(L))/LOG( PLEV(L+1)/PLEV(L) )
+      TCBOT=TEMP(L+1) + LOG(CPRBOT/PAVG)*  &
+          (TEMP(L) - TEMP(L+1))/LOG( PAVG2/PAVG )
     ELSE
       PAVG2=(PLEV(L+2) - PLEV(L+1))/LOG( PLEV(L+2)/PLEV(L+1) )
       TCBOT=TEMP(L) + LOG(CPRBOT/PAVG)*  &

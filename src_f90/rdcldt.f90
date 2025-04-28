@@ -1,36 +1,23 @@
 !=======================================================================
- 
-! Code converted using TO_F90_LOOP by Alan Miller
-! Date: 2023-04-04  Time: 16:44:56
- 
-!=======================================================================
-
 !    University of Maryland Baltimore Country (UMBC)
-
 !    AIRS
-
 !    RDCLDT
-
-!F77====================================================================
-
+!F90====================================================================
 
 !ROUTINE NAME:
 !    RDCLDT
 
-
 !ABSTRACT:
 !    Read in the cloud lookup tables
 
-
 !CALL PROTOCOL
-!    RDCLDT ( IOUN, INDCHN, MIETYP, FNMIEA, FNMIEE, FNMIEG,
+!    RDCLDT ( IPOPN, INDCHN, MIETYP, FNMIEA, FNMIEE, FNMIEG,
 !       MIENPS, MIEPS, MIEABS, MIEEXT, MIEASY )
-
 
 !INPUT PARAMETERS:
 !    type      name    purpose                     units
 !    --------  ------  --------------------------  ---------------------
-!    INTEGER   IOUN    I/O unit number             none
+!    INTEGER   IPOPN    I/O unit number             none
 !    INT arr   INDCHN  indices of channels         none
 !    INT arr   MIETYP  Mie particle type code #    none
 !    CHAR arr  FNMIEA  Mie absorption filenames    none
@@ -46,33 +33,26 @@
 !    REAL arr  MIEEXT  Mie cloud extinction        m^2/g
 !    REAL arr  MIEASY  Mie cloud asymmetry         none
 
-
 !INPUT/OUTPUT PARAMETERS:
 !    none
-
 
 !RETURN VALUES:
 !    none
 
-
 !PARENT(S):
 !    USEFAST
-
 
 !ROUTINES CALLED:
 !    none
 
-
 !FILES ACCESSED:
 !    incFTC.f : include file of parameter statements accessed during
 !       compilation only.
-!    unit IOUN : input file, binary FORTRAN data file. The file is
+!    unit IPOPN : input file, binary FORTRAN data file. The file is
 !       opened, read, and closed. This is done 3*NMIETY times.
-
 
 !COMMON BLOCKS
 !    none
-
 
 !DESCRIPTION:
 !    May 2009 version of the cloudy SARTA code by L.Strow/S.Hannon.
@@ -80,78 +60,71 @@
 !    Cloud lookup tables of absorption, extinction, and asymmetry
 !    are read in from FORTRAN binary data files.
 
-
 !ALGORITHM REFERENCES:
 !    none
 
-
 !KNOWN BUGS AND LIMITATIONS:
 !    none
-
 
 !ROUTINE HISTORY:
 ! Date        Programmer     Comments
 ! ----------- -------------- -------------------------------------------
 ! 12 May 2009 Scott Hannon   Created from rdcoef_pclsam.f
 
-
 !END====================================================================
 
 !      =================================================================
 
-SUBROUTINE RDCLDT( IOUN, INDCHN, MIETYP, FNMIEA, FNMIEE, FNMIEG,  &
+SUBROUTINE RDCLDT( IPOPN, INDCHN, MIETYP, FNMIEA, FNMIEE, FNMIEG,  &
     MIENPS, MIEPS, MIEABS, MIEEXT, MIEASY )
 !      =================================================================
 
 
 !-----------------------------------------------------------------------
-!      IMPLICIT NONE
-!-----------------------------------------------------------------------
-
-INTEGER, INTENT(OUT)                     :: IOUN
-INTEGER, INTENT(IN OUT)                  :: INDCHN(MXCHAN)
-INTEGER, INTENT(IN OUT)                  :: MIETYP(NMIETY)
-CHARACTER (LEN=79), INTENT(OUT)          :: FNMIEA(NMIETY)
-CHARACTER (LEN=79), INTENT(OUT)          :: FNMIEE(NMIETY)
-CHARACTER (LEN=79), INTENT(OUT)          :: FNMIEG(NMIETY)
-INTEGER, INTENT(OUT)                     :: MIENPS(NMIETY)
-REAL, INTENT(IN)                         :: MIEPS(MXMIEA,NMIETY)
-REAL, INTENT(IN OUT)                     :: MIEABS(MXCHAN,MXMIEA,NMIETY)
-REAL, INTENT(IN OUT)                     :: MIEEXT(MXCHAN,MXMIEA,NMIETY)
-REAL, INTENT(IN OUT)                     :: MIEASY(MXCHAN,MXMIEA,NMIETY)
-IMPLICIT NONE
-
-
-!-----------------------------------------------------------------------
 !      INCLUDE FILES
 !-----------------------------------------------------------------------
-INCLUDE 'incFTC.f'
+USE incFTC
 
+!-----------------------------------------------------------------------
+ IMPLICIT NONE
+!-----------------------------------------------------------------------
+
+!INTEGER, INTENT(OUT)                     :: IOUN
+!INTEGER                                  :: IOUN
+integer, intent (in) :: IPOPN
+INTEGER, INTENT(IN OUT)                  :: INDCHN(MXCHAN)
+INTEGER, INTENT(IN OUT)                  :: MIETYP(NMIETY)
+CHARACTER (LEN=79), INTENT(IN)          :: FNMIEA(NMIETY)
+CHARACTER (LEN=79), INTENT(IN)          :: FNMIEE(NMIETY)
+CHARACTER (LEN=79), INTENT(IN)          :: FNMIEG(NMIETY)
+INTEGER, INTENT(OUT)                     :: MIENPS(NMIETY)
+REAL, INTENT(OUT)                        :: MIEPS(MXMIEA,NMIETY)
+REAL, INTENT(OUT)                        :: MIEABS(MXCHAN,MXMIEA,NMIETY)
+REAL, INTENT(OUT)                        :: MIEEXT(MXCHAN,MXMIEA,NMIETY)
+REAL, INTENT(OUT)                        :: MIEASY(MXCHAN,MXMIEA,NMIETY)
 
 !-----------------------------------------------------------------------
 !      EXTERNAL FUNCTIONS
 !-----------------------------------------------------------------------
 !      none
 
-
 !-----------------------------------------------------------------------
 !      ARGUMENTS
 !-----------------------------------------------------------------------
 !      Input
 
-INTEGER :: ! channel use/index
-INTEGER :: ! particle type code number
-CHARACTER (LEN=79) :: ! absorption filenames
-CHARACTER (LEN=79) :: ! extinction filenames
-CHARACTER (LEN=79) :: ! asymmetry filenames
+!INTEGER :: ! channel use/index
+!INTEGER :: ! particle type code number
+!CHARACTER (LEN=79) :: ! absorption filenames
+!CHARACTER (LEN=79) :: ! extinction filenames
+!CHARACTER (LEN=79) :: ! asymmetry filenames
 
 !      Output
-INTEGER :: ! number of particle sizes
-REAL :: ! particle size
-REAL :: ! absorption
-REAL :: ! extinction
-REAL :: ! asymmetry
-
+!INTEGER :: ! number of particle sizes
+!REAL :: ! particle size
+!REAL :: ! absorption
+!REAL :: ! extinction
+!REAL :: ! asymmetry
 
 !-----------------------------------------------------------------------
 !      LOCAL VARIABLES
@@ -173,7 +146,6 @@ INTEGER :: K
 !-----------------------------------------------------------------------
 !      none
 
-
 !***********************************************************************
 !***********************************************************************
 !                    EXECUTABLE CODE
@@ -186,7 +158,7 @@ DO K=1,NMIETY
 !         -------------------------
 !         Read Mie absorption table
 !         -------------------------
-  OPEN(UNIT=IOUN,FILE=FNMIEA(K),FORM='UNFORMATTED',STATUS='OLD', IOSTAT=IERR)
+  OPEN(UNIT=IPOPN,FILE=FNMIEA(K),FORM='UNFORMATTED',STATUS='OLD', IOSTAT=IERR)
   IF (IERR /= 0) THEN
     WRITE(6,1020) IERR, FNMIEA(K)
     1020     FORMAT('Error ',I5,' opening file:',/,A80)
@@ -194,7 +166,7 @@ DO K=1,NMIETY
   END IF
   
 !         Read the number of channels and mie types
-  READ(IOUN) I, IC
+  READ(IPOPN) I, IC
   IF (I /= MXCHAN) THEN
     WRITE(6,1071) FNMIEA(K), I, MXCHAN
     1071        FORMAT('ERROR! unexpected number of channels in mie file',  &
@@ -216,24 +188,24 @@ DO K=1,NMIETY
   MIENPS(K)=IC
   
 !         Read mie particle sizes
-  READ(IOUN) (MIEPS(IL,K),IL=1,MIENPS(K))
+  READ(IPOPN) (MIEPS(IL,K),IL=1,MIENPS(K))
   
 !         Read mie abs data for required channels
   DO I=1,MXCHAN
     IF (INDCHN(I) /= 0) THEN
-      READ(IOUN) (MIEABS(INDCHN(I),IL,K),IL=1,MIENPS(K))
+      READ(IPOPN) (MIEABS(INDCHN(I),IL,K),IL=1,MIENPS(K))
     ELSE
-      READ(IOUN) (XJUNK(IL),IL=1,MIENPS(K))
+      READ(IPOPN) (XJUNK(IL),IL=1,MIENPS(K))
     END IF
     ENDDO
       
-      CLOSE(IOUN)
+      CLOSE(IPOPN)
       
       
 !         -------------------------
 !         Read Mie extinction table
 !         -------------------------
-      OPEN(UNIT=IOUN,FILE=FNMIEE(K),FORM='UNFORMATTED',STATUS='OLD',  &
+      OPEN(UNIT=IPOPN,FILE=FNMIEE(K),FORM='UNFORMATTED',STATUS='OLD',  &
           IOSTAT=IERR)
       IF (IERR /= 0) THEN
         WRITE(6,1020) IERR, FNMIEE(K)
@@ -241,7 +213,7 @@ DO K=1,NMIETY
       END IF
       
 !         Read the number of channels and mie types
-      READ(IOUN) I, IC
+      READ(IPOPN) I, IC
       IF (I /= MXCHAN) THEN
         WRITE(6,1071) FNMIEE(K), I, MXCHAN
         STOP
@@ -254,7 +226,7 @@ DO K=1,NMIETY
       END IF
       
 !         Read mie particle sizes
-      READ(IOUN) (XJUNK(I),I=1,MIENPS(K))
+      READ(IPOPN) (XJUNK(I),I=1,MIENPS(K))
 !         Check particle sizes are consistent
       DO I=1,MIENPS(K)
         RJUNK=ABS( MIEPS(I,K) - XJUNK(I) )
@@ -270,19 +242,19 @@ DO K=1,NMIETY
           J=1
           DO I=1,MXCHAN
             IF (INDCHN(I) /= 0) THEN
-              READ(IOUN) (MIEEXT(INDCHN(I),IL,K),IL=1,MIENPS(K))
+              READ(IPOPN) (MIEEXT(INDCHN(I),IL,K),IL=1,MIENPS(K))
             ELSE
-              READ(IOUN) (XJUNK(IL),IL=1,MIENPS(K))
+              READ(IPOPN) (XJUNK(IL),IL=1,MIENPS(K))
             END IF
             ENDDO
               
-              CLOSE(IOUN)
+              CLOSE(IPOPN)
               
               
 !         ------------------------------
 !         Read Mie asymmetry ("g") table
 !         ------------------------------
-              OPEN(UNIT=IOUN,FILE=FNMIEG(K),FORM='UNFORMATTED',STATUS='OLD',  &
+              OPEN(UNIT=IPOPN,FILE=FNMIEG(K),FORM='UNFORMATTED',STATUS='OLD',  &
                   IOSTAT=IERR)
               IF (IERR /= 0) THEN
                 WRITE(6,1020) IERR, FNMIEG(K)
@@ -290,7 +262,7 @@ DO K=1,NMIETY
               END IF
               
 !         Read the number of channels and mie types
-              READ(IOUN) I, IC
+              READ(IPOPN) I, IC
               IF (I /= MXCHAN) THEN
                 WRITE(6,1071) FNMIEG(K), I, MXCHAN
                 STOP
@@ -301,7 +273,7 @@ DO K=1,NMIETY
               END IF
               
 !         Read mie particle sizes
-              READ(IOUN) (XJUNK(I),I=1,MIENPS(K))
+              READ(IPOPN) (XJUNK(I),I=1,MIENPS(K))
 !         Check particle sizes are consistent
               DO I=1,MIENPS(K)
                 RJUNK=ABS( MIEPS(I,K) - XJUNK(I) )
@@ -315,13 +287,13 @@ DO K=1,NMIETY
                   J=1
                   DO I=1,MXCHAN
                     IF (INDCHN(I) /= 0) THEN
-                      READ(IOUN) (MIEASY(INDCHN(I),IL,K),IL=1,MIENPS(K))
+                      READ(IPOPN) (MIEASY(INDCHN(I),IL,K),IL=1,MIENPS(K))
                     ELSE
-                      READ(IOUN) (XJUNK(IL),IL=1,MIENPS(K))
+                      READ(IPOPN) (XJUNK(IL),IL=1,MIENPS(K))
                     END IF
                     ENDDO
                       
-                      CLOSE(IOUN)
+                      CLOSE(IPOPN)
                       
                       ENDDO
                         

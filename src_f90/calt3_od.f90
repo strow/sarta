@@ -1,27 +1,15 @@
 !=======================================================================
- 
-! Code converted using TO_F90_LOOP by Alan Miller
-! Date: 2023-04-04  Time: 16:44:55
- 
-!=======================================================================
-
 !    University of Maryland Baltimore County [UMBC]
-
 !    AIRS
-
 !    CALT3 (for set3 = FMW) version with trace gases (no CO2)
-
-!F77====================================================================
-
+!F90====================================================================
 
 !ROUTINE NAME:
 !    CALT3
 
-
 !ABSTRACT:
 !    Calculate the transmittance for set3 using the prdictor and the
 !    fast transmittance coefficients.
-
 
 !CALL PROTOCOL:
 !    CALT3 ( INDCHN, NLAY, NCHN3, CLIST3, COEF3,
@@ -31,7 +19,6 @@
 !       INDNH3, COFNH3, NH3MLT, INDHDO, COFHDO, HDOMLT,
 !       INDH2O, H2OPRD, COFH2O, LOPMIN, LOPMAX,
 !       LOPLOW, LOPUSE, WAOP, DAOP, WAANG, TAU, TAUZ)
-
 
 !INPUT PARAMETERS:
 !    type      name    purpose                     units
@@ -73,38 +60,30 @@
 !    REAL arr  DAOP    OPTRAN-to-AIRS interp fac   none
 !    REAL arr  WAANG   AIRS layer water amounts    kilomoles/cm^2
 
-
 !OUTPUT PARAMETERS:
 !    type      name    purpose                     units
 !    --------  ------  --------------------------  ---------------------
 !    REAL arr  TAU     effective layer opt depth   none
 !    REAL arr  TAUZ    layer-to-space opt depth    none
 
-
 !INPUT/OUTPUT PARAMETERS:
 !    none
-
 
 !RETURN VALUES:
 !    none
 
-
 !PARENT(S):
 !    USEFAST
 
-
 !ROUTINES CALLED:
 !    none
-
 
 !FILES ACCESSED:
 !    incFTC.f : include file of parameter statements accessed during
 !       compilation only.
 
-
 !COMMON BLOCKS
 !    none
-
 
 !DESCRIPTION:
 !    August 2000 version of the 100 layer AIRS Fast Transmittance
@@ -143,14 +122,11 @@
 
 !    ===================================================================
 
-
 !ALGORITHM REFERENCES:
 !    none
 
-
 !KNOWN BUGS AND LIMITATIONS:
 !    none
-
 
 !ROUTINE HISTORY:
 !    Date        Programmer     Comments
@@ -182,14 +158,23 @@ SUBROUTINE XCALT3 ( INDCHN, NLAY, NCHN3, CLIST3, COEF3,  &
     FIXMUL, CONPD3, FPRED3, MPRED3, WPRED3, DPRED, TRCPRD,  &
     INDSO2, COFSO2, SO2MLT, INDHNO, COFHNO, HNOMLT,  &
     INDN2O, COFN2O, N2OMLT, INDNH3, COFNH3, NH3MLT,  &
-INDHDO  COFHDO, HDOMLT, INDH2O, H2OPRD, COFH2O,  &
-      LOPMIN, LOPMAX, LOPLOW, LOPUSE, WAOP, DAOP, WAANG, TAU, TAUZ)
-!      =================================================================
+    INDHDO, COFHDO, HDOMLT, INDH2O, H2OPRD, COFH2O,  &
+    LOPMIN, LOPMAX, LOPLOW, LOPUSE, WAOP, DAOP, WAANG, TAU, TAUZ)
+!    =================================================================
   
 !-----------------------------------------------------------------------
-!      IMPLICIT NONE
+!      INCLUDE FILES
+!-----------------------------------------------------------------------
+USE incFTC
+      
+!-----------------------------------------------------------------------
+IMPLICIT NONE
 !-----------------------------------------------------------------------
   
+!-----------------------------------------------------------------------
+!      ARGUMENTS
+!-----------------------------------------------------------------------
+      
   INTEGER, INTENT(IN)                      :: INDCHN(MXCHAN)
   INTEGER, INTENT(IN)                      :: NLAY
   INTEGER, INTENT(IN)                      :: NCHN3
@@ -199,96 +184,42 @@ INDHDO  COFHDO, HDOMLT, INDH2O, H2OPRD, COFH2O,  &
   REAL, INTENT(IN)                         :: CONPD3( N3CON,MAXLAY)
   REAL, INTENT(IN)                         :: FPRED3( N3FIX,MAXLAY)
   REAL, INTENT(IN)                         :: MPRED3( N3CH4,MAXLAY)
-  REAL, INTENT(IN OUT)                     :: WPRED3( N3H2O,MAXLAY)
-  REAL, INTENT(IN)                         :: DPRED(   NHDO MAXLAY)
-    REAL, INTENT(IN)                         :: TRCPRD(NTRACE,MAXLAY)
-    INTEGER, INTENT(IN)                      :: INDSO2(MXCHAN)
-    REAL, INTENT(IN)                         :: COFSO2(  NSO2,MAXLAY,MXCHNS)
-    REAL, INTENT(IN)                         :: SO2MLT(MAXLAY)
-    INTEGER, INTENT(IN)                      :: INDHNO(MXCHAN)
-    REAL, INTENT(IN)                         :: COFHNO( NHNO3,MAXLAY,MXCHNH)
-    REAL, INTENT(IN)                         :: HNOMLT(MAXLAY)
-    INTEGER, INTENT(IN)                      :: INDN2O(MXCHAN)
-    REAL, INTENT(IN)                         :: COFN2O(  NN2O,MAXLAY,MXCHNN)
-    REAL, INTENT(IN)                         :: N2OMLT(MAXLAY)
-    INTEGER, INTENT(IN)                      :: INDNH3(MXCHAN)
-    REAL, INTENT(IN)                         :: COFNH3(  NNH3,MAXLAY,MXCHNA)
-    REAL, INTENT(IN)                         :: NH3MLT(MAXLAY)
-    NO TYPE, INTENT(IN OUT)                  :: INDHDO  CO
-      REAL, INTENT(IN)                         :: HDOMLT(MAXLAY)
-      INTEGER, INTENT(IN)                      :: INDH2O(MXCHAN)
-      REAL, INTENT(IN OUT)                     :: H2OPRD(  NH2O,MXOWLY)
-      REAL, INTENT(IN OUT)                     :: COFH2O(  NH2O,MXOWLY,MXCHNW)
-      INTEGER, INTENT(IN OUT)                  :: LOPMIN
-      INTEGER, INTENT(IN OUT)                  :: LOPMAX
-      INTEGER, INTENT(IN OUT)                  :: LOPLOW(MAXLAY)
-      LOGICAL, INTENT(IN OUT)                  :: LOPUSE(MXOWLY)
-      REAL, INTENT(IN OUT)                     :: WAOP(MXOWLY)
-      REAL, INTENT(IN OUT)                     :: DAOP(MAXLAY)
-      REAL, INTENT(IN OUT)                     :: WAANG(MAXLAY)
-      REAL, INTENT(OUT)                        :: TAU(MAXLAY,MXCHAN)
-      REAL, INTENT(OUT)                        :: TAUZ(MAXLAY,MXCHAN)
-      IMPLICIT NONE
-      
-      
-!-----------------------------------------------------------------------
-!      INCLUDE FILES
-!-----------------------------------------------------------------------
-      INCLUDE 'incFTC.f'
-      
+  REAL, INTENT(IN)                         :: WPRED3( N3H2O,MAXLAY)
+  REAL, INTENT(IN)                         :: DPRED(  NHDO, MAXLAY)
+  REAL, INTENT(IN)                         :: TRCPRD(NTRACE,MAXLAY)
+  INTEGER, INTENT(IN)                      :: INDSO2(MXCHAN)
+  REAL, INTENT(IN)                         :: COFSO2(  NSO2,MAXLAY,MXCHNS)
+  REAL, INTENT(IN)                         :: SO2MLT(MAXLAY)
+  INTEGER, INTENT(IN)                      :: INDHNO(MXCHAN)
+  REAL, INTENT(IN)                         :: COFHNO( NHNO3,MAXLAY,MXCHNH)
+  REAL, INTENT(IN)                         :: HNOMLT(MAXLAY)
+  INTEGER, INTENT(IN)                      :: INDN2O(MXCHAN)
+  REAL, INTENT(IN)                         :: COFN2O(  NN2O,MAXLAY,MXCHNN)
+  REAL, INTENT(IN)                         :: N2OMLT(MAXLAY)
+  INTEGER, INTENT(IN)                      :: INDNH3(MXCHAN)
+  REAL, INTENT(IN)                         :: COFNH3(  NNH3,MAXLAY,MXCHNA)
+  REAL, INTENT(IN)                         :: NH3MLT(MAXLAY)
+  INTEGER, INTENT(IN)                      :: INDHDO(MXCHAN)
+  REAL, INTENT(IN)                         :: HDOMLT(MAXLAY)
+  REAL                                     :: COFHDO(  NHDO,MAXLAY,MXCHND)
+  INTEGER, INTENT(IN)                      :: INDH2O(MXCHAN)
+  REAL, INTENT(IN)                         :: H2OPRD(  NH2O,MXOWLY)
+  REAL, INTENT(IN)                         :: COFH2O(  NH2O,MXOWLY,MXCHNW)
+  INTEGER, INTENT(IN)                      :: LOPMIN
+  INTEGER, INTENT(IN)                      :: LOPMAX
+  INTEGER, INTENT(IN)                      :: LOPLOW(MAXLAY)
+  LOGICAL, INTENT(IN)                      :: LOPUSE(MXOWLY)
+  REAL, INTENT(IN)                         :: WAOP(MXOWLY)
+  REAL, INTENT(IN)                         :: DAOP(MAXLAY)
+  REAL, INTENT(IN)                         :: WAANG(MAXLAY)
+!
+  REAL, INTENT(OUT)                        :: TAU(MAXLAY,MXCHAN)
+  REAL, INTENT(OUT)                        :: TAUZ(MAXLAY,MXCHAN)
       
 !-----------------------------------------------------------------------
 !      EXTERNAL FUNCTIONS
 !-----------------------------------------------------------------------
 !      none
-      
-      
-!-----------------------------------------------------------------------
-!      ARGUMENTS
-!-----------------------------------------------------------------------
-!      Input
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      INTEGER :: INDHDO(MXCHAN)
-      REAL :: COFHDO(  NHDO,MAXLAY,MXCHND)
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-!      Output
-      
-      
-      
       
 !-----------------------------------------------------------------------
 !      LOCAL VARIABLES
@@ -300,37 +231,35 @@ INDHDO  COFHDO, HDOMLT, INDH2O, H2OPRD, COFH2O,  &
       INTEGER :: ISO2
       INTEGER :: INH3
       INTEGER :: IHDO
-        INTEGER :: J
-        REAL :: DK
-        REAL :: DKHNO3
-        REAL :: DKN2O
-        REAL :: DKSO2
-        REAL :: DKNH3
-        REAL :: DKHDO
-          REAL :: KHDO
-            REAL :: KCON
-            REAL :: KFIX
-            REAL :: KMET
-            REAL :: KZ
-            REAL :: KZFMW
-            REAL :: KLAYER
-            LOGICAL :: LH2O
-            LOGICAL :: LHNO3
-            LOGICAL :: LN2O
-            LOGICAL :: LSO2
-            LOGICAL :: LNH3
-            LOGICAL :: LHDO
+      INTEGER :: J
+      REAL :: DK
+      REAL :: DKHNO3
+      REAL :: DKN2O
+      REAL :: DKSO2
+      REAL :: DKNH3
+      REAL :: DKHDO
+      REAL :: KHDO
+      REAL :: KCON
+      REAL :: KFIX
+      REAL :: KMET
+      REAL :: KZ
+      REAL :: KZFMW
+      REAL :: KLAYER
+      LOGICAL :: LH2O
+      LOGICAL :: LHNO3
+      LOGICAL :: LN2O
+      LOGICAL :: LSO2
+      LOGICAL :: LNH3
+      LOGICAL :: LHDO
               
 !      for CALOKW
-              INTEGER :: IH2O
-              REAL :: KW(MAXLAY)
-              
+     INTEGER :: IH2O
+     REAL :: KW(MAXLAY)
               
 !-----------------------------------------------------------------------
 !      SAVE STATEMENTS
 !-----------------------------------------------------------------------
 !      none
-              
               
 !***********************************************************************
 !***********************************************************************
@@ -341,80 +270,78 @@ INDHDO  COFHDO, HDOMLT, INDH2O, H2OPRD, COFH2O,  &
 !      ---------------------------
 !      Loop on channel (frequency)
 !      ---------------------------
-              DO I=1,NCHN3
+       DO I=1,NCHN3
                 
 !         Index for TAU
-                J=INDCHN( CLIST3(I) )
-                
+          J=INDCHN( CLIST3(I) )
                 
 !         Determine whether or not to do variable SO2
-                ISO2=INDSO2( CLIST3(I) )
-                IF (ISO2 > 0) THEN
-                  LSO2=.TRUE.
-                ELSE
-                  LSO2=.FALSE.
-                END IF
+             ISO2=INDSO2( CLIST3(I) )
+             IF (ISO2 > 0) THEN
+                LSO2=.TRUE.
+             ELSE
+                LSO2=.FALSE.
+             END IF
                 
 !         Determine whether or not to do variable HNO3
-                IHNO3=INDHNO( CLIST3(I) )
-                IF (IHNO3 > 0) THEN
-                  LHNO3=.TRUE.
-                ELSE
-                  LHNO3=.FALSE.
-                END IF
+            IHNO3=INDHNO( CLIST3(I) )
+            IF (IHNO3 > 0) THEN
+               LHNO3=.TRUE.
+            ELSE
+               LHNO3=.FALSE.
+            END IF
                 
 !         Determine whether or not to do variable N2O
-                IN2O=INDN2O( CLIST3(I) )
-                IF (IN2O > 0) THEN
-                  LN2O=.TRUE.
-                ELSE
-                  LN2O=.FALSE.
-                END IF
+            IN2O=INDN2O( CLIST3(I) )
+            IF (IN2O > 0) THEN
+               LN2O=.TRUE.
+            ELSE
+               LN2O=.FALSE.
+            END IF
                 
 !         Determine whether or not to do variable NH3
-                INH3=INDNH3( CLIST3(I) )
-                IF (INH3 > 0) THEN
-                  LNH3=.TRUE.
-                ELSE
-                  LNH3=.FALSE.
-                END IF
+            INH3=INDNH3( CLIST3(I) )
+            IF (INH3 > 0) THEN
+               LNH3=.TRUE.
+            ELSE
+               LNH3=.FALSE.
+            END IF
                 
 !         Determine whether or not to do variable HDO calc
-                IHDO=INDHDO( CLIST3(I) )
-                IF (IHDO > 0) THEN
-                  LHDO=.TRUE.
-                ELSE
-                  LHDO=.FALSE.
-                END IF
+            IHDO=INDHDO( CLIST3(I) )
+              IF (IHDO > 0) THEN
+                LHDO=.TRUE.
+              ELSE
+                LHDO=.FALSE.
+              END IF
                 
 !         -------------------------
 !         Do OPTRAN water if needed
 !         -------------------------
-                IH2O=INDH2O( CLIST3(I) )
-                IF (IH2O > 0) THEN
-                  LH2O=.FALSE.
+             IH2O=INDH2O( CLIST3(I) )
+             IF (IH2O > 0) THEN
+                LH2O=.FALSE.
 !            Calc OPTRAN water
                   
-                  CALL CALOKW( NLAY, IH2O, LOPMIN, LOPMAX, LOPLOW, LOPUSE,  &
+                CALL CALOKW( NLAY, IH2O, LOPMIN, LOPMAX, LOPLOW, LOPUSE,  &
                       H2OPRD, COFH2O, WAOP, DAOP, WAANG, KW )
-                  
-                ELSE
-                  LH2O=.TRUE.
-                END IF
+             ELSE
+                LH2O=.TRUE.
+             END IF
                 
 !         Initialize the layer-to-space optical depth
-                KZ=0.0E+0
-                KZFMW=0.0E+0
+             KZ=0.0E+0
+             KZFMW=0.0E+0
                 
 !         ------------------------------
 !         Loop on layers (top to ground)
 !         ------------------------------
-                DO ILAY=1,NLAY
+             DO ILAY=1,NLAY
                   
 !            ---------------------------
 !            Compute the water continuum
 !            ---------------------------
-                  KCON=( COEF3(1,ILAY,I)*CONPD3(1,ILAY) ) +  &
+                KCON=( COEF3(1,ILAY,I)*CONPD3(1,ILAY) ) +  &
                       ( COEF3(2,ILAY,I)*CONPD3(2,ILAY) ) +  &
                       ( COEF3(3,ILAY,I)*CONPD3(3,ILAY) ) +  &
                       ( COEF3(4,ILAY,I)*CONPD3(4,ILAY) ) +  &
@@ -422,36 +349,36 @@ INDHDO  COFHDO, HDOMLT, INDH2O, H2OPRD, COFH2O,  &
                       ( COEF3(6,ILAY,I)*CONPD3(6,ILAY) ) +  &
                       ( COEF3(7,ILAY,I)*CONPD3(7,ILAY) )
                   
-                  IF (KCON < 0.0E+0) THEN
-                    KCON=0.0E+0
-                  ELSE IF (KCON > 1.0E+1) THEN
+                IF (KCON < 0.0E+0) THEN
+                   KCON=0.0E+0
+                ELSE IF (KCON > 1.0E+1) THEN
                     KCON=1.0E+1
-                  END IF
+                END IF
                   
 !            -----------------------------
 !            Calc the fixed gases abs coef
 !            -----------------------------
-                  KFIX=( COEF3( 8,ILAY,I)*FPRED3(1,ILAY) ) +  &
-                      ( COEF3( 9,ILAY,I)*FPRED3(2,ILAY) ) +  &
-                      ( COEF3(10,ILAY,I)*FPRED3(3,ILAY) ) +  &
-                      ( COEF3(11,ILAY,I)*FPRED3(4,ILAY) ) +  &
-                      ( COEF3(12,ILAY,I)*FPRED3(5,ILAY) ) +  &
-                      ( COEF3(13,ILAY,I)*FPRED3(6,ILAY) ) +  &
-                      ( COEF3(14,ILAY,I)*FPRED3(7,ILAY) ) +  &
-                      ( COEF3(15,ILAY,I)*FPRED3(8,ILAY) )
+               KFIX=( COEF3( 8,ILAY,I)*FPRED3(1,ILAY) ) +  &
+                    ( COEF3( 9,ILAY,I)*FPRED3(2,ILAY) ) +  &
+                    ( COEF3(10,ILAY,I)*FPRED3(3,ILAY) ) +  &
+                    ( COEF3(11,ILAY,I)*FPRED3(4,ILAY) ) +  &
+                    ( COEF3(12,ILAY,I)*FPRED3(5,ILAY) ) +  &
+                    ( COEF3(13,ILAY,I)*FPRED3(6,ILAY) ) +  &
+                    ( COEF3(14,ILAY,I)*FPRED3(7,ILAY) ) +  &
+                    ( COEF3(15,ILAY,I)*FPRED3(8,ILAY) )
                   
-                  KFIX=KFIX*FIXMUL(ILAY)
+               KFIX=KFIX*FIXMUL(ILAY)
                   
-                  IF (KFIX < 0.0E+0) THEN
-                    KFIX=0.0E+0
-                  ELSE IF (KFIX > 1.0E+1) THEN
-                    KFIX=1.0E+1
-                  END IF
+               IF (KFIX < 0.0E+0) THEN
+                  KFIX=0.0E+0
+               ELSE IF (KFIX > 1.0E+1) THEN
+                  KFIX=1.0E+1
+               END IF
                   
 !            ----------------------------
 !            Compute the methane abs coef
 !            ----------------------------
-                  KMET=( COEF3(16,ILAY,I)*MPRED3(1,ILAY) ) +  &
+               KMET=( COEF3(16,ILAY,I)*MPRED3(1,ILAY) ) +  &
                       ( COEF3(17,ILAY,I)*MPRED3(2,ILAY) ) +  &
                       ( COEF3(18,ILAY,I)*MPRED3(3,ILAY) ) +  &
                       ( COEF3(19,ILAY,I)*MPRED3(4,ILAY) ) +  &
@@ -461,16 +388,16 @@ INDHDO  COFHDO, HDOMLT, INDH2O, H2OPRD, COFH2O,  &
                       ( COEF3(23,ILAY,I)*MPRED3(8,ILAY) ) +  &
                       ( COEF3(24,ILAY,I)*MPRED3(9,ILAY) )
                   
-                  IF (KMET < 0.0E+0) THEN
-                    KMET=0.0E+0
-                  ELSE IF (KMET > 1.0E+1) THEN
-                    KMET=1.0E+1
-                  END IF
+               IF (KMET < 0.0E+0) THEN
+                  KMET=0.0E+0
+               ELSE IF (KMET > 1.0E+1) THEN
+                  KMET=1.0E+1
+               END IF
                   
 !            --------------------------
 !            Compute the water abs coef
 !            --------------------------
-                  IF (LH2O) THEN
+               IF (LH2O) THEN
 !               Not an OPTRAN water channel
                     KW(ILAY)= ( COEF3(25,ILAY,I)*WPRED3( 1,ILAY) ) +  &
                         ( COEF3(26,ILAY,I)*WPRED3( 2,ILAY) ) +  &
@@ -483,18 +410,18 @@ INDHDO  COFHDO, HDOMLT, INDH2O, H2OPRD, COFH2O,  &
                         ( COEF3(33,ILAY,I)*WPRED3( 9,ILAY) ) +  &
                         ( COEF3(34,ILAY,I)*WPRED3(10,ILAY) ) +  &
                         ( COEF3(35,ILAY,I)*WPRED3(11,ILAY) )
-                    
+                   
                     IF (KW(ILAY) < 0.0E+0) KW(ILAY)=0.0E+0
-                  END IF
+               END IF
                   
 !            Update KZFMW
-                  KZFMW=KZFMW + KFIX + KMET + KW(ILAY)
+               KZFMW=KZFMW + KFIX + KMET + KW(ILAY)
                   
 !            --------------------------
 !            Compute the HDO abs coef
 !            --------------------------
-                  IF (LHDO) THEN
-                    KHDO=( COFHDO(1,ILAY,IHDO)*DPRED( 1,ILAY) ) +  &
+              IF (LHDO) THEN
+                  KHDO=( COFHDO(1,ILAY,IHDO)*DPRED( 1,ILAY) ) +  &
                         ( COFHDO(2,ILAY,IHDO)*DPRED( 2,ILAY) ) +  &
                         ( COFHDO(3,ILAY,IHDO)*DPRED( 3,ILAY) ) +  &
                         ( COFHDO(4,ILAY,IHDO)*DPRED( 4,ILAY) ) +  &
@@ -508,9 +435,9 @@ INDHDO  COFHDO, HDOMLT, INDH2O, H2OPRD, COFH2O,  &
                     
 !                IF (KHDO .LT. 0.0E+0) KHDO=0.0E+0
                     KHDO=KHDO*HDOMLT(ILAY)
-                  ELSE
-                    KHDO=0.0
-                  END IF
+              ELSE
+                  KHDO=0.0
+              END IF
                   
 !            ----------------------------------
 !            Calc the total layer transmittance
@@ -529,35 +456,35 @@ INDHDO  COFHDO, HDOMLT, INDH2O, H2OPRD, COFH2O,  &
 !            Calc change in total optical
 !            depth due to variable SO2
 !            ----------------------------
-                  IF (LSO2 .AND. SO2MLT(ILAY) /= 0) THEN
-                    DKSO2=( COFSO2(1,ILAY,ISO2)*TRCPRD(1,ILAY) ) +  &
+              IF (LSO2 .AND. SO2MLT(ILAY) /= 0) THEN
+                  DKSO2=( COFSO2(1,ILAY,ISO2)*TRCPRD(1,ILAY) ) +  &
                         ( COFSO2(2,ILAY,ISO2)*TRCPRD(2,ILAY) ) +  &
                         ( COFSO2(3,ILAY,ISO2)*TRCPRD(3,ILAY) ) +  &
                         ( COFSO2(4,ILAY,ISO2)*TRCPRD(4,ILAY) )
-                    DKSO2=DKSO2*SO2MLT(ILAY)
-                  ELSE
-                    DKSO2=0.0
-                  END IF
+                  DKSO2=DKSO2*SO2MLT(ILAY)
+              ELSE
+                  DKSO2=0.0
+              END IF
                   
 !            ----------------------------
 !            Calc change in total optical
 !            depth due to variable HNO3
 !            ----------------------------
-                  IF (LHNO3 .AND. HNOMLT(ILAY) /= 0) THEN
-                    DKHNO3=( COFHNO(1,ILAY,IHNO3)*TRCPRD(1,ILAY) ) +  &
+              IF (LHNO3 .AND. HNOMLT(ILAY) /= 0) THEN
+                  DKHNO3=( COFHNO(1,ILAY,IHNO3)*TRCPRD(1,ILAY) ) +  &
                         ( COFHNO(2,ILAY,IHNO3)*TRCPRD(2,ILAY) ) +  &
                         ( COFHNO(3,ILAY,IHNO3)*TRCPRD(3,ILAY) ) +  &
                         ( COFHNO(4,ILAY,IHNO3)*TRCPRD(4,ILAY) )
-                    DKHNO3=DKHNO3*HNOMLT(ILAY)
-                  ELSE
-                    DKHNO3=0.0
-                  END IF
+                  DKHNO3=DKHNO3*HNOMLT(ILAY)
+              ELSE
+                  DKHNO3=0.0
+              END IF
                   
 !            ----------------------------
 !            Calc change in total optical
 !            depth due to variable N2O
 !            ----------------------------
-                  IF (LN2O .AND. N2OMLT(ILAY) /= 0) THEN
+              IF (LN2O .AND. N2OMLT(ILAY) /= 0) THEN
                     DKN2O=( COFN2O(1,ILAY,IN2O)*TRCPRD(1,ILAY) ) +  &
                         ( COFN2O(2,ILAY,IN2O)*TRCPRD(2,ILAY) ) +  &
                         ( COFN2O(3,ILAY,IN2O)*TRCPRD(3,ILAY) ) +  &
@@ -566,23 +493,23 @@ INDHDO  COFHDO, HDOMLT, INDH2O, H2OPRD, COFH2O,  &
                         ( COFN2O(6,ILAY,IN2O)*TRCPRD(6,ILAY) ) +  &
                         ( COFN2O(7,ILAY,IN2O)*TRCPRD(7,ILAY) )
                     DKN2O=DKN2O*N2OMLT(ILAY)
-                  ELSE
-                    DKN2O=0.0
-                  END IF
+              ELSE
+                   DKN2O=0.0
+              END IF
                   
 !            ----------------------------
 !            Calc change in total optical
 !            depth due to variable NH3
 !            ----------------------------
-                  IF (LNH3 .AND. NH3MLT(ILAY) /= 0) THEN
+              IF (LNH3 .AND. NH3MLT(ILAY) /= 0) THEN
                     DKNH3=( COFNH3(1,ILAY,INH3)*TRCPRD(1,ILAY) ) +  &
                         ( COFNH3(2,ILAY,INH3)*TRCPRD(2,ILAY) ) +  &
                         ( COFNH3(3,ILAY,INH3)*TRCPRD(3,ILAY) ) +  &
                         ( COFNH3(4,ILAY,INH3)*TRCPRD(4,ILAY) )
                     DKNH3=DKNH3*NH3MLT(ILAY)
-                  ELSE
-                    DKNH3=0.0
-                  END IF
+              ELSE
+                   DKNH3=0.0
+              END IF
                   
 !cc
 ! this block for testing
@@ -594,24 +521,24 @@ INDHDO  COFHDO, HDOMLT, INDH2O, H2OPRD, COFH2O,  &
                   KHDO=0.0
 !cc
 !            Limit -DK so it can never totally totally cancel KFIX
-                  DK = DKSO2 + DKHNO3 + DKN2O + DKNH3
-                  IF (-DK >= KFIX) THEN
-                    DK = -0.999*KFIX
-                  END IF
+              DK = DKSO2 + DKHNO3 + DKN2O + DKNH3
+              IF (-DK >= KFIX) THEN
+                  DK = -0.999*KFIX
+              END IF
                   
 !            Calc total layer optical depth
-                  KLAYER = KCON + KFIX + KMET + KW(ILAY) + DK
-                  TAU(ILAY,J)=KLAYER
+              KLAYER = KCON + KFIX + KMET + KW(ILAY) + DK
+              TAU(ILAY,J)=KLAYER
                   
 !            Calc layer-to-space optical depth
-                  KZ=KZ + KLAYER
-                  TAUZ(ILAY,J)=KZ
+              KZ=KZ + KLAYER
+              TAUZ(ILAY,J)=KZ
                   
-                  ENDDO
+          ENDDO
 !         End loop on levels
                     
-                    ENDDO
+       ENDDO
 !      End loops on channel number (frequency)
                       
-                      RETURN
-                    END SUBROUTINE XCALT3
+       RETURN
+       END SUBROUTINE XCALT3

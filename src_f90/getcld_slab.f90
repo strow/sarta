@@ -1,21 +1,10 @@
 !=======================================================================
- 
-! Code converted using TO_F90_LOOP by Alan Miller
-! Date: 2023-04-04  Time: 16:44:55
- 
-!=======================================================================
-
 !              University of Maryland Baltimore County [UMBC]
-
 !              AIRS
-
 !              GETCLD
-
-!F77====================================================================
-
+!F90====================================================================
 
 !ROUTINE NAME: GETCLD
-
 
 !ABSTRACT:
 !    Get basic cloud info
@@ -26,7 +15,6 @@
 !    XCEMI1, XCRHO1, CSTMP1,
 !    LBLAC2, CTYPE2, CFRAC2, CPSIZ2, CPRTO2, CPRBO2, CNGWA2,
 !    XCEMI2, XCRHO2, CSTMP2, CFRA12, FCLEAR, CFRA1X, CFRA2X )
-
 
 !INPUT PARAMETERS:
 !    type      name    purpose                     units
@@ -63,36 +51,26 @@
 !    REAL      CFRA1X  exclusive cloud1 fraction   none (0.0 to 1.0)
 !    REAL      CFRA2X  exclusive cloud2 fraction   none (0.0 to 1.0)
 
-
 !INPUT/OUTPUT PARAMETERS: none
-
 
 !RETURN VALUES: none
 
-
 !PARENT(S): SARTA
 
-
 !ROUTINES CALLED: none
-
 
 !FILES ACCESSED:
 !    none
 
-
 !COMMON BLOCKS: none
-
 
 !DESCRIPTION:
 !    Pulls out and checks cloud profile paramters.
 
-
 !ALGORITHM REFERENCES: see DESCRIPTION
-
 
 !KNOWN BUGS AND LIMITATIONS:
 !    none
-
 
 !ROUTINE HISTORY:
 !    Date     Programmer        Comments
@@ -119,44 +97,51 @@ SUBROUTINE GETCLD( IPROF, HEAD, PROF,  &
 
 
 !-----------------------------------------------------------------------
-!      IMPLICIT NONE
+!      INCLUDE FILES
+!-----------------------------------------------------------------------
+USE incFTC
+
+!-----------------------------------------------------------------------
+ IMPLICIT NONE
 !-----------------------------------------------------------------------
 
+include 'rtpdefs.f90'
+
+!-----------------------------------------------------------------------
+!      ARGUMENTS
+!-----------------------------------------------------------------------
+!      Input parameters:
+
 INTEGER, INTENT(IN OUT)                  :: IPROF
-NO TYPE, INTENT(IN OUT)                  :: HEAD
-NO TYPE, INTENT(IN OUT)                  :: PROF
+RECORD /RTPHEAD/ HEAD   ! header data
+RECORD /RTPPROF/ PROF   ! profile data
+
+!NO TYPE, INTENT(IN OUT)                  :: HEAD
+!NO TYPE, INTENT(IN OUT)                  :: PROF
 LOGICAL, INTENT(OUT)                     :: LBLAC1
 INTEGER, INTENT(OUT)                     :: CTYPE1
 REAL, INTENT(OUT)                        :: CFRAC1
-NO TYPE, INTENT(OUT)                     :: CPSIZ1
-NO TYPE, INTENT(OUT)                     :: CPRTO1
-NO TYPE, INTENT(OUT)                     :: CPRBO1
-NO TYPE, INTENT(OUT)                     :: CNGWA1
-REAL, INTENT(OUT)                        :: XCEMI1(MXEMIS)
-REAL, INTENT(OUT)                        :: XCRHO1(MXEMIS)
-NO TYPE, INTENT(OUT)                     :: CSTMP1
+!NO TYPE, INTENT(OUT)                     :: CPSIZ1
+!NO TYPE, INTENT(OUT)                     :: CPRTO1
+!NO TYPE, INTENT(OUT)                     :: CPRBO1
+!NO TYPE, INTENT(OUT)                     :: CNGWA1
+!REAL, INTENT(OUT)                        :: XCEMI1(MXEMIS)
+!REAL, INTENT(OUT)                        :: XCRHO1(MXEMIS)
+!NO TYPE, INTENT(OUT)                     :: CSTMP1
 LOGICAL, INTENT(OUT)                     :: LBLAC2
 INTEGER, INTENT(OUT)                     :: CTYPE2
 REAL, INTENT(OUT)                        :: CFRAC2
-NO TYPE, INTENT(OUT)                     :: CPSIZ2
-NO TYPE, INTENT(OUT)                     :: CPRTO2
-NO TYPE, INTENT(OUT)                     :: CPRBO2
-NO TYPE, INTENT(OUT)                     :: CNGWA2
-REAL, INTENT(OUT)                        :: XCEMI2(MXEMIS)
-REAL, INTENT(OUT)                        :: XCRHO2(MXEMIS)
-NO TYPE, INTENT(OUT)                     :: CSTMP2
-REAL, INTENT(OUT)                        :: CFRA12
-REAL, INTENT(OUT)                        :: FCLEAR
-REAL, INTENT(OUT)                        :: CFRA1X
-REAL, INTENT(OUT)                        :: CFRA2X
-IMPLICIT NONE
-
-
-!-----------------------------------------------------------------------
-!      INCLUDE FILES
-!-----------------------------------------------------------------------
-INCLUDE 'incFTC.f'
-INCLUDE 'rtpdefs.f'
+!NO TYPE, INTENT(OUT)                     :: CPSIZ2
+!NO TYPE, INTENT(OUT)                     :: CPRTO2
+!NO TYPE, INTENT(OUT)                     :: CPRBO2
+!NO TYPE, INTENT(OUT)                     :: CNGWA2
+!REAL, INTENT(OUT)                        :: XCEMI2(MXEMIS)
+!REAL, INTENT(OUT)                        :: XCRHO2(MXEMIS)
+!NO TYPE, INTENT(OUT)                     :: CSTMP2
+!REAL, INTENT(OUT)                        :: CFRA12
+!REAL, INTENT(OUT)                        :: FCLEAR
+!REAL, INTENT(OUT)                        :: CFRA1X
+!REAL, INTENT(OUT)                        :: CFRA2X
 
 
 !-----------------------------------------------------------------------
@@ -165,42 +150,28 @@ INCLUDE 'rtpdefs.f'
 !      none
 
 
-!-----------------------------------------------------------------------
-!      ARGUMENTS
-!-----------------------------------------------------------------------
-!      Input parameters:
-
-RECORD /RTPHEAD/ HEAD   ! header data
-RECORD /RTPPROF/ PROF   ! profile data
-
 !      Output parameters:
 !      cloud1
-
-
-
 REAL :: CPSIZ1         ! particle size (um)
 REAL :: CPRTO1         ! cloud top pressure (mb)
 REAL :: CPRBO1         ! cloud bottom pressure (mb)
 REAL :: CNGWA1         ! cloud amount (g/m^2)
-REAL :: ! emissivity
-REAL :: ! reflectivity
+REAL :: XCEMI1(MXEMIS) ! emissivity
+REAL :: XCRHO1(MXEMIS) ! reflectivity
 REAL :: CSTMP1         ! cloud/surf temperature (K)
 !      cloud2
-
-
-
 REAL :: CPSIZ2         ! particle size (um)
 REAL :: CPRTO2         ! cloud top pressure (mb)
 REAL :: CPRBO2         ! cloud bottom pressure (mb)
 REAL :: CNGWA2         ! cloud amount (g/m^2)
-REAL :: ! emissivity
-REAL :: ! reflectivity
+REAL :: XCEMI2(MXEMIS) ! emissivity
+REAL :: XCRHO2(MXEMIS) ! reflectivity
 REAL :: CSTMP2         ! cloud/surf temperature (K)
 !      other cloud fractions
-
-
-
-
+ REAL :: CFRA12         ! both clouds fraction
+ REAL :: FCLEAR         ! clear fraction
+ REAL :: CFRA1X         ! exclusive cloud1 fraction
+ REAL :: CFRA2X         ! exclusive cloud2 fraction
 
 !-----------------------------------------------------------------------
 !      LOCAL VARIABLES
@@ -212,7 +183,6 @@ INTEGER :: ICASE      ! case number for clouds
 !      SAVE STATEMENTS
 !-----------------------------------------------------------------------
 !      none
-
 
 !***********************************************************************
 !***********************************************************************

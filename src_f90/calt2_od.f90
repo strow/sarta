@@ -1,27 +1,15 @@
 !=======================================================================
- 
-! Code converted using TO_F90_LOOP by Alan Miller
-! Date: 2023-04-04  Time: 16:44:55
- 
-!=======================================================================
-
 !    University of Maryland Baltimore County [UMBC]
-
 !    AIRS
-
 !    CALT2 (for set2 = FOW) version with trace gases
-
-!F77====================================================================
-
+!F90====================================================================
 
 !ROUTINE NAME:
 !    CALT2
 
-
 !ABSTRACT:
 !    Calculate the transmittance for set2 using the predictors and the
 !    fast transmittance coefficients.
-
 
 !CALL PROTOCOL:
 !    CALT2 ( INDCHN, NLAY, NCHN2, CLIST2, COEF2, FIXMUL,
@@ -71,31 +59,24 @@
 !    REAL arr  TAU     effective layer opt depth   none
 !    REAL arr  TAUZ    layer-to-space opt depth    none
 
-
 !INPUT/OUTPUT PARAMETERS:
 !    none
-
 
 !RETURN VALUES:
 !    none
 
-
 !PARENT(S):
 !    USEFAST
 
-
 !ROUTINES CALLED:
 !    none
-
 
 !FILES ACCESSED:
 !    incFTC.f : include file of parameter statements accessed during
 !       compilation only.
 
-
 !COMMON BLOCKS
 !    none
-
 
 !DESCRIPTION:
 !    August 2000 version of the 100 layer AIRS Fast Transmittance
@@ -134,14 +115,11 @@
 
 !    ===================================================================
 
-
 !ALGORITHM REFERENCES:
 !    none
 
-
 !KNOWN BUGS AND LIMITATIONS:
 !    none
-
 
 !ROUTINE HISTORY:
 !    Date        Programmer     Comments
@@ -170,12 +148,17 @@ SUBROUTINE XCALT2 ( INDCHN, NLAY, NCHN2, CLIST2, COEF2,  &
     FIXMUL, CONPD2, FPRED2, OPRED2, WPRED2, DPRED, TRCPRD,  &
     INDCO2, COFCO2, CO2MLT, INDSO2, COFSO2, SO2MLT,  &
     INDHNO, COFHNO, HNOMLT, INDN2O, COFN2O, N2OMLT,  &
-INDNH3, COFNH3, NH3MLT, INDHDO  COFHDO, HDOMLT, TAU, TAUZ )
+    INDNH3, COFNH3, NH3MLT, INDHDO, COFHDO, HDOMLT, TAU, TAUZ )
   
 !      =================================================================
   
 !-----------------------------------------------------------------------
-!      IMPLICIT NONE
+!      INCLUDE FILES
+!-----------------------------------------------------------------------
+USE incFTC
+      
+!-----------------------------------------------------------------------
+IMPLICIT NONE
 !-----------------------------------------------------------------------
   
   INTEGER, INTENT(IN)                      :: INDCHN(MXCHAN)
@@ -188,7 +171,7 @@ INDNH3, COFNH3, NH3MLT, INDHDO  COFHDO, HDOMLT, TAU, TAUZ )
   REAL, INTENT(IN)                         :: FPRED2( N2FIX,MAXLAY)
   REAL, INTENT(IN)                         :: OPRED2(  N2O3,MAXLAY)
   REAL, INTENT(IN)                         :: WPRED2( N2H2O,MAXLAY)
-  REAL, INTENT(IN OUT)                     :: DPRED(   NHDO MAXLAY)
+  REAL, INTENT(IN OUT)                     :: DPRED(   NHDO, MAXLAY)
     REAL, INTENT(IN)                         :: TRCPRD(NTRACE,MAXLAY)
     INTEGER, INTENT(IN)                      :: INDCO2(MXCHAN)
     REAL, INTENT(IN)                         :: COFCO2(  NCO2,MAXLAY,MXCHNC)
@@ -205,24 +188,16 @@ INDNH3, COFNH3, NH3MLT, INDHDO  COFHDO, HDOMLT, TAU, TAUZ )
     INTEGER, INTENT(IN)                      :: INDNH3(MXCHAN)
     REAL, INTENT(IN)                         :: COFNH3(  NNH3,MAXLAY,MXCHNA)
     REAL, INTENT(IN)                         :: NH3MLT(MAXLAY)
-    NO TYPE, INTENT(IN OUT)                  :: INDHDO  CO
-      REAL, INTENT(IN OUT)                     :: HDOMLT(MAXLAY)
-      REAL, INTENT(OUT)                        :: TAU(MAXLAY,MXCHAN)
-      REAL, INTENT(OUT)                        :: TAUZ(MAXLAY,MXCHAN)
-      IMPLICIT NONE
-      
-      
-!-----------------------------------------------------------------------
-!      INCLUDE FILES
-!-----------------------------------------------------------------------
-      INCLUDE 'incFTC.f'
-      
+    INTEGER, INTENT(IN OUT)                  :: INDHDO(MXCHAN)
+    REAL, INTENT(IN OUT)                     :: HDOMLT(MAXLAY)
+    REAL                                     :: COFHDO(  NHDO,MAXLAY,MXCHND)
+    REAL, INTENT(OUT)                        :: TAU(MAXLAY,MXCHAN)
+    REAL, INTENT(OUT)                        :: TAUZ(MAXLAY,MXCHAN)
       
 !-----------------------------------------------------------------------
 !      EXTERNAL FUNCTIONS
 !-----------------------------------------------------------------------
 !      none
-      
       
 !-----------------------------------------------------------------------
 !      ARGUMENTS
@@ -230,39 +205,7 @@ INDNH3, COFNH3, NH3MLT, INDHDO  COFHDO, HDOMLT, TAU, TAUZ )
 !      Input
       
       
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      INTEGER :: INDHDO(MXCHAN)
-      REAL :: COFHDO(  NHDO,MAXLAY,MXCHND)
-      
-      
 !      Output
-      
-      
-      
       
 !-----------------------------------------------------------------------
 !      LOCAL VARIABLES

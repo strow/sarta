@@ -1,33 +1,24 @@
 !=======================================================================
-
 !    University of Maryland Baltimore County [UMBC]
-
 !    AIRS
-
 !    RDPROF version with SO2, HNO3, N2O, NH3 trace gases
-
 !F90====================================================================
-
 
 !ROUTINE NAME:
 !    RDPROF
 
-
 !ABSTRACT:
 !    Read in an AIRS FTC formatted profile. Temperature, amounts, etc.
 
-
 !CALL PROTOCOL:
-!    RDPROF ( IOUN, PFILE, PNAM, ALT, PRES, TEMP, FAMNT, WAMNT, OAMNT,
+!    RDPROF ( IPOPN, PFILE, PNAM, ALT, PRES, TEMP, FAMNT, WAMNT, OAMNT,
 !       CAMNT, MAMNT, SAMNT, HAMNT, NAMNT, AAMNT )
-
 
 !INPUT PARAMETERS:
 !    type      name    purpose                     units
 !    --------  ------  --------------------------  ---------------------
-!    INTEGER   IOUN    I/O unit number             none
+!    INTEGER   IPOPN    I/O unit number             none
 !    CHAR*80   PFILE   filename for desired prof   none
-
 
 !OUTPUT PARAMETERS:
 !    type      name    purpose                     units
@@ -46,32 +37,25 @@
 !    REAL arr  WAMNT   water amount                k.mol/cm2
 !    REAL arr  AAMNT   ammonia (NH3) amount        k.mol/cm2
 
-
 !INPUT/OUTPUT PARAMETERS:
 !    none
-
 
 !RETURN VALUES:
 !    none
 
-
 !PARENT(S):
 !    USEFAST
-
 
 !ROUTINES CALLED:
 !    none
 
-
 !FILES ACCESSED:
 !    incFTC.f : include file of parameter statements accessed during
 !       compilation only.
-!    unit IOUN : input file, ASCII profile file
-
+!    unit IPOPN : input file, ASCII profile file
 
 !COMMON BLOCKS
 !    none
-
 
 !DESCRIPTION:
 !    March 1998 version of the 100 layer AIRS Fast Transmittance Code
@@ -103,14 +87,11 @@
 !       "N"  is the nitrous oxide (N2O) amount
 !    ===================================================================
 
-
 !ALGORITHM REFERENCES:
 !    none
 
-
 !KNOWN BUGS AND LIMITATIONS:
 !    none
-
 
 !ROUTINE HISTORY:
 !    Date         Programmer      Comments
@@ -120,35 +101,26 @@
 !                                 added ALT
 !    Jun 23 1995  Scott Hannon    Correct some comments
 !    Jul  3 1995  Scott Hannon    Added parameter DZ for layer thickness
-!     3 Feb 1997  Scott Hannon    Add IOUN, CAMNT & MAMNT
+!     3 Feb 1997  Scott Hannon    Add IPOPN, CAMNT & MAMNT
 !    18 May 2005  Scott Hannon    Add HNO3 & N2O based on SO2 code
 !    10 May 2018  C Hepplewhite   Add NH3
 
 !END====================================================================
 
-!      =================================================================
-
-MODULE RD_PROF
-
-IMPLICIT NONE
-
-CONTAINS
-
-SUBROUTINE RDPROF (IOUN, PFILE, PNAM, ALT, DZ, PRES, TEMP,  &
+SUBROUTINE RDPROF (IPOPN, PFILE, PNAM, ALT, DZ, PRES, TEMP,  &
     FAMNT, WAMNT, OAMNT, CAMNT, MAMNT, SAMNT, HAMNT, NAMNT, AAMNT)
 !      =================================================================
 
 !-----------------------------------------------------------------------
-       IMPLICIT NONE
-!-----------------------------------------------------------------------
-
-!-----------------------------------------------------------------------
 !      INCLUDE FILES
 !-----------------------------------------------------------------------
-INCLUDE 'incFTC.f90'
+use incFTC
 
+!-----------------------------------------------------------------------
+IMPLICIT NONE
+!-----------------------------------------------------------------------
 
-INTEGER, INTENT(IN)                      :: IOUN
+INTEGER, INTENT(IN)                      :: IPOPN
 CHARACTER (LEN=90), INTENT(IN)           :: PFILE
 CHARACTER (LEN=40), INTENT(OUT)          :: PNAM
 REAL, INTENT(IN OUT)                     :: ALT(MAXLAY)
@@ -164,38 +136,18 @@ REAL, INTENT(IN OUT)                     :: SAMNT(MAXLAY)
 REAL, INTENT(IN OUT)                     :: HAMNT(MAXLAY)
 REAL, INTENT(IN OUT)                     :: NAMNT(MAXLAY)
 REAL, INTENT(IN OUT)                     :: AAMNT(MAXLAY)
-!IMPLICIT NONE
-
 
 !-----------------------------------------------------------------------
 !      EXTERNAL FUNCTIONS
 !-----------------------------------------------------------------------
 !      none
 
-
 !-----------------------------------------------------------------------
 !      ARGUMENTS
 !-----------------------------------------------------------------------
 !      Input
 
-
-
 !      Output
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 !-----------------------------------------------------------------------
 !      LOCAL VARIABLES
@@ -205,12 +157,10 @@ INTEGER :: IJUNK
 INTEGER :: L
 CHARACTER (LEN=80) :: CLINE
 
-
 !-----------------------------------------------------------------------
 !      SAVE STATEMENTS
 !-----------------------------------------------------------------------
 !      none
-
 
 !***********************************************************************
 !***********************************************************************
@@ -221,7 +171,7 @@ CHARACTER (LEN=80) :: CLINE
 !      ---------------------
 !      Open the profile file
 !      ---------------------
-OPEN(UNIT=IOUN,FILE=PFILE,STATUS='OLD',FORM='FORMATTED', IOSTAT=IERR)
+OPEN(UNIT=IPOPN,FILE=PFILE,STATUS='OLD',FORM='FORMATTED', IOSTAT=IERR)
 IF (IERR /= 0) THEN
   WRITE(6,1010) IERR, PFILE
   1010     FORMAT('Error ',I5,' opening profile file:',/,A80)
@@ -231,18 +181,18 @@ END IF
 !      ----------------------------------------
 !      Skip any comments at the top of the file
 !      ----------------------------------------
-10    READ(IOUN,9000) CLINE
+10    READ(IPOPN,9000) CLINE
 9000  FORMAT(A80)
 IF (CLINE(1:1) == '!') THEN
   GO TO 10
 ELSE
-  BACKSPACE(IOUN)
+  BACKSPACE(IPOPN)
 END IF
 
 !      -------------------------------
 !      Read the profile's name/comment
 !      -------------------------------
-READ(IOUN,9010) PNAM
+READ(IPOPN,9010) PNAM
 9010  FORMAT(A40)
 !       WRITE(6,*) PNAM
 
@@ -253,7 +203,7 @@ READ(IOUN,9010) PNAM
 DO L=MAXLAY,1,-1
 !         Layer number, altitude, thickness, pressure, temperature,
 !         fixed, H2O, O3, CO, and CH4 amounts
-  READ(IOUN,*) IJUNK, ALT(L), DZ(L), PRES(L), TEMP(L),  &
+  READ(IPOPN,*) IJUNK, ALT(L), DZ(L), PRES(L), TEMP(L),  &
       FAMNT(L), WAMNT(L), OAMNT(L), CAMNT(L), MAMNT(L),  &
       SAMNT(L), HAMNT(L), NAMNT(L), AAMNT(L)
   ENDDO
@@ -261,10 +211,8 @@ DO L=MAXLAY,1,-1
 !      ----------------------
 !      Close the profile file
 !      ----------------------
-    CLOSE(IOUN)
+    CLOSE(IPOPN)
     
     RETURN
-  END SUBROUTINE RDPROF
-
-END MODULE RD_PROF
+    END SUBROUTINE RDPROF
 

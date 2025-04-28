@@ -1,6 +1,5 @@
 ! version for sarta
 !=======================================================================
-!=======================================================================
 !
 !              University of Maryland Baltimore County [UMBC]
 !
@@ -8,15 +7,12 @@
 !
 !              RDRTP version with trace gases and NH3
 !
-!F77====================================================================
-
+!F90====================================================================
 
 !ROUTINE NAME: RDRTP
 
-
 !ABSTRACT:
 !    Read a profile from a previously openned RTP file
-
 
 !CALL PROTOCOL:
 !    RDRTP( LWANT, IPROF, IOPCI,
@@ -25,7 +21,6 @@
 !       ZSAT, SUNANG, PSURF, TSURF, CO2PPM, FEMIS, EMIS, RHO,
 !       TEMP, WAMNT, OAMNT, CAMNT, MAMNT, FAMNT, SAMNT, HAMNT, NAMNT,
 !       AAMNT, ALT, PROF, ISTAT )
-
 
 !INPUT PARAMETERS:
 !    type      name    purpose                     units
@@ -45,7 +40,6 @@
 !    INTEGER   PTYPE   profile type code number    none
 !    REAL arr  RALT    ref prof layer altitudes    meters
 !    LOGICAL   LCO2PM  CO2 profile in ppmv?        none
-
 
 !OUTPUT PARAMETERS:
 !    type      name    purpose                     units
@@ -80,40 +74,30 @@
 !    REAL      HDODPL  HDO depletion as per.mil    o/oo
 ! note: units "*/cm^2" can be either kilomoles/cm^2 or molecules/cm^2
 
-
 !INPUT/OUTPUT PARAMETERS: none
-
 
 !RETURN VALUES: none
 
-
 !PARENT(S): KLAYERS
 
-
 !ROUTINES CALLED: none
-
 
 !FILES ACCESSED:
 !    Input RTP file withI/O number IOPCI
 !    unit IOERR: error messages
 !    unit IOINFO: info/warning messages
 
-
 !COMMON BLOCKS: none
-
 
 !DESCRIPTION:
 !    Reads a single profile from a previously openned RTP file.
 !    The routine expects to find the data specified in the header
 !    of the input RTP file.
 
-
 !ALGORITHM REFERENCES: see DESCRIPTION
-
 
 !KNOWN BUGS AND LIMITATIONS:
 !    none
-
 
 !ROUTINE HISTORY:
 !    Date     Programmer        Comments

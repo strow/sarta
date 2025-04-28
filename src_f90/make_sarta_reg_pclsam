@@ -1,0 +1,83 @@
+#
+# Makefile make_sarta_pclsam
+#
+# ------------
+# Object files
+# ------------
+OBJS = rdinfo.o  vaconv.o  calpar.o  qikexp.o  hg3.o  setems_pclsam.o \
+       check_plevs.o getbot_pclsam.o \
+       calt1_od.o  calt2_od.o  calt3_od.o  calt4_od.o  calt5_od.o \
+       calt6_od.o  calt7_od.o  bkprep.o  getcld_slab.o \
+       faketz_pclsam.o  sunpar.o   rdsun.o  saconv.o  calowp.o  calokw.o  tunmlt.o \
+       util.o  opnrtp_pclsam.o  rdrtp_pclsam.o  wrtrtp.o  mean_t.o  calxnte.o \
+       cbplev.o  calrad0.o  calrad1.o  calrad2.o getmie.o fnmie.o \
+       ccprep_slab.o rdcoef_reg.o rdcldt.o rdpref.o main_pclsam.o
+
+MODOBJS = incFTC.o
+
+#MODS = rdprof.mod  vaconv.mod  calpar.mod  qikexp.mod  hg3.mod  setems_pclsam.mod  getbot.mod \
+#       calt1_od.mod  calt2_od.mod  calt3_od.mod  calt4_od.mod  calt5_od.mod \
+#       calt6_od.mod  calt7_od.mod  bkprep.mod  getcld_slab.mod \
+#       faketz_pclsam.mod  sunpar.mod   rdsun.mod  saconv.mod  calowp.mod  calokw.mod  tunmlt.mod \
+#       util.mod  opnrtp_pclsam.mod  rdrtp_pclsam.mod  wrtrtp.mod  mean_t.mod  calnte.mod \
+#       rdinfo.mod  cbplev.mod  calrad0.mod  calrad1.mod  calrad2.mod rdcldt.mod \
+#       getmie.mod  fnmie.mod  rdcoef.mod  ccprep_slab.mod  main_pclsam.mod
+
+# ------------------------------------------------------------------------
+# HDF and RTP LIBS
+# ------------------------------------------------------------------------
+HDFLIB = -L/home/chepplew/myLib/hdf-4.2.10/lib -ldf -ljpeg -lz \
+	-L/usr/lib64/libsz.so.2 -lsz 
+RTPLIB = -L/home/chepplew/myLib/rtp/lib -lrtp
+RTPINC = -I/home/chepplew/myLib/rtp/include
+#
+.PHONY: main sarta
+
+# ------------------------------------------------------------------------
+# Compilers
+# ------------------------------------------------------------------------
+# OPT = -O2 -convert big_endian -extend-source 132
+
+OPT = -convert big_endian -extend-source 132 -check all -g -cpp -traceback -fp-stack-check -warn interface
+
+# ------------------------------------------------------------------------
+# gfortran or ifort
+# ------------------------------------------------------------------------
+# F77 = gfortran
+# FCFLAGS =  -fdec-structure -fconvert=swap  -fcheck=all -g
+
+F77 = ifort 
+# to help debug:
+FCFLAGS = -O0 -convert big_endian -extend-source 132 -check all -g -cpp -traceback -fp-stack-check -warn interface -fp-model source
+# operational build
+## FCFLAGS = -O2 -convert big_endian -extend-source 132 -fpe0 -fp-model source
+
+
+# Portland Group F77:
+# ------------------------------------------------------------------------
+#    -byteswapio  read big-endian binary files (needed for coefficient files)
+#    -C           array bounds checking
+#    -g           include symbol table info
+#    -O           moderate optimization
+#OPT = -O -byteswapio
+#F77 = pgf77
+
+# ------------------------------------------------------------------------
+# Build
+# ------------------------------------------------------------------------
+# Compile source to object files
+#%.o:%.f90
+#	@echo "converting .f90 files to .o"
+#	$(F77) -c $(OPT) $(RTPINC) $*.f90
+#
+#sarta:	$(OBJS)
+#	$(F77) $(OBJS) $(MODS) $(RTPLIB) $(HDFLIB) $(FLIB)
+
+sarta:	$(OBJS)
+	$(F77) $(OBJS) $(RTPLIB) $(HDFLIB) $(FLIB)
+
+# Compile source to object files
+%.o: %.f90
+	$(F77) $(FCFLAGS) $(RTPINC) -c $^
+
+

@@ -314,67 +314,72 @@ integer, PARAMETER :: GUCIN = 1
 !      -----------
 !      For non-LTE
 !      -----------
+! LXNTE  ! Logical. T: load 14 coefficients for 0-120.deg, F: load 7 for
+! 0-90.deg
 ! MXCNTE ! max # of channels for non-LTE (70)
 ! NNCOEF ! # of coefs for non-LTE (7)
+! XNCOEF ! # of coefs to read from the database file
 ! NTEBOT ! bottom layer for CO2TOP calc
 ! CO2NTE ! ref CO2 mixing ratio for non-LTE coefs (ppmv)
+logical, PARAMETER :: LXNTE = .FALSE.     ! F: 0-90 or T: 0-120.deg solzen
 integer, PARAMETER :: MXCNTE = 800        ! was 133 placeholder
-integer, PARAMETER :: NNCOEF = 14         ! was 7
+integer, PARAMETER :: NNCOEF = 7          ! Default: 7 but context see: LXNTE
+integer, PARAMETER :: XNCOEF = 14         ! Default: 2 x NNCOEF -> COEFN(XN,M)
 integer, PARAMETER :: NTEBOT = 10
 integer, PARAMETER :: CO2NTE = 400.0
-integer, parameter :: NCHNTE = 800
-! real, PARAMETER :: CO2NTE = 400.0         ! ref CO2 mix.ratio for nonLTE coefs (ppmv) 
+!!integer, parameter :: NCHNTE = 800      ! definition moved
+!!integer, parameter :: NNNNTE = 4          ! first dimension of neural net params
 
 !      ---------
 !      Filenames
 !      ---------
-  character(len=80), PARAMETER :: FNCOF1 = &
+  character(len=90), PARAMETER :: FNCOF1 = &
      '/home/chepplew/gitLib/sarta_f90/dbase/iasi/Coef/set1.dat'
-  character(len=80), PARAMETER :: FNCOF2 = &
+  character(len=90), PARAMETER :: FNCOF2 = &
      '/home/chepplew/gitLib/sarta_f90/dbase/iasi/Coef/set2.dat'
-  character(len=80), PARAMETER :: FNCOF3 = &
+  character(len=90), PARAMETER :: FNCOF3 = &
      '/home/chepplew/gitLib/sarta_f90/dbase/iasi/Coef/set3.dat'
-  character(len=80), PARAMETER :: FNCOF4 = &
+  character(len=90), PARAMETER :: FNCOF4 = &
      '/home/chepplew/gitLib/sarta_f90/dbase/iasi/Coef/set4.dat'
-  character(len=80), PARAMETER :: FNCOF5 = &
+  character(len=90), PARAMETER :: FNCOF5 = &
      '/home/chepplew/gitLib/sarta_f90/dbase/iasi/Coef/set5.dat'
-  character(len=80), PARAMETER :: FNCOF6 = &
+  character(len=90), PARAMETER :: FNCOF6 = &
      '/home/chepplew/gitLib/sarta_f90/dbase/iasi/Coef/set6.dat'
-  character(len=80), PARAMETER :: FNCOF7 = &
+  character(len=90), PARAMETER :: FNCOF7 = &
      '/home/chepplew/gitLib/sarta_f90/dbase/iasi/Coef/set7.dat'
 !
-  character(len=80), PARAMETER :: FNOPTR = &
+  character(len=90), PARAMETER :: FNOPTR = &
      '/home/chepplew/gitLib/sarta_f90/dbase/iasi/Coef/optran.dat'
-  character(len=80), PARAMETER :: FNCO2 = &
+  character(len=90), PARAMETER :: FNCO2 = &
      '/home/chepplew/gitLib/sarta_f90/dbase/iasi/Coef/co2.dat'
-  character(len=80), PARAMETER :: FNSO2 = &
+  character(len=90), PARAMETER :: FNSO2 = &
      '/home/chepplew/gitLib/sarta_f90/dbase/iasi/Coef/so2.dat'
-  character(len=80), PARAMETER :: FNHNO3 = &
+  character(len=90), PARAMETER :: FNHNO3 = &
      '/home/chepplew/gitLib/sarta_f90/dbase/iasi/Coef/hno3.dat'
-  character(len=80), PARAMETER :: FNN2O = &
+  character(len=90), PARAMETER :: FNN2O = &
      '/home/chepplew/gitLib/sarta_f90/dbase/iasi/Coef/n2o.dat'
-  character(len=80), PARAMETER :: FNNH3 = &
+  character(len=90), PARAMETER :: FNNH3 = &
      '/home/chepplew/gitLib/sarta_f90/dbase/iasi/Coef/nh3.dat'
-  character(len=80), PARAMETER :: FNHDO = &
+  character(len=90), PARAMETER :: FNHDO = &
      '/home/chepplew/gitLib/sarta_f90/dbase/iasi/Coef/hdo.dat'
-  character(len=80), PARAMETER :: FNCH4 = &
+  character(len=90), PARAMETER :: FNCH4 = &
      '/home/chepplew/gitLib/sarta_f90/dbase/iasi/Coef/ch4.dat'
-  character(len=80), PARAMETER :: FNTHER = &
+  character(len=90), PARAMETER :: FNTHER = &
      '/home/chepplew/gitLib/sarta_f90/dbase/iasi/Coef/therm.dat'
-  character(len=80), PARAMETER :: FNCOFN = &
+  character(len=90), PARAMETER :: FNCOFN = &
      '/home/chepplew/gitLib/sarta_f90/dbase/iasi/Coef/xnlte_ann_model.txt'
-  character(len=80), PARAMETER :: FNFX = &
+  character(len=90), PARAMETER :: FNFX = &
      '/home/chepplew/gitLib/sarta_f90/dbase/iasi/Coef/fx.txt'
-  character(len=80), PARAMETER :: FNPREF = &
+  character(len=90), PARAMETER :: FNPREF = &
      '/home/chepplew/gitLib/sarta_f90/dbase/refprof_400ppm'
-  character(len=80), PARAMETER :: FNSUN = &
+  character(len=90), PARAMETER :: FNSUN = &
      '/home/chepplew/gitLib/sarta_f90/dbase/iasi/Solar/solardata.txt'
 
 !
 !
 !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 ! Tuning filename
-  character(len=80), PARAMETER :: FNTMLT = &
+  character(len=90), PARAMETER :: FNTMLT = &
      '/home/chepplew/gitLib/sarta_f90/dbase/iasi/Coef/tunmlt_ones.txt'
 
 

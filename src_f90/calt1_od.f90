@@ -1,27 +1,15 @@
 !=======================================================================
- 
-! Code converted using TO_F90_LOOP by Alan Miller
-! Date: 2023-04-04  Time: 16:44:55
- 
-!=======================================================================
-
 !    University of Maryland Baltimore County [UMBC]
-
 !    AIRS
-
 !    CALT1 (for set1 = FWO)  version with trace gases
-
-!F77====================================================================
-
+!F90====================================================================
 
 !ROUTINE NAME:
 !    CALT1
 
-
 !ABSTRACT:
 !    Calculate the transmittance for set1 using the predictors
 !    and the fast transmittance coefficients.
-
 
 !CALL PROTOCOL:
 !    CALT1 ( INDCHN, NLAY, NCHN1, CLIST1, COEF1,
@@ -31,7 +19,6 @@
 !      INDNH3, COFNH3, NH3MLT, INDHDO, COFHDO, HDOMLT,
 !      INDH2O, H2OPRD, COFH2O, LOPMIN, LOPMAX,
 !      LOPLOW, LOPUSE, WAOP, DAOP, WAANG, TAU, TAUZ)
-
 
 !INPUT PARAMETERS:
 !    type      name    purpose                     units
@@ -76,38 +63,30 @@
 !    REAL arr  DAOP    OPTRAN-to-AIRS interp fac   none
 !    REAL arr  WAANG   AIRS layer water amounts    kilomoles/cm^2
 
-
 !OUTPUT PARAMETERS:
 !    type      name    purpose                     units
 !    --------  ------  --------------------------  ---------------------
 !    REAL arr  TAU     effective layer opt depth   none
 !    REAL arr  TAUZ    layer-to-space opt depth    none
 
-
 !INPUT/OUTPUT PARAMETERS:
 !    none
-
 
 !RETURN VALUES:
 !    none
 
-
 !PARENT(S):
 !    USEFAST
 
-
 !ROUTINES CALLED:
 !    none
-
 
 !FILES ACCESSED:
 !    incFTC.f : include file of parameter statements accessed during
 !       compilation only.
 
-
 !COMMON BLOCKS
 !    none
-
 
 !DESCRIPTION:
 !    August 2000 version of the 100 layer AIRS Fast Transmittance
@@ -149,14 +128,11 @@
 
 !    ===================================================================
 
-
 !ALGORITHM REFERENCES:
 !    none
 
-
 !KNOWN BUGS AND LIMITATIONS:
 !    none
-
 
 !ROUTINE HISTORY:
 !    Date        Programmer     Comments
@@ -182,16 +158,9 @@
 !    10 May 2018 C Hepplewhite  Add NH3
 !    1  Feb 2019 C Hepplewhite  Add HDO
 
-
 !END====================================================================
 
 !      =================================================================
-
-MODULE CALT1
-
-IMPLICIT NONE
-
-CONTAINS 
 
 SUBROUTINE XCALT1 ( INDCHN, NLAY, NCHN1, CLIST1, COEF1,  &
     FIXMUL, CONPD1, FPRED1, WPRED1, DPRED, OPRED1, TRCPRD,  &
@@ -203,15 +172,14 @@ SUBROUTINE XCALT1 ( INDCHN, NLAY, NCHN1, CLIST1, COEF1,  &
 !      =================================================================
   
 !-----------------------------------------------------------------------
+!      INCLUDE FILES
+!-----------------------------------------------------------------------
+USE incFTC
+      
+!-----------------------------------------------------------------------
       IMPLICIT NONE
 !-----------------------------------------------------------------------
   
-!-----------------------------------------------------------------------
-!      INCLUDE FILES
-!-----------------------------------------------------------------------
-      INCLUDE 'incFTC.f90'
-      
-
   INTEGER, INTENT(IN)                      :: INDCHN(MXCHAN)
   INTEGER, INTENT(IN)                      :: NLAY
   INTEGER, INTENT(IN)                      :: NCHN1
@@ -222,44 +190,43 @@ SUBROUTINE XCALT1 ( INDCHN, NLAY, NCHN1, CLIST1, COEF1,  &
   REAL, INTENT(IN)                         :: FPRED1( N1FIX,MAXLAY)
   REAL, INTENT(IN OUT)                     :: WPRED1( N1H2O,MAXLAY)
   REAL, INTENT(IN)                         :: DPRED(   NHDO, MAXLAY)
-    REAL, INTENT(IN)                         :: OPRED1(  N1O3,MAXLAY)
-    REAL, INTENT(IN)                         :: TRCPRD(NTRACE,MAXLAY)
-    INTEGER, INTENT(IN)                      :: INDCO2(MXCHAN)
-    REAL, INTENT(IN)                         :: COFCO2(  NCO2,MAXLAY,MXCHNC)
-    REAL, INTENT(IN)                         :: CO2MLT(MAXLAY)
-    INTEGER, INTENT(IN)                      :: INDSO2(MXCHAN)
-    REAL, INTENT(IN)                         :: COFSO2(  NSO2,MAXLAY,MXCHNS)
-    REAL, INTENT(IN)                         :: SO2MLT(MAXLAY)
-    INTEGER, INTENT(IN)                      :: INDHNO(MXCHAN)
-    REAL, INTENT(IN)                         :: COFHNO( NHNO3,MAXLAY,MXCHNH)
-    REAL, INTENT(IN)                         :: HNOMLT(MAXLAY)
-    INTEGER, INTENT(IN)                      :: INDN2O(MXCHAN)
-    REAL, INTENT(IN)                         :: COFN2O(  NN2O,MAXLAY,MXCHNN)
-    REAL, INTENT(IN)                         :: N2OMLT(MAXLAY)
-    INTEGER, INTENT(IN)                      :: INDNH3(MXCHAN)
-    REAL, INTENT(IN)                         :: COFNH3(  NNH3,MAXLAY,MXCHNA)
-    REAL, INTENT(IN)                         :: NH3MLT(MAXLAY)
-    INTEGER, INTENT(IN)                      :: INDHDO(MXCHAN)
-    REAL, INTENT(IN)                         :: COFHDO(  NHDO,MAXLAY,MXCHND)
-      REAL, INTENT(IN)                         :: HDOMLT(MAXLAY)
-      INTEGER, INTENT(IN)                      :: INDH2O(MXCHAN)
-      REAL, INTENT(IN OUT)                     :: H2OPRD(  NH2O,MXOWLY)
-      REAL, INTENT(IN OUT)                     :: COFH2O(  NH2O,MXOWLY,MXCHNW)
-      INTEGER, INTENT(IN OUT)                  :: LOPMIN
-      INTEGER, INTENT(IN OUT)                  :: LOPMAX
-      INTEGER, INTENT(IN OUT)                  :: LOPLOW(MAXLAY)
-      LOGICAL, INTENT(IN OUT)                  :: LOPUSE(MXOWLY)
-      REAL, INTENT(IN OUT)                     :: WAOP(MXOWLY)
-      REAL, INTENT(IN OUT)                     :: DAOP(MAXLAY)
-      REAL, INTENT(IN OUT)                     :: WAANG(MAXLAY)
-      REAL, INTENT(OUT)                        :: TAU(MAXLAY,MXCHAN)
-      REAL, INTENT(OUT)                        :: TAUZ(MAXLAY,MXCHAN)
+  REAL, INTENT(IN)                         :: OPRED1(  N1O3,MAXLAY)
+  REAL, INTENT(IN)                         :: TRCPRD(NTRACE,MAXLAY)
+  INTEGER, INTENT(IN)                      :: INDCO2(MXCHAN)
+  REAL, INTENT(IN)                         :: COFCO2(  NCO2,MAXLAY,MXCHNC)
+  REAL, INTENT(IN)                         :: CO2MLT(MAXLAY)
+  INTEGER, INTENT(IN)                      :: INDSO2(MXCHAN)
+  REAL, INTENT(IN)                         :: COFSO2(  NSO2,MAXLAY,MXCHNS)
+  REAL, INTENT(IN)                         :: SO2MLT(MAXLAY)
+  INTEGER, INTENT(IN)                      :: INDHNO(MXCHAN)
+  REAL, INTENT(IN)                         :: COFHNO( NHNO3,MAXLAY,MXCHNH)
+  REAL, INTENT(IN)                         :: HNOMLT(MAXLAY)
+  INTEGER, INTENT(IN)                      :: INDN2O(MXCHAN)
+  REAL, INTENT(IN)                         :: COFN2O(  NN2O,MAXLAY,MXCHNN)
+  REAL, INTENT(IN)                         :: N2OMLT(MAXLAY)
+  INTEGER, INTENT(IN)                      :: INDNH3(MXCHAN)
+  REAL, INTENT(IN)                         :: COFNH3(  NNH3,MAXLAY,MXCHNA)
+  REAL, INTENT(IN)                         :: NH3MLT(MAXLAY)
+  INTEGER, INTENT(IN)                      :: INDHDO(MXCHAN)
+  REAL, INTENT(IN)                         :: COFHDO(  NHDO,MAXLAY,MXCHND)
+  REAL, INTENT(IN)                         :: HDOMLT(MAXLAY)
+  INTEGER, INTENT(IN)                      :: INDH2O(MXCHAN)
+  REAL, INTENT(IN OUT)                     :: H2OPRD(  NH2O,MXOWLY)
+  REAL, INTENT(IN OUT)                     :: COFH2O(  NH2O,MXOWLY,MXCHNW)
+  INTEGER, INTENT(IN OUT)                  :: LOPMIN
+  INTEGER, INTENT(IN OUT)                  :: LOPMAX
+  INTEGER, INTENT(IN OUT)                  :: LOPLOW(MAXLAY)
+  LOGICAL, INTENT(IN OUT)                  :: LOPUSE(MXOWLY)
+  REAL, INTENT(IN OUT)                     :: WAOP(MXOWLY)
+  REAL, INTENT(IN OUT)                     :: DAOP(MAXLAY)
+  REAL, INTENT(IN OUT)                     :: WAANG(MAXLAY)
+  REAL, INTENT(OUT)                        :: TAU(MAXLAY,MXCHAN)
+  REAL, INTENT(OUT)                        :: TAUZ(MAXLAY,MXCHAN)
             
 !-----------------------------------------------------------------------
 !      EXTERNAL FUNCTIONS
 !-----------------------------------------------------------------------
 !      none
-      
       
 !-----------------------------------------------------------------------
 !      ARGUMENTS
@@ -275,33 +242,33 @@ SUBROUTINE XCALT1 ( INDCHN, NLAY, NCHN1, CLIST1, COEF1,  &
       INTEGER :: IN2O
       INTEGER :: INH3
       INTEGER :: IHDO
-        INTEGER :: ISO2
-        INTEGER :: J
-        REAL :: DK
-        REAL :: DKCO2
-        REAL :: DKHNO3
-        REAL :: DKN2O
-        REAL :: DKSO2
-        REAL :: DKNH3
-        REAL :: DKHDO
-          REAL :: KHDO
-            REAL :: KCON
-            REAL :: KFIX
-            REAL :: KLAYER
-            REAL :: KOZO
-            REAL :: KZ
-            REAL :: KZFW
-            LOGICAL :: LCO2
-            LOGICAL :: LH2O
-            LOGICAL :: LHNO3
-            LOGICAL :: LN2O
-            LOGICAL :: LNH3
-            LOGICAL :: LHDO
-              LOGICAL :: LSO2
+      INTEGER :: ISO2
+      INTEGER :: J
+      REAL :: DK
+      REAL :: DKCO2
+      REAL :: DKHNO3
+      REAL :: DKN2O
+      REAL :: DKSO2
+      REAL :: DKNH3
+      REAL :: DKHDO
+      REAL :: KHDO
+      REAL :: KCON
+      REAL :: KFIX
+      REAL :: KLAYER
+      REAL :: KOZO
+      REAL :: KZ
+      REAL :: KZFW
+      LOGICAL :: LCO2
+      LOGICAL :: LH2O
+      LOGICAL :: LHNO3
+      LOGICAL :: LN2O
+      LOGICAL :: LNH3
+      LOGICAL :: LHDO
+      LOGICAL :: LSO2
               
 !      for CALOKW
-              INTEGER :: IH2O
-              REAL :: KW(MAXLAY)
+      INTEGER :: IH2O
+      REAL :: KW(MAXLAY)
               
               
 !-----------------------------------------------------------------------
@@ -603,30 +570,28 @@ SUBROUTINE XCALT1 ( INDCHN, NLAY, NCHN1, CLIST1, COEF1,  &
 !      DKN2O=0.0
 !      DKNH3=0.0
 !      DKHDO=0.0
-                    KHDO=0.0
+         KHDO=0.0
 !cc
-!            Limit -DK so it can never totally totally cancel KFIX
-                    DK = DKCO2 + DKSO2 + DKHNO3 + DKN2O + DKNH3
-                    IF (-DK >= KFIX) THEN
-                      DK = -0.999*KFIX
-                    END IF
+!          Limit -DK so it can never totally totally cancel KFIX
+            DK = DKCO2 + DKSO2 + DKHNO3 + DKN2O + DKNH3
+            IF (-DK >= KFIX) THEN
+              DK = -0.999*KFIX
+         END IF
                     
-!            Calc effective layer optical
-                    KLAYER = KCON + KFIX + KW(ILAY) + KOZO + DK
-                    TAU(ILAY,J)=KLAYER
+!        Calc effective layer optical
+         KLAYER = KCON + KFIX + KW(ILAY) + KOZO + DK
+         TAU(ILAY,J)=KLAYER
                     
-!            Calc layer-to-space optical depth
-                    KZ=KZ + KLAYER
-                    TAUZ(ILAY,J)=KZ
+!        Calc layer-to-space optical depth
+         KZ=KZ + KLAYER
+         TAUZ(ILAY,J)=KZ
                     
-!             print*, 'calt1_od: ', J,ILAY,KLAYER,TAUZ(ILAY,J),KFIX
-                    ENDDO
-!         End loop on levels
+!     print*, 'calt1_od: ', J,ILAY,KLAYER,TAUZ(ILAY,J),KFIX
+      ENDDO
+!     End loop on levels
                       
-                      ENDDO
+      ENDDO
 !      End loops on channel number (frequency)
                         
                         RETURN
                       END SUBROUTINE XCALT1
-
-END MODULE CALT1

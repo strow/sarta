@@ -39,31 +39,30 @@ use incFTC
 !-----------------------------------------------------------------------
 include 'rtpdefs.f90'
 
- 
 !-----------------------------------------------------------------------
 !      ARGUMENTS
 !-----------------------------------------------------------------------
+!
+       COMMON /COMLEV/ PLEV
+!
 !      INPUT
- LOGICAL :: LWANT      ! do we want this profile?
- INTEGER :: IPROF      ! number of current profile
- INTEGER :: IOPCI      ! input RTP unit
- INTEGER :: NLAY
- real(4), dimension(MAXLAY) :: ALT,DZ,PRES
- !!integer, intent (in) :: IPOPN
- !!character(len=90) ::  PFILE
-
+       INTEGER :: NLAY
+       real(4), dimension(MAXLAY) :: ALT,DZ,PRES
+!
 !      OUTPUT
 !      Profile data structure
        RECORD /RTPPROF/ PROF
-       INTEGER :: ISTAT
-
+!
 !      LOCAL VARIABLES
-integer ::  IERR, IJUNK, L, LR, NLEV
-character(len=80) ::  CLINE
-REAL(4), dimension(MAXLAY) :: PLEVS
+       integer ::  I, IERR, IJUNK, L, LR, NLEV
+       character(len=80) ::  CLINE
+       REAL(4), dimension(MAXLAY+1) :: PLEV, PLEVS_RTP
+       real(4) :: RJUNK1
 
 !-----------------------------------------------------------------------
-
+!   Execution
+! ----------------------------------------------------------------------
+      if(DEBUG) print*,'check_plevs:prof.nlevs: ', PROF%nlevs,PROF%plevs(1)
 !      ------------------------
 !      Read the current profile
 !      ------------------------
@@ -81,21 +80,33 @@ REAL(4), dimension(MAXLAY) :: PLEVS
 
 ! Get pressure levels PLEVS
       IF (PROF%plevs(1) .LT. PROF%plevs(NLEV)) THEN
-!        Prof is in top-down order
-         DO L=1,NLAY
-            PLEVS(L)=PROF%plevs(L)
+!        print*,'Prof is in top-down order'
+         DO L=1,NLEV
+            PLEVS_RTP(L)=PROF%plevs(L)
          ENDDO
       ELSE
-!        Prof is in bottom-up order
-         DO L=1,NLAY
-            LR=1 + NLAY - L  ! reversed layer index
-            PLEVS(L)=PROF%plevs(LR)
+!       print*,'Prof is in bottom-up order'
+         DO L=1,NLEV
+            LR=1 + NLEV - L  ! reversed layer index
+            PLEVS_RTP(L)=PROF%plevs(LR)
          ENDDO
       ENDIF
-print*,'check_plevs: plevs(10) ', PLEVS(10) 
+      print*,'check_plevs: NLEV,COMLEV(30),PLEVS_RTP(101-30+1) ', &
+           NLEV, PLEV(30),PLEVS_RTP(101-30+1) 
 ! ---------------------------------------
 ! COmpare with reference profile pressures
 ! ----------------------------------------
+       RJUNK1 = 0.0
+       DO I=1,NLEV
+!         write(*,'(I3,5(F12.5))') I, PLEV(I), PLEVS_RTP(I), PLEV(I) - PLEVS_RTP(I), &
+!                   PLEV(I)-PLEV(I+1),PLEV_RTP(I)-PLEV_RTP(I+1)
+         RJUNK1 = RJUNK1 + abs(PLEV(101-I+1) - PLEVS_RTP(I))
+       ENDDO
+       RJUNK1 = RJUNK1/(NLEV+1)
+       IF (RJUNK1 .GT. 1.0) THEN
+         print *,'oh no : difference between plevs in rtp and plevs in cbplev = ',RJUNK1
+         STOP
+       END IF
 
 !
  9999  RETURN

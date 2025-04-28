@@ -1,18 +1,8 @@
 !=======================================================================
- 
-! Code converted using TO_F90_LOOP by Alan Miller
-! Date: 2023-04-04  Time: 16:44:56
- 
-!=======================================================================
-
 !    University of Maryland Baltimore Country (UMBC)
-
 !    AIRS
-
 !    SETEMS
-
-!F77====================================================================
-
+!F90====================================================================
 
 !ROUTINE NAME:
 !    SETEMS
@@ -21,11 +11,9 @@
 !    Assign the emissivity and reflectivity data for every channel
 !    being used.
 
-
 !CALL PROTOCOL
 !    RDEMIS ( NCHAN, NEMIS, FREQ, FEMIS, XEMIS, XRHO,
 !       LRHOT, EMIS, RHOSUN, RHOTHR )
-
 
 !INPUT PARAMETERS:
 !    type      name    purpose                     units
@@ -45,31 +33,24 @@
 !    REAL arr  RHOSUN  reflectivity for solar      1/steradian
 !    REAL arr  RHOTHR  reflectivity for thermal    1/steradian
 
-
 !INPUT/OUTPUT PARAMETERS:
 !    none
-
 
 !RETURN VALUES:
 !    none
 
-
 !PARENT(S):
 !    USEFAST
 
-
 !ROUTINES CALLED:
 !    none
-
 
 !FILES ACCESSED:
 !    incFTC.f : include file of parameter statements accessed during
 !       compilation only.
 
-
 !COMMON BLOCKS
 !    none
-
 
 !DESCRIPTION:
 !    August 2000 version of the 100 layer AIRS Fast Transmittance
@@ -79,14 +60,11 @@
 !    or extrapolates them onto the channel freqs being used.
 !    Interpolations are linear in wavelength (not frequency).
 
-
 !ALGORITHM REFERENCES:
 !    none
 
-
 !KNOWN BUGS AND LIMITATIONS:
 !    none
-
 
 !ROUTINE HISTORY:
 ! Date        Programmer     Comments
@@ -102,27 +80,19 @@
 
 !      =================================================================
 
-MODULE SET_EMS_PCLSAM
-
-IMPLICIT NONE
-
-CONTAINS
-
-
 SUBROUTINE SETEMS ( NCHAN, NEMIS, FREQ, FEMIS, XEMIS,  &
     XRHO, XCEMI1, XCRHO1, XCEMI2, XCRHO2, LRHOT,  &
     EMIS, RHOSUN, RHOTHR, CEMIS1, CRHOS1, CRHOT1, CEMIS2, CRHOS2, CRHOT2 )
 !      =================================================================
 
+!-----------------------------------------------------------------------
+!      INCLUDE FILES
+!-----------------------------------------------------------------------
+Use incFTC
 
 !-----------------------------------------------------------------------
       IMPLICIT NONE
 !-----------------------------------------------------------------------
-
-!-----------------------------------------------------------------------
-!      INCLUDE FILES
-!-----------------------------------------------------------------------
-INCLUDE 'incFTC.f90'
 
 
 INTEGER, INTENT(IN)                      :: NCHAN
@@ -145,41 +115,18 @@ REAL, INTENT(OUT)                        :: CRHOT1(MXCHAN)
 REAL, INTENT(OUT)                        :: CEMIS2(MXCHAN)
 REAL, INTENT(OUT)                        :: CRHOS2(MXCHAN)
 REAL, INTENT(OUT)                        :: CRHOT2(MXCHAN)
-!IMPLICIT NONE
 
 !-----------------------------------------------------------------------
 !      EXTERNAL FUNCTIONS
 !-----------------------------------------------------------------------
 !      none
 
-
 !-----------------------------------------------------------------------
 !      ARGUMENTS
 !-----------------------------------------------------------------------
 !      Input
 
-
-
-
-
-
-
-
-
-
-
-
 !      Output
-
-
-
-
-
-
-
-
-
-
 
 !-----------------------------------------------------------------------
 !      LOCAL VARIABLES
@@ -221,73 +168,73 @@ REAL :: RJUNK7  ! generic junk/work variable
 !      Sort the emis & rho by freq
 !      ---------------------------
 SORTED=1
-10    IF (SORTED == 1) THEN
-  SORTED=0
-  DO I=1,NEMIS-1
-    IF (FEMIS(I) > FEMIS(I+1)) THEN
-      RJUNK1=FEMIS(I)
-      RJUNK2=XEMIS(I)
-      RJUNK3=XRHO(I)
-      RJUNK4=XCEMI1(I)
-      RJUNK5=XCRHO1(I)
-      RJUNK6=XCEMI2(I)
-      RJUNK7=XCRHO2(I)
-      FEMIS(I)=FEMIS(I+1)
-      XEMIS(I)=XEMIS(I+1)
-      XRHO(I)=XRHO(I+1)
-      FEMIS(I+1)=RJUNK1
-      XEMIS(I+1)=RJUNK2
-      XRHO(I+1)=RJUNK3
-      XCEMI1(I+1)=RJUNK4
-      XCRHO1(I+1)=RJUNK5
-      XCEMI2(I+1)=RJUNK6
-      XCRHO2(I+1)=RJUNK7
-      SORTED=1
-    END IF
-    ENDDO
-      GO TO 10
+ 10  IF (SORTED == 1) THEN
+     SORTED=0
+     DO I=1,NEMIS-1
+       IF (FEMIS(I) > FEMIS(I+1)) THEN
+         RJUNK1=FEMIS(I)
+         RJUNK2=XEMIS(I)
+         RJUNK3=XRHO(I)
+         RJUNK4=XCEMI1(I)
+         RJUNK5=XCRHO1(I)
+         RJUNK6=XCEMI2(I)
+         RJUNK7=XCRHO2(I)
+         FEMIS(I)=FEMIS(I+1)
+         XEMIS(I)=XEMIS(I+1)
+         XRHO(I)=XRHO(I+1)
+         FEMIS(I+1)=RJUNK1
+         XEMIS(I+1)=RJUNK2
+         XRHO(I+1)=RJUNK3
+         XCEMI1(I+1)=RJUNK4
+         XCRHO1(I+1)=RJUNK5
+         XCEMI2(I+1)=RJUNK6
+         XCRHO2(I+1)=RJUNK7
+         SORTED=1
+       END IF
+     ENDDO
+     GO TO 10
     END IF
     
 !      ----------------------------------------
 !      Calc wavelength and interpolation deltas
 !      ----------------------------------------
-    ELAM(1)=1.0E+4/FEMIS(1) ! wavelength in microns
-    DO J=2,NEMIS
-      ELAM(J)=1.0E+4/FEMIS(J)
-      DELELM(J-1)=ELAM(J) - ELAM(J-1)
-      DELEMS(J-1)=XEMIS(J) - XEMIS(J-1)
-      DELRHO(J-1)=XRHO(J) - XRHO(J-1)
-      DELCE1(J-1)=XCEMI1(J) - XCEMI1(J-1)
-      DELCR1(J-1)=XCRHO1(J) - XCRHO1(J-1)
-      DELCE2(J-1)=XCEMI2(J) - XCEMI2(J-1)
-      DELCR2(J-1)=XCRHO2(J) - XCRHO2(J-1)
-      ENDDO
+      ELAM(1)=1.0E+4/FEMIS(1) ! wavelength in microns
+      DO J=2,NEMIS
+        ELAM(J)=1.0E+4/FEMIS(J)
+        DELELM(J-1)=ELAM(J) - ELAM(J-1)
+        DELEMS(J-1)=XEMIS(J) - XEMIS(J-1)
+        DELRHO(J-1)=XRHO(J) - XRHO(J-1)
+        DELCE1(J-1)=XCEMI1(J) - XCEMI1(J-1)
+        DELCR1(J-1)=XCRHO1(J) - XCRHO1(J-1)
+        DELCE2(J-1)=XCEMI2(J) - XCEMI2(J-1)
+        DELCR2(J-1)=XCRHO2(J) - XCRHO2(J-1)
+     ENDDO
         
 !      ------------------------------------
 !      Interpolate emis & rho onto channels
 !      ------------------------------------
 !      Loop over channels (note: chan freqs may be in any order)
-        DO I=1,NCHAN
+      DO I=1,NCHAN
           
 !         Emissivity
-          IF ( FREQ(I) <= FEMIS(1) ) THEN
+         IF ( FREQ(I) <= FEMIS(1) ) THEN
             EMIS(I)=XEMIS(1)
             RHOSUN(I)=XRHO(1)
             CEMIS1(I)=XCEMI1(1)
             CRHOS1(I)=XCRHO1(1)
             CEMIS2(I)=XCEMI2(1)
             CRHOS2(I)=XCRHO2(1)
-          ELSE IF ( FREQ(I) >= FEMIS(NEMIS) ) THEN
+         ELSE IF ( FREQ(I) >= FEMIS(NEMIS) ) THEN
             EMIS(I)=XEMIS(NEMIS)
             RHOSUN(I)=XRHO(NEMIS)
             CEMIS1(I)=XCEMI1(NEMIS)
             CRHOS1(I)=XCRHO1(NEMIS)
             CEMIS2(I)=XCEMI2(NEMIS)
             CRHOS2(I)=XCRHO2(NEMIS)
-          ELSE
+         ELSE
 !            Determine the index of the upper bounding FEMIS
             J=2
-            20          IF ( FEMIS(J) < FREQ(I) ) THEN
+ 20         IF ( FEMIS(J) < FREQ(I) ) THEN
               J=J + 1
               GO TO 20
             END IF
@@ -301,23 +248,22 @@ SORTED=1
             CRHOS1(I) = XCRHO1(J) + DX*DELCR1(J)
             CEMIS2(I) = XCEMI2(J) + DX*DELCE2(J)
             CRHOS2(I) = XCRHO2(J) + DX*DELCR2(J)
-          END IF
+         END IF
           
-          IF (LRHOT) THEN
+         IF (LRHOT) THEN
 !            Force reflected thermal rho = (1-emis)/pi
             RHOTHR(I)=(1.0 - EMIS(I))/PI
             CRHOT1(I)=(1.0 - CEMIS1(I))/PI
             CRHOT2(I)=(1.0 - CEMIS2(I))/PI
-          ELSE
+         ELSE
 !            Reflected thermal uses the same rho as solar
             RHOTHR(I)=RHOSUN(I)
             CRHOT1(I)=CRHOS1(I)
             CRHOT2(I)=CRHOS1(I)
-          END IF
+         END IF
           
-          ENDDO
+      ENDDO
             
-            RETURN
-          END SUBROUTINE SETEMS
+      RETURN
+      END SUBROUTINE SETEMS
 
-END MODULE SET_EMS_PCLSAM

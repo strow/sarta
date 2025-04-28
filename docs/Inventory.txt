@@ -1,0 +1,98 @@
+# SARTA Executable Inventory
+
+# General workflow
+
+Since early 2024, source and builds are made from the src_f90/
+sub-directory. Prior to this the src_f77/ sub-directory was used.
+
+In general, the fast coefficient database is created in the destination
+directories detailed in the ftc_dev instructions. The file names of
+individual coefficient files produced by that recipe are long and detail the
+production stage. For the SARTA execs, the Makefile loads the include file:
+incFTC_<long name>.f90 that includes the file name references. The practise
+up to now has been to reference the sub-dir dbase/Coef/ with short names
+e.g. set1.dat, which are themselves symbolic links to the long paths and file
+names created by the ftc_dev.
+
+The incFTC_<long name>.f90 is intended to provide some traceability, thus:
+_prod2022Jul22_{dev,revX,reg,proto,prod} to indicate the production year,
+build date and revision. In the past the 'dev' must past full validation
+tests and have been tested in the rtp production environment (rtp_prod git repo)
+before being renamed _prod and referenced in the rtp production.
+
+Note the options at the top of the incFTC_<name>.f90 that turn on or off
+the DEBUG and the minor gas calculations.
+
+The SARTA Makefile should be examined, it links the incFTC.f90 to the selected
+include file described above, and builds a version of SARTA with a matching
+name to the include file, thus e.g. chirp_p2022jul22_dev.
+
+Some execs have been built with only certain functionality included (beyond
+the base 7-set build) e.g. chirp_feb20_base_so2_nh3_hno3, which were
+use during development and are not intended for general use.
+
+# Building the different layering versions
+
+The standard SARTA build uses the original 101 AIRS atmospheric layering,
+the version for the OCO2-PBL atmospheric layering can also be built.
+Ensure that the Makefile correctly updates the symbolic link to the 
+cbplev.f90 file BEFORE building.
+
+# Build options
+
+Check the Makefile and the child script make_sarta_* called by the Makefile
+to see which build options are preferred, there are two of interest:
+with debug and compilation checks on, or optimization level2 and compilation
+checks off. The latter will produce the fastest exec.
+
+Also, in relation to the build options, check that the incFTC_<name>.f90
+file has the DEBUG logical set to false so that little output is written to
+stdout.
+
+The Makefiles are set up to include clear-sky and all-sky versions to be built,
+Note the different source files required. At the time of writing, the PBL atmos.
+layering version of the SARTA does not build without errors, as there is a
+a problem with the bottom layer routines for the PBL atmos. layering. Note that
+some of the all-sky version builds may still be in the src_f77 sub-directory.
+
+# Register of Execs:
+
+The latest builds use the HITRAN 2020 database that was available to this group
+and installed in 2022, thus execs with build names including 'prod2022'
+use HITRAN 2020.
+
+Prior builds with the HITRAN 2016, were made available and installed for builds 
+with names including 'prod2018'
+
+HITRAN 2014 and earlier were built with less standard names, and include the
+Scott builds from around 2008. So care should be used to work out the 
+traceability from file dates and so forth. 
+
+The intention has been to transfer final production builds and databases
+to /asl/data/sarta_database/ (as of writing many symlinks appear to be broken).
+and /as/packages/sarta/
+
+In Git/sarta/bin/:
+
+## CHIRP clear-sky
+
+chirp_pbl_p2025jan25a_dev	(Jan.2025)  	PBL atmos. layering
+chirp_p2022jul22_prod		(Jul.2024)	AIRSLAY atmos. layering
+
+## CRIS HR (FSR) clear-sky
+
+cris_hr_p2025Jan25_pbl_dev	(Jan.2025)	PBL atmos. layering
+cris_hr_p2025jul22_reg_dev	(jul.2024)	AIRSLAY atmos. layering
+
+## AIRS L1C clear-sky
+
+airs_pbl_p2025jan25_dev_debug	(Jan.2025)	PBL atmos. layering
+airs_l1c_p2025jul22_std_dev	(jul.2024) 	AIRSLAY atmos. layering
+
+## IASI clear-sky
+
+iasi_p2022jul22_dev		(Jul.2024)	AIRSLAY atmos. layering
+
+## CRIS HR (FSR) all-sky
+
+cris_hr_p2022jul22_reg_ibaum_wdrop_ddust_dev	AIRSLAY atmos. layering

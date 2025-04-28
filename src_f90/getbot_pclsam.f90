@@ -124,13 +124,11 @@ real(4) :: PSURF                     ! surface pressure
 integer :: LBOT                      ! bottom layer number
 real(4) :: BLMULT                    ! bottom layer fractional multiplier
 
-
 !-----------------------------------------------------------------------
 !      LOCAL VARIABLES
 !-----------------------------------------------------------------------
 integer :: LBOTX                     ! unrestricted bottom layer number
 real(4) :: DELPX                     ! 5% of layer thickness in pressure
-
 
 !-----------------------------------------------------------------------
 !      SAVE STATEMENTS
@@ -142,21 +140,23 @@ real(4) :: DELPX                     ! 5% of layer thickness in pressure
 !***********************************************************************
 !
 !      Determine LBOT from PSURF by comparing to PLEV
-       if(DEBUG) print*, 'getbot:PSURF,NLAY,PLEV(NLAY) ',PSURF,NLAY,PLEV(NLAY)
-       LBOTX=MAXLAY
+       if(DEBUG) print*, 'getbot:PSURF,NLAY,PLEV(NLAY) ',& 
+          PSURF,NLAY,PLEV(101-NLAY+1)
+!!!       LBOTX=MAXLAY
+       LBOTX=NLAY
 ! MAXLAY=100, but klayers might fill pressures from NLEV to SFC.
 !       LBOTX=NLAY-1
- 10    DELPX=0.05*( PLEV(LBOTX+1) - PLEV(LBOTX) )
-! 10    DELPX=0.5*( PLEV(LBOTX+1) - PLEV(LBOTX) )
+!!! 10    DELPX=0.05*( PLEV(LBOTX+1) - PLEV(LBOTX) )
+ 10    DELPX=0.5*( PLEV(LBOTX) - PLEV(LBOTX-1) )
        IF (PSURF .LT. PLEV(LBOTX)+DELPX) THEN
           LBOTX=LBOTX - 1
           GOTO 10
        ENDIF
 !
        IF (LBOTX .GT. NLAY) THEN
-          LBOT = NLAY
+          LBOT = 101-NLAY+1
        ELSE
-          LBOT = LBOTX
+          LBOT = 101-LBOTX+1
 !          LBOT = LBOTX + 1
        ENDIF
        if (DEBUG) write(6,'(a,X,I6,X,F9.3,X,F9.3)')  &
