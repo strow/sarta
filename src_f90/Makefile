@@ -45,26 +45,31 @@ cris_nn:
 # AIRS L1C std plevs 
 airs_l1c_p2025jul2022_dev:
 	rm -f *.o incFTC.f90
-	ln -sf incFTC_airs_l1c_p2025jul2022_dev.f90 incFTC.f90
+#	ln -sf incFTC_airs_l1c_p2025jul2022_dev.f90 incFTC.f90
+	ln -sf incFTC_airs_l1c_jul2022.f90 incFTC.f90
 	ifort -c incFTC.f90 -I/home/chepplew/myLib/rtp/include
 	ln -sf cbplev_airslay.f90 cbplev.f90
 	make -f make_sarta_reg
+	mv a.out ../bin/airs_l1c_jul2022
 #	mv a.out ../bin/airs_l1c_p2025jul22_std_dev
 # -----------------------------------------------------------------
 # CrIS FSR 
 cris_hr_reg_dev:
 	rm -f *.o incFTC.f90
-	ln -sf incFTC_cris_hrg4_p2025jul22_dev.f90 incFTC.f90
+#	ln -sf incFTC_cris_hrg4_p2025jul22_dev.f90 incFTC.f90
+	ln -sf incFTC_cris_hr_jul2022.f90 incFTC.f90
 	ifort -c incFTC.f90 -I/home/chepplew/myLib/rtp/include
 	ln -sf cbplev_airslay.f90 cbplev.f90
 	make -f make_sarta_reg
+#	mv a.out ../bin/cris_hr_p2022jul22_reg_dev
 #	mv a.out ../bin/cris_hr_p2025jul22_reg_dev2
 #	mv a.out ../bin/cris_hr_p2025jul22_reg_dev
 # ----------------------------------------------------------------
 # IASI
 iasi_reg_dev:
 	rm -f *.o incFTC.f90
-	ln -sf incFTC_iasi_p2022jul22_dev.f90 incFTC.f90
+#	ln -sf incFTC_iasi_p2022jul22_dev.f90 incFTC.f90
+	ln -sf incFTC_iasi_jul2022.f90 incFTC.f90
 	ifort -c incFTC.f90 -I/home/chepplew/myLib/rtp/include
 	ln -sf cbplev_airslay.f90 cbplev.f90
 	make -f make_sarta_reg
@@ -80,7 +85,8 @@ chirp_reg_dev:
 ##	mv a.out ../bin/chirp_reg_dev
 chirp_reg_prod:
 	rm -f *.o incFTC.f90
-	ln -sf incFTC_chirp_p2022jul22_reg_prod.f90 incFTC.f90
+##	ln -sf incFTC_chirp_p2022jul22_reg_prod.f90 incFTC.f90
+	ln -sf incFTC_chirp_jul2022.f90 incFTC.f90
 	ifort -c incFTC.f90 -I/home/chepplew/myLib/rtp/include
 	ln -sf cbplev_airslay.f90 cbplev.f90
 	make -f make_sarta_reg
