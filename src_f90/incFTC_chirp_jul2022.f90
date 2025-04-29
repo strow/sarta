@@ -498,7 +498,7 @@ integer, parameter :: NNNNTE = 4          ! first dimension of neural net params
   character(len=80), PARAMETER :: FNSUN = &
     '/umbc/xfs3/strow/asl/rta/sarta_database/Data_CHIRP_jul2022/Solar/solardata.txt'
   character(len=90), PARAMETER :: FNPREF = &
-    '/umbc/xfs3/strow/asl/rta/sarta_database/Data_CHIRP_jul2022/refprof_trace400'
+    '/umbc/xfs3/strow/asl/rta/sarta_database/Data_CHIRP_jul2022/Coef/refprof_trace400'
      
 !
 ! -------------------------------------------

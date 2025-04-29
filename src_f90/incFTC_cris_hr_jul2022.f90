@@ -448,7 +448,7 @@ integer,  PARAMETER :: GUCIN = 1  ! GUC number for:  molecules/cm^2
 ! NTEBOT ! bottom layer for CO2TOP calc
 ! CO2NTE ! ref CO2 mixing ratio for non-LTE coefs (ppmv)
 logical, PARAMETER :: LXNTE = .FALSE.     ! F: 0-90 or T: 0-120.deg solzen
-integer, PARAMETER :: MXCNTE = 277        ! was 133 placeholder
+integer, PARAMETER :: MXCNTE = 270        ! was 277 placeholder
 integer, PARAMETER :: NNCOEF = 7          ! was 7
 integer, PARAMETER :: XNCOEF = 14         ! Default: 2 x NNCOEF -> COEFN(XN,M)
 integer, PARAMETER :: NTEBOT = 10
@@ -490,7 +490,7 @@ integer, parameter :: NNNNTE = 4          ! first dimension of neural net params
   character(len=90), PARAMETER :: FNHDO = &
      '/umbc/xfs3/strow/asl/rta/sarta_database/Data_CrIS_jul2022/Coef/hdo.dat'
   character(len=90), PARAMETER :: FNCOFN = &
-     '/umbc/xfs3/strow/asl/rta/sarta_database/Data_CrIS_jul2022/Coef/xnte_14term.txt'
+     '/umbc/xfs3/strow/asl/rta/sarta_database/Data_CrIS_jul2022/Coef/xnte_14term.dat'
   character(len=90), PARAMETER :: FNTHER = &
      '/umbc/xfs3/strow/asl/rta/sarta_database/Data_CrIS_jul2022/Coef/therm.dat'
 

@@ -61,7 +61,7 @@ cris_hr_reg_dev:
 	ifort -c incFTC.f90 -I/home/chepplew/myLib/rtp/include
 	ln -sf cbplev_airslay.f90 cbplev.f90
 	make -f make_sarta_reg
-#	mv a.out ../bin/cris_hr_p2022jul22_reg_dev
+	mv a.out ../bin/cris_hr_jul2022
 #	mv a.out ../bin/cris_hr_p2025jul22_reg_dev2
 #	mv a.out ../bin/cris_hr_p2025jul22_reg_dev
 # ----------------------------------------------------------------
@@ -74,6 +74,7 @@ iasi_reg_dev:
 	ln -sf cbplev_airslay.f90 cbplev.f90
 	make -f make_sarta_reg
 ##	mv a.out ../bin/iasi_p2022jul22_dev
+	mv a.out ../bin/iasi_jul2022
 # ----------------------------------------------------------------
 # CHIRP
 chirp_reg_dev:
@@ -90,7 +91,7 @@ chirp_reg_prod:
 	ifort -c incFTC.f90 -I/home/chepplew/myLib/rtp/include
 	ln -sf cbplev_airslay.f90 cbplev.f90
 	make -f make_sarta_reg
-##	mv a.out ../bin/chirp_p2022jul22_prod
+	mv a.out ../bin/chirp_p2022jul22_prod
 # ===========================================================
 #  1.3 regression only models. airs-oco2 PBL  pressure levels
 #  ----------------------------------------------------------------

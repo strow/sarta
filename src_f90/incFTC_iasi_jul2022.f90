@@ -371,7 +371,7 @@ integer, PARAMETER :: CO2NTE = 400.0
   character(len=90), PARAMETER :: FNFX = &
      '/umbc/xfs3/strow/asl/rta/sarta_database/Data_IASI_jul2022/Coef/fx.txt'
   character(len=90), PARAMETER :: FNPREF = &
-     '/home/chepplew/gitLib/sarta_f90/dbase/refprof_400ppm'
+     '/umbc/xfs3/strow/asl/rta/sarta_database/Data_IASI_jul2022/Coef/refprof_trace400'
   character(len=90), PARAMETER :: FNSUN = &
      '/umbc/xfs3/strow/asl/rta/sarta_database/Data_IASI_jul2022/Solar/solardata.txt'
 
